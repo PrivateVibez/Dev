@@ -1,7 +1,8 @@
 from django.db import models
+from django_softdelete.models import SoftDeleteModel
 
 # Create your models here.
-class Public(models.Model):
+class Public(SoftDeleteModel):
     User      = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     Room      = models.ForeignKey('auth.User',null=True,blank=True, on_delete=models.CASCADE, related_name = 'Messages_room')
     Message   = models.CharField(max_length=20)
@@ -9,7 +10,7 @@ class Public(models.Model):
     def __str__(self):
         return str(self.User)
 
-class Private(models.Model):
+class Private(SoftDeleteModel):
     From       = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     To         = models.ForeignKey('auth.User',null=True,blank=True, on_delete=models.CASCADE, related_name = 'To_Message')
     Message    = models.CharField(max_length=20)

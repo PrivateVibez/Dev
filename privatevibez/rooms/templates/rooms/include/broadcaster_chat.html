@@ -207,10 +207,13 @@ function toggle_private_broc_room(username, isUserClicked) {
     publicWrap.style.display = "block";
     privateWrap.style.display = "none";
   } else {
+    
     publicWrap.style.display = "none";
     privateWrap.style.display = "block";
     document.getElementById("private_broc_chat_room_header").innerHTML = "Private Chat with " + username;
     document.getElementById("pri_broc_fan_username").value = username;
+
+
     let socket = new WebSocket('ws://' + window.location.host + '/ws/privateChatBroc/{{ room_name }}/'+username+'/');
     socket.onmessage = function(e) {
         let data = JSON.parse(e.data);

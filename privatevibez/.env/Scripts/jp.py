@@ -1,4 +1,4 @@
-#!C:\Users\NITRO 5\Desktop\SarhanFolder\Onlinejobs\privatevibez\.env\Scripts\python.exe
+#!C:\Users\NITRO 5\Desktop\SarhanFolder\Onlinejobs\v2\Dev\privatevibez\.env\Scripts\python.exe
 
 import sys
 import json

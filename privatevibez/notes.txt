@@ -1,0 +1,7 @@
+                                    ACCOMPLISHED TASKS
+CHATTING
+
+      -Chat is soft deleted from the database for public and private channels once a user logs out.
+      
+      
+

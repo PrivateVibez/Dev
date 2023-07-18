@@ -6,10 +6,16 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from .forms import *
 from .models import *
+from chat.models import Private, Public
 from rooms.models import *
 from django.contrib.auth.decorators import login_required
 
 def Logout(request):
+    
+    # DELETE BOTH PRIVATE AND PUBLIC CHATS ONCE SESSION IS TERMINATED
+    
+    Private.objects.filter(From_id = request.user).delete()
+    Public.objects.filter(User_id = request.user).delete()
     logout(request)
     messages.error(request, 'You are Log out')
     return redirect('Main_home')

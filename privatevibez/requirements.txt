@@ -50,6 +50,6 @@ uuid==1.30
 whitenoise==5.0.1
 zope.interface==5.5.1
 
-
+django-soft-delete==0.9.21
 #psycopg2==2.9.5
 #django-heroku==0.3.1
