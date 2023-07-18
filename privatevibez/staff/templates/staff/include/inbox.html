@@ -1,0 +1,53 @@
+<section style="background-color: transparent;">
+  <div class="container py-2">
+    <div class="row">
+      <div class="col-md-5 col-lg-5 col-xl-4">  
+        <div class="row">
+
+
+
+          <div class="col-12">
+            <h4 class="text-center font-weight-bold bg-light py-2 m-0">Inbox</h4>
+
+            <div class="card card-body pri_broc_chat_list p-0" id="staff_list">
+              {% if broc_private_list %}
+              {% for fan in broc_private_list %}
+
+              <div class="d-flex justify-content-between mb-2 border-top pt-2 px-3" id="fan_list_username" onclick="toggle_private_broc_room('{{ fan }}')">
+
+                <h4>{{ staff }}</h4>
+
+              </div>
+
+              {% endfor %}
+              {% else %}
+
+              <h4 class="text-muted">no staff found!</h4>
+
+              {% endif %}
+            </div>
+
+          </div>
+         </div>
+      </div>
+
+
+  <div class="col-md-5 col-lg-7 col-xl-8">
+
+        <div id="pri_room_wrap" style="display: none;">
+          <div id="private_broc_chat_room_messages">
+            <h4 id="private_broc_chat_room_header" class="text-center font-weight-bold"></h4>
+            <div id="pri_fans_msg"></div>                            
+          </div>
+
+          <form id="private_broc_chat_room_form" class="d-flex">
+            <input type="text" id="private_broc_chat_room_message_field" class="form-control" style="height: 35px; font-size: 15px;" required />
+            <input type="hidden" id="pri_broc_fan_username" value="">
+            <button type="submit" class="btn btn-primary">Send</button>
+          </form>
+
+        </div>
+  </div>
+  </div>
+  </div>
+</section>

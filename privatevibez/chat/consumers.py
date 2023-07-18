@@ -2,7 +2,8 @@ from channels.generic.websocket import AsyncWebsocketConsumer, JsonWebsocketCons
 from asgiref.sync import sync_to_async, async_to_sync
 import json
 from django.contrib.auth.models import User
-from .models import Public, Private, PrivateRoomManager
+from .models import Public, Private, PrivateRoomManager, Staff
+from staff.models import StaffRoomManager
 from django.db.models import Q
 import time
 
@@ -212,6 +213,161 @@ class PrivateChatConsumerBroc(JsonWebsocketConsumer):
         "Message": obj.Message,
         "Timestamp": obj.Timestamp.strftime("%d-%m-%Y %H:%M"),
         "sent_by": obj.sent_by_fan
+    } for obj in data]
+        self.send(text_data=json.dumps({
+            'data': data
+        }))
+        
+        
+        
+        # CONSUMER FOR STAFF CHAT
+        
+class StaffChatConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.broc = self.scope['url_route']['kwargs']['broc']
+        self.user_name = self.scope['url_route']['kwargs']['user_name']
+        self.room_group_name = 'staff_chat_%s_%s' % (self.broc, self.user_name)
+
+        # Join room group
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        # Leave room group
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+
+    # Receive message from WebSocket
+    async def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        message = text_data_json['message']
+        username = text_data_json['username']
+        user = await sync_to_async(User.objects.get)(username=username)
+        to_user = await sync_to_async(User.objects.get)(username=self.broc)
+        created_data = await sync_to_async(Staff.objects.create)(Staff_From_Message=user, Staff_To_Message=to_user, Message=message)
+        staff_list, created = await sync_to_async(StaffRoomManager.objects.get_or_create)(broadcaster=to_user)
+
+ 
+        self.channel_layer.group_send(
+            self.room_group_name,
+                {
+                    'type': 'private_chat_message',
+                    'message': message,
+                    'username': created_data.To
+                }
+            )
+        
+
+    # Receive message from room group
+    async def staff_chat_message(self, event):
+        message = event['message']
+        username = event['username']
+        await self.send(text_data=json.dumps({
+            'message': message,
+            'username': username
+        }))
+    async def staff_chat_message_broc(self, event):
+        b_from = event['from']
+        to = event['to']
+        message = event['message']
+        sent_by = event['sent_by']
+        if sent_by:
+            await self.send(text_data=json.dumps({
+                'message': message,
+                'username': b_from
+            }))
+        else:
+            await self.send(text_data=json.dumps({
+                'message': message,
+                'username': to
+            }))
+
+
+class StaffChatConsumerBroc(JsonWebsocketConsumer):
+    # Keep track of last submission time for each user
+    last_submission_time = {}
+
+    def connect(self):
+        self.broc = self.scope['url_route']['kwargs']['broc']
+        self.user_name = self.scope['url_route']['kwargs']['user_name']
+        self.room_group_name = 'staff_chat_broc_%s_%s' % (self.broc, self.user_name)
+        # Join room group
+        async_to_sync(self.channel_layer.group_add)(
+            self.room_group_name, self.channel_name
+        )
+
+        self.accept()
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+                "type": "room_join_data",
+                "broc": self.broc,
+                "user": self.user_name
+            }
+        )
+
+    def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        message = text_data_json['message']
+        current_time = time.time()
+
+        # Check if there was a submission from this user within the last 3 seconds
+        if self.user_name in self.last_submission_time and (current_time - self.last_submission_time[self.user_name] < 0.5):
+            print("multiple submissions within 0.5 seconds are not allowed")
+            return
+
+        # Update the last submission time for this user
+        self.last_submission_time[self.user_name] = current_time
+        broc = User.objects.get(username=self.broc)
+        user = User.objects.get(username=self.user_name)
+        Private.objects.create(Staff_From_Message=user, Staff_To_Message=broc, Message=message)
+
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,
+            {
+                "type": "chat_message",
+                "broc": self.broc,
+                "user": self.user_name
+            }
+        )
+
+    def disconnect(self, close_code):
+        async_to_sync(self.channel_layer.group_discard)(
+            self.room_group_name, self.channel_name
+        )
+
+    # send joining data of specific user and broc
+    def room_join_data(self, event):
+        broc = User.objects.get(username=event['broc'])
+        user = User.objects.get(username=event['user'])
+        data = Staff.objects.filter(Staff_From_Message=user, Staff_To_Message=broc)
+        data = [{
+        "From": obj.From.username,
+        "To": obj.To.username,
+        "Message": obj.Message,
+        "Timestamp": obj.Timestamp.strftime("%d-%m-%Y %H:%M"),
+        "sent_by": obj.From_id
+    } for obj in data]
+        self.send(text_data=json.dumps({
+            'data': data
+        }))
+
+    def chat_message(self, event):
+        broc = User.objects.get(username=event['broc'])
+        user = User.objects.get(username=event['user'])
+        data = Staff.objects.filter(Staff_From_Message=user, Staff_To_Message=broc)
+        data = [{
+        "From": obj.From.username,
+        "To": obj.To.username,
+        "Message": obj.Message,
+        "Timestamp": obj.Timestamp.strftime("%d-%m-%Y %H:%M"),
+        "sent_by": obj.From_id
     } for obj in data]
         self.send(text_data=json.dumps({
             'data': data

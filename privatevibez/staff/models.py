@@ -21,3 +21,14 @@ class ToDolist_Dev(models.Model):
     Timestamp   = models.DateTimeField(auto_now_add=True)     
     def __str__(self):
         return str(self.ToDoProject)
+    
+    
+class StaffRoomManager(models.Model):
+    Staff = models.ForeignKey('auth.User',null=True, on_delete=models.CASCADE, related_name = 'Staff_Name')
+    staff_list = models.ManyToManyField('auth.User', null=True, blank=True, symmetrical=False, related_name="staff")
+
+    def total_fans(self):
+        return self.staff_list.count()
+
+    def __str__(self):
+        return self.broadcaster.username

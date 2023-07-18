@@ -82,7 +82,7 @@
            </div>
         </div>
 
-
+  {% comment %} PUBLIC ROOM CHAT  {% endcomment %}
     <div class="col-md-5 col-lg-7 col-xl-8">
           <div id="pub_room_wrap">
             <div id="broc_chat_room_messages">
@@ -113,6 +113,10 @@
 
 
           </div>
+
+
+          {% comment %} PRIVATE ROOM CHAT {% endcomment %}
+
 
           <div id="pri_room_wrap" style="display: none;">
             <div id="private_broc_chat_room_messages">
@@ -207,7 +211,7 @@ function toggle_private_broc_room(username, isUserClicked) {
     publicWrap.style.display = "block";
     privateWrap.style.display = "none";
   } else {
-    
+
     publicWrap.style.display = "none";
     privateWrap.style.display = "block";
     document.getElementById("private_broc_chat_room_header").innerHTML = "Private Chat with " + username;

@@ -21,7 +21,11 @@ def home(request):
         to_do_projects_dev = ToDoProject_Dev.objects.all()
         to_do_lists_Dev = ToDolist_Dev.objects.all()
         to_do_lists_Dev_count = to_do_lists_Dev.count
-
+        try:
+            broc_manager = StaffRoomManager.objects.get(Staff=request.user)
+            broc_staff_list = broc_manager.staff_list.all()
+        except StaffRoomManager.DoesNotExist:
+            broc_staff_list = []
         return render(request, "staff/home.html", locals())
         
 @csrf_exempt
