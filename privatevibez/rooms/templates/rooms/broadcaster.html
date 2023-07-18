@@ -1,0 +1,184 @@
+{% load static %}
+<div id="main" class="chat">
+    {% if broadcaster_status.Status == "Pending_Broadcaster"%}
+    <div ts="n4" id="VideoPanel" style="height: auto; width: 59%; position: relative; overflow: visible; -webkit-tap-highlight-color: transparent;background-color:transparent; display: inline-block; border-radius: 2px; box-sizing: border-box; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; font-size: 11px;border:none;">
+        <h1> We are still looking though your Information</h1>
+        <p>Please give us at lease 48 hours to make sure your informatino is currect</p>
+    </div>
+
+    {% endif %}
+
+    {% if broadcaster_status.Status == "Broadcaster" %}
+
+    <div class="chat_room" style="font: 1em UbuntuRegular, Arial, Helvetica, sans-serif;">
+        <div class="topSectionWrapper" style="width: 100%; height: auto; display: block;">
+            <div ts="n4" id="VideoPanel" style="height: auto; width: 59%; position: relative; overflow: visible; -webkit-tap-highlight-color: transparent; display: inline-block; border-radius: 6px; box-sizing: border-box; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; font-size: 11px;background-color:#6cc6ba;border:2px solid black;padding:2px;">
+
+                <div style="display: block;">
+                    <div class="roomSubject defaultColor" data-testid="room-subject">
+                        <span class="RoomSubjectSpan">
+                            <span>explosion :
+                                
+                                {% if room_data.Goal == 0 %}
+                                    No goal has been set
+                                {% else %}
+
+                                {{room_sesson.Goal_Currrent}} / {{room_data.Goal}}
+
+                                {% endif %}
+                            </span>
+                        </span>
+                    </div>
+                    <div class="roomSubjectTooltip roomSubjectToolTipColor" data-testid="room-subject-tooltip" style="width: 500px; visibility: hidden;">Goal reached!</div>
+                </div>
+                <div ts="j0" id="TheaterModePlayer" data-listener-count-fullscreenchange="1" style="height: 322.312px; width: 100%; position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; background-color: rgb(0, 0, 0);">
+                    <div ts="EQ" class="videoPlayerDiv" style="height: 100%; width: 100%; position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; background: url({% static './images/bg/cam_notice_bg.jpg' %}) center center / cover rgb(51, 51, 51); left: 0px;">
+                        <input style="display:none; border:none; background-color:crimson; box-shadow: 1px 2px 5px rgba(0,0,0,.15);" class="realButtons" id="startStreaming_button" type="submit" value="Start Making Vibez" onclick="if_not_Streamer()"/>
+                        
+                        {% include "rooms/include/videoPlayerDiv.html" %}
+                    </div>
+                </div>
+
+            </div>
+
+            <div ts="Zv" data-listener-count-mousedown="1" data-listener-count-touchmove="1" class="resizeHandle" style="height: 425.312px; position: absolute; overflow: hidden; -webkit-tap-highlight-color: transparent; display: inline-block; box-sizing: border-box; cursor: ew-resize;"></div>
+
+            <div ts="x_" class="BaseTabsContainer" id="ChatTabContainer" style="height: 445px; width: 25%; position: absolute; -webkit-tap-highlight-color: transparent; display: inline-block; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; border-radius: 6px;  box-sizing: border-box;border:2px solid black;background-color:#6cc6ba;color:#black;margin-left:20px;">
+
+
+                <div class="tab-pane fade show active" id="nav-stats" role="tabpanel" aria-labelledby="nav-stats-tab">
+
+                    <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
+
+                        <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;">
+
+                        </div>
+
+                        <div class="msg-list-fvm message-list" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
+
+                            <h3 style='color:crimson; margin:10px 0 0 10px;'>Room Stats</h3>
+
+                            <div class="msg-text" style="font-family: Tahoma, Arial, Helvetica, sans-serif; box-sizing: border-box; padding: 2px 5px 3px; overflow-wrap: break-word; word-break: break-word;">
+
+                                <a href="private-chat/{{room_data.User}}" target="_blank" class="my-3" style="text-decoration:none; color:purple;">
+                                    Chat (Total : {{private_chat_all.count}} | Pending request : {{private_request_pending.count}})
+                                </a>
+
+
+                                <div class="my-2">Toys connected : 
+                                    <span id="nb_total_toys">{{room_data.Toys}}</span> 
+                                    (Yours : <span id="nb_toys_streamer">{{room_data.Toys}}
+
+                                    </span> | Viewers : <span id="nb_toys_viewers">0</span>)
+                                    
+                                </div>
+
+                                <div class="my-2">Total earned : {{room_data.Earnings}}</div>
+
+                                <div class="my-2">Number of explosions : {{room_data.Explosions}}</div>
+
+                                {% if room_data.Active == True %}
+                                    <button onclick="room_offline()">Go offline</button>
+                                {% endif %}
+                                
+                                <div id="save_offline" style="display: none" class="my-2">You are offline</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+
+
+</div>
+<div ts="Zv" data-listener-count-mousedown="1" data-listener-count-touchmove="1" class="resizeHandle" style="height: 425.312px; width: 8px; position: absolute; overflow: hidden; -webkit-tap-highlight-color: transparent; display: inline-block; box-sizing: border-box; cursor: ew-resize;"></div>
+
+<link rel="stylesheet" href="{% static 'css/multi.css' %}">
+<script type="text/javascript" src="{% static 'js/multi.js' %}"></script>
+
+<script>
+    $("#select_coutries").val({{blocked_countries|safe}});
+
+    var select = document.getElementById('select_coutries');
+    multi( select,{
+    enable_search: true,
+    });
+
+    $("#select_US").val({{blocked_US|safe}});
+
+    var select = document.getElementById('select_US');
+    multi( select,{
+    enable_search: true,
+    });
+
+    $("#select_Canada").val({{blocked_Canada|safe}});
+
+    var select = document.getElementById('select_Canada');
+    multi( select,{
+    enable_search: true,
+    });
+
+    function ajax_blocked_countries(){
+        var data = [];
+        $("#wrapper_countries .selected-wrapper .selected").each(function() {
+            data.push($(this).attr("data-value"));
+        });
+
+        $.ajax({
+        method:'POST',
+        url: " ",
+        data:{
+                'countries':data,
+                'room': {{room_data.id}},
+                'csrfmiddlewaretoken':"{{csrf_token}}",
+            },
+            success:function(){
+                document.getElementById('save_blocked_countries').style.display = 'block'
+            }
+    })
+    }
+
+    function ajax_blocked_US(){
+        var data = [];
+        $("#wrapper_US .selected-wrapper .selected").each(function() {
+            data.push($(this).attr("data-value"));
+        });
+
+        $.ajax({
+        method:'POST',
+        url: " ",
+        data:{
+                'states':data,
+                'room': {{room_data.id}},
+                'csrfmiddlewaretoken':"{{csrf_token}}",
+            },
+            success:function(){
+                document.getElementById('save_blocked_US').style.display = 'block'
+            }
+    })
+    }
+
+    function ajax_blocked_Canada(){
+        var data = [];
+        $("#wrapper_Canada .selected-wrapper .selected").each(function() {
+            data.push($(this).attr("data-value"));
+        });
+
+        $.ajax({
+        method:'POST',
+        url: " ",
+        data:{
+                'providences':data,
+                'room': {{room_data.id}},
+                'csrfmiddlewaretoken':"{{csrf_token}}",
+            },
+            success:function(){
+                document.getElementById('save_blocked_Canada').style.display = 'block'
+            }
+    })
+    }
+
+</script>

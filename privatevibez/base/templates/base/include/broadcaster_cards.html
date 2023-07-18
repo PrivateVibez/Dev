@@ -1,0 +1,20 @@
+<a href="{% url 'room' Broadcaster=room.User %}" style="text-decoration: none;">
+    <div class="col-md-4 p-2 h-50"  style="float:left">
+        <!-- Card -->
+        {% for room_user_data in room_users_data %}
+            {% if room_user_data.User ==  room.User%}
+            <div class="card">
+                <img src="{{room_user_data.Image.url}}" class="img-fluid" alt="">   
+                <div class="card-title p-5">
+                    <span style="font-weight:700; font-size: 20px; color:#1db9a7;">
+                            {{room.User}}
+                    </span>
+                    <span class="text-dark" style="float: right; font-weight:700;">200 <i class="icofont-eye-alt"></i></span>
+                </div>
+                <p class="p-2">Lorem ipsum dolor sit amet.</p>
+
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</a>

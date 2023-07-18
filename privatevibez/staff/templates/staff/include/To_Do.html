@@ -1,0 +1,199 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h4><i class="bi bi-list-task me-2"></i>To do to the website</h4>
+            <span type="button"  data-toggle="modal" data-target="#AddAProject_modal"><i class="bi bi-plus-square"></i> Add A Project</span>
+        </div>
+    </div>
+    <div id="project_list_box">
+    {% for to_do_project_dev in to_do_projects_dev %}
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <div class="card" style="width:900px;padding:5px;">
+                    <div class="card-header" >
+                        <span>{{to_do_project_dev.Name}}  {{to_do_project_dev.id}}</span> 
+                        <span type="button" data-toggle="modal" data-target="#ProjectAdd_ID-{{to_do_project_dev.id}}" style="float:right;"><i class="bi bi-plus-square"></i></span>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                                <table id="example" class="table table-striped data-table" style="width: 100%">
+                                    <thead>
+                                        <tr>
+                                        <th></th>
+                                        <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for to_do_list_Dev in to_do_lists_Dev %}
+                                            <tr>
+                                                {% if to_do_list_Dev.ToDoProject == to_do_project_dev %}
+                                                    <td>{{to_do_list_Dev.Title}}</td>
+                                                    <td><a href="#">Show</a></td>
+                                                {% else %}
+                                                Please Add a List <span type="button" data-toggle="modal" data-target="#ProjectAdd_ID-{{to_do_project_dev.id}}"><i class="bi bi-plus-square"></i></span>
+                                                {% endif %}
+                                            </tr> 
+                                        {% endfor %} 
+                                    </tbody>   
+                                </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="ProjectAdd_ID-{{to_do_project_dev.id}}" tabindex="-1" role="dialog" aria-labelledby="ProjectAdd_IDLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="ProjectAdd_IDLabel">Add To {{to_do_project_dev.Name}}</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                    {{to_do_project_dev.id}}
+                    <input type="text" class="form-control" id="Project_ID" value="{{to_do_project_dev.id}}" style="display:none;">
+                    <div class="row">
+                        <div class="col">
+                          <input type="text" class="form-control" id="list_Title" placeholder="Title">
+                        </div>
+                        <div class="col">
+                          <input type="text" class="form-control" id="list_Message" placeholder="Message">
+                        </div>
+                        <div class="col">
+                            <select class="form-control" id="list_coder">
+                                {% for user_status in users_status %}
+                                    {% if  user_status.Status == "STAFF"%}
+                                        {% for user_data in  users_data%}
+                                            {% if user_data.User ==  user_status.User%}
+                                                <option>{{user_data.User}}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col">
+                            <button type="button" onclick="Add_Project_item()" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                    <div id="project_list_box_contect">
+                    {% for to_do_list_Dev in to_do_lists_Dev %}
+                    {% if to_do_list_Dev.ToDoProject ==  to_do_project_dev%}
+                    </br>
+                    <div class="row">
+                        <div class="col">
+                            <p>{{to_do_list_Dev.Title}}</p>
+                        </div>
+                        <div class="col">
+                            <p>{{to_do_list_Dev.Coder.username}}</p>
+                        </div>
+                        <div class="col">
+                            <button type="button" onclick="()" class="btn btn-primary">Edit</button>
+                        </div>
+                        <div class="col">
+                            <button type="button" onclick="()" class="btn btn-primary">Delite</button>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+            
+
+    {% endfor %}
+    </div>
+  <!-- Modal -->
+  <div class="modal fade" id="AddAProject_modal" tabindex="-1" role="dialog" aria-labelledby="AddAProject_modalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="AddAProject_modalLabel">Add A Project</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id='project_box'>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="Project_Name">Name for Project</label>
+                    <input type="text" class="form-control" id="Project_Name" aria-describedby="Project_Name_Help">
+                    <small id="Project_Name_Help" class="form-text text-muted">Please name the project</small>
+                </div>
+                <div class="form-group">
+                    <label for="Project_coder">Asign A User For Your Project</label>
+                    <select aria-describedby="Project_coder_Help" class="form-control" id="Project_coder">
+                        {% for user_status in users_status %}
+                            {% if  user_status.Status == "STAFF"%}
+                                {% for user_data in  users_data%}
+                                    {% if user_data.User ==  user_status.User%}
+                                        <option>{{user_data.User}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <small id="Project_coder_Help" class="form-text text-muted">This will be the coder you want to take the code on</small>
+                </div>
+            
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close_Project">Close</button>
+                <button type="button" onclick="Add_Progject()" class="btn btn-primary">Add</button>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    function Add_Progject(){
+        $.ajax({
+            method:'POST',
+            url: "/staff/AddDevProject/",
+            mimeType:"multipart/form-data",
+            data:{  
+                'Project_Name'  : document.getElementById('Project_Name').value,
+                'Coder'         : document.getElementById('Project_coder').value,
+                'csrfmiddlewaretoken':"{{csrf_token}}",
+            },
+            'dataType': 'json',
+            success:function(){
+                $( "#project_list_box" ).load(window.location.href + " #project_list_box" );
+                $("#close_Project").trigger("click");
+            }
+        })
+
+    }
+
+    function Add_Project_item(){
+        $.ajax({
+            method:'POST',
+            url: "/room/Menu_item/",
+            mimeType:"multipart/form-data",
+            data:{  
+                    'project_id'    : document.getElementById('Project_ID').value,
+                    'title'         : document.getElementById('list_Title').value,
+                    'message'       : document.getElementById('list_Message').value,
+                    'coder'         : document.getElementById('list_coder').value,
+                    'csrfmiddlewaretoken':"{{csrf_token}}",
+                },
+                'dataType': 'json',
+                success:function(){
+                    document.getElementById("list_Title").value = '';
+                    document.getElementById("list_Message").value = '';
+                    document.getElementById("list_coder").value = '';
+                    $( "#project_list_box_contect" ).load(window.location.href + " #project_list_box_contect" );
+                }
+                })
+    
+    
+        
+    }
+</script>

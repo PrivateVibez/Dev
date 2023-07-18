@@ -1,0 +1,493 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+<nav class="navbar navbar-expand-lg" id="navbar" style="background-color:black;color:#6cc6ba;">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand" href="/">
+            <img src="{% static 'images/logo/private-vibez-logo.png' %}" alt="Private Vibez Logo" width="190" class="d-inline-block align-text-top">
+        </a>
+
+        <div class="">
+            {% if not request.user.is_authenticated %}
+                <li class="item dropdown" style="list-style-type:none ;">
+                    <li class="item dropdown" style="list-style-type:none ;">
+                        <a class="link dropdown" href="#" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false"><i class="icofont-user-alt-2 text-md fs-3" style="color:#6cc6ba;"> Anonymous User</i></a>
+                        <ul class="dropdown-menu" style="background-color:#6cc6ba; border:none; color:black; padding:8px;" id="dropDown">
+                            <li><a type="button" data-toggle="modal" data-target="#login_modal"><i class="icofont-login"></i> Login</a></li>
+                            <li><a type="button" data-toggle="modal" data-target="#registration_modal"><i class="icofont-fountain-pen"></i> Sign Up</a></li>
+                        </ul>
+                    </li>
+                </li>
+            {% endif %}
+
+            {% if request.user.is_authenticated %}
+                <ul class="collapse navbar-collapse mx-auto" id="navbarsid" >
+                    <li class="nav-item dropdown" style="list-style-type:none;">
+                        <li class="nav-item dropdown" style="list-style-type:none; ">
+                            <a class="nav-link dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="icofont-user-alt-2 text-lg" style="color:#6cc6ba;"> {{request.user.username}}</i>
+                                <br><i class="icofont-sound-wave text-lg" style="color:#6cc6ba;">
+                                    {% if user_data == None %}
+                                        0
+                                    {% else %}
+                                        {{user_data.Vibez}}
+                                    {% endif %}
+                                </i></br>
+                            </a>
+
+                            <ul class="dropdown-menu" style="background-color:#6cc6ba; border:none; color:black; padding:8px;" id="dropDown">
+                                <li><a data-toggle="modal" data-target="#Profile" ><i class="icofont-page"></i> Profile</a></li>
+
+                                {% if user_status == "Broadcaster" %} 
+                                <li><a data-toggle="modal" data-target="#Settings" ><i class="icofont-gear"></i> Settings</a></li>
+                                {% endif%}
+
+                                <li><a href="/accounts/logout"><i class="icofont-sign-out"></i> Sign Out</a></li>
+                            </ul>
+
+                        </li>
+                    </li>
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+<div class="start" style="color:black;">
+
+    {% if not request.user.is_authenticated %} 
+        <a href="#" data-toggle="modal" data-target="#registration_modal" style="color:black;text-decoration:none;">
+            <p>
+                Sign Up To  enjoy Vibrations
+                <span><i class="icofont-sign-in"></i></span>
+            </p> 
+        </a>    
+    {% endif %}
+
+    {% if request.user.is_authenticated %} 
+        {% if user_status == "User"%}
+
+            <a href="/accounts/registration_broadcaster/" style="color:black;text-decoration:none;">
+                <p>
+                    BROADCAST YOURSELF - GO NOW 
+                    <span><i class="icofont-camera" style="color:#6cc6ba;"></i></span>
+                </p> 
+            </a>
+        {% endif %}
+
+        {% if user_status == "Pending_Broadcaster" %}
+                <p>
+                    We are still looking through your Information 
+                    <span><i class="icofont-look" style="color:#6cc6ba;"></i></span>
+                </p> 
+        {% endif %}
+
+        {% if user_status == "Broadcaster" %}
+            <p>
+                <a href="/accounts/registration_broadcaster/" style="color:black;text-decoration:none;">
+
+                    (Total : {{private_chat_all.count}} | Pending request : {{private_request_pending.count}}) 
+                <span>
+                    <i class="icofont-ui-message" style="color:#6cc6ba;"></i>
+                </span>
+                </a>
+            </p> 
+        {% endif %}
+
+        {% if user_status == "STAFF" %}
+            <a href="/staff/" style="color:black;text-decoration:none;">
+                <p>
+                    Get Back To Work 
+                    <span><i class="icofont-ui-computer" style="color:#6cc6ba;"></i></span>
+                </p> 
+            </a>
+        {% endif %}
+
+    {% endif %}
+</div>
+
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            <center>
+            {{message}}
+            </center>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Login Modal-->
+
+  <!-- Registration Modal-->
+  {% block registration_modal %}
+<div class="modal fade" id="registration_modal" tabindex="-1" role="dialog" aria-labelledby="registration_modal_label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="registration_modal_label">Sign Up</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+                              {% comment %} REGISTRATION FORM {% endcomment %}
+
+        <form action="/accounts/signup/" method="POST">
+            
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="type" class="form-control" id="register_username" name="username" aria-describedby="emailHelp" placeholder="Username">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Email">
+                </div>
+                <div class="form-group">
+                    <label for="password1">Password</label>
+                    <input type="password" class="form-control" id="password1" name="password1" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <label for="password2">Re-Password</label>
+                    <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-Password">
+                </div>
+            </div>
+            <div class="small text-center">
+                <p>Not new to PriveVibez? <a href="/accounts/login/" type="button" class="btn btn-link"> Sign in now.</a></p>
+            </div>
+
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% endblock registration_modal %}
+<!-- Modal -->
+<div class="modal fade" id="Profile" tabindex="-1" role="dialog" aria-labelledby="Profile_Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="Profile_Label">Profile</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="Profile_Image-tab" data-toggle="tab" href="#Profile_Image" role="tab" aria-controls="Profile_Image" aria-selected="true">Profile Image</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="Bio-tab" data-toggle="tab" href="#Bio" role="tab" aria-controls="Bio" aria-selected="false">Bio</a>
+                </li>
+            </ul>  
+            <div class="tab-content" id="myTabContent">
+
+                <div class="tab-pane fade show active" id="Profile_Image" role="tabpanel" aria-labelledby="Profile_Image-tab">Profile_Image</div>
+
+
+                {% block broadcast_info %}
+
+                <div class="tab-pane fade" id="Bio" role="tabpanel" aria-labelledby="Bio-tab">
+                    <div class="form-outline mb-4">
+                        <input type="text" value="{{user_data.Real_Name}}" class="form-control" id="update_Real_Name" aria-label="update_Real_Name">  
+                        <label class="form-label" for="update_Real_Name">Real Name</label>
+                      </div>
+                      <div class="form-outline mb-4">
+                        <input type="number" value="{{user_data.Age}}" class="form-control" id="update_Age" aria-label="update_Age" >  
+                        <label class="form-label" for="Age">Age</label>
+                      </div>
+                      <div class="form-outline mb-4">
+                        <input type="text" value="{{user_data.I_Am}}" class="form-control" id="update_I_Am" aria-label="update_I_Am">  
+                        <label class="form-label" for="Interested_In">You are</label>
+                      </div>
+                      <div class="form-outline mb-4">
+                        <input type="text" value="{{user_data.Interested_In}}" class="form-control" id="update_Interested_In" aria-label="Interested_In">  
+                        <label class="form-label" for="Interested_In">Interested In</label>
+                      </div>
+                      <div class="form-outline mb-4">
+                        <input type="text" value="{{user_data.Location}}" class="form-control" id="update_Location" aria-label="update_Location" >  
+                        <label class="form-label" for="update_Location">Location</label>
+                      </div>
+                      <div class="form-outline mb-4">
+                        <input type="text" value="{{user_data.Language}}" class="form-control" id="update_Language" aria-label="update_Language" >  
+                        <label class="form-label" for="update_Language">Language</label>
+                      </div>
+                      <div class="form-outline mb-4">
+                        <input type="text" value="{{user_data.Body_Type}}" class="form-control" id="update_Body_Type" aria-label="update_Body_Type" >  
+                        <label class="form-label" for="update_Body_Type">Body Type</label>
+                    </div>
+                      <div class="modal-footer">
+                        <button type="button" id="bio_closeButton" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="Save_Bio_nav()">Save changes</button>
+                      </div>
+
+                </div>
+                {% endblock broadcast_info %}
+
+            </div>     
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal -->
+
+
+<div class="modal fade" id="Settings" tabindex="-1" role="dialog" aria-labelledby="Settings_Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="Settings_Label">Settings</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="Vibez_tab-tab" data-toggle="tab" href="#Vibez_tab" role="tab" aria-controls="Profile_Image" aria-selected="true">Vibez</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="Chat-tab" data-toggle="tab" href="#Chat" role="tab" aria-controls="Chat" aria-selected="false">Chat</a>
+                </li>
+            </ul> 
+
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="Vibez_tab" role="tabpanel" aria-labelledby="Vibez_tab-tab">
+                    
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="card" style="background-color:lightcoral;">
+                               
+                                <div class="card-body">
+                                    <h5 class="card-title">MMM Button</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">Soft Vibez</h6>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Price</label>
+                                        <input type="number" class="form-control" id="Price_MMM_button" aria-describedby="emailHelp" value="{{room_data.Price_MMM_button}}">
+                                        <small id="emailHelp" class="form-text text-muted">By Vibez.</small>
+                                    </div>                    
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Duration</label>
+                                        <input type="number" class="form-control" id="Duration_MMM_button" aria-describedby="emailHelp" value="{{room_data.Duration_MMM_button}}">
+                                        <small id="emailHelp" class="form-text text-muted">in Min.</small>
+                                    </div>                    
+                                    
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Strength</label>
+                                        <input type="number" class="form-control" id="Strength_MMM_button" aria-describedby="emailHelp" value="{{room_data.Strength_MMM_button}}">
+                                    </div>  
+                                </div>
+                            </div>   
+                        </div>               
+                        <div class="col-sm-4">
+                            <div class="card" style="background-color:lightsalmon;">
+                                <div class="card-body">
+                                    <h5 class="card-title">OH Button</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">Mid Vibez button</h6>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Price</label>
+                                        <input type="number" class="form-control" id="Price_OH_button" aria-describedby="emailHelp" value="{{room_data.Price_OH_button}}">
+                                        <small id="emailHelp" class="form-text text-muted">By Vibez.</small>
+                                    </div>                    
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Duration</label>
+                                        <input type="number" class="form-control" id="Duration_OH_button" aria-describedby="emailHelp" value="{{room_data.Duration_OH_button}}">
+                                        <small id="emailHelp" class="form-text text-muted">in Min.</small>
+                                    </div>                    
+                                    
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Strength</label>
+                                        <input type="number" class="form-control" id="Strength_OH_button" aria-describedby="emailHelp" value="{{room_data.Strength_OH_button}}">
+                                    </div>  
+                                </div>
+                            </div>                  
+                        </div> 
+                        <div class="col-sm-4">
+                            <div class="card" style="background-color:lightgreen;">
+                                <div class="card-body">
+                                    <h5 class="card-title">OHYes Button</h5>
+                                    <h6 class="card-subtitle mb-2 text-muted">High Vibez button</h6>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Price</label>
+                                        <input type="number" class="form-control" id="Price_OHYes_button" aria-describedby="emailHelp" value="{{room_data.Price_OHYes_button}}">
+                                        <small id="emailHelp" class="form-text text-muted">By Vibez.</small>
+                                    </div>                    
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Duration</label>
+                                        <input type="number" class="form-control" id="Duration_OHYes_button" aria-describedby="emailHelp" value="{{room_data.Duration_OHYes_button}}">
+                                        <small id="emailHelp" class="form-text text-muted">in Min.</small>
+                                    </div>                    
+                                    
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Strength</label>
+                                        <input type="number" class="form-control" id="Strength_OHYes_button" aria-describedby="emailHelp" value="{{room_data.Strength_OHYes_button}}">
+                                    </div>  
+                                </div>
+                            </div>                  
+                        </div> 
+    
+                    </div> 
+
+                    <div class="modal-footer">
+                        <button type="button" onclick="Save_RoomPatterns()" class="btn btn-primary">Save changes</button>
+                        <button type="button" id="Settings_close" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+
+                
+                </div>
+
+                <div class="tab-pane fade" id="Chat" role="tabpanel" aria-labelledby="Chat-tab">
+                    <div class="form-check">
+
+                        {% if room_data.Public_Chat is True %}
+                            <input type="checkbox" class="form-check-input" id="PublicChat" aria-describedby="PublicChatHelp" checked>
+                        {% else %}
+                            <input type="checkbox" class="form-check-input" id="PublicChat" aria-describedby="PublicChatHelp">
+                        {% endif %}
+
+                        <label class="form-check-label" for="PublicChat"> Public Chat</label>
+                        <small id="PublicChatHelp" class="form-text text-muted">Do you want your room to have a public chat.</small>
+                    </div>
+
+                    <div class="form-check">
+                        {% if room_data.Private_Chat is True %}
+                        <input type="checkbox" class="form-check-input" onclick="PrivateChat_CheckBox()" id="PrivateChat" aria-describedby="PrivateChatHelp" checked>
+                        {% else %}
+                        <input type="checkbox" class="form-check-input" onclick="PrivateChat_CheckBox()" id="PrivateChat" aria-describedby="PrivateChatHelp">
+                        {% endif %}
+                        <input type="number" class="form-control" id="PrivateChatPrice" aria-describedby="PrivateChatPriceHelp" style="display:none;" value="{{room_data.Private_Chat_Price}}">
+                        <label class="form-check-label" for="PrivateChat"> Private Chat</label>
+                        <small id="PrivateChatHelp" class="form-text text-muted">Do you want your room to have a private chat.</small>
+                    </div> 
+
+                    <div class="form-group" id="Private_Chat_Price">
+                        {% if room_data.Private_Chat is True %}
+                            <label for="PrivateChatPrice">Private Chat Price</label>
+                            <input type="number" class="form-control" id="PrivateChatPrice" aria-describedby="PrivateChatPriceHelp" value="{{room_data.Private_Chat_Price}}">
+                            <small id="PrivateChatPriceHelp" class="form-text text-muted">You can put a pice pre Vibe.</small>
+                        {% endif %}
+                    </div>  
+                    
+                    <div class="modal-footer">
+                        <button type="button" onclick="Save_Chat()" class="btn btn-primary">Save changes</button>
+                        <button type="button" id="Settings_close" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      </div>
+               
+                
+                </div>
+            </div>     
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript" >
+    function PrivateChat_CheckBox(){
+        if(document.getElementById('PrivateChat').checked){
+            $.ajax({
+                method:'POST',
+                url: "/room/PrivateChatCheckBox/",
+                mimeType:"multipart/form-data",
+                data:{  
+                        'Checked' : "True",
+                        'csrfmiddlewaretoken':"{{csrf_token}}",
+                },
+                'dataType': 'json',
+                success:function(){
+                    $("#Private_Chat_Price").load(" #Private_Chat_Price > *");
+                }
+            })
+        
+        }
+        else{
+            $.ajax({
+                method:'POST',
+                url: "/room/PrivateChatCheckBox/",
+                mimeType:"multipart/form-data",
+                data:{  
+                        'Checked' : "False",
+                        'csrfmiddlewaretoken':"{{csrf_token}}",
+                },
+                'dataType': 'json',
+                success:function(){
+                    $("#Private_Chat_Price").load(" #Private_Chat_Price > *");
+                }
+            })
+        }
+    }
+  function Save_Bio_nav(){
+    $.ajax({
+        method:'POST',
+        url: "/accounts/bio_info/",
+        mimeType:"multipart/form-data",
+        data:{  
+                'Real_Name'     : document.getElementById('Real_Name').value,
+                'Age'           : document.getElementById('Age').value,
+                'I_Am'          : document.getElementById('I_Am').value,
+                'Interested_In' : document.getElementById('Interested_In').value,
+                'Location'      : document.getElementById('Location').value,
+                'Language'      : document.getElementById('Language').value,
+                'Body_Type'     : document.getElementById('Body_Type').value,
+                'csrfmiddlewaretoken':"{{csrf_token}}",
+        },
+        'dataType': 'json',
+        success:function(){
+            $("#bio_closeButton").trigger("click");
+        }
+    })
+}
+function Save_Chat(){
+    if(document.getElementById('PublicChat').checked){
+        PublicChatCheck = "True"
+    }else{
+        PublicChatCheck = "False"
+    }
+    $.ajax({
+        method:'POST',
+        url: "/room/Chat/",
+        mimeType:"multipart/form-data",
+        data:{  
+            'Public_Chat_Check'  : PublicChatCheck,
+            'PrivateChatPrice'   : document.getElementById('PrivateChatPrice').value,
+            'csrfmiddlewaretoken':"{{csrf_token}}",
+        },
+        'dataType': 'json',
+        success:function(){
+            $("#Settings_close").trigger("click");
+        }
+    })
+}
+
+
+function Save_RoomPatterns(){
+    $.ajax({
+        method:'POST',
+        url: " {% url 'Save_RoomPatterns' %}",
+        data:{
+                'Price_MMM':document.getElementById('Price_MMM_button').value,
+                'Duration_MMM':document.getElementById('Duration_MMM_button').value,
+                'Strength_MMM':document.getElementById('Strength_MMM_button').value,
+                'Price_OH':document.getElementById('Price_OH_button').value,
+                'Duration_OH':document.getElementById('Duration_OH_button').value,
+                'Strength_OH':document.getElementById('Strength_OH_button').value,
+                'Price_OHYes':document.getElementById('Price_OHYes_button').value,
+                'Duration_OHYes':document.getElementById('Duration_OHYes_button').value,
+                'Strength_OHYes':document.getElementById('Strength_OHYes_button').value,
+                'csrfmiddlewaretoken':"{{csrf_token}}",
+            },
+            success:function(){
+                $("#Settings_close").trigger("click");
+            }
+    })
+}
+</script>

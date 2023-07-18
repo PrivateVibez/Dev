@@ -1,0 +1,1040 @@
+{% load static %}
+<style>
+#public_chat_room_messages::-webkit-scrollbar {
+    width: 5px;
+    background-color: #F5F5F5;
+}
+#public_chat_room_messages::-webkit-scrollbar-thumb {
+  background-color: #000000;
+}
+#private_chat_room_messages::-webkit-scrollbar {
+    width: 5px;
+    background-color: #F5F5F5;
+}
+#private_chat_room_messages::-webkit-scrollbar-thumb {
+  background-color: #000000;
+}
+</style>
+
+
+<div id="main" class="chat">
+
+    <div class="chat_room" style="font: 1em UbuntuRegular, Arial, Helvetica, sans-serif;">
+
+        <div class="topSectionWrapper" style="width: 100%; height: auto; display: block;">
+            <div ts="n4" id="VideoPanel" style="height: auto; width: 59%; position: relative; overflow: visible; -webkit-tap-highlight-color: transparent; display: inline-block; border-radius: 6px; box-sizing: border-box; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; font-size: 11px;background-color:#6cc6ba;border:2px solid black;padding:2px;">
+
+                <div style="display: block;">
+
+
+                    {% if request.user.is_authenticated %} 
+                        <div class="reportAbuseLink">
+                            <button type="button" class="btn btn-link" style="color:black;" data-toggle="modal" data-paction="ReportAbuse" data-target="#Report_Room_Modal">REPORT ROOM</button>
+                        </div>
+                    {% endif %}
+
+                    <div class="roomSubject defaultColor" data-testid="room-subject">
+                        <span class="RoomSubjectSpan">
+                            <span>explosion :
+                                {% if room_data.Goal == 0 %}
+                                    No goal has been set
+                                {% else %}
+                                    {{room_sesson.Goal_Currrent}} / {{room_data.Goal}}
+                                {% endif %}
+                            </span>
+                        </span>
+                    </div>
+
+
+                    <div class="roomSubjectTooltip roomSubjectToolTipColor" data-testid="room-subject-tooltip" style="width: 500px; visibility: hidden;">Goal reached!  Thanks to all tippers! #teen #18 #shy #young #skinny</div>
+                </div>
+                <div ts="j0" id="TheaterModePlayer" data-listener-count-fullscreenchange="1" style="height: 322.312px; width: 100%; position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; background-color: rgb(0, 0, 0);border-radius:6px;">
+
+                    <div ts="EQ" class="videoPlayerDiv" style="height: 100%; width: 100%; position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; background: url({% static './images/bg/cam_notice_bg.jpg' %}) center center / cover rgb(51, 51, 51); left: 0px;">
+
+                        <input style="display:none; border:none; background-color:crimson; box-shadow: 1px 2px 5px rgba(0,0,0,.15);" clase="realButtons" id="startStreaming_button" type="submit" value="Start Making Vibez" onclick="if_not_Streamer()"/>
+
+                        {% include "rooms/include/videoPlayerDiv.html" %}
+                    </div>
+                </div>
+
+                <div ts="DD" style="position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; display: block;">
+                    <div class="container">
+
+                        <div class="row">
+                            <div class="col" id="left_buttons_vibez">
+                                <div ts="UU" style="background-color:;">
+                                    <div style="position: absolute; height: 76px; width: 280px; background-color:black; padding:6px;border-radius:6px;border:2px solid black; top:20px;" id="text_goal_target2">
+
+                                        <div id="Buy_Vibez_div_1">
+                                            <button type="button" data-toggle="modal" data-target="#Buy_Vibez_Modal" class="btn btn-warning" style="position: absolute;font-size: 15px;font-weight: normal;left: 150px;width: 110px;bottom: 35px;color:black;">
+                                                Buy Vibez
+                                            </button>
+                                        </div>
+
+                                        <div style="cursor:pointer;{% if user_data == None or user_data.Vibes < 1 %}cursor:not-allowed {% endif %}">
+
+                                            <div onclick="custom_change()" class="btn btn-dark" style="position: absolute;font-size: 15px;font-weight: normal;left: 150px;width: 110px;bottom: 1px;">
+                                                Send Vibez
+                                            </div>
+                                        </div>
+
+                                        <div id="Buy_Vibez_div_2">
+                                            <a type="button" data-toggle="modal" data-target="#Buy_Vibez_Modal">
+                                                <span style="text-align:center;position:absolute;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:UbuntuRegular;font-size:15px;font-weight:normal;left:10px;width:100px;height:100%;background-color:transparent;padding:2px;cursor:pointer">
+                                                    {% if user_data == None %}
+                                                        <p style="color:#6cc6ba;">
+                                                            You Have </br>
+                                                            0</br>
+                                                            Vibez
+                                                        </p>
+                                                        </br>
+                                                    {% else %}
+                                                        <p style="color:#6cc6ba;">
+                                                            You Have </br>
+                                                            {{user_data.Vibez}} 
+                                                            </br>
+                                                            Vibez   
+                                                        </p>
+                                                        </br>
+                                                    {% endif %}
+                                                    Vibez </br>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col" id="left_buttons_Custom" style="display:none;">
+                                <div ts="UU">
+                                    <div style="position: absolute; height: 76px; width: 280px; background-color:black;color:#6cc6ba;border-radius:6px; padding:5px;top:20px;" id="text_goal_target2">
+                                        <input placeholder="Enter how many Vibez" type="number" id="custom_Vibez" class="form-control" ></input>
+                                        <div id="user_vibez_data">You have {{user_data.Vibez}} Vibez </div>
+                                        <button  class="btn btn-link" style="color:#6cc6ba;" data-toggle="modal" data-target="#Buy_Vibez_Modal">Get More</button>
+                                        <div onclick="custom_button()" class="btn btn-dark" style="color:#6cc6ba;position: absolute;font-size: 15px;font-weight: normal;left: 150px;width: 110px;bottom: 1px;">
+                                            Send Vibez
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col" Style="border:2px solid black;border-radius:6px;padding:5px; margin-top:5px;margin-bottom:3px;">  
+
+                                <span style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;line-height: normal;font-family: UbuntuRegular;font-size: 20px;font-weight: normal;left: 20px;max-width: 250px;top: 9px;cursor: regular;">Favorite Patterns</br>
+                                    <p style="font-size: 10px;">These are set to give the best plesuer</P>
+                                </span>
+
+                                <div class="list_tip_btn" Style="background-color:black;border:7px solid black; border-radius:6px;">
+
+                                    <div class="tip_btn" style="background-color:lightcoral; {% if user_data == None or user_data.Vibes < 5 %} cursor:not-allowed {% endif %}" {% if user_data != None and user_data.Vibes > 5 %} onclick="confirm_send(number = '{{room_Data.Price_MMM_button}}', btn='mmm')" {% endif %}>
+                                        <div>MMM</div>
+
+                                        <lottie-player src="https://lottie.host/441e1aa5-2ddf-40d1-b0ed-b7eacd9c2ded/tG0pVeXDFC.json"  background="transparent"  speed="0.5"  style="height: 20px;"  loop autoplay></lottie-player>
+
+                                        <p style="font-size:10px;">{{room_data.Price_MMM_button}} Vibez</p>
+                                    </div>
+
+                                    <div class="tip_btn" style="background-color:lightsalmon; {% if user_data == None or user_data.Vibes < 35 %}cursor:not-allowed {% endif %}" {% if user_data != None and user_data.Vibes > 5 %} onclick="confirm_send(number = '{{room_Data.Price_OH_button}}', btn='oh')" {% endif %}>
+
+                                        <div>OH</div>
+
+                                        <lottie-player src="https://lottie.host/441e1aa5-2ddf-40d1-b0ed-b7eacd9c2ded/tG0pVeXDFC.json"  background="transparent"  speed="1.5"  style="height: 20px;"  loop autoplay></lottie-player>
+
+                                        <p style="font-size:10px;">{{room_data.Price_OH_button}} Vibez</p>
+                                    </div>
+
+                                    <div class="tip_btn" style="background-color: lightgreen;; {% if user_data == None or user_data.Vibes < 70 %}cursor:not-allowed {% endif %}"  {% if user_data != None and user_data.Vibes > 5 %} onclick="confirm_send(number = '{{room_Data.Price_OHYes_button}}', btn='ohyes')" {% endif %}>
+
+                                        <div>OH YES</div>
+
+                                        <lottie-player src="https://lottie.host/441e1aa5-2ddf-40d1-b0ed-b7eacd9c2ded/tG0pVeXDFC.json"  background="transparent"  speed="2.5"  style="height: 20px;"  loop autoplay></lottie-player>
+
+                                        <p style="font-size:10px;">{{room_data.Price_OHYes_button}} Vibez</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div ts="Zv" data-listener-count-mousedown="1" data-listener-count-touchmove="1" class="resizeHandle" style="height: 425.312px; position: absolute; overflow: hidden; -webkit-tap-highlight-color: transparent; display: inline-block; box-sizing: border-box; cursor: ew-resize;"></div>
+
+                <div ts="x_" class="BaseTabsContainer" id="ChatTabContainer" style="height: 445px; width: 25%; position: absolute; -webkit-tap-highlight-color: transparent; display: inline-block; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; border-radius: 6px;  box-sizing: border-box;border:2px solid black;background-color:#6cc6ba;color:#black;margin-left:20px;">
+
+                    <div ts="DD"  id="tab-row" data-paction="Chat" style="position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; width: 100%; box-sizing: border-box;">
+
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+
+                            <button class="tab nav-link active" id="nav-interact-tab" data-bs-toggle="tab" data-bs-target="#nav-interact" type="button" role="tab" aria-controls="nav-interact" aria-selected="true">Interact</button>
+
+                            <button class="tab nav-link" id="nav-chat-tab" data-bs-toggle="tab" data-bs-target="#nav-chat" type="button" role="tab" aria-controls="nav-chat" aria-selected="false">Chat</button>
+
+                            <button class="tab nav-link" id="nav-private-chat-tab" data-bs-toggle="tab" data-bs-target="#nav-private-chat" type="button" role="tab" aria-controls="nav-private-chat" aria-selected="false">Private Chat</button>
+
+                            <button class="tab nav-link" id="nav-connect-my-toy-tab" data-bs-toggle="tab" data-bs-target="#nav-connect-my-toy" type="button" role="tab" aria-controls="nav-connect-toy" aria-selected="false">Connect My Toy</button>
+
+                        </div>
+                    </div>
+
+                    <div ts="wZ" style="height: 100%; width: 100%; position: relative; -webkit-tap-highlight-color: transparent; display: block;">
+
+                        <div class="tab-content" id="nav-tabContent">
+                            <!-- interact -->
+                            <div class="tab-pane fade show active" id="nav-interact" role="tabpanel" aria-labelledby="nav-note-tab">
+
+                                <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
+
+                                    <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;"></div>
+                                    <p>Interact with the Model </p>
+
+                                    <div class="d-flex align-items-start">
+                                        
+                                        <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+
+                                          <button class="nav-link active" id="v-pills-menu-tab" data-bs-toggle="pill" data-bs-target="#v-pills-menu" type="button" role="tab" aria-controls="v-pills-menu" aria-selected="true">Menu</button>
+
+                                          <button class="nav-link" id="v-pills-dice-tab" data-bs-toggle="pill" data-bs-target="#v-pills-dice" type="button" role="tab" aria-controls="v-pills-dice" aria-selected="false">Dice</button>
+
+                                          <button class="nav-link" id="v-pills-Slots-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Slots" type="button" role="tab" aria-controls="v-pills-Slots" aria-selected="false">Slots</button>
+
+                                        </div>
+
+                                        <div class="tab-content" id="v-pills-tabContent">
+                                          <div class="tab-pane fade show active" id="v-pills-menu" role="tabpanel" aria-labelledby="v-pills-menu-tab" tabindex="0">Menu</div>
+
+                                          <div class="tab-pane fade" id="v-pills-dice" role="tabpanel" aria-labelledby="v-pills-dice-tab" tabindex="0">dice</div>
+
+                                          <div class="tab-pane fade" id="v-pills-Slots" role="tabpanel" aria-labelledby="v-pills-Slots-tab" tabindex="0">Slots</div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="nav-chat" role="tabpanel" aria-labelledby="nav-chat-tab">
+                                {% if room_data.Public_Chat == True %}
+
+                                    <div id="public_chat_room_messages" style="min-width: 462px; max-height: 404px; overflow: auto; padding-bottom: 25px; padding-right: 8px;">
+                                    {% for msg in public_chat %}
+                                    {% if msg.User == user %}
+
+                                    <div class="text-muted d-flex justify-content-end">
+                                        <small class="public_chat_room_message_username font-weight-bold text-dark">{{ msg.User }}</small>
+                                    </div>
+
+                                    <div class="card card-body py-2 my-1 public_chat_room_message_text mb-4 ml-auto" style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">
+
+                                        {{ msg.Message }}
+                                        
+                                    </div>
+
+
+                                    {% else %}
+
+                                    <div class="text-muted d-flex">
+                                        <small class="public_chat_room_message_username font-weight-bold text-dark">{{ msg.User }}</small>
+                                    </div>
+
+                                    <div class="card card-body py-2 my-1 public_chat_room_message_text mb-4" style="border-radius: 13px; width: fit-content;">
+                                        {{ msg.Message }}
+                                    </div>
+
+                                    {% endif %}
+                                    {% endfor %}
+
+                                    </div>
+
+                                    <div class="input-group mb-3" style="bottom: 27px; left: 0px; position: absolute;">
+                                        <form id="public_chat_room_form" class="d-flex w-100">
+                                            <input type="text" class="form-control" name="public_chat_room_message_field" required>
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-primary">Send</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                {% else %}
+                                
+                                <div class="msg-list-fvm message-list" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
+                                    <h3 style='color:crimson; margin:10px 0 0 10px;'>Sorry {{room_Data.User}} has Chat Off right now</h3>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="tab-pane fade" id="nav-private-chat" role="tabpanel" aria-labelledby="nav-private-chat-tab">
+
+                                {% if Ask_data is False %}
+
+                                <div id="private_chat_room_messages" style="min-width: 462px; max-height: 404px; overflow: auto; padding-bottom: 25px; padding-right: 8px;">
+                                    {% for msg in private_chat %}
+                                    {% if msg.sent_by_fan %}
+
+                                    <div class="text-muted d-flex justify-content-end">
+                                        <small class="private_chat_room_message_username font-weight-bold text-dark">{{ msg.User }}</small>
+                                    </div>
+
+                                    <div class="card card-body py-2 my-1 private_chat_room_message_text mb-4 ml-auto" style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">
+                                        {{ msg.Message }}
+                                    </div>
+
+                                    {% else %}
+
+                                    <div class="text-muted d-flex">
+                                        <small class="private_chat_room_message_username font-weight-bold text-dark">{{ msg.User }}</small>
+                                    </div>
+
+                                    <div class="card card-body py-2 my-1 private_chat_room_message_text mb-4" style="border-radius: 13px; width: fit-content;">
+                                        {{ msg.Message }}
+                                    </div>
+
+                                    {% endif %}
+                                    {% endfor %}
+                                    </div>
+
+                                    <div class="input-group mb-3" style="bottom: 27px; left: 0px; position: absolute;">
+                                        <form id="private_chat_room_form" class="d-flex w-100">
+                                            <input type="text" class="form-control" name="private_chat_room_message_field" required>
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-primary">Send</button>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
+                                    <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;"></div>
+                                    <div class="msg-list-fvm message-list" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
+                                        <h2>Please wait for {{room_data.User}} to accepte your request</h2>
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                {% if Ask_data is True and private.Ative is False %}
+                                <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
+
+                                    <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;"></div>
+
+                                    <div class="msg-list-fvm message-list" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
+                                        <h2>Please wait for {{room_data.User}} to accepte your request</h2>
+                                    </div>
+                                </div>
+
+                                {% else %}
+
+                                <div id="private_chat_room_messages" style="min-width: 462px; max-height: 404px; overflow: auto; padding-bottom: 25px; padding-right: 8px;">
+                                    
+                                    {% for msg in private_chat %}
+                                    {% if msg.sent_by_fan %}
+                                    <div class="text-muted d-flex justify-content-end">
+
+                                        <small class="private_chat_room_message_username font-weight-bold text-dark">{{ msg.From }}</small>
+
+                                    </div>
+
+                                    <div class="card card-body py-2 my-1 private_chat_room_message_text mb-4 ml-auto" style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">
+                                        {{ msg.Message }}
+                                    </div>
+
+                                    {% else %}
+
+                                    <div class="text-muted d-flex">
+                                        <small class="private_chat_room_message_username font-weight-bold text-dark">{{ msg.To }}</small>
+                                    </div>
+
+                                    <div class="card card-body py-2 my-1 private_chat_room_message_text mb-4" style="border-radius: 13px; width: fit-content;">
+                                        {{ msg.Message }}
+                                    </div>
+
+                                    {% endif %}
+                                    {% endfor %}
+
+                                    </div>
+
+                                    <div class="input-group mb-3" style="bottom: 27px; left: 0px; position: absolute;">
+                                        
+                                        <form id="private_chat_room_form" class="d-flex w-100">
+                                            <input type="text" class="form-control" name="private_chat_room_message_field" required>
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-primary">Send</button>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                {% endif %}
+
+                            </div>
+
+                            <div class="tab-pane fade" id="nav-connect-my-toy" role="tabpanel" aria-labelledby="nav-connect-my-toy-tab">
+
+                                <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
+
+                                    <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;"></div>
+
+                                    <div class="msg-list-fvm message-list" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
+
+                                        <center>
+                                            <div id="start-vibes">
+
+                                                <h2 class="mt-3"><a> Price is {{room_Data.Price_share_vibes}} vibez per minute. </a></h2>
+
+                                                <span>
+                                                    <button class="btn btn-success mt-2" onclick="lovense_viewer()" id="start">
+                                                        Start
+                                                    </button>
+                                                </span>
+                                                <br>
+
+                                            </div>
+
+                                            <div id="wrapper_connect_viewer" class="container" style="display: none">
+                                                <h3 class="mt-2 mb-3">Scan the QR code with your lovense app</h3>
+                                                <img src="" id="qrcode_viewer"><br><br>
+                                                <button class="btn btn-danger" onclick="stop_lovense_viewer">Stop</button>
+                                            </div>
+
+                                        </center>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+        </div>
+    </div>
+</div>
+
+<div ts="Zv" data-listener-count-mousedown="1" data-listener-count-touchmove="1" class="resizeHandle" style="height: 425.312px; width: 8px; position: absolute; overflow: hidden; -webkit-tap-highlight-color: transparent; display: inline-block; box-sizing: border-box; cursor: ew-resize;">
+
+</div>
+
+<div ts="x_" class="BaseTabsContainer" id="BottomBoxContainer" style="height: 446.312px; width: 98.5%; -webkit-tap-highlight-color: transparent; display: inline-block; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; border-radius: 4px 4px 2px 2px; margin: 25px 0px 0px 10px; box-sizing: border-box;">
+
+    <div ts="DD" data-paction="Chat" style="position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; width: 100%; box-sizing: border-box;">
+
+        <div class="nav nav-tabs" id="bottom-box-tab" role="tablist">
+
+            <button class="tab nav-link active" id="nav-bio-tab" data-bs-toggle="tab" data-bs-target="#nav-bio" type="button" role="tab" aria-controls="nav-bio" aria-selected="false">Bio</button>
+
+            <button class="tab nav-link" id="nav-room-rules-tab" data-bs-toggle="tab" data-bs-target="#nav-room-rules" type="button" role="tab" aria-controls="nav-room-rules" aria-selected="false">Room Rules</button>
+
+            <button class="tab nav-link" id="nav-following-tab" data-bs-toggle="tab" data-bs-target="#nav-following" type="button" role="tab" aria-controls="nav-following" aria-selected="false">Following</button>
+            <div class="pull-right">
+
+                <div id="Thumb_button" class="followButton score-like" >
+                    {% if thumbs_up_color is True %}
+
+                        <span onclick="Thumb_Up()" stlye="cursor:none;">
+                            <span id="thumb_number">{{thumbs_up_count}}</span>
+                            <i class="icon fa fa-thumbs-up thumb" style="color:green;"></i>
+                        </span>
+
+                    {% else %}
+
+                        <span onclick="Thumb_Up()">
+                            <span id="thumb_number">{{thumbs_up_count}}</span>
+                            <i class="icon fa fa-thumbs-up thumb"></i>
+                        </span>
+
+                    {% endif %}
+                    {% if thumbs_Down_color is True %}
+
+                        <span class="ml-4" onclick="Thumb_Down()" stlye="cursor:none;">
+                            <span id="thumb_down_number">{{thumbs_down_count}}</span>
+                            <i class="icon fa fa-thumbs-down thumb" style="color:red;"></i>
+                        </span>
+
+                    {% else %}
+
+                        <span class="ml-4" onclick="Thumb_Down()">
+                            <span id="thumb_down_number">{{thumbs_down_count}}</span>
+                            <i class="icon fa fa-thumbs-down thumb"></i>
+                        </span>
+
+                    {% endif %}
+
+                </div>
+              
+                <button class="followButton btn btn-warning" id="follow-button" onclick="follow()">
+                    <div id="follow">
+                        <span>
+                                {% if follow_button is True %}
+                                Following
+                                {% else %}
+                                + Follow
+                                {% endif %}
+                        </span>
+                    </div>
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="window" style="height: 399px;">
+
+        <div ts="wZ" style="height: 100%; width: 100%; position: relative; -webkit-tap-highlight-color: transparent; display: block;">
+
+            <div class="tab-content" id="nav-tabContent2">
+                <div class="tab-pane fade show active" id="nav-bio" role="tabpanel" aria-labelledby="nav-bio-tab">
+                    <div class="msg-list-fvm message-list" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
+
+                        <h2>{{broadcaster_data.User}}'s Bio</h2>
+
+                        <table id="bio">
+                            <tr>
+                                <td>Real Name: </td>
+                                <td>{{broadcaster_data.Real_Name|default_if_none:""}}</td>
+                            </tr>
+                            <tr>
+                                <td>Age: </td>
+                                <td>{{broadcaster_data.Age|default_if_none:""}}</td>
+                            </tr>
+
+
+                            <tr>
+                                <td>I am: </td>
+                                <td>{{broadcaster_data.I_Am|default_if_none:""}}</td>
+                            </tr>
+                            <tr>
+                                <td>Interested: </td>
+                                <td> {{broadcaster_data.Interested_In|default_if_none:""}}</td>
+                            </tr>
+                            <tr>
+                                <td>Location: </td>
+                                <td>{{broadcaster_data.Location|default_if_none:""}}</td>
+                            </tr>
+                            <tr>
+                                <td>Language: </td>
+                                <td>{{broadcaster_data.Language|default_if_none:""}}</td>
+                            </tr>
+                            <tr>
+                                <td>Body type: </td>
+                                <td>{{broadcaster_data.Body_Type|default_if_none:""}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="nav-room-rules" role="tabpanel" aria-labelledby="nav-room-rules-tab">
+                    <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
+                        <h2>{{room_data.User}}'s Room Rules</h2>
+                        <p>{{room_Data.Room_rules}}</p>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="nav-following" role="tabpanel" aria-labelledby="nav-following-tab">
+                    
+                    <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
+
+                        <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;"></div>
+
+                        <div id="Followers_box_refesh"class="msg-list-fvm message-list" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
+
+                            <h1>{{user_data.User}} Followers:</h1>
+                            {% for follow in follows %}
+                                {% for room in rooms %}
+                                    {% if  room.User == follow.Broacaster%}
+                                        {% include 'base/include/broadcaster_cards.html'%}      
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade city" id="settings_id" role="tabpanel" aria-labelledby="settings_id-tab">
+
+                    <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
+
+                        <div class="d-flex align-items-start">
+
+                            <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                
+                                <button class="nav-link active" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Profile</button>
+
+                                <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Messages</button>
+
+                                <button class="nav-link" id="v-pills-vibes-tab" data-bs-toggle="pill" data-bs-target="#v-pills-vibes" type="button" role="tab" aria-controls="v-pills-vibes" aria-selected="false">Vibes</button>
+
+                                <button class="nav-link" id="v-pills-block-countries-tab" data-bs-toggle="pill" data-bs-target="#v-pills-block-countries" type="button" role="tab" aria-controls="v-pills-block-countries" aria-selected="false">Block Countries</button>
+
+                            </div>
+
+                            <div class="tab-content" id="v-pills-tabContent">
+                                <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                                    <input class="realButtons" type="file" name="profile_pic" style="width: 400px!important;height:50px!important;border:none!important">
+                                    <p class="text-light">Please Select a Profile Pic</p>
+                                    <button type='submit' class="realButtons rounded-pill bg-danger text-light p-3" name='Edit_Profile_settings' value='submit' style="border:none;">Submit</button>
+                                </div>
+                                <div class="tab-pane fade" id="v-pills-vibes" role="tabpanel" aria-labelledby="v-pills-vibes-tab">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="Report_Room_Modal" tabindex="-1" role="dialog" aria-labelledby="Report_Room_Modal_Label" aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" style="color:black;" id="Report_Room_Modal_Label">Report Room</h5>
+                <button type="button" id="close_button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Tell us what is going on</label>
+                    <textarea class="form-control" id="Report_message" rows="3"></textarea>
+                    <small id="emailHelp" class="form-text text-muted">in a couple of words tell us why you are reporting {{room_Data.User}}</small>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" onclick="report_button()" class="btn btn-primary">Report</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" style="color:black;" id="Buy_Vibez_Modal" tabindex="-1" role="dialog" aria-labelledby="Buy_Vibez_Modal_Label" aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h5 class="modal-title" id="exampleModalLabel">Buy Some Vibez</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <p>Credit/Debit Card Options (the more Vibez you buy, the less they cost!)</p>
+
+            <div class="modal-body">
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="VibezRadios" id="option1" value="100">
+                    <label class="form-check-label" for="exampleRadios1">
+                        100 Vibez for $10.99
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="VibezRadios" id="option2" value="200">
+                    <label class="form-check-label" for="exampleRadios2">
+                        200 Vibez for $20.99 (5% Bonus)
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="VibezRadios" id="option3" value="400">
+                    <label class="form-check-label" for="exampleRadios1">
+                        400 Vibez for $39.99 (10% Bonus)
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="VibezRadios" id="option4" value="550">
+                    <label class="form-check-label" for="exampleRadios2">
+                        550 Vibez for $49.99 (21% Bonus)
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="VibezRadios" id="option5" value="750">
+                    <label class="form-check-label" for="exampleRadios1">
+                        750 Vibez for $62.99 (32% Bonus)
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="VibezRadios" id="option6" value="1000">
+                    <label class="form-check-label" for="exampleRadios2">
+                        1000 Vibez for $79.99 (37% Bonus)
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="VibezRadios" id="option7" value="1255">
+                    <label class="form-check-label" for="exampleRadios1">
+                        1255 Vibez for $99.99 (38% Bonus)
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="VibezRadios" id="option8" value="2025">
+                    <label class="form-check-label" for="exampleRadios2">
+                        2025 Vibez for $159.99 (39% Bonus)
+                    </label>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="VibezRadios" id="option9" value="4050">
+                    <label class="form-check-label" for="exampleRadios2">
+                        4050 Vibez for $319.98 (39% Bonus)
+                    </label>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Small Plan</h5>
+                            <p class="card-text">
+                                <ul type="circle">
+                                    <li> 10 Free Slots </li>
+                                    <li> 30 Mins of Toy fun </li>
+                                    <li> 5000 Vibez </li>
+                                </ul>
+                            </p>
+                            <p>This is a mouthly Plan</p>
+                            <p>a $500 value yours for $450</p>
+                            <a href="#" class="btn btn-primary">Get</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Big Plan</h5>
+                            <p class="card-text">
+                                <ul type="circle">
+                                    <li> Item 1 </li>
+                                    <li> Item 2 </li>
+                                    <li> Item 3 </li>
+                                </ul>
+                            </p>
+                            <a href="#" class="btn btn-primary">Get</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" onclick="Buy_Vibez()" class="btn btn-primary">Buy</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<input id="users_id" type='number' style="display:none;" value="{{request.user.id}}"></input>
+<input id="broadcasters_id" style="display:none;" value="{{room_data.User.id}}"></input>
+<input id="rooms_id" style="display:none;" type='number' value="{{room_data.id}}"></input>
+<input id="user_username" style="display:none;" value="{{request.user.username}}"></input>
+<input id="room_username" style="display:none;" value="{{room_data.User}}"></input>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Your code here
+
+        
+let protocol = "";
+if(window.location.protocol == "http:"){
+    protocol = "ws";
+}else if(window.location.protocol == "https:"){
+    protocol = "wss";
+}
+let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicChat/{{ room_name }}/');
+    public_socket.onmessage = function(e) {
+        var data = JSON.parse(e.data);
+        var message = data.message;
+        var username = data.username;
+        // Add message to chat room
+        if(username === "{{ user }}"){
+            var message_element = document.createElement('div');
+            message_element.setAttribute('class', 'card card-body py-2 my-1 public_chat_room_message_text mb-4 ml-auto');
+            message_element.setAttribute('style', 'border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;');
+            message_element.innerHTML = message;
+
+            var username_element = document.createElement('div');
+            username_element.setAttribute('class', 'text-muted d-flex justify-content-end');
+            var username_small = document.createElement('small');
+            username_small.setAttribute('class', 'public_chat_room_message_username font-weight-bold text-dark');
+            username_small.innerHTML = username;
+            username_element.appendChild(username_small);
+
+            var messages_element = document.getElementById('public_chat_room_messages');
+            messages_element.appendChild(username_element);
+            messages_element.appendChild(message_element);
+        }else{
+            var message_element = document.createElement('div');
+            message_element.setAttribute('class', 'card card-body py-2 my-1 public_chat_room_message_text mb-4');
+            message_element.setAttribute('style', 'border-radius: 13px; width: fit-content;');
+            message_element.innerHTML = message;
+
+            var username_element = document.createElement('div');
+            username_element.setAttribute('class', 'text-muted d-flex');
+            var username_small = document.createElement('small');
+            username_small.setAttribute('class', 'public_chat_room_message_username font-weight-bold text-dark');
+            username_small.innerHTML = username;
+            username_element.appendChild(username_small);
+
+            var messages_element = document.getElementById('public_chat_room_messages');
+            messages_element.appendChild(username_element);
+            messages_element.appendChild(message_element);
+        }
+
+        // Scroll to bottom
+        messages_element.scrollTop = messages_element.scrollHeight;
+    }
+
+    // Send message
+    var public_chat_room_form = document.getElementById('public_chat_room_form');
+    console.log(public_chat_room_form);
+    public_chat_room_form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var message_field = document.getElementsByName('public_chat_room_message_field')[0];
+        public_socket.send(JSON.stringify({
+            'message': message_field.value,
+            'username': '{{ user }}'
+        }));
+        message_field.value = '';
+        message_field.focus();
+    });
+    // Close WebSocket on page close
+    window.onbeforeunload = function() {
+        public_socket.close();
+    }
+
+    let private_socket = new WebSocket('ws://' + window.location.host + '/ws/privateChat/{{ room_name }}/{{ user }}/');
+        private_socket.onmessage = function(e) {
+            var data = JSON.parse(e.data);
+            var message = data.message;
+            var username = data.username;
+            // Add message to chat room
+            if(username === "{{ user }}"){
+                var message_element = document.createElement('div');
+                message_element.setAttribute('class', 'card card-body py-2 my-1 private_chat_room_message_text mb-4 ml-auto');
+                message_element.setAttribute('style', 'border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;');
+                message_element.innerHTML = message;
+    
+                var username_element = document.createElement('div');
+                username_element.setAttribute('class', 'text-muted d-flex justify-content-end');
+                var username_small = document.createElement('small');
+                username_small.setAttribute('class', 'private_chat_room_message_username font-weight-bold text-dark');
+                username_small.innerHTML = username;
+                username_element.appendChild(username_small);
+    
+                var messages_element = document.getElementById('private_chat_room_messages');
+                messages_element.appendChild(username_element);
+                messages_element.appendChild(message_element);
+            }else{
+                var message_element = document.createElement('div');
+                message_element.setAttribute('class', 'card card-body py-2 my-1 private_chat_room_message_text mb-4');
+                message_element.setAttribute('style', 'border-radius: 13px; width: fit-content;');
+                message_element.innerHTML = message;
+    
+                var username_element = document.createElement('div');
+                username_element.setAttribute('class', 'text-muted d-flex');
+                var username_small = document.createElement('small');
+                username_small.setAttribute('class', 'private_chat_room_message_username font-weight-bold text-dark');
+                username_small.innerHTML = username;
+                username_element.appendChild(username_small);
+    
+                var messages_element = document.getElementById('private_chat_room_messages');
+                messages_element.appendChild(username_element);
+                messages_element.appendChild(message_element);
+            }
+    
+            // Scroll to bottom
+            messages_element.scrollTop = messages_element.scrollHeight;
+        }
+    
+        // Send message
+        var private_form = document.getElementById('private_chat_room_form');
+        private_form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var message_field = document.getElementsByName('private_chat_room_message_field')[0];
+            private_socket.send(JSON.stringify({
+                'message': message_field.value,
+                'username': '{{ user }}'
+            }));
+            message_field.value = '';
+            message_field.focus();
+        });
+        // Close WebSocket on page close
+        window.onbeforeunload = function() {
+            private_socket.close();
+        }
+
+
+
+
+      });
+
+
+
+
+       
+    function Thumb_Down(){
+
+        $.ajax({
+            method:'POST',
+            url: "/room/Thumbs/",
+            mimeType:"multipart/form-data",
+            data:{  
+                    'broadcaster_id'  : document.getElementById('broadcasters_id').value,
+                    'broadcaster'     : document.getElementById('room_username').value,
+                    'Thumb'           : "Down",
+                    'csrfmiddlewaretoken':"{{csrf_token}}",
+                },
+                'dataType': 'json',
+                success:function(){
+                    $("#Thumb_button").load(" #Thumb_button > *");
+                }
+                })
+    }
+    function Thumb_Up(){
+
+        $.ajax({
+            method:'POST',
+            url: "/room/Thumbs/",
+            mimeType:"multipart/form-data",
+            data:{  
+                    'broadcaster_id'  : document.getElementById('broadcasters_id').value,
+                    'broadcaster'     : document.getElementById('room_username').value,
+                    'Thumb'           : "Up",
+                    'csrfmiddlewaretoken':"{{csrf_token}}",
+                },
+                'dataType': 'json',
+                success:function(){
+                    $("#Thumb_button").load(" #Thumb_button > *");
+                }
+                })
+    }
+
+    function follow(){
+
+        $.ajax({
+            method:'POST',
+            url: "/room/Following/",
+            mimeType:"multipart/form-data",
+            data:{  
+                    'broadcaster_id'     : document.getElementById('broadcasters_id').value,
+                    'broadcaster'     : document.getElementById('room_username').value,
+                    'csrfmiddlewaretoken':"{{csrf_token}}",
+                },
+                'dataType': 'json',
+                success:function(){
+                    $("#follow").load(" #follow > *");
+                    $("#Followers_box_refesh").load(" #Followers_box_refesh > *");
+
+                }
+                })
+    }
+    function report_button(){
+
+        $.ajax({
+            method:'POST',
+            url: "/accounts/Bad_Acters_Add/",
+            mimeType:"multipart/form-data",
+            data:{  
+
+                    'reporty'      : document.getElementById('user_username').value,
+                    'reported'     : document.getElementById('room_username').value,
+                    'message'      : document.getElementById('Report_message').value,
+                    'csrfmiddlewaretoken':"{{csrf_token}}",
+                },
+                'dataType': 'json',
+                success:function(){
+                    location.href="/"
+                }
+                })
+    }
+    function custom_button(){
+
+        $.ajax({
+            method:'POST',
+            url: "/accounts/Send_Vibez/",
+            mimeType:"multipart/form-data",
+            data:{  
+
+                    'Vibez' : document.getElementById('custom_Vibez').value,
+                    'user'  : document.getElementById('users_id').value,
+                    'room'  : document.getElementById('broadcasters_id').value,
+    
+                    'csrfmiddlewaretoken':"{{csrf_token}}",
+                },
+                'dataType': 'json',
+                success:function(){
+                    $( "#user_vibez_data" ).load(window.location.href + " #user_vibez_data" );
+                    document.getElementById("custom_Vibez").value = '';
+                }
+                })
+    }
+
+
+
+    function custom_change(){
+
+        document.getElementById('left_buttons_Custom').style.display='block'
+        document.getElementById('left_buttons_vibez').style.display='none'
+
+    }
+
+
+    function Buy_Vibez(){
+        if (document.getElementById('option1').checked){
+            Vibez = document.getElementById('option1').value
+        }
+        if (document.getElementById('option2').checked){
+            Vibez = document.getElementById('option2').value
+        }
+        if (document.getElementById('option3').checked){
+            Vibez = document.getElementById('option3').value
+        }
+        if (document.getElementById('option4').checked){
+            Vibez = document.getElementById('option4').value
+        }
+        if (document.getElementById('option5').checked){
+            Vibez = document.getElementById('option5').value
+        }
+        if (document.getElementById('option6').checked){
+            Vibez = document.getElementById('option6').value
+        }
+        if (document.getElementById('option7').checked){
+            Vibez = document.getElementById('option7').value
+        }
+        if (document.getElementById('option8').checked){
+            Vibez = document.getElementById('option8').value
+        }
+        if (document.getElementById('option9').checked){
+            Vibez = document.getElementById('option9').value
+        }
+        $.ajax({
+            method:'POST',
+            url: "/accounts/Buy_Vibez/",
+            mimeType:"multipart/form-data",
+            data:{  
+                    'Vibez'      : Vibez,
+                    'csrfmiddlewaretoken':"{{csrf_token}}",
+                },
+                'dataType': 'json',
+                success:function(){
+                    location.href=""
+                }
+                })
+    }
+
+
+</script>
+
+ 
+

@@ -1,0 +1,172 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"  />
+    <link rel="stylesheet" href="{% static 'css/multi.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style2.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom-room.css' %}">
+    <link href="https://unpkg.com/video.js@6.7.1/dist/video-js.css" rel="stylesheet">
+    <script src="https://unpkg.com/video.js@6.7.1/dist/video.js"></script>
+    <script src="https://unpkg.com/@videojs/http-streaming@0.9.0/dist/videojs-http-streaming.js"></script>
+</head>
+<style>
+    #navbarsid .nav-link {
+        display: block;
+        padding: 0.5rem 1rem;
+        color: #0d6efd;
+        text-decoration: none;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+        background-color: #000 !important;
+        color: #fff !important;
+    }
+
+    .list_tip_btn {
+        border-color: #fff;
+        border-radius: 5px;
+        padding: 1px;
+        background-color: #ffffff;
+        margin-top: 0px;
+    }
+    .tip_btn {
+        padding: 1px;
+        width: 30%;
+    }
+    .main-nav-link {
+        background-color: black !important;
+        color: #6cc6ba !important;
+        position: static;
+        padding: 5px 10px !important;
+        border: none;
+        min-width: 20px;
+        width: auto;
+        height: 90%;
+        font-size: 14px;
+        cursor: default;
+        float: left;
+        text-size-adjust: none;
+        user-select: none;
+        display: inline-block;
+    }
+    .main-nav-link.active {
+        border-radius: 6px 6px 0px 0px;
+        background-color: #6cc6ba !important;
+        color:  black !important;
+        }
+    .main-nav-link:hover {
+        background-color: transparent !important;
+        color: white !important;
+        border: none; 
+    }
+    .tab-content{
+        margin: 10px;
+    }
+    .tab-pane.active {
+        
+        background-color: transparent;
+        color: black;
+    }
+</style>
+
+<section class="purple">
+    <div class="body container" style="margin-left:5%;">
+        <div class="body container" style="margin-left:5%;">
+            <div class="row " style="border:2px solid black;border-radius: 6px">
+                <ul class="nav nav-tabs" id="myTab" role="tablist" style="width:100%;background-color:black;border-radius: 6px 6px 0px 0px;">
+                    <li class="nav-item" role="presentation">
+                        <button class="main-nav-link active" id="streamer-tab" data-bs-toggle="tab" data-bs-target="#streamer-tab-pane" type="button" role="tab" aria-controls="streamer-tab-pane" aria-selected="true">FEATURED</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                    <button class="main-nav-link" id="female-tab" data-bs-toggle="tab" data-bs-target="#female-tab-pane" type="button" role="tab" aria-controls="female-tab-pane" aria-selected="false">FEMALE</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                    <button class="main-nav-link" id="male-tab" data-bs-toggle="tab" data-bs-target="#male-tab-pane" type="button" role="tab" aria-controls="male-tab-pane" aria-selected="false">MALE</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="main-nav-link" id="couples-tab" data-bs-toggle="tab" data-bs-target="#couples-tab-pane" type="button" role="tab" aria-controls="couples-tab-pane" aria-selected="false">COUPLES</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="main-nav-link" id="trans-tab" data-bs-toggle="tab" data-bs-target="#trans-tab-pane" type="button" role="tab" aria-controls="trans-tab-pane" aria-selected="false">TRANS</button>
+                    </li> 
+                </ul>
+                </br>
+                </br>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="streamer-tab-pane" role="tabpanel" aria-labelledby="streamer-tab" tabindex="0">
+                        {% for room in rooms %}
+                            {% include 'base/include/broadcaster_cards.html'%}      
+                        {% endfor %}
+                    </div>
+                    <div class="tab-pane fade" id="female-tab-pane" role="tabpanel" aria-labelledby="female-tab" tabindex="0">                        
+                        {% for room in rooms %}
+                            {% if room.Tab == "WOMEN" %}
+                                {% include 'base/include/broadcaster_cards.html'%}      
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="tab-pane fade" id="male-tab-pane" role="tabpanel" aria-labelledby="male-tab" tabindex="0">
+                        {% for room in rooms %}
+                            {% if room.Tab == "MEN" %}
+                                {% include 'base/include/broadcaster_cards.html'%}      
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="tab-pane fade" id="couples-tab-pane" role="tabpanel" aria-labelledby="couples-tab" tabindex="0">
+                        {% for room in rooms %}
+                            {% if room.Tab == "COUPLES" %}
+                                {% include 'base/include/broadcaster_cards.html'%}      
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="tab-pane fade" id="trans-tab-pane" role="tabpanel" aria-labelledby="trans-tab" tabindex="0">
+                        {% for room in rooms %}
+                            {% if room.Tab == "TRANS" %}
+                                {% include 'base/include/broadcaster_cards.html'%}      
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="login_modal" tabindex="-1" role="dialog" aria-labelledby="login_modal_label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="login_modal_label">Login</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="/accounts/login/" method="POST">
+            {% csrf_token %}
+
+            {% block user_login_credentials %}
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="username">Email address or username</label>
+                    <input type="type" class="form-control" id="username" name="username" aria-describedby="emailHelp" placeholder="Enter email or Username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                </div>
+                <div class="small text-center">
+                    <p>New to PriveVibez? <a href='/accounts/signup/' type="button" class="btn btn-link" onclick='change_signUp()'> Sign up now.</a></p>
+                </div>
+            </div>
+            {% endblock user_login_credentials %}
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="btn_submit_store">LogIn</button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+
+{% endblock %}

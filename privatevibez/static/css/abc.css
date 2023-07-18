@@ -1,0 +1,408 @@
+*{
+    padding:0;
+    margin: 0;
+    font-family: calibri;   
+    box-sizing: border-box;
+}
+.d-none {
+    display: none;
+}
+.dropdown:hover .dropdown-menu{
+    display:block;
+}
+.dropdown-menu{
+    margin-top:0;
+}
+nav{
+    background-color: black;
+}
+nav h2{
+    color: #6cc6ba;
+    /* padding-top: 2px; */
+    font-weight: 700;
+    letter-spacing: 5px
+}
+nav ul li{
+    list-style-type: none;
+}
+nav ul li a:hover{
+    transition: all .40s ease;
+    transform: scale(0.51) translateY(-5px);
+}
+#dropDown li a:hover{
+    background-color: black;
+    color:white;
+    padding:4px;
+}
+.navbar{
+    display: flex;
+}
+/* nav .navbar .navbar-nav .nav-item{ 
+    margin: 10px;
+    margin-bottom: 2px;
+} */
+.navbar li a{
+    text-decoration: none;
+    color: black;
+}
+.navbar li a:hover{
+    color: black;
+    transform: scale(1.01) translateY(-3px);
+}
+.nav-icon {
+    /* right:10px; */
+    height: 40px;
+    padding: 8px;
+    right: 10;
+    position: absolute;
+    display: none;
+}
+.start p{
+    text-align: center;
+    background-color: #424242;
+    color:black;
+    padding: 15px;
+    font-size: 12px;
+    margin: 0;
+}
+/* .banner{
+    background:linear-gradient(to top, transparent 0%, black 100%), url("../images/pexels-alexander-krivitskiy-1570715.jpg") no-repeat 0% 30%;
+    background-size: cover;
+    height:110vh;
+    width:100%;
+} */
+
+.carousel{
+    position: absolute;
+    width:80%;
+    height:80%;
+    margin: auto;
+
+}
+.carousel-control-next:focus, .carousel-control-next:hover, .carousel-control-prev:focus, .carousel-control-prev:hover {
+    color: #fff;
+    text-decoration: none;
+    outline: 0;
+    opacity: .9;
+}
+.carousel-control-next {
+    right: 0;
+}
+.carousel-control-next, .carousel-control-prev {
+    position: absolute;
+    border: 0;
+    opacity: .5;
+    transition: opacity .15s ease;
+    background-color: black;
+    height:50px;
+    width: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top:25%;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+.carousel-indicators{
+    margin: 0px;
+    height: 0px;
+}
+ol.carousel-indicators{
+    position: absolute;
+    bottom: 0;
+    margin: 0;
+    left:0;
+    right:0;
+    width:auto;
+}
+.carousel-indicators > li{
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    width: 10px;
+    height:10px;
+}
+ol.carousel-indicators li,ol.carousel-indicators li.active{
+
+    float:left;
+    width:6%;
+    height:9px;
+    margin:5px;
+    padding:10px 8px;
+    border:0;
+    background:transparent;
+   
+}
+ol.carousel-indicators li.active{
+    background: rgb(0, 0, 0);
+    background-image: linear-gradient(to top, transparent 0%, black 100%), url(../images/bg/pexels-tim-samuel-5838833.jpg);
+    background-size: cover;
+}
+
+.container-one{
+    width:auto;
+    height:90vh;
+}
+.image{
+    background-image: linear-gradient(to top, transparent 0%, black 100%), url(../images/bg/pexels-alexander-krivitskiy-1570715.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    height:98vh;
+}
+.carousel-caption h3{
+    font-size: 100px;
+    font-weight: 700;
+    font-family: cursive;
+    color: crimson;
+}
+
+.section-one{
+    /* background-color:#020312; */
+    /* overflow: hidden; */
+    box-sizing:border-box;
+    /* padding:8px; */
+}
+.section-one h1,h2,h3,h4,h5{
+    color:#020312;
+    font-size:2.5rem;
+    font-weight: 700;
+}
+.alert {
+    line-height: 10px;
+}
+
+section .body, .sideNav ul li{
+    list-style-type:none ;
+}
+section .body, .sideNav ul li a{
+    color:white;
+    text-decoration: none;
+    cursor: pointer;
+}
+section .body, .sideNav{
+    background-color: transparent;
+}
+section .body, .sideNav h6{
+    color: white;
+    font-weight: 700;   
+    /* background-color: rgb(187, 184, 184); */
+    padding: 10px 12px;
+}
+.sideNav h6{
+    background-color: #861657;
+}
+section .card{
+    line-height: 15px;
+}
+section .card p{
+    color:black;
+}
+.footer h3{
+    padding-top: 20px;
+    font-weight: 700;
+    color: rgb(255, 255, 255);
+}
+.footer p{
+    text-align: justify;
+    font-size:17px;
+}
+footer .socials{
+    color:rgb(255, 255, 255);
+    padding: 5px 0;
+}
+footer .socials i{
+    color:crimson;
+    padding:0 10px;
+    transition: all .40s ease;
+}
+footer .socials i:hover{
+    transform: scale(1.0) translateY(-5);
+    cursor:pointer;
+    color:#9fe5dd;
+}
+.purple{
+    background-image: linear-gradient(to right, #9fe5dd, #861657);
+}
+footer h4{
+    font-weight: 700;
+    color:white;
+}
+.last{
+    background:linear-gradient(to top, transparent 0%, black 100%), url("../images/bg/pexels-john-rocha-241704.jpg") no-repeat 0% 30%;
+    background-size: cover;
+    height:70vh;
+    width:100%;
+}
+#search .input-group{
+    margin:auto;
+    width: 100%;
+    padding: 0.275rem 0.55rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+}
+/* Rooms */
+.user-circle{
+    background:linear-gradient(to top, transparent 0%, black 100%), url("../images/new/women/sexy-beautiful-brunette-woman-lying-260nw-276435800.jpg") no-repeat 0% 30%;
+    background-size: cover;
+    height:50vh;
+    width:70%;
+    margin: auto;
+}
+.circle{
+    background-color: rgb(150, 2, 150);
+    padding:8px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 15px;
+}
+.user{
+   padding:10px; 
+}
+.user-circle .logo img{
+    height: 34px;
+    margin-top:32%;
+}
+.user-icons{
+    padding: 6px;
+}
+.user-icons span i{
+    padding-left: 60px;
+}
+.user-icons i{
+    color:crimson;
+}
+.body .jumbotron{
+    background-color:black;
+}
+.chat-box .profile-pic i{
+    padding:10px;
+    background-color: crimson;
+    border-radius: 50%;
+}
+.chat p{
+    text-align: justify;
+}
+.picture-box img{
+    display: block;
+    border-radius: 50%;
+}
+.picture-box {
+    margin-bottom:40px;
+}
+.about i{
+    color:crimson;
+}
+.about span p{
+    color:black;
+}
+.about h3{
+    font-weight: 700;
+
+}
+.categories span{
+    padding: 10px 20px;
+    background-color: black;
+    border-bottom-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
+.categories{
+    margin: 20px 0;
+}
+.categories h5{
+    font-weight: 700;
+}
+#mobile-nav{
+    display:none;
+}
+
+
+
+
+
+
+@media screen and (max-width: 990px) {
+    *{
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+    .navbar li{     
+        padding: 13px 2px 2px 1px;
+    }
+    .start p{
+        background-color: grey;
+        color: whitesmoke;
+        padding: 15px;
+        font-size: 8px;
+    }
+    .navbar ul li {
+        display: none;
+    }
+    .nav-icon {
+        display:block;
+        top:0.7rem;
+        right:-0.2rem;
+    }
+    #mobile-nav{
+        display:block;
+    }
+    .mobile-nav li{
+        list-style-type: none;
+        padding: 10px;
+        background-color: black;
+        font-family: gotham;
+        text-align: center;
+        color:white;
+
+    }
+    .mobile-nav {
+        left: 0;
+        z-index:-1;
+        position: block;
+        padding: 10px;
+        background-color: black;
+        color:white;
+        transform: 0.3s ease;
+    }
+    
+    .mobile-nav a{
+        text-decoration: none;
+        cursor: pointer;
+        background-color: black;
+        color:white;
+        
+    }
+    .mobile-nav li a:hover{
+        transform: scale(1.00) translateY(-5px);
+        text-decoration: none; 
+        
+    }
+    .image{
+        background-image: linear-gradient(to top, transparent 0%, black 100%), url(../images/bg/pexels-alexander-krivitskiy-1570715.jpg);
+        background-size: cover;
+        background-repeat: no-repeat;
+        height:30vh;
+    }
+    .last{
+        background:linear-gradient(to top, transparent 0%, black 100%), url("../images/bg/pexels-john-rocha-241704.jpg") no-repeat 0% 30%;
+        background-size: cover;
+        height:100vh;
+        width:100%;
+    }
+    /* Rooms */
+    .user-circle{
+        height:20vh;
+        width:70%;
+        margin: auto;
+    }
+    .user-icons span i{
+        padding-left: 10px;
+    }
+    #room-search{
+        display:none;
+    }
+   
+    
+}

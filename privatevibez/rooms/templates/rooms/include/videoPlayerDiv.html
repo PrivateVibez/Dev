@@ -1,0 +1,5 @@
+<div  class="videoPlayerDiv" id="videoPlayerDiv">
+  <video-js id="live_stream" class="vjs-default-skin" controls preload="auto" width="auto" height="auto" autoplay style="width: 100%">
+      <source src="{{website.RTMP_server}}/hls/{{user_data.Token}}/index.m3u8" type="application/x-mpegURL">
+  </video-js>
+</div>

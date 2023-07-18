@@ -1,0 +1,78 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h4>Bad Acters</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <div class="card" style="width:900px;">
+                <div class="card-header">
+                    <span><i class="bi bi-table me-2"></i></span> Blocked By Broacaster
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="example" class="table table-striped data-table" style="width: 100%">
+                            <thead>
+                                <tr>
+                                  <th>Reporty</th>
+                                  <th>Reported</th>
+                                  <th></th>
+                                </tr>
+                            </thead>   
+                            <tbody id="bad_acter_table_body"></tbody>          
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+let bad_acter_list = [];
+{% for bad_acter in bad_acters %}
+    bad_acter_list.push({id: "{{ bad_acter.id }}", reportly: "{{ bad_acter.Reporty }}", reported: "{{ bad_acter.Reported }}", msg: "{{ bad_acter.Message }}"})
+{% endfor %}
+function bad_acter_table_generator(){
+    let table = document.getElementById("bad_acter_table_body");
+    table.innerHTML = "";
+    document.getElementById("bad_act_len").innerHTML = bad_acter_list.length;
+    for(let i = 0; i < bad_acter_list.length; i++){
+        // create a new table row
+        let newRow = document.createElement("tr");
+        // create cells containing data
+        let reportlyCell = document.createElement("td");
+        reportlyCell.textContent = bad_acter_list[i].reportly;
+        let reportedCell = document.createElement("td");
+        reportedCell.textContent = bad_acter_list[i].reported;
+        let btnCell = document.createElement("td");
+        btnCell.innerHTML = bad_acter_list[i].msg;
+        // add cells to row
+        newRow.appendChild(reportlyCell);
+        newRow.appendChild(reportedCell);
+        newRow.appendChild(btnCell);
+        // add the new row to the table
+        table.appendChild(newRow);
+}};
+
+bad_acter_table_generator();
+
+let protocol_bad = "";
+if(window.location.protocol == "http:"){
+    protocol_bad = "ws";
+}else if(window.location.protocol == "https:"){
+    protocol_bad = "wss";
+}
+let socket_bad = new WebSocket(`${protocol_bad}://${window.location.host}/ws/bad_acters/`);
+socket_bad.onmessage = function(e) {
+    let data = JSON.parse(e.data);
+    bad_acter_list = [];
+    for(let i = 0; i < data.length; i++) {
+        bad_acter_list.push({id: data[i].id, reportly: data[i].Reporty__username, reported: data[i].Reported__username, msg: data[i].Message});
+    }
+    bad_acter_table_generator();
+}
+socket_bad.onclose = function(e){
+    console.error('WebSocket closed unexpectedly');
+}
+</script>

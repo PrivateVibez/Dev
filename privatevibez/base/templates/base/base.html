@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Private Vibez</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    <script type="text/javascript" src="{% static 'js/jquery-3.5.1.js' %}"></script>
+    
+     <!-- cropper-->
+     <script src='https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.min.js'></script>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropper/4.1.0/cropper.min.css">
+     <!--Custom Css-->
+    <link rel="stylesheet" href="{% static 'css/abc.css' %}">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/logo/small_green_logo.png' %}" />
+
+    <!-- Icofont Css -->
+    <link rel="stylesheet" href="{% static 'plugins/icofont/icofont.min.css' %}">
+
+    <!-- bootstrap.min css -->
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.css' %}">
+</head>
+
+
+<body>
+
+    {% include 'base/nav.html'%}
+
+
+
+    {% block content %}
+    {% endblock content %}
+    {% include 'base/footer.html'%}
+
+</body>
+    <!-- Main jQuery -->
+<script src="http://code.jquery.com/jquery-3.5.1.min.js"></script>
+<!-- Bootstrap 4.3.1 -->
+<script src="{% static 'plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.js' %}"></script>
+<!-- Slick Slider -->
+<script src="{% static 'plugins/slick-carousel/slick/slick.min.js' %}"></script>
+<!-- Form Validator -->
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.32/jquery.form.js'></script>
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.11.1/jquery.validate.min.js'></script>
+<!-- Google Map -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBu5nZKbeK-WHQ70oqOWo-_4VmwOwKP9YQ"></script>
+<script src="{% static 'plugins/google-map/gmap.js' %}"></script>
+
+ </html>

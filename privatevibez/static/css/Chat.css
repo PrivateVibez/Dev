@@ -1,0 +1,42 @@
+.Chat_container {
+    border: none;
+    background-color: #001a06;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px 0;
+  }
+  
+  .Chat_darker {
+    border-color: #ccc;
+    background-color: #ddd;
+  }
+  
+  .Chat_container::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  
+  .Chat_container img {
+    float: left;
+    max-width: 60px;
+    width: 100%;
+    margin-right: 20px;
+    border-radius: 50%;
+  }
+  
+  .Chat_container img.right {
+    float: right;
+    margin-left: 20px;
+    margin-right:0;
+  }
+  
+  .Chat_time-right {
+    float: right;
+    color: #aaa;
+  }
+  
+  .Chat_time-left {
+    float: left;
+    color: #999;
+  }

@@ -1,0 +1,157 @@
+from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.http import JsonResponse
+from .forms import *
+from .models import *
+from rooms.models import *
+from django.contrib.auth.decorators import login_required
+
+def Logout(request):
+    logout(request)
+    messages.error(request, 'You are Log out')
+    return redirect('Main_home')
+ 
+def Login(request):
+    if request.POST:
+        username = request.POST.get('username')
+        password =request.POST.get('password')
+        flag_error = 0
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, f'Thanks for coming back {username}!')
+            status = User_Status.objects.get(User = request.user).Status
+            if status == "STAFF":
+                return redirect('staff_home')
+            if status == "Broadcaster":
+                return redirect(f'/room/{username}')
+            
+            return redirect('Main_home')
+        else:
+            flag_error = 1
+        try:
+            user = authenticate(request, username=User.objects.get(email=username).username, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, f'Thanks for coming back {username}!')
+                return redirect('Main_home')
+        except:
+            flag_error = 1
+        if flag_error == 2:
+            messages.error(request, 'Your username or password is invalid')
+    return render(request, 'accounts/login.html') 
+
+
+
+def Registration(request):
+    if request.method == "POST":
+        form =UserRegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            user     = authenticate(request, username=username, password=form.cleaned_data.get('password1'))
+            login(request, user)
+            if not User_Data.objects.filter(User = user).exists():
+                User_Data.objects.create(User = user,Vibez = "0")
+            User_Status.objects.create(User = user,Status= "User")
+            messages.success(request, f'Account Created for {username}!')
+            return redirect("Main_home")
+        else:
+            messages.error(request, f'something went wrong!')
+    else:    
+        form =UserRegisterForm()
+    return render(request, "accounts/registration.html", {'registration_form': form})
+
+
+
+@login_required(login_url='login')
+def Registration_Broadcaster(request):
+    menu_items = Menu_Data.objects.filter(User=request.user)
+    dice_data = Dice_Data.objects.filter(User=request.user)
+    if User_Data.objects.filter(User = request.user).exists():
+        user_data   = User_Data.objects.get(User = request.user)
+        context = {'user_datas':user_data}
+
+    return render(request, "accounts/registration_broadcaster.html", locals())
+    
+@csrf_exempt
+def Registration_Broadcaster_info(request):
+        user_data            = User_Data.objects.get(User = request.user)
+        user                 = request.user
+        user.first_name      = request.POST.get('first_name')
+        user.last_name       = request.POST.get('last_name')
+        user_data.Birth_Date = request.POST.get('Birth_date')
+        user.save()
+        user_data.save()
+        return JsonResponse('OK', safe=False) 
+
+@csrf_exempt
+def Registration_Broadcaster_ID(request):
+        user_data               = User_Data.objects.get(User = request.user)
+        user_data.Id_File       = request.FILES['file']
+        user_status             = User_Status.objects.get(User = request.user)
+        user_status.Status = "Pending_Broadcaster"
+        user_data.save()
+        user_status.save()
+        if not Room_Data.objects.filter(User = request.user).exists():
+            Room_Data.objects.create(User = request.user)
+        return JsonResponse('OK', safe=False) 
+
+@csrf_exempt
+def Buy_Vibez(request):
+        user_data = User_Data.objects.get(User = request.user)
+        user_data.Vibez += int(request.POST.get('Vibez'))
+        user_data.save()
+        return JsonResponse('OK', safe=False) 
+
+@csrf_exempt
+def Bad_Acters_Add(request):
+    Bad_Acters.objects.create(
+        Reporty  = User.objects.get(username = request.POST.get('reporty')),
+        Reported = User.objects.get(username = request.POST.get('reported')),
+        Message  = request.POST.get('message')
+    )
+    return JsonResponse('OK', safe=False) 
+@csrf_exempt
+def Send_Vibez(request):
+    broacaster = User_Data.objects.get(User = request.POST.get("room"))
+    user       = User_Data.objects.get(User =  request.POST.get("user"))
+    vibez      = int(request.POST.get('Vibez'))
+    real_vibez = user.Vibez - vibez
+    if real_vibez >= 0:
+        broacaster.Vibez += vibez
+        broacaster.save()
+        user.Vibez -= vibez
+        user.save()
+
+    return JsonResponse('OK', safe=False)
+
+@csrf_exempt
+def Profile_Pic(request):
+    user_data         = User_Data.objects.get(User = request.user)
+    user_data.Image   = request.FILES['file']
+    user_data.save()
+    return JsonResponse('OK', safe=False) 
+@csrf_exempt
+def bio_info(request):
+    user_data               = User_Data.objects.get(User = request.user)
+    room_data               = Room_Data.objects.get(User = request.user)
+    print(request.POST)
+    user_data.Real_Name     = request.POST.get('Real_Name')
+
+    user_data.Age           = request.POST.get('Age')
+    user_data.I_Am          = request.POST.get('I_Am')
+    user_data.Interested_In = request.POST.get('Interested_In')
+    user_data.Location      = request.POST.get('Location')
+    user_data.Language      = request.POST.get('Language')
+    user_data.Body_Type     = request.POST.get('Body_Type')
+    room_data.Tab           = request.POST.get('Tab')
+    room_data.save()
+    user_data.save()
+    return JsonResponse('OK', safe=False) 
+
+
+

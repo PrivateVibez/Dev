@@ -1,0 +1,251 @@
+
+*{
+    padding:0;
+    margin: 0;
+    font-family: calibri;   
+    box-sizing: border-box;
+}
+.image{
+    background-image: linear-gradient(to top, transparent 0%, black 100%), url(../images/bg/landscape-alexandar-lazarov.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    height:100vh;
+}
+.image2{
+    background-image: linear-gradient(to top, transparent 0%, black 100%), url(../images/bg/pexels-john-rocha-230986.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    height:100vh;
+}
+.image3{
+    background-image: linear-gradient(to top, transparent 0%, black 100%), url(../images/bg/pexels-yaroslav-shuraev-5084808.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    height:100vh;
+}
+.image5{
+    background-image: linear-gradient(to top, transparent 0%, black 100%), url(../images/bg/pexels-alexander-krivitskiy-1570715.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    height:120vh;
+}
+.image6{
+    background-image: linear-gradient(to top, transparent 0%, black 100%), url(../images/new/couples/close-image-loving-couple-intimate-260nw-1029988489.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    height:100vh;
+}
+*{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+}
+
+.section2, .section4{
+    margin:0% 33%;
+    display:flex;
+    height:100vh;
+    justify-content: center;
+    align-items: center;
+}
+.section3{
+    margin:0% 27%;
+    display:flex;
+    height:100vh;
+    justify-content: center;
+    align-items: center;
+}
+.section2 .container{
+    padding:0% 10%;
+    background: linear-gradient(transparent 0%, black 100%);
+    padding: 30px 40px;
+    border-radius: 5px;
+    height:95%;
+}
+.section3 .container{
+    padding:0% 10%;
+    background: linear-gradient(transparent 0%, black 100%);
+    padding: 30px 40px;
+    border-radius: 5px;
+    height:50%;
+}
+.section4 .container{
+    padding:0% 10%;
+    background: linear-gradient(transparent 0%, black 100%);
+    padding: 30px 40px;
+    border-radius: 5px;
+    height:80%;
+}
+.section5{
+    margin:0% 27%;
+    display:flex;
+    height:100vh;
+    justify-content: center;
+    align-items: center;
+}
+.section5 .container{
+    padding:0% 10%;
+    background: linear-gradient(transparent 0%, black 100%);
+    padding: 30px 40px;
+    border-radius: 5px;
+    height:60%;
+}
+.container .title{
+    font-size: 35px;
+    font-weight: 700;
+    position: relative;
+
+}
+.container .title2{
+    font-size: 30px;
+    font-weight: 700;
+    position: relative;
+
+}
+.container .title, .title2::before{
+    content: '';
+    position: absolute;
+    height: 5px;
+    width: 50px;
+    background: #9fe5dd;
+    left:0;
+    bottom: 0;
+}
+.container form .user-details{
+    flex-wrap: wrap;
+    margin: 20px 0 12px 0;
+
+}
+form .user-details .input-box{
+    width: calc(100 / 2 - 20px);
+    margin-bottom: 15px;
+} 
+.user-details .input-box .details{
+    display:block;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+.user-details .input-box input{
+    height:40px;
+    width:100%;
+    outline:none;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding-left: 15px;
+    font-size: 16px;
+    border-top-width:0px;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 3px;
+    transition: all 0.3s ease;
+    background-color: rgb(27, 26, 26);
+    color: white;
+}
+.user-details .input-box input:focus,
+.user-details .input-box input:valid{
+    border-color: #9fe5dd;
+}
+
+form .button{
+    height: 45px;
+    /* margin:40px 0; */
+}
+form .button input{
+    height: 100%;
+    width:100%;
+    outline: none;
+    color: #fff;
+    border: none;
+    font-size: 18px;
+    font-weight: 500;
+    border-radius: 5px;
+    letter-spacing: 1px;
+    background-color: #1db9a7;
+
+}
+form .button input:hover{
+    background: #9fe5dd;
+
+    color: #fff;
+}
+form .small{
+    margin-top:19px;
+    font-size: 15px;
+
+}
+form .small a{
+    text-decoration: none;
+    font-size: 15px;
+}
+/* .check-box input[type=checkbox]{
+    height:20px;
+    width:20px;
+} */
+/* .navbar-toggle .icon-bar {
+    background: rgb(245, 99, 75);
+} */
+.navbar-brand{
+    padding:17px;
+}
+.navbar h2 {
+    font-size: 24px;
+    font-weight:700;
+    color:#9fe5dd;
+}
+.check-box .span1{
+    color:#1db9a7;
+    font-size: 15px;
+    float: right;
+}
+.check-box .span2{
+    font-size:15px;
+}
+.check-box input.largeCheckbox{
+    width:15px;
+    height:15px;
+}
+
+
+@media (max-width:990px){
+    .navbar-brand{
+        display: none;
+    }
+    .container{
+        max-width: 100%;
+    }
+    form .user-details .input-box{
+        margin-bottom: 15px;
+        width: 300px;
+    }
+    form .user-details #input{
+        width: 100%;
+    }
+    .container form .user-details{
+        max-height: 300px;
+        overflow-y: scroll;
+    }
+    .user-details::-webkit-scrollbar{
+        width:0;
+    }
+    .section2{
+        margin:0% 10%;
+        display:flex;
+        height:100vh;
+        justify-content: center;
+        align-items: center;
+        /* background: linear-gradient(135deg, #89f7fe, #66a6ff); */
+    }
+    .section2 .container{
+        /* box-shadow: 4px white; */
+        padding:0% 7%;
+        background: linear-gradient(transparent 0%, black 100%);
+        padding: 30px 30px;
+        border-radius: 5px;
+        height:100%;
+    }
+  
+}
+
+                
+                

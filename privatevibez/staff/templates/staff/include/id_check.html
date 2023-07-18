@@ -1,0 +1,197 @@
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h4>ID Check</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 mb-3">
+            <div class="card" style="width:900px;">
+                <div class="card-header">
+                    <span><i class="bi bi-table me-2"></i></span> Pendding Broadcasters
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="example" class="table table-striped data-table" style="width: 100%">
+                            <thead>
+                                <tr>
+                                  <th>First</th>
+                                  <th>Last</th>
+                                  <th>Birthdate</th>
+                                  <th></th>
+                                </tr>
+                            </thead>   
+                            <tbody id="table_body"></tbody>          
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+let check_list = [];
+{% for user in pending %}
+{% for data in user_data %}
+{% if data.User == user.User %}
+    check_list.push({id: "{{ data.id }}", first_name: "{{ user.User.first_name }}", last_name: "{{ user.User.last_name }}", birth_date: "{{ data.Birth_Date}}", file_url: "{{ data.Id_File.url }}"})
+
+{% endif %}
+{% endfor %}
+{% endfor %}
+
+function id_check_table_generator(){
+    let table = document.getElementById("table_body");
+    table.innerHTML = "";
+    document.getElementById("id_check_len").innerHTML = check_list.length;
+    for(let i = 0; i < check_list.length; i++){
+        // create a new table row
+        let newRow = document.createElement("tr");
+        // create cells containing data
+        let firstNameCell = document.createElement("td");
+        firstNameCell.textContent = check_list[i].first_name;
+        let lastNameCell = document.createElement("td");
+        lastNameCell.textContent = check_list[i].last_name;
+        let birthDateCell = document.createElement("td");
+        birthDateCell.textContent = check_list[i].birth_date;
+        // add cells to row
+        newRow.appendChild(firstNameCell);
+        newRow.appendChild(lastNameCell);
+        newRow.appendChild(birthDateCell);
+        // create the modal
+        let modalCell = document.createElement("td");
+        modalCell.innerHTML = `
+        <button type="button" data-bs-toggle="modal" data-bs-target="#info-${check_list[i].id}" style="border:none;outline:none;color:blue">
+                        Show
+                    </button>
+                    <div class="modal fade" id="info-${check_list[i].id}" tabindex="-1" role="dialog" aria-labelledby="pic-${check_list[i].id}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="Info">${check_list[i].first_name}'s Information</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div id="show_info">
+                                    <div class="modal-body">
+                                        <div class="card" style="width: 18rem;">
+                                            <img class="img-thumbnail" src="${check_list[i].file_url}"/>
+                                            <div class="card-body">
+                                                <h5 class="card-title">${check_list[i].id} ${check_list[i].last_name}</h5>
+                                                <p> ${check_list[i].birth_date}</p>
+                                                <input id='user_id' style="display:none;" value="${check_list[i].id}">
+                                            </div> 
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" onclick ="Decline_Button()" class="btn btn-danger" data-dismiss="modal">Decline</button>
+                                        <button type="button" data-user-id="${check_list[i].id}" class="btn btn-success btn_approve_broadcaster">Approve</button>
+                                        
+                                    </div>
+                                </div>
+                                <div id="Decline_question" style="display:none;">
+                                    <div class="modal-body">
+                                        <h5 class="card-title">Tell ${check_list[i].first_name} why</h5>
+                                        </br>
+                                        <textarea class="form-control" id="Decline_message" aria-label="With textarea"></textarea>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" onclick ="Decline_Broactser()" class="btn btn-danger">Send</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>`
+        newRow.appendChild(modalCell);
+        // add the new row to the table
+        table.appendChild(newRow);
+}};
+
+id_check_table_generator();
+
+let protocol = "";
+if(window.location.protocol == "http:"){
+    protocol = "ws";
+}else if(window.location.protocol == "https:"){
+    protocol = "wss";
+}
+let socket = new WebSocket(`${protocol}://${window.location.host}/ws/staff/`);
+socket.onmessage = function(e) {
+    let data = JSON.parse(e.data);
+    let pending = JSON.parse(data.pending);
+    let user_data = JSON.parse(data.user_data);
+    check_list = [];
+    let filtered_user_data = user_data.filter(user => pending.some(pending_user => pending_user.User__id === user.User_id));
+    filtered_user_data.forEach(user => {
+        check_list.push({
+            id: user.id,
+            first_name: user.User__first_name,
+            last_name: user.User__last_name,
+            birth_date: user.Birth_Date,
+            file_url: user.Id_File.url
+        });
+    });
+    id_check_table_generator();
+}
+socket.onclose = function(e){
+    console.error('WebSocket closed unexpectedly');
+}
+</script>
+<script type="text/javascript">
+    const btn_approve_broadcaster = document.querySelectorAll('.btn_approve_broadcaster');
+
+    function Decline_Button(){
+        document.getElementById('show_info').style.display='none'
+        document.getElementById('Decline_question').style.display='block'
+    }
+    function Decline_Broactser(){
+        $.ajax({
+            method:'POST',
+            url: "/staff/idStatus/",
+            mimeType:"multipart/form-data",
+            data:{  
+                    'Status' : 'Decline',
+                    'user_id'   : document.getElementById('user_status').value,
+                    'message': document.getElementById('Decline_message').value,
+                    'csrfmiddlewaretoken':"{{csrf_token}}",
+                },
+                'dataType': 'json',
+                success:function(){
+                  }
+        })
+    }
+    
+    {% comment %} Approve broadcaster {% endcomment %}
+    
+    btn_approve_broadcaster.forEach(function(button) {
+        button.addEventListener('click', function() {
+          var userId = this.getAttribute('data-user-id');
+      
+          $.ajax({
+            method: 'POST',
+            url: "/staff/idStatus/",
+            mimeType: "multipart/form-data",
+            data: {
+              'Status': 'Approve',
+              'user_id': userId,
+              'csrfmiddlewaretoken': "{{csrf_token}}",
+            },
+            dataType: 'json',
+            success: function() {
+              console.log(userId);
+            },
+            error: function(error) {
+              console.log(userId);
+              console.log(error);
+            }
+          });
+        });
+      });
+      
+
+
+    
+
+</script>
