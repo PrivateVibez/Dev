@@ -1,7 +1,7 @@
 <section style="background-color: transparent;">
-  <div class="container py-2">
+  <div class="container-fluid py-2">
     <div class="row">
-      <div class="col-md-5 col-lg-5 col-xl-4">  
+      <div class="col-11">  
         <div class="row">
 
 
@@ -9,11 +9,11 @@
           <div class="col-12">
             <h4 class="text-center font-weight-bold bg-light py-2 m-0">Inbox</h4>
 
-            <div class="card card-body pri_broc_chat_list p-0" id="staff_list">
-              {% if broc_private_list %}
-              {% for fan in broc_private_list %}
+            <div class="card card-body pri_broc_chat_list p-0" id="staff_lists">
+              {% if broc_staff_list %}
+              {% for staff in broc_staff_list %}
 
-              <div class="d-flex justify-content-between mb-2 border-top pt-2 px-3" id="fan_list_username" onclick="toggle_private_broc_room('{{ fan }}')">
+              <div class="d-flex justify-content-between mb-2 border-top pt-2 px-3" id="staff_list_username" onclick="toggle_staff_broc_room('{{ staff }}')">
 
                 <h4>{{ staff }}</h4>
 
@@ -34,15 +34,15 @@
 
   <div class="col-md-5 col-lg-7 col-xl-8">
 
-        <div id="pri_room_wrap" style="display: none;">
-          <div id="private_broc_chat_room_messages">
-            <h4 id="private_broc_chat_room_header" class="text-center font-weight-bold"></h4>
-            <div id="pri_fans_msg"></div>                            
+        <div id="staff_room_wrap" style="display: none;">
+          <div id="staff_broc_chat_room_messages">
+            <h4 id="staff_broc_chat_room_header" class="text-center font-weight-bold"></h4>
+            <div id="staff_msg"></div>                            
           </div>
 
-          <form id="private_broc_chat_room_form" class="d-flex">
-            <input type="text" id="private_broc_chat_room_message_field" class="form-control" style="height: 35px; font-size: 15px;" required />
-            <input type="hidden" id="pri_broc_fan_username" value="">
+          <form id="staff_broc_chat_room_form" class="d-flex">
+            <input type="text" id="staff_chat_room_message_field" class="form-control" style="height: 35px; font-size: 15px;" required />
+            <input type="hidden" id="staff_broc_fan_username" value="">
             <button type="submit" class="btn btn-primary">Send</button>
           </form>
 
@@ -51,3 +51,91 @@
   </div>
   </div>
 </section>
+
+
+<script>
+
+  function toggle_staff_broc_room(username, isUserClicked) {
+
+    let staffchatWrap = document.getElementById("staff_room_wrap");
+ 
+    staffchatWrap.style.display = "block";
+
+      document.getElementById("staff_broc_chat_room_header").innerHTML = "Staff Chat with " + username;
+      document.getElementById("staff_broc_fan_username").value = username;
+  
+  
+      let socket = new WebSocket('ws://' + window.location.host + '/ws/staffChatBroc/{{ room_name }}/'+username+'/');
+      socket.onmessage = function(e) {
+          let data = JSON.parse(e.data);
+          let msg_wraper = document.getElementById("staff_msg");
+          msg_wraper.innerHTML = "";
+          let msg_container = "";
+          data.data.forEach(function(datum) {
+            if(datum.sent_by === false){
+              msg_container = `<div class="text-muted d-flex justify-content-end"><small class="broc_chat_room_message_username font-weight-bold text-dark">${datum.Staff_To_Message}</small></div><div class="card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4 ml-auto" style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">${datum.Message}</div>`;
+            }else{
+              msg_container = `<div class="text-muted d-flex"><small class="broc_chat_room_message_username font-weight-bold text-dark">${datum.Staff_From_Message}</small></div><div class="card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4" style="border-radius: 13px; width: fit-content; background: #9dffde;">${datum.Message}</div>`;
+            }
+            let new_element = document.createElement('div');
+            new_element.innerHTML = msg_container;
+            msg_wraper.appendChild(new_element);
+          });
+          let staff_broc_chat_room_messages = document.getElementById("staff_broc_chat_room_messages");
+          staff_broc_chat_room_messages.scrollTop = staff_broc_chat_room_messages.scrollHeight;
+          document.getElementById('staff_broc_chat_room_message_field').value = '';
+      }
+  
+      let staff_broc_form = document.getElementById('staff_broc_chat_room_form');
+      staff_broc_form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var message_field = document.getElementById('staff_broc_chat_room_message_field');
+      socket.send(JSON.stringify({
+          'message': message_field.value
+      }));
+      message_field.focus();
+      });
+    }
+  
+    
+
+
+  {% comment %} fetch staff {% endcomment %}
+
+
+  function fetctStaff(broc) {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", `/chat/staff_list/${broc}/`, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+        var staffs_json = JSON.parse(xhr.responseText);
+        var staffs = staffs_json.data;
+        console.log(staffs);
+        var staffListUsername = document.getElementById("staff_lists");
+        staffListUsername.innerHTML = "";
+        if (staffs.length) {
+          for (var i = 0; i < staffs.length; i++) {
+            var staff = staffs[i];
+            var staffDiv = document.createElement("div");
+            staffDiv.innerHTML = `<div class="d-flex justify-content-between mb-2 border-top pt-2 px-3" id="fan_list_username" onclick="toggle_private_broc_room('${staff.username}')">
+                          <h4>${staff.username}</h4>
+                        </div>`;
+            staffListUsername.appendChild(staffDiv);
+          }
+        } else {
+          var noStaff = document.createElement("h4");
+          noStaff.textContent = "no Staff found!";
+          noStaff.classList.add("text-muted");
+          staffListUsername.appendChild(noStaff);
+        }
+      }
+    };
+    xhr.send();
+  }
+  
+  // Interval to fetch the list of fans every 3 seconds
+  setInterval(function() {
+    fetctStaff("{{ room_name }}");
+  }, 3000);
+</script>

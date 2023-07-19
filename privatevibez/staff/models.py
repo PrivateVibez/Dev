@@ -25,10 +25,19 @@ class ToDolist_Dev(models.Model):
     
 class StaffRoomManager(models.Model):
     Staff = models.ForeignKey('auth.User',null=True, on_delete=models.CASCADE, related_name = 'Staff_Name')
-    staff_list = models.ManyToManyField('auth.User', null=True, blank=True, symmetrical=False, related_name="staff")
+    staff_list = models.ManyToManyField('auth.User', null=True, blank=True, symmetrical=False, related_name="staff_list")
 
-    def total_fans(self):
+
+    def add_staff(self, user):
+        self.staff_list.add(user)
+        self.save()
+
+    def remove_fan(self, user):
+        self.staff_list.remove(user)
+        self.save()
+        
+    def total_staff(self):
         return self.staff_list.count()
 
     def __str__(self):
-        return self.broadcaster.username
+        return self.Staff.username
