@@ -3,11 +3,16 @@ from django.contrib.auth.models import User
 from accounts.models import *
 from rooms.models import *
 from staff.models import *
-from .forms import UserRegisterForm
+from django.conf import settings
+from .forms import UserRegisterForm, AddStaff
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.contrib import messages
+from django.contrib.sessions.models import Session
+from django.contrib.sessions.backends.base import SessionBase
+from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
+from django.core.mail import BadHeaderError, send_mail
 
 
 
@@ -23,6 +28,8 @@ def home(request):
         to_do_projects_dev = ToDoProject_Dev.objects.all()
         to_do_lists_Dev = ToDolist_Dev.objects.all()
         to_do_lists_Dev_count = to_do_lists_Dev.count
+        
+        # staff chat
         try:
             broc_manager = StaffRoomManager.objects.get(Staff=request.user)
             room_name            = User.objects.get(username=request.user)
@@ -31,7 +38,34 @@ def home(request):
         #     print(broc_staff_list)
         except StaffRoomManager.DoesNotExist:
             broc_staff_list = []
-            print('engot')
+        
+        
+
+        # Get a list of dictionaries with session information for all users
+        sessions_info = []
+        all_sessions = Session.objects.all()
+        # all_sessions = all_sessions.session_data
+        
+        
+        for session in all_sessions:
+                
+                session = Session.objects.get(pk=session)
+                session_data = session.get_decoded()
+                user_id = session_data.get('_auth_user_id')
+                print(user_id)
+  
+                user = User.objects.get(pk=user_id)
+                is_session_active = session.expire_date > timezone.now()
+                
+                sessions_info.append({
+                        'user': user.username,
+                        'session_expire': session.expire_date,
+                        'is_session_active': is_session_active,
+                }),
+        
+        print(sessions_info)
+        
+        
         return render(request, "staff/home.html", locals())
         
 @csrf_exempt
@@ -73,6 +107,33 @@ def Create_Staff(request):
         form =UserRegisterForm()
     return render(request, "accounts/registration.html", {'create_staff': form})
         
+@csrf_exempt
+def sendStaffInvitation(request):
+        
+ 
+        if request.method == "POST":
+                print('runnin')
+                form = AddStaff(request.POST)
+                if form.is_valid():
+                        email = form.cleaned_data['email']
+                        permissions = form.cleaned_data['permissions']
+
+                        # set permission for the staff
+                        
+                        # StaffManager.objects.create(email=email)
+                        # send email to staff
+                        send_mail('Staff Invitation!', 'click the link and fill in the form. :)', settings.EMAIL_HOST, [email])
+                       
+                        messages.success(request, f'Invitation Sent!')
+                        return JsonResponse('OK', safe=False) 
+                
+                else:
+                        print(form.errors)
+                        messages.error(request, form.errors)
+        else:    
+                
+                form =AddStaff()
+        return render(request, "staff/home.html", {'form': form})
         
 
 @csrf_exempt

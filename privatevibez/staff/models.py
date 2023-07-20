@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import Permission
 
 # Create your models here.
 
@@ -32,7 +33,7 @@ class StaffRoomManager(models.Model):
         self.staff_list.add(user)
         self.save()
 
-    def remove_fan(self, user):
+    def remove_staff(self, user):
         self.staff_list.remove(user)
         self.save()
         
@@ -41,3 +42,26 @@ class StaffRoomManager(models.Model):
 
     def __str__(self):
         return self.Staff.username
+    
+
+class StaffManager(models.Model):
+        email = models.CharField(max_length=100,null=True,blank=True)
+        staff_id = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True, blank=True)
+        fname = models.CharField(max_length=100,null=True,blank=True)
+        lname = models.CharField(max_length=100,null=True,blank=True)
+        birthday = models.DateField(null=True, blank=True)
+        address = models.CharField(max_length=100,null=True)
+        id_photo = models.ImageField(upload_to='ID',null=True,blank=True)
+        profile_pic = models.ImageField(upload_to='profile_pic',null=True,blank=True)
+        permission = models.ForeignKey(Permission, on_delete=models.CASCADE, null=True, blank=True)
+
+        def add_staff(self, user):
+            self.staff_id.add(user)
+            self.save()
+
+        def remove_staff(self, user):
+            self.staff_id.remove(user)
+            self.save()
+            
+        def __str__(self):
+            return self.email

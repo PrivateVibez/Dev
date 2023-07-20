@@ -1,0 +1,105 @@
+{% load static %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Name</th>
+      <th scope="col">Status</th>
+      <th scope="col">Log in time</th>
+      <th scope="col">Log out time</th>
+      <th scope="col">Task</th>
+      <th scope="col">Details</th>
+      <th scope="col"><!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStaffmodal">
+          Add Staff
+        </button></th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% if sessions_info %}
+    {% for session in sessions_info %}
+
+    <tr>
+      <th scope="row"></th>
+      <td>{{session.user}}</td>
+      <td>{% if session.is_session_active %}Online{% endif %}</td>
+      {% comment %} <td><button type="button" class="btn btn-secondary">Details</button></td> {% endcomment %}
+    </tr>
+    {% endfor %}
+    {% endif %}
+
+
+  </tbody>
+</table>
+
+
+
+
+
+<!-- Modal for adding staff -->
+<div class="modal fade" id="addStaffmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Staff</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <form action="{% url 'sendStaffInvitation'%}" method="POST">
+        
+          <div class="form-group">
+            <label for="exampleInputEmail1">Email address</label>
+            <input type="email" class="form-control my-2" name="email" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+          </div>
+
+          <div class="form-group">
+            <label for="permission">Choose permissions</label>
+            <select class="my-2" id="permissions" name="permissions" multiple="multiple" style="width: 50%">
+              <option value="add">Add</option>
+              <option value="edit">Edit</option>
+              <option value="delete">Delete</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary my-2">Submit</button>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script src="{% static 'js/jquery-3.5.1.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/multi.css' %}">
+<script src="{% static 'js/multi.js' %}"></script> 
+
+
+
+
+<script> 
+  var permission = document.getElementById('permissions');
+ multi(permission, {
+    "enable_search": true,
+    "search_placeholder": "Search...",
+    "non_selected_header": null,
+    "selected_header": null,
+    "limit": -1,
+    "limit_reached": function () {},
+    "hide_empty_groups": false,
+}); 
+
+
+
+
+</script>
+

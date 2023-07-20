@@ -41,6 +41,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -109,7 +110,7 @@ DATABASES = {
     }
 }
 
-
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -158,12 +159,17 @@ STATICFILES_DIRS = [
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'mail.privateemail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'info@360parrot.com'
-EMAIL_HOST_PASSWORD = 'qwerty123456'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_USE_TLS = True
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'info@360parrot.com'
+# EMAIL_HOST_PASSWORD = 'qwerty123456'
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_HOST_USER = '4834fd826b3437'
+EMAIL_HOST_PASSWORD = 'f524e25b102650'
+EMAIL_PORT = '2525'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
 
 # aws settings
 AWS_ACCESS_KEY_ID = 'AKIA3S432HUVR7JMRD3K'
