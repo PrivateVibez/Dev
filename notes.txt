@@ -1,0 +1,15 @@
+                                    ACCOMPLISHED TASKS
+CHATTING
+
+      July 20, 2023
+      -Chat is soft deleted from the database for public and private channels once a user logs out.
+      
+
+
+
+DOCKER
+
+      July 21, 2023
+      -I have configured docker-compose, it took me a while to configure since I haven't used docker before but it was fun! It's working, I put sqlite3 for the mean time as database since we are
+      still in development mode.
+

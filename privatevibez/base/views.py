@@ -9,7 +9,7 @@ def home(request):
         if request.user.is_authenticated :
                 user_status_data = User_Status.objects.get(User = request.user)
                 user_status      = user_status_data.Status
-                print(type("Staff"))
+                
                 if user_status == 'Staff':
                         room_users_data = User_Data.objects.all()
                         print(user_status)

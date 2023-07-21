@@ -1,0 +1,16 @@
+#Git
+.git
+.gitignore
+
+#Docker
+.docker
+
+#python
+privatevibez/__pycache__/
+privatevibez/*/__pycache__/
+privatevibez/*/*/__pycache__/
+privatevibez/*/*/*/__pycache__/
+.env/
+.venv/
+venv/
+
