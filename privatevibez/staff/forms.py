@@ -2,6 +2,10 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from accounts.models import User_Data
+from .models import StaffManager
+
+
+
 class Profile_Image(forms.ModelForm):
 
     class Meta:
@@ -10,20 +14,26 @@ class Profile_Image(forms.ModelForm):
 
 
 class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField()
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'is_staff', 'password1', 'password2']
+        fields = ['username', 'is_staff', 'password1', 'password2']
         
         
-class AddStaff(forms.Form):
+class AddStaffPermission(forms.Form):
 
     email = forms.EmailField()
     permissions = forms.MultipleChoiceField(
-        choices=[('edit', 'Edit'), ('delete', 'Delete'), ('add', 'Add')],
-        widget=forms.SelectMultiple
+        choices=[('can_add_staff', 'Can add staff'), ('can_edit_staff', 'Can edit staff'), ('can_delete_staff', 'Can delete staff')]
     )
+    
+    
+class AddStaff(forms.ModelForm):
+    class Meta:
+        
+        model = StaffManager
+        fields = ['fname', 'lname', 'birthday', 'address', 'id_photo', 'profile_pic']
+        
 
 
 

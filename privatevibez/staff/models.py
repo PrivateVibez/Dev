@@ -45,7 +45,7 @@ class StaffRoomManager(models.Model):
     
 
 class StaffManager(models.Model):
-        email = models.CharField(max_length=100,null=True,blank=True)
+        email = models.CharField(max_length=100,null=True,blank=True, unique=True)
         staff_id = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True, blank=True)
         fname = models.CharField(max_length=100,null=True,blank=True)
         lname = models.CharField(max_length=100,null=True,blank=True)
@@ -53,8 +53,14 @@ class StaffManager(models.Model):
         address = models.CharField(max_length=100,null=True)
         id_photo = models.ImageField(upload_to='ID',null=True,blank=True)
         profile_pic = models.ImageField(upload_to='profile_pic',null=True,blank=True)
-        permission = models.ForeignKey(Permission, on_delete=models.CASCADE, null=True, blank=True)
-
+        user_permissions = models.ManyToManyField(Permission, blank=True)
+        class Meta:
+            permissions = [
+                ("can_add_staff", "Can add staff"),
+                ("can_edit_staff", "Can edit a staff"),
+                ("can_delete_staff", "Can delete a staff"),
+            ]
+        
         def add_staff(self, user):
             self.staff_id.add(user)
             self.save()

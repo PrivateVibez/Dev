@@ -1,4 +1,6 @@
 {% load static %}
+
+    
 <table class="table table-striped">
   <thead>
     <tr>
@@ -58,10 +60,10 @@
 
           <div class="form-group">
             <label for="permission">Choose permissions</label>
-            <select class="my-2" id="permissions" name="permissions" multiple="multiple" style="width: 50%">
-              <option value="add">Add</option>
-              <option value="edit">Edit</option>
-              <option value="delete">Delete</option>
+            <select class="permissions my-2" id="permissions" multiple="multiple" name="permissions" style="width: 50%">
+              <option value="can_add_staff">Can add staff</option>
+              <option value="can_edit_staff">Can edit staff</option>
+              <option value="can_delete_staff">Can delete staff</option>
             </select>
           </div>
 
@@ -79,27 +81,21 @@
 
 
 
-<script src="{% static 'js/jquery-3.5.1.js' %}"></script>
-<link rel="stylesheet" type="text/css" href="{% static 'css/multi.css' %}">
-<script src="{% static 'js/multi.js' %}"></script> 
 
 
 
 
-<script> 
-  var permission = document.getElementById('permissions');
- multi(permission, {
-    "enable_search": true,
-    "search_placeholder": "Search...",
-    "non_selected_header": null,
-    "selected_header": null,
-    "limit": -1,
-    "limit_reached": function () {},
-    "hide_empty_groups": false,
-}); 
 
 
 
 
+  <script type="text/javascript">
+    
+  // Pass single element
+  const element = document.getElementById('permissions');
+  const choices = new Choices(element, {
+    // Options (if needed)
+});
 </script>
+
 

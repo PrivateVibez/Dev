@@ -1,24 +1,31 @@
 from django.shortcuts import render
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group, Permission
 from accounts.models import *
 from rooms.models import *
 from staff.models import *
 from django.conf import settings
-from .forms import UserRegisterForm, AddStaff
+from .forms import UserRegisterForm, AddStaffPermission, AddStaff
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.contrib import messages
 from django.contrib.sessions.models import Session
+from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sessions.backends.base import SessionBase
 from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.core.mail import BadHeaderError, send_mail
+from django.shortcuts import redirect
+from .forms import UserRegisterForm
+from django.contrib.contenttypes.models import ContentType
+
 
 
 
 # Create your views here.
 
 def home(request):
+
+        
         pending = User_Status.objects.filter(Status='Pending_Broadcaster')
         pending_user_id = list(pending.values_list('User__id',flat=True))
         user_data = User_Data.objects.filter(User__id__in=pending_user_id)
@@ -48,7 +55,7 @@ def home(request):
         
         
         for session in all_sessions:
-                
+ 
                 session = Session.objects.get(pk=session)
                 session_data = session.get_decoded()
                 user_id = session_data.get('_auth_user_id')
@@ -106,34 +113,84 @@ def Create_Staff(request):
     else:    
         form =UserRegisterForm()
     return render(request, "accounts/registration.html", {'create_staff': form})
-        
+
+
+
 @csrf_exempt
 def sendStaffInvitation(request):
         
  
         if request.method == "POST":
-                print('runnin')
-                form = AddStaff(request.POST)
+                
+                form = AddStaffPermission(request.POST)
                 if form.is_valid():
                         email = form.cleaned_data['email']
                         permissions = form.cleaned_data['permissions']
 
                         # set permission for the staff
+                        content_type = ContentType.objects.get_for_model(StaffManager)
+                        staff = StaffManager.objects.create(email=email)
                         
-                        # StaffManager.objects.create(email=email)
+                        permission_codenames = request.POST.getlist('permissions')
+            
+                        permissions = Permission.objects.filter(content_type=content_type, codename__in=permission_codenames)
+                        staff.user_permissions.set(permissions)
+                        staff.save()
+                        
+                        
                         # send email to staff
-                        send_mail('Staff Invitation!', 'click the link and fill in the form. :)', settings.EMAIL_HOST, [email])
-                       
+                        message = "click the link and fill in the form:\n\nhttp://127.0.0.1:8000/staff/staffRegistration/"
+                        send_mail('Staff Invitation!', message, settings.EMAIL_HOST, [email])
+
                         messages.success(request, f'Invitation Sent!')
                         return JsonResponse('OK', safe=False) 
                 
                 else:
                         print(form.errors)
-                        messages.error(request, form.errors)
+                        err = messages.error(request, form.errors)
         else:    
                 
-                form =AddStaff()
-        return render(request, "staff/home.html", {'form': form})
+                form =AddStaffPermission()
+        return render(request, "staff/home.html", {'form': form, "err" : err})
+
+@csrf_exempt
+def staffRegistration(request):
+
+        
+        if request.method == "POST":
+                user_form = UserRegisterForm(request.POST)
+                personalinfo_form = AddStaff(request.POST, request.FILES)
+                if user_form.is_valid() and personalinfo_form.is_valid():
+                        user_form.save()
+                        
+                        staff = StaffManager.objects.get(email=personalinfo_form.cleaned_data['email'])
+                        staff.staff_id = User.objects.get(username=user_form.cleaned_data['username'])
+                        staff.fname = personalinfo_form.cleaned_data['fname']
+                        staff.lname = personalinfo_form.cleaned_data['lname']
+                        staff.birthday = personalinfo_form.cleaned_data['birthday']
+                        staff.address = personalinfo_form.cleaned_data['address']
+                        staff.id_photo = personalinfo_form.cleaned_data['id_photo']
+                        staff.profile_pic = personalinfo_form.cleaned_data['profile_pic']
+                        staff.save()
+                        
+                        print(user_form)
+                        print(personalinfo_form)
+                        
+                        messages.success(request, f'Account Created!')
+                        return redirect("staff_home")
+                else:
+                        print(user_form.errors)
+                        print(personalinfo_form.errors)
+                        messages.error(request, user_form.errors)
+                        messages.error(request, personalinfo_form.errors)
+                        
+                        user_form = UserRegisterForm()
+                        personalinfo_form = AddStaff()
+        else:
+                user_form = UserRegisterForm()
+                personalinfo_form = AddStaff()
+                
+        return render(request, "staff/include/staff_registration.html", locals())
         
 
 @csrf_exempt

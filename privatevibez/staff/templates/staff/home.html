@@ -2,7 +2,11 @@
 {% load static %}
 {% block content %}
 <!-- Button trigger modal -->
-
+{% if err %}
+    {% for e in err %}
+    {{e}}
+    {% endfor %}
+{% endif %}
   <!-- offcanvas -->
     <div class="offcanvas offcanvas-start sidebar-nav bg-dark row" tabindex="-1" id="sidebar">
         <div class="offcanvas-body p-0">

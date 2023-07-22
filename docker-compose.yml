@@ -6,25 +6,18 @@ services:
       context: .
 
     command: >
-      sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+      sh -c "python manage.py clearsessions && python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
 
     volumes:
     - ./privatevibez:/privatevibez
+    - ./privatevibez:/app/db 
     ports:
     - 8000:8000
     environment:
     - SECRET_KEY=devsecretkey
     - DEBUG=1
 
-    depends_on:
-    - db
 
-  db:
-    image: nouchka/sqlite3:latest
-    volumes:
-      - ./data/db:/root/db
-    environment:
-      - SQLITE3_DB=db.sqlite3
 
 
   # db:
