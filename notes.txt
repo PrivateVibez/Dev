@@ -13,3 +13,10 @@ DOCKER
       -I have configured docker-compose, it took me a while to configure since I haven't used docker before but it was fun! It's working, I put sqlite3 for the mean time as database since we are
       still in development mode.
 
+
+STAFF
+
+      July 22, 2023
+
+      -I worked on the staff creation where a link to the form where the staff should be filled up is sent to email. It is working but there are some issues which I will be fixing tomorrow.
+
