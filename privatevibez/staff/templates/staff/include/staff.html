@@ -10,7 +10,7 @@
       <th scope="col">Log in time</th>
       <th scope="col">Log out time</th>
       <th scope="col">Task</th>
-      <th scope="col">Details</th>
+      <th scope="col"></th>
       <th scope="col"><!-- Button trigger modal -->
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStaffmodal">
           Add Staff
@@ -23,9 +23,33 @@
     {% for session in sessions_info %}
 
     <tr>
-      <th scope="row"></th>
-      <td>{{session.user}}</td>
-      <td>{% if session.is_session_active %}Online{% endif %}</td>
+ 
+      <td>{{session.username}}</td>
+      <td>{% if session.is_session_active %}Online 
+        
+        {% else %} Offline
+        {% endif %}</td>
+      <td>{{ session.login_time }}</td>
+      <td>{% if not session.is_session_active %}{{ session.logout_time}}{% endif %}</td>
+      <td> 
+        <button type="button" onclick="editStaff({{session.user_id}})" class="btn btn-primary" data-toggle="modal" data-target="#editPermissionmodal">
+        Edit permission
+      </button> 
+    </td>
+
+    <td> 
+      <button type="button" onclick="editStaff({{session.user_id}})" class="btn btn-primary" data-toggle="modal" data-target="#editStaffmodal">
+      Edit Staff
+    </button> 
+  </td>
+
+    <td> 
+      <button type="button" onclick="deleteStaff({{session.user_id}})" class="btn btn-primary" data-toggle="modal" data-target="#deleteStaffmodal">
+      Delete Staff
+    </button> 
+  </td>
+
+
       {% comment %} <td><button type="button" class="btn btn-secondary">Details</button></td> {% endcomment %}
     </tr>
     {% endfor %}
@@ -61,9 +85,15 @@
           <div class="form-group">
             <label for="permission">Choose permissions</label>
             <select class="permissions my-2" id="permissions" multiple="multiple" name="permissions" style="width: 50%">
+
               <option value="can_add_staff">Can add staff</option>
               <option value="can_edit_staff">Can edit staff</option>
-              <option value="can_delete_staff">Can delete staff</option>
+              <option value="can_view_dashboard">Can view dashboard</option>
+              <option value="can_view_id_check">Can view ID Check</option>
+              <option value="can_view_bad_acters">Can view bad acters</option>
+              <option value="can_view_todo_list">Can view to do list</option>
+              <option value="can_view_inbox">Can view inbox</option>
+
             </select>
           </div>
 
@@ -81,6 +111,164 @@
 
 
 
+{% comment %} MODAL FOR EDITING STAFF PERMISSIONS {% endcomment %}
+
+
+<div class="modal fade" id="editPermissionmodal" tabindex="-1" role="dialog" aria-labelledby="editPermissionmodal" aria-hidden="true">
+
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Staff</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <form action="{% url 'editStaffPermission'%}" method="POST">
+      
+
+          <div class="form-group">
+            <label for="existing_permissions">Choose permissions</label>
+            <select class="permissions my-2" id="existing_permissions" multiple="multiple" name="existing_permissions" style="width: 50%">
+
+              <option value="can_add_staff">Can add staff</option>
+              <option value="can_edit_staff">Can edit staff</option>
+              <option value="can_delete_staff">Can delete staff</option>
+              <option value="can_view_dashboard">Can view dashboard</option>
+              <option value="can_view_id_check">Can view ID Check</option>
+              <option value="can_view_bad_acters">Can view bad acters</option>
+              <option value="can_view_todo_list">Can view to do list</option>
+              <option value="can_view_inbox">Can view inbox</option>
+
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-primary my-2">Submit</button>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% comment %} MODAL FOR EDITING STAFF DETAILS {% endcomment %}
+<div class="modal fade" id="editStaffmodal" tabindex="-1" role="dialog" aria-labelledby="editStaffmodal" aria-hidden="true">
+
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Staff</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <form method="POST" action="" class="d-flex flex-column gap-4" enctype="multipart/form-data">
+    
+          <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email">
+          </div>
+      
+      
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" aria-describedby="emailHelp" placeholder="Enter username">
+          </div>
+        
+        
+          <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" class="form-control" name="password1" id="password" placeholder="Password">
+          </div>
+        
+        
+            <input type="text" value="1" class="" style="display: none;" name="is_staff" id="is_staff" placeholder="">
+        
+        
+          <div class="form-group">
+            <label for="password2">Confirm password</label>
+            <input type="password" class="form-control" name="password2" id="password2" placeholder="Confirm Password">
+          </div>
+        
+        
+              {% comment %} Personal Information {% endcomment %}
+        
+          <div class="form-group">
+            <label for="fname">First name</label>
+            <input type="text" class="form-control" name="fname" id="fname" placeholder="First Name">
+          </div>
+        
+          <div class="form-group">
+            <label for="lname">Last Name</label>
+            <input type="text" class="form-control" name="lname" id="lname" placeholder="Last Name">
+          </div>
+        
+          <div class="form-group">
+            <label for="birthday">Birthday</label>
+            <input type="date" class="form-control" name="birthday" id="birthday" placeholder="Birthday">
+          </div>
+        
+          <div class="form-group">
+            <label for="birthday">Address</label>
+            <input type="text" class="form-control" name="address" id="address" placeholder="Address">
+          </div>
+        
+          <div class="form-group">
+            <label for="id_photo">ID</label>
+            <input type="file" class="form-control" name="id_photo" id="id_photo" placeholder="id_photo">
+          </div>
+        
+          <div class="form-group">
+            <label for="profile_pic">Profile picture</label>
+            <input type="file" class="form-control" name="profile_pic" id="profile_pic" placeholder="profile_pic">
+          </div>
+        
+        
+        
+        
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% comment %} MODAL FOR DELETING STAFF {% endcomment %}
+
+<!-- Modal -->
+<div class="modal fade" id="deleteStaffmodal" tabindex="-1" role="dialog" aria-labelledby="deleteStaffmodal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h3> Are you sure? </h3>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
 
 
 
@@ -94,8 +282,71 @@
   // Pass single element
   const element = document.getElementById('permissions');
   const choices = new Choices(element, {
-    // Options (if needed)
+    removeItemButton: true, 
 });
+
+  const existing_permissions = document.getElementById('existing_permissions');
+  const choices_2 = new Choices(existing_permissions, {
+    removeItemButton: true, 
+});
+
+
+{% comment %} GET PERMISSION FOR A STAFF {% endcomment %}
+
+function get_staff_permission(user_id)
+{
+
+  $.ajax({
+    method:'GET',
+    url: "/staff/getPermission/",
+    mimeType:"multipart/form-data",
+    data:{  
+        'staff'  : user_id,
+    },
+    'dataType': 'json',
+    success:function(data){
+              // create a new table row
+              for (const item of data.data) {
+                let option = document.createElement("option");
+                option.value = item.codename;
+                option.text = item.name;
+                option.selected = true;
+                existing_permissions.append(option);
+
+              }
+      
+    },
+    error:function(errors){
+        console.log(errors.responseText);
+    }
+});
+
+}
+
+
+{% comment %} AJAX FUNCTION FOR RETRIEVING STAFF INFORMATION {% endcomment %}
+function editStaff(user_id){
+  $.ajax({
+    method:'GET',
+    url: "/staff/getStaffInformation/",
+    mimeType:"multipart/form-data",
+    data:{  
+        'staff'  : user_id,
+    },
+    'dataType': 'json',
+    success:function(data){
+              // create a new table row
+
+              console.log(data.data)
+
+      
+    },
+    error:function(errors){
+        console.log(errors.responseText);
+    }
+});
+
+}
 </script>
 
 

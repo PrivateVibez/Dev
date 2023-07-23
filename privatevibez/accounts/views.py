@@ -9,6 +9,8 @@ from .models import *
 from chat.models import Private, Public
 from rooms.models import *
 from django.contrib.auth.decorators import login_required
+from staff.models import StaffManager
+from django.utils import timezone
 
 def Logout(request):
     
@@ -16,6 +18,9 @@ def Logout(request):
     
     Private.objects.filter(From_id = request.user).delete()
     Public.objects.filter(User_id = request.user).delete()
+    
+    if StaffManager.objects.filter(staff_id = request.user).exists():
+        StaffManager.objects.filter(staff_id = request.user).update(logout_time = timezone.now())
     logout(request)
     messages.error(request, 'You are Log out')
     return redirect('Main_home')
@@ -30,10 +35,16 @@ def Login(request):
             login(request, user)
             messages.success(request, f'Thanks for coming back {username}!')
             status = User_Status.objects.get(User = request.user).Status
-            if status == "STAFF":
-                return redirect('staff_home')
-            if status == "Broadcaster":
-                return redirect(f'/room/{username}')
+            if status:
+                status = User_Status.objects.get(User = request.user).Status
+                if status == "STAFF":
+                        return redirect('staff_home')
+                if status == "Broadcaster":
+                        return redirect(f'/room/{username}')
+                else:
+                    if StaffManager.objects.filter(staff_id = request.user).exists():
+                        return redirect('staff_home')
+                    
             
             return redirect('Main_home')
         else:

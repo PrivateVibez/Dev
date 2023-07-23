@@ -54,11 +54,18 @@ class StaffManager(models.Model):
         id_photo = models.ImageField(upload_to='ID',null=True,blank=True)
         profile_pic = models.ImageField(upload_to='profile_pic',null=True,blank=True)
         user_permissions = models.ManyToManyField(Permission, blank=True)
+        logout_time = models.DateTimeField(null=True, blank=True)
         class Meta:
             permissions = [
                 ("can_add_staff", "Can add staff"),
                 ("can_edit_staff", "Can edit a staff"),
                 ("can_delete_staff", "Can delete a staff"),
+                ("can_view_staff", "Can view a staff"),
+                ("can_view_dashboard", "Can view a dashboard"),
+                ("can_view_id_check", "Can view a ID Check"),
+                ("can_view_bad_acters", "Can view a bad acters"),
+                ("can_view_todo_list", "Can view a todo list"),
+                ("can_view_inbox", "Can view a inbox"),
             ]
         
         def add_staff(self, user):

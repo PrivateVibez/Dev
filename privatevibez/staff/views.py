@@ -17,15 +17,19 @@ from django.core.mail import BadHeaderError, send_mail
 from django.shortcuts import redirect
 from .forms import UserRegisterForm
 from django.contrib.contenttypes.models import ContentType
-
-
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse as httpresponse
+from django.forms.models import model_to_dict
+from django.core import serializers
+from datetime import datetime
+import json
 
 
 # Create your views here.
 
 def home(request):
 
-        
+   
         pending = User_Status.objects.filter(Status='Pending_Broadcaster')
         pending_user_id = list(pending.values_list('User__id',flat=True))
         user_data = User_Data.objects.filter(User__id__in=pending_user_id)
@@ -50,29 +54,56 @@ def home(request):
 
         # Get a list of dictionaries with session information for all users
         sessions_info = []
+        staff_ids = []
+        
         all_sessions = Session.objects.all()
-        # all_sessions = all_sessions.session_data
+        staff_list = StaffManager.objects.all()
         
         
-        for session in all_sessions:
- 
-                session = Session.objects.get(pk=session)
-                session_data = session.get_decoded()
-                user_id = session_data.get('_auth_user_id')
-                print(user_id)
-  
-                user = User.objects.get(pk=user_id)
-                is_session_active = session.expire_date > timezone.now()
+        # Query all existing Staff
+        for staff in staff_list:
+
+                try:
+                        
+                        current_staff = User.objects.get(email=staff.email)
+                        login_time = current_staff.last_login
                 
+                except User.DoesNotExist:
+                        login_time = None
+                        
+                        
                 sessions_info.append({
-                        'user': user.username,
-                        'session_expire': session.expire_date,
-                        'is_session_active': is_session_active,
-                }),
-        
-        print(sessions_info)
-        
-        
+                'user_id': None if staff.staff_id_id is None else staff.staff_id_id,
+                'username': staff.email if staff.fname is None else staff.fname,
+                'login_time': login_time.strftime("%Y-%m-%d %H:%M:%S"),
+                'logout_time': None if staff.logout_time is None else staff.logout_time.strftime("%Y-%m-%d %H:%M:%S"),    
+                'is_session_active': False if current_staff else 'Pending',
+                   
+                })
+                
+                for session in all_sessions:
+   
+                        session_data = session.get_decoded()
+                        user_id = session_data.get('_auth_user_id')
+                        
+                        try:
+                                
+                                user = User.objects.get(pk=user_id)
+                        except User.DoesNotExist:
+                                user = None
+                        
+                        if user is not None:
+                                if staff.staff_id_id == user.id:
+                                        for session_info in sessions_info:
+                                                if session_info['user_id'] == user.id:
+                                                        session_info['login_time'] = user.last_login
+                                                        session_info['logout_time'] = staff.logout_time
+                                                        session_info['is_session_active'] = True
+                                                        break
+
+                                        
+                   
+
         return render(request, "staff/home.html", locals())
         
 @csrf_exempt
@@ -114,7 +145,49 @@ def Create_Staff(request):
         form =UserRegisterForm()
     return render(request, "accounts/registration.html", {'create_staff': form})
 
+@csrf_exempt
+def getPermission(request):
+        
+        staff = request.GET.get('staff')
+        staff = StaffManager.objects.get(staff_id_id=staff)
+        staff_permission = staff.user_permissions.values('name','codename')
+ 
+        return JsonResponse ({'data' : list(staff_permission)}) 
 
+def encode_datetime(obj):
+    """
+    Extended encoder function that helps to serialize dates and images
+    """
+    if isinstance(obj, datetime.date):
+        try:
+            return obj.strftime('%Y-%m-%d')
+        except (ValueError, e):
+            return ''
+
+    if isinstance(obj, ImageFieldFile):
+        try:
+            return obj.path
+        except (ValueError, e):
+            return ''
+
+    raise TypeError(repr(obj) + " is not JSON serializable")
+
+def getStaffInformation(request):
+        
+        staff = request.GET.get('staff')
+        staff = StaffManager.objects.values('email','staff_id','fname','lname','address').get(staff_id_id=staff)
+        staff_id_and_profile_pic_and_bday = StaffManager.objects.values('staff_id','profile_pic','birthday').get(staff_id_id=staff['staff_id'])
+        
+        staff_id = encode_datetime(staff_id_and_profile_pic_and_bday['staff_id'])
+        staff_profile_pic = encode_datetime(staff_id_and_profile_pic_and_bday['profile_pic'])
+        staff_bday = encode_datetime(staff_id_and_profile_pic_and_bday['birthday'])
+        
+        return JsonResponse ({'data' : model_to_dict(staff), 'staff_id' : staff_id, 'staff_profile_pic' : staff_profile_pic, 'staff_bday' : staff_bday}) 
+
+@csrf_exempt
+def editStaffPermission(request):
+        
+        return httpresponse(request)
 
 @csrf_exempt
 def sendStaffInvitation(request):
@@ -161,17 +234,25 @@ def staffRegistration(request):
                 user_form = UserRegisterForm(request.POST)
                 personalinfo_form = AddStaff(request.POST, request.FILES)
                 if user_form.is_valid() and personalinfo_form.is_valid():
-                        user_form.save()
                         
-                        staff = StaffManager.objects.get(email=personalinfo_form.cleaned_data['email'])
-                        staff.staff_id = User.objects.get(username=user_form.cleaned_data['username'])
-                        staff.fname = personalinfo_form.cleaned_data['fname']
-                        staff.lname = personalinfo_form.cleaned_data['lname']
-                        staff.birthday = personalinfo_form.cleaned_data['birthday']
-                        staff.address = personalinfo_form.cleaned_data['address']
-                        staff.id_photo = personalinfo_form.cleaned_data['id_photo']
-                        staff.profile_pic = personalinfo_form.cleaned_data['profile_pic']
-                        staff.save()
+                        
+                        # CHECK IF THE EMAIL IS PRESENT IN THE DATABASE
+                        try:
+                               
+                                staff = StaffManager.objects.get(email=user_form.cleaned_data['email'])
+                                user_form.save()
+                                staff.staff_id = User.objects.get(username=user_form.cleaned_data['username'])
+                                staff.fname = personalinfo_form.cleaned_data['fname']
+                                staff.lname = personalinfo_form.cleaned_data['lname']
+                                staff.birthday = personalinfo_form.cleaned_data['birthday']
+                                staff.address = personalinfo_form.cleaned_data['address']
+                                staff.id_photo = personalinfo_form.cleaned_data['id_photo']
+                                staff.profile_pic = personalinfo_form.cleaned_data['profile_pic']
+                                staff.save()
+                        except StaffManager.DoesNotExist:
+                                messages.error(request, "Use the email you were invited with")
+                                
+
                         
                         print(user_form)
                         print(personalinfo_form)
