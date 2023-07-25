@@ -1,3 +1,15 @@
+        apt-get update &&
+        apt upgrade -y &&
+        apt install software-properties-common -y &&
+        apt-add-repository multiverse &&
+        apt-get update &&
+        apt-get install unrar -y &&
+        apt-get install ffmpeg -y &&
+        apt-get install -y python3 python3-pip &&
+        python /mnt/Python/MediaFlow.py &&      
+      
+      
+      
                                     ACCOMPLISHED TASKS
 CHATTING
 

@@ -4,6 +4,9 @@ from django.http import JsonResponse
 from .models import *
 from staff.models import StaffRoomManager
 import json
+from staff.serializers import StaffRoomManagerSerializer
+from rest_framework.renderers import JSONRenderer
+from django.http import HttpResponse as httpresponse
 
 User = get_user_model()
 
@@ -21,11 +24,17 @@ def fan_list(request, broc):
         return JsonResponse({'data': []})
     
 def staff_list(request, broc):
-    try:
-        staff = User.objects.get(username=broc,is_staff=True)
-        staff_room_manager = StaffRoomManager.objects.get(Staff=staff)
-        staff_list = StaffRoomManager.objects.all()
-        print(staff_room_manager)
-        return JsonResponse({'data': list(staff_list)})
-    except:
-        return JsonResponse({'data': []})
+
+    staff = User.objects.get(username=broc,is_staff=True)
+
+    staff_room_manager = StaffRoomManager.objects.get(Staff=staff.id)
+    staff_list = StaffRoomManager.objects.all()
+    
+    json = StaffRoomManagerSerializer(staff_list)
+    
+    
+  
+    
+    jsonformat = JSONRenderer().render(json.data)
+    
+    return httpresponse(jsonformat, content_type='application/json')

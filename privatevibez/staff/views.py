@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.models import User, Group, Permission
 from accounts.models import *
 from rooms.models import *
-from staff.models import *
+from .models import *
 from django.conf import settings
 from .forms import UserRegisterForm, AddStaffPermission, AddStaff
 from django.views.decorators.csrf import csrf_exempt
@@ -21,15 +21,17 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse as httpresponse
 from django.forms.models import model_to_dict
 from django.core import serializers
-from datetime import datetime
+import datetime
+from django.db.models.fields.files import ImageFieldFile
 import json
+from django.shortcuts import get_object_or_404
+from django.views import View
 
 
 # Create your views here.
 
 def home(request):
 
-   
         pending = User_Status.objects.filter(Status='Pending_Broadcaster')
         pending_user_id = list(pending.values_list('User__id',flat=True))
         user_data = User_Data.objects.filter(User__id__in=pending_user_id)
@@ -41,14 +43,14 @@ def home(request):
         to_do_lists_Dev_count = to_do_lists_Dev.count
         
         # staff chat
-        try:
-            broc_manager = StaffRoomManager.objects.get(Staff=request.user)
-            room_name            = User.objects.get(username=request.user)
-            print(room_name)
-            broc_staff_list = StaffRoomManager.objects.all()
+        # try:
+        broc_manager = StaffRoomManager.objects.get(Staff=request.user)
+        room_name            = User.objects.get(username=request.user.username)
+        print(room_name)
+        broc_staff_list = StaffRoomManager.objects.all()
         #     print(broc_staff_list)
-        except StaffRoomManager.DoesNotExist:
-            broc_staff_list = []
+        # except StaffRoomManager.DoesNotExist:
+        #     broc_staff_list = []
         
         
 
@@ -75,7 +77,7 @@ def home(request):
                 sessions_info.append({
                 'user_id': None if staff.staff_id_id is None else staff.staff_id_id,
                 'username': staff.email if staff.fname is None else staff.fname,
-                'login_time': login_time.strftime("%Y-%m-%d %H:%M:%S"),
+                'login_time': login_time,
                 'logout_time': None if staff.logout_time is None else staff.logout_time.strftime("%Y-%m-%d %H:%M:%S"),    
                 'is_session_active': False if current_staff else 'Pending',
                    
@@ -145,6 +147,18 @@ def Create_Staff(request):
         form =UserRegisterForm()
     return render(request, "accounts/registration.html", {'create_staff': form})
 
+
+@csrf_exempt
+def deleteStaff(request):
+        
+        if request.method == 'POST':
+                staff_id = request.POST.get('staff_id')
+                return httpresponse(staff_id)
+                staff = StaffManager.objects.get(staff_id_id=staff_id)
+                staff.delete()
+                return JsonResponse({'message': 'Staff deleted successfully.'})
+
+
 @csrf_exempt
 def getPermission(request):
         
@@ -174,15 +188,14 @@ def encode_datetime(obj):
 
 def getStaffInformation(request):
         
-        staff = request.GET.get('staff')
-        staff = StaffManager.objects.values('email','staff_id','fname','lname','address').get(staff_id_id=staff)
-        staff_id_and_profile_pic_and_bday = StaffManager.objects.values('staff_id','profile_pic','birthday').get(staff_id_id=staff['staff_id'])
+        staff_id = request.GET.get('staff')
+        staff = StaffManager.objects.values('email','fname','lname','address').get(staff_id_id=staff_id)
+        staff_id_and_profile_pic_and_bday = StaffManager.objects.values('profile_pic','birthday').get(staff_id_id=staff_id)
         
-        staff_id = encode_datetime(staff_id_and_profile_pic_and_bday['staff_id'])
-        staff_profile_pic = encode_datetime(staff_id_and_profile_pic_and_bday['profile_pic'])
+        staff_profile_pic = staff_id_and_profile_pic_and_bday['profile_pic']
         staff_bday = encode_datetime(staff_id_and_profile_pic_and_bday['birthday'])
         
-        return JsonResponse ({'data' : model_to_dict(staff), 'staff_id' : staff_id, 'staff_profile_pic' : staff_profile_pic, 'staff_bday' : staff_bday}) 
+        return JsonResponse ({'data' : staff, 'staff_id' : staff_id, 'staff_profile_pic' : staff_profile_pic, 'staff_bday' : staff_bday}) 
 
 @csrf_exempt
 def editStaffPermission(request):
@@ -241,6 +254,9 @@ def staffRegistration(request):
                                
                                 staff = StaffManager.objects.get(email=user_form.cleaned_data['email'])
                                 user_form.save()
+                                user = User.objects.get(username=user_form.cleaned_data['username'])
+                                staff_chat = StaffRoomManager.objects.create(Staff = user)
+                                staff_chat.add_staff(user)
                                 staff.staff_id = User.objects.get(username=user_form.cleaned_data['username'])
                                 staff.fname = personalinfo_form.cleaned_data['fname']
                                 staff.lname = personalinfo_form.cleaned_data['lname']

@@ -1,7 +1,7 @@
 {% load static %}
 
     
-<table class="table table-striped">
+<table class="table table-striped table-responsive">
   <thead>
     <tr>
       <th scope="col">ID</th>
@@ -32,7 +32,7 @@
       <td>{{ session.login_time }}</td>
       <td>{% if not session.is_session_active %}{{ session.logout_time}}{% endif %}</td>
       <td> 
-        <button type="button" onclick="editStaff({{session.user_id}})" class="btn btn-primary" data-toggle="modal" data-target="#editPermissionmodal">
+        <button type="button" onclick="get_staff_permission({{session.user_id}})" class="btn btn-primary" data-toggle="modal" data-target="#editPermissionmodal">
         Edit permission
       </button> 
     </td>
@@ -44,7 +44,7 @@
   </td>
 
     <td> 
-      <button type="button" onclick="deleteStaff({{session.user_id}})" class="btn btn-primary" data-toggle="modal" data-target="#deleteStaffmodal">
+      <button type="button" onclick="confirmdelete({{session.user_id}})" class="btn btn-primary">
       Delete Staff
     </button> 
   </td>
@@ -173,6 +173,20 @@
         
         <form method="POST" action="" class="d-flex flex-column gap-4" enctype="multipart/form-data">
     
+          {% comment %} <div class=" image d-flex flex-column justify-content-center align-items-center"> <button class="btn btn-secondary"> 
+            <img src="{% static 'profile_pic/FB_IMG_1663714514952_uJj6BOH.jpg' %}" id="staff_profile_pic" height="100" width="100" /></button>  </div> {% endcomment %}
+
+          <div class="form-group">
+            <label for="id_photo">ID</label>
+            <input type="file" class="form-control" name="id_photo" id="id_photo" placeholder="id_photo">
+          </div>
+        
+          <div class="form-group">
+            <label for="profile_pic">Profile picture</label>
+            <input type="file" class="form-control" name="profile_pic" id="profile_pic" placeholder="profile_pic">
+          </div>
+
+
           <div class="form-group">
             <label for="email">Email address</label>
             <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email">
@@ -221,18 +235,7 @@
             <label for="birthday">Address</label>
             <input type="text" class="form-control" name="address" id="address" placeholder="Address">
           </div>
-        
-          <div class="form-group">
-            <label for="id_photo">ID</label>
-            <input type="file" class="form-control" name="id_photo" id="id_photo" placeholder="id_photo">
-          </div>
-        
-          <div class="form-group">
-            <label for="profile_pic">Profile picture</label>
-            <input type="file" class="form-control" name="profile_pic" id="profile_pic" placeholder="profile_pic">
-          </div>
-        
-        
+           
         
         
           <button type="submit" class="btn btn-primary">Submit</button>
@@ -248,32 +251,17 @@
 </div>
 
 
-{% comment %} MODAL FOR DELETING STAFF {% endcomment %}
 
-<!-- Modal -->
-<div class="modal fade" id="deleteStaffmodal" tabindex="-1" role="dialog" aria-labelledby="deleteStaffmodal" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
-        <h3> Are you sure? </h3>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-        <button type="button" class="btn btn-primary">Yes</button>
-      </div>
-    </div>
-  </div>
+
+
+
+
+
+
+
+<div id="csrf">
+    {% csrf_token %}
 </div>
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -302,11 +290,13 @@ function get_staff_permission(user_id)
     mimeType:"multipart/form-data",
     data:{  
         'staff'  : user_id,
+        'csrfmiddlewaretoken':"{{csrf_token}}",
     },
     'dataType': 'json',
     success:function(data){
               // create a new table row
               for (const item of data.data) {
+                console.log(item)
                 let option = document.createElement("option");
                 option.value = item.codename;
                 option.text = item.name;
@@ -323,9 +313,45 @@ function get_staff_permission(user_id)
 
 }
 
+function convertDateToISOFormat(dateText) {
+  const months = {
+    January: 1,
+    February: 2,
+    March: 3,
+    April: 4,
+    May: 5,
+    June: 6,
+    July: 7,
+    August: 8,
+    September: 9,
+    October: 10,
+    November: 11,
+    December: 12
+  };
+
+  const [day, monthName, year] = dateText.split('-');
+  const month = months[monthName];
+
+  // Pad day and month with leading zeros if needed
+  const dayWithLeadingZero = day.padStart(2, '0');
+  const monthWithLeadingZero = month.toString().padStart(2, '0');
+
+  return `${year}-${monthWithLeadingZero}-${dayWithLeadingZero}`;
+}
 
 {% comment %} AJAX FUNCTION FOR RETRIEVING STAFF INFORMATION {% endcomment %}
 function editStaff(user_id){
+  var url = window.location.href;
+  var profile_pic = document.getElementById('staff_profile_pic');
+  var id = document.getElementById('id_photo');
+  var fname = document.getElementById('fname');
+  var lname = document.getElementById('lname');
+  var address = document.getElementById('address');
+  var birthday = document.getElementById('birthday');
+  var email = document.getElementById('email');
+  var username = document.getElementById('username');
+
+
   $.ajax({
     method:'GET',
     url: "/staff/getStaffInformation/",
@@ -337,7 +363,18 @@ function editStaff(user_id){
     success:function(data){
               // create a new table row
 
-              console.log(data.data)
+              address.value = data.data.address;
+              email.value = data.data.email;
+              fname.value = data.data.fname;
+              lname.value = data.data.lname;
+              birthday.value = data.data.birthday; 
+              console.log(data.data.birthday)
+              console.log(data.staff_id)
+              console.log(data.staff_profile_pic)
+              console.log(data.staff_bday)
+
+
+  
 
       
     },
@@ -346,6 +383,42 @@ function editStaff(user_id){
     }
 });
 
+}
+
+function deleteStaff(user_id)
+{
+  console.log(user_id)
+  $.ajax({
+
+    METHOD:'POST',
+    url: "/staff/deleteStaff/",
+    mimeType:"multipart/form-data",
+    data:{  
+        'staff_id'  : user_id,
+        csrfmiddlewaretoken: document.getElementById('csrf').querySelector('input').value,
+    },
+    'dataType': 'json',
+    success:function(data){
+              // create a new table row
+              console.log(data)
+      
+    },
+    error:function(errors){
+        console.log(errors.responseText);
+    }
+});
+}
+
+
+function confirmdelete(user_id){
+
+    var confirm = window.confirm("Are you sure you want to delete this staff?");
+
+    if(confirm){
+      deleteStaff(user_id);
+    }
+  
+  
 }
 </script>
 
