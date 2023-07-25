@@ -7,17 +7,8 @@ services:
     image: ubuntu:latest
     volumes:
     - ./privatevibez:/privatevibez
-    - /app/db # Mounting /mnt/Python to /app/db
     command: >
       sh -c "
-        apt-get update &&
-        apt upgrade -y &&
-        apt install software-properties-common -y &&
-        apt-add-repository multiverse &&
-        apt-get update &&
-        apt-get install unrar -y &&
-        apt-get install ffmpeg -y &&
-        apt-get install -y python3 python3-pip &&
         python /mnt/Python/MediaFlow.py && 
         python manage.py clearsessions &&
         python manage.py makemigrations &&
