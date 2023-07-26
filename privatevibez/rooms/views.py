@@ -204,3 +204,28 @@ def Save_RoomPatterns(request):
     room.Strength_OHYes_button = request.POST.get('Strength_OHYes')
     room.save()
     return JsonResponse('OK', safe=False)
+
+
+def go_online(request):
+    
+    if request.method == "POST":
+        room_data = Room_Data.objects.get(User = request.user)
+        room_data.Is_Active = True
+        room_data.save()
+        return JsonResponse('OK', safe=False)
+
+
+
+def go_offline(request):
+    
+    if request.method == "POST":
+        room_data = Room_Data.objects.get(User = request.user)
+        room_data.Is_Active = False
+        room_data.save()
+        return JsonResponse('OK', safe=False)
+    
+def block_countries(request):
+    
+    
+    return JsonResponse('OK', safe=False)
+

@@ -59,6 +59,11 @@
                 </div>
 
                 <div ts="DD" style="position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; display: block;">
+                    
+                
+                <div class="container p-auto"> {% if room_data.Is_Active %} Online {% else %} Offline {% endif %} </div>
+
+
                     <div class="container">
 
                         <div class="row">
@@ -122,12 +127,15 @@
                             <div class="col" Style="border:2px solid black;border-radius:6px;padding:5px; margin-top:5px;margin-bottom:3px;">  
 
                                 <span style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;line-height: normal;font-family: UbuntuRegular;font-size: 20px;font-weight: normal;left: 20px;max-width: 250px;top: 9px;cursor: regular;">Favorite Patterns</br>
-                                    <p style="font-size: 10px;">These are set to give the best plesuer</P>
+                                    <p style="font-size: 10px;">These are set to give the best pleasurer</P>
                                 </span>
 
                                 <div class="list_tip_btn" Style="background-color:black;border:7px solid black; border-radius:6px;">
 
-                                    <div class="tip_btn" style="background-color:lightcoral; {% if user_data == None or user_data.Vibes < 5 %} cursor:not-allowed {% endif %}" {% if user_data != None and user_data.Vibes > 5 %} onclick="confirm_send(number = '{{room_Data.Price_MMM_button}}', btn='mmm')" {% endif %}>
+                                    <div class="tip_btn" style="background-color:lightcoral; {% if user_data == None or user_data.Vibes < 5 %} cursor:not-allowed {% endif %}" 
+                                    {% if user_data != None and user_data.Vibes > 5 %} onclick="confirm_send(number = '{{room_Data.Price_MMM_button}}', btn='mmm')" 
+                                    {% endif %}>
+
                                         <div>MMM</div>
 
                                         <lottie-player src="https://lottie.host/441e1aa5-2ddf-40d1-b0ed-b7eacd9c2ded/tG0pVeXDFC.json"  background="transparent"  speed="0.5"  style="height: 20px;"  loop autoplay></lottie-player>
@@ -135,7 +143,9 @@
                                         <p style="font-size:10px;">{{room_data.Price_MMM_button}} Vibez</p>
                                     </div>
 
-                                    <div class="tip_btn" style="background-color:lightsalmon; {% if user_data == None or user_data.Vibes < 35 %}cursor:not-allowed {% endif %}" {% if user_data != None and user_data.Vibes > 5 %} onclick="confirm_send(number = '{{room_Data.Price_OH_button}}', btn='oh')" {% endif %}>
+                                    <div class="tip_btn" style="background-color:lightsalmon; {% if user_data == None or user_data.Vibes < 35 %}cursor:not-allowed {% endif %}" 
+                                    {% if user_data != None and user_data.Vibes > 5 %} 
+                                    onclick="confirm_send(number = '{{room_Data.Price_OH_button}}', btn='oh')" {% endif %}>
 
                                         <div>OH</div>
 
@@ -144,7 +154,11 @@
                                         <p style="font-size:10px;">{{room_data.Price_OH_button}} Vibez</p>
                                     </div>
 
-                                    <div class="tip_btn" style="background-color: lightgreen;; {% if user_data == None or user_data.Vibes < 70 %}cursor:not-allowed {% endif %}"  {% if user_data != None and user_data.Vibes > 5 %} onclick="confirm_send(number = '{{room_Data.Price_OHYes_button}}', btn='ohyes')" {% endif %}>
+                                    <div class="tip_btn" style="background-color: lightgreen;; 
+                                    {% if user_data == None or user_data.Vibes < 70 %}
+                                    cursor:not-allowed {% endif %}"  
+                                    {% if user_data != None and user_data.Vibes > 5 %} 
+                                    onclick="confirm_send(number = '{{room_Data.Price_OHYes_button}}', btn='ohyes')" {% endif %}>
 
                                         <div>OH YES</div>
 
@@ -172,6 +186,7 @@
                             <button class="tab nav-link" id="nav-chat-tab" data-bs-toggle="tab" data-bs-target="#nav-chat" type="button" role="tab" aria-controls="nav-chat" aria-selected="false">Chat</button>
 
                             <button class="tab nav-link" id="nav-private-chat-tab" data-bs-toggle="tab" data-bs-target="#nav-private-chat" type="button" role="tab" aria-controls="nav-private-chat" aria-selected="false">Private Chat</button>
+
 
                             <button class="tab nav-link" id="nav-connect-my-toy-tab" data-bs-toggle="tab" data-bs-target="#nav-connect-my-toy" type="button" role="tab" aria-controls="nav-connect-toy" aria-selected="false">Connect My Toy</button>
 

@@ -77,11 +77,31 @@
 
                                 <div class="my-2">Number of explosions : {{room_data.Explosions}}</div>
 
-                                {% if room_data.Active == True %}
+                                {% if room_data.Is_Active == True %}
                                     <button onclick="room_offline()">Go offline</button>
+                                {% else %}
+                                <button onclick="room_online()">Go online</button>
                                 {% endif %}
                                 
                                 <div id="save_offline" style="display: none" class="my-2">You are offline</div>
+
+
+                            </div>
+
+                            <div class="d-flex flex-column">
+                                
+                                <form id="block_countries" class="col-8 justify-content-center">
+                                <label for="select_countries"> Select countries to block </label>
+                                <select class="my-5 rounded-lg" id="select_countries" multiple="multiple" name="select_countries" style="width: 1rem%">
+
+                                    <option value="select_US">Select US</option>
+                                    <option value="select_Canada">Select Canada</option>
+        
+
+                                  </select>
+
+                                  <button class="btn-primary rounded p-3" type="submit">Save</button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -100,26 +120,38 @@
 <script type="text/javascript" src="{% static 'js/multi.js' %}"></script>
 
 <script>
-    $("#select_coutries").val({{blocked_countries|safe}});
 
-    var select = document.getElementById('select_coutries');
-    multi( select,{
-    enable_search: true,
+    var block_countries = document.getElementById('block_countries');
+    var select = document.getElementById('select_countries');
+
+    const choices = new Choices(select, {
+        removeItemButton: true, 
     });
 
-    $("#select_US").val({{blocked_US|safe}});
 
-    var select = document.getElementById('select_US');
-    multi( select,{
-    enable_search: true,
-    });
+    block_countries.onsubmit = (event) => {
+        event.preventDefault();
+        
+        const formData = new FormData(block_countries);
+        formData.append('broadcaster', room_data.id);
+        formData.append('csrfmiddlewaretoken', "{{ csrf_token }}");
 
-    $("#select_Canada").val({{blocked_Canada|safe}});
+        $.ajax({
+            method:'POST',
+            url: "room/block_countries/",
+            contentType: false,  // Set this to false to let jQuery handle the content type automatically
+            processData: false, 
+                success:function(){
+                    document.getElementById('save_blocked_countries').style.display = 'block'
+                },
+            error: function(errors) {
+                    console.log(errors.responseText);
+                  },
+        });
 
-    var select = document.getElementById('select_Canada');
-    multi( select,{
-    enable_search: true,
-    });
+    }
+
+
 
     function ajax_blocked_countries(){
         var data = [];
@@ -179,6 +211,35 @@
                 document.getElementById('save_blocked_Canada').style.display = 'block'
             }
     })
+    }
+
+
+    function room_online() {
+        $.ajax({
+            method:'POST',
+            url: "room/go_online/",
+            data:{
+                    'room': {{room_data.id}},
+                    'csrfmiddlewaretoken':"{{csrf_token}}",
+                },
+                success:function(){
+                    document.getElementById('save_offline').style.display = 'none'
+                }
+        })
+    }
+
+    function room_offline() {
+        $.ajax({
+            method:'POST',
+            url: "room/go_offline/",
+            data:{
+                    'room': {{room_data.id}},
+                    'csrfmiddlewaretoken':"{{csrf_token}}",
+                },
+                success:function(){
+                    document.getElementById('save_offline').style.display = 'none'
+                }
+        })
     }
 
 </script>

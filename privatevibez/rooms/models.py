@@ -18,7 +18,7 @@ class Room_Data(models.Model):
     Strength_MMM_button   = models.IntegerField(null=True,blank=True, default=5)
     Strength_OH_button    = models.IntegerField(null=True,blank=True, default=10)
     Strength_OHYes_button = models.IntegerField(null=True,blank=True, default=15)
-    # Is_Active             = models.BooleanField(default=False)
+    Is_Active             = models.BooleanField(default=False)
     Timestamp             = models.DateTimeField(auto_now_add=True)     
     def __str__(self):
         return str(self.User)
