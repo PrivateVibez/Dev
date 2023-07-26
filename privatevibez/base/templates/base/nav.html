@@ -37,11 +37,17 @@
                                 </i></br>
                             </a>
 
-                            <ul class="dropdown-menu" style="background-color:#6cc6ba; border:none; color:black; padding:8px;" id="dropDown">
+                            <ul class="dropdown-menu" style="background-color:#6cc6ba; border:none; color:black; padding:5px;" id="dropDown">
                                 <li><a data-toggle="modal" data-target="#Profile" ><i class="icofont-page"></i> Profile</a></li>
+
+                                <li><a data-toggle="modal" data-target="#Messages" ><i class="icofont-ui-message"></i>
+                                    Messages</a></li>
 
                                 {% if user_status == "Broadcaster" %} 
                                 <li><a data-toggle="modal" data-target="#Settings" ><i class="icofont-gear"></i> Settings</a></li>
+
+                                <li><a href="/room/{{request.user}}" ><i class="icofont-ui-video-chat"></i> My Room</a></li>
+
                                 {% endif%}
 
                                 <li><a href="/accounts/logout"><i class="icofont-sign-out"></i> Sign Out</a></li>
@@ -237,6 +243,41 @@
     </div>
   </div>
   <!-- Modal -->
+
+
+
+  <!-- Modal for Messages -->
+<div class="modal fade" id="Messages" tabindex="-1" role="dialog" aria-labelledby="Profile_Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="Profile_Label">Messages</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+         
+
+        <div class="d-flex flex-row">
+
+            <div class="col-3">
+                Mikey
+            </div>
+
+            <div class="col-8">
+                yo
+            </div>
+        
+        </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  {% comment %} modal for settings {% endcomment %}
 
 
 <div class="modal fade" id="Settings" tabindex="-1" role="dialog" aria-labelledby="Settings_Label" aria-hidden="true">

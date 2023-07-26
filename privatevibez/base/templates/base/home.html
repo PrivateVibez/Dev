@@ -91,11 +91,14 @@
                 </ul>
                 </br>
                 </br>
-                <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="streamer-tab-pane" role="tabpanel" aria-labelledby="streamer-tab" tabindex="0">
-                        {% for room in rooms %}
-                            {% include 'base/include/broadcaster_cards.html'%}      
+                <div class="tab- container" id="myTabContent">
+                    <div class="tab-pane fade show active row justify-content-center" id="streamer-tab-pane" role="tabpanel" aria-labelledby="streamer-tab" tabindex="0">
+                        {% for room in roms_list %}
+                        
+                            {% include 'base/include/broadcaster_cards.html'%}   
+                     
                         {% endfor %}
+
                     </div>
                     <div class="tab-pane fade" id="female-tab-pane" role="tabpanel" aria-labelledby="female-tab" tabindex="0">                        
                         {% for room in rooms %}

@@ -14,5 +14,12 @@ class PrivateAdmin(admin.ModelAdmin):
     list_display_links = ('From', 'To', 'Message', 'Timestamp')
     list_per_page = 30
 
+
+class StaffAdmin(admin.ModelAdmin):
+    list_display = ('From', 'To', 'Message', 'Timestamp')
+    list_display_links = ('From', 'To', 'Message', 'Timestamp')
+    list_per_page = 30
+    
+admin.site.register(Staff, StaffAdmin)
 admin.site.register(Private, PrivateAdmin)
 admin.site.register(PrivateRoomManager)

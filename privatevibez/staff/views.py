@@ -3,6 +3,7 @@ from django.contrib.auth.models import User, Group, Permission
 from accounts.models import *
 from rooms.models import *
 from .models import *
+from chat.models import Staff
 from django.conf import settings
 from .forms import UserRegisterForm, AddStaffPermission, AddStaff
 from django.views.decorators.csrf import csrf_exempt
@@ -26,35 +27,48 @@ from django.db.models.fields.files import ImageFieldFile
 import json
 from django.shortcuts import get_object_or_404
 from django.views import View
+from .serializers import StaffMessagesSerializer
+from django.db.models import Q
 
 
 # Create your views here.
 
 def home(request):
-
+        bad_acters_list = []
+        
         pending = User_Status.objects.filter(Status='Pending_Broadcaster')
         pending_user_id = list(pending.values_list('User__id',flat=True))
         user_data = User_Data.objects.filter(User__id__in=pending_user_id)
         users_status = User_Status.objects.all()
         users_data = User_Data.objects.all()
+        
         bad_acters = Bad_Acters.objects.all()
+        total_bad_acters_count = bad_acters.count()
+        
+        for bad_acter in bad_acters:
+                bad_acters_list.append({
+                                        
+                                        'reporty': None if bad_acter.Reporty is None else bad_acter.Reporty,
+                                        'reported': None if bad_acter.Reported is None else bad_acter.Reported,
+                                        'message': None if bad_acter.Message is None else bad_acter.Message,
+                                        'status': None if User_Status.objects.get(User=bad_acter.Reporty) is None else User_Status.objects.get(User=bad_acter.Reporty).Status,
+                                        'total_reports': Bad_Acters.objects.filter(Reporty = bad_acter.Reporty).count(),})
+        
         to_do_projects_dev = ToDoProject_Dev.objects.all()
         to_do_lists_Dev = ToDolist_Dev.objects.all()
         to_do_lists_Dev_count = to_do_lists_Dev.count
         
         # staff chat
-        # try:
-        broc_manager = StaffRoomManager.objects.get(Staff=request.user)
-        room_name            = User.objects.get(username=request.user.username)
-        print(room_name)
-        broc_staff_list = StaffRoomManager.objects.all()
-        #     print(broc_staff_list)
-        # except StaffRoomManager.DoesNotExist:
-        #     broc_staff_list = []
+        try:
+                broc_manager = StaffRoomManager.objects.get(Staff=request.user)
+                room_name    = User.objects.get(username=request.user.username)
+                print(room_name)
+                broc_staff_list = StaffRoomManager.objects.all()
+        except StaffRoomManager.DoesNotExist:
+                broc_manager = None
+                room_name    = None
+                broc_staff_list = None
         
-        
-
-        # Get a list of dictionaries with session information for all users
         sessions_info = []
         staff_ids = []
         
@@ -151,12 +165,12 @@ def Create_Staff(request):
 @csrf_exempt
 def deleteStaff(request):
         
-        if request.method == 'POST':
-                staff_id = request.POST.get('staff_id')
-                return httpresponse(staff_id)
-                staff = StaffManager.objects.get(staff_id_id=staff_id)
-                staff.delete()
-                return JsonResponse({'message': 'Staff deleted successfully.'})
+   
+        staff_id = request.GET.get('staff_id')
+       
+        staff = StaffManager.objects.get(staff_id_id=staff_id)
+        staff.delete()
+        return JsonResponse({'message': 'Staff deleted successfully.'})
 
 
 @csrf_exempt
@@ -200,7 +214,16 @@ def getStaffInformation(request):
 @csrf_exempt
 def editStaffPermission(request):
         
-        return httpresponse(request)
+        if request.method == "POST":
+
+                user = User.objects.get(id=request.POST.get('staff')) 
+                permission_codenames = request.POST.getlist('existing_permissions')
+                content_type = ContentType.objects.get_for_model(StaffManager)
+                permissions = Permission.objects.filter(content_type=content_type, codename__in=permission_codenames)
+                
+                user.user_permissions.set(permissions)
+        
+                return JsonResponse('OK', safe=False) 
 
 @csrf_exempt
 def sendStaffInvitation(request):
@@ -253,10 +276,16 @@ def staffRegistration(request):
                         try:
                                
                                 staff = StaffManager.objects.get(email=user_form.cleaned_data['email'])
+                                
                                 user_form.save()
                                 user = User.objects.get(username=user_form.cleaned_data['username'])
+                                
+                                staff_permissions = staff.user_permissions.all()
+                                user.user_permissions.set(staff_permissions)
+                                
                                 staff_chat = StaffRoomManager.objects.create(Staff = user)
                                 staff_chat.add_staff(user)
+                                
                                 staff.staff_id = User.objects.get(username=user_form.cleaned_data['username'])
                                 staff.fname = personalinfo_form.cleaned_data['fname']
                                 staff.lname = personalinfo_form.cleaned_data['lname']
@@ -264,7 +293,9 @@ def staffRegistration(request):
                                 staff.address = personalinfo_form.cleaned_data['address']
                                 staff.id_photo = personalinfo_form.cleaned_data['id_photo']
                                 staff.profile_pic = personalinfo_form.cleaned_data['profile_pic']
+                                
                                 staff.save()
+                                
                         except StaffManager.DoesNotExist:
                                 messages.error(request, "Use the email you were invited with")
                                 
@@ -310,3 +341,18 @@ def Add_Dev_List(request):
                 )
         return JsonResponse('OK', safe=False) 
 
+
+
+@csrf_exempt
+def getstaffmessages(request):
+        
+        if request.method == 'GET':
+                staff_id = request.GET.get('staff_id')
+                
+                user_id = User.objects.get(username = staff_id)
+                staff_messages = Staff.objects.filter(Q(From=user_id.id) | Q(From=request.user.id))
+
+                serializer = StaffMessagesSerializer(staff_messages, many=True) 
+                return JsonResponse({'data': serializer.data}, safe=False)
+        
+        

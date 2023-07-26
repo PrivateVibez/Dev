@@ -15,4 +15,5 @@ urlpatterns = [
     path('getPermission/', views.getPermission, name="getPermission"),
     path('getStaffInformation/', views.getStaffInformation, name="getStaffInformation"),
     path('deleteStaff/', views.deleteStaff, name="deleteStaff"),
+    path('getstaffmessages/', views.getstaffmessages, name="getstaffmessages"),
 ]

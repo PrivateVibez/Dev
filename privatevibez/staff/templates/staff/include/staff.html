@@ -126,7 +126,7 @@
       </div>
       <div class="modal-body">
         
-        <form action="{% url 'editStaffPermission'%}" method="POST">
+        <form id="editStaffPermission" action="{% url 'editStaffPermission'%}" method="POST">
       
 
           <div class="form-group">
@@ -193,10 +193,10 @@
           </div>
       
       
-          <div class="form-group">
+          {% comment %} <div class="form-group">
             <label for="username">Username</label>
             <input type="text" class="form-control" id="username" name="username" aria-describedby="emailHelp" placeholder="Enter username">
-          </div>
+          </div> {% endcomment %}
         
         
           <div class="form-group">
@@ -273,43 +273,76 @@
     removeItemButton: true, 
 });
 
-  const existing_permissions = document.getElementById('existing_permissions');
-  const choices_2 = new Choices(existing_permissions, {
-    removeItemButton: true, 
-});
+  const perms = document.getElementById('existing_permissions');
+
 
 
 {% comment %} GET PERMISSION FOR A STAFF {% endcomment %}
 
 function get_staff_permission(user_id)
 {
-
+  let id = user_id
+  let editStaffPermission = document.getElementById('editStaffPermission');
+  console.log(id);
   $.ajax({
     method:'GET',
     url: "/staff/getPermission/",
     mimeType:"multipart/form-data",
     data:{  
-        'staff'  : user_id,
+        'staff'  : id,
         'csrfmiddlewaretoken':"{{csrf_token}}",
     },
     'dataType': 'json',
     success:function(data){
               // create a new table row
+
+
               for (const item of data.data) {
-                console.log(item)
+         
                 let option = document.createElement("option");
                 option.value = item.codename;
                 option.text = item.name;
                 option.selected = true;
-                existing_permissions.append(option);
-
+                perms.append(option);
+ 
               }
+              const choices_2 = new Choices(perms, {
+                removeItemButton: true, 
+            });
+  
       
     },
     error:function(errors){
         console.log(errors.responseText);
     }
 });
+
+
+editStaffPermission.onsubmit = (event) => {
+    event.preventDefault();
+    console.log(id);
+    const formData = new FormData(editStaffPermission);
+    formData.append('staff', id);
+    formData.append('csrfmiddlewaretoken', "{{ csrf_token }}");
+    
+    $.ajax({
+      method: 'POST',  // Assuming you want to send the form data via POST method, but you can change it to 'GET' if needed
+      url: "/staff/editStaffPermission/",
+      data: formData,
+      contentType: false,  // Set this to false to let jQuery handle the content type automatically
+      processData: false,  // Set this to false to prevent jQuery from processing the data (since it's already in FormData format)
+      dataType: 'json',
+      success: function(data) {
+        console.log(data);
+      },
+      error: function(errors) {
+        console.log(errors.responseText);
+      }
+    });
+    
+
+};
+
 
 }
 
@@ -341,6 +374,7 @@ function convertDateToISOFormat(dateText) {
 
 {% comment %} AJAX FUNCTION FOR RETRIEVING STAFF INFORMATION {% endcomment %}
 function editStaff(user_id){
+
   var url = window.location.href;
   var profile_pic = document.getElementById('staff_profile_pic');
   var id = document.getElementById('id_photo');
@@ -361,14 +395,14 @@ function editStaff(user_id){
     },
     'dataType': 'json',
     success:function(data){
+           
               // create a new table row
-
               address.value = data.data.address;
               email.value = data.data.email;
               fname.value = data.data.fname;
               lname.value = data.data.lname;
-              birthday.value = data.data.birthday; 
-              console.log(data.data.birthday)
+              birthday.value = data.staff_bday; 
+              console.log(data.data)
               console.log(data.staff_id)
               console.log(data.staff_profile_pic)
               console.log(data.staff_bday)
@@ -390,7 +424,7 @@ function deleteStaff(user_id)
   console.log(user_id)
   $.ajax({
 
-    METHOD:'POST',
+    METHOD:'GET',
     url: "/staff/deleteStaff/",
     mimeType:"multipart/form-data",
     data:{  

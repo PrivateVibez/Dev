@@ -33,6 +33,14 @@ class Bad_Acters(models.Model):
     Timestamp  = models.DateTimeField(auto_now_add=True)     
     def __str__(self):
         return str(self.Reporty)
+    
+class Memos(models.Model):
+    From    = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name="Memos_from")
+    To      = models.ForeignKey('auth.User',null=True,blank=True, on_delete=models.CASCADE, related_name = 'Memos_To')
+    Message    = models.CharField(null=True,blank=True, max_length=500)
+    Timestamp  = models.DateTimeField(auto_now_add=True)     
+    def __str__(self):
+        return str(self.Message)
 
 
 

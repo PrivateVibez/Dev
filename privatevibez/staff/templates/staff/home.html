@@ -71,7 +71,11 @@
                             <span class="me-2"><i class="bi bi-person-lines-fill"></i></span>
                             <span>Bad Acters</span>
                         </div>
-                        <span class="badge bg-light text-dark" id="bad_act_len">0</span>
+                        <span class="badge bg-light text-dark" id="bad_act_len">
+                            {% if total_bad_acters_count %}
+                            {{total_bad_acters_count}}
+                            {% endif %}
+                        </span>
                     </button> 
                     {% endif %}
 
@@ -99,7 +103,7 @@
 
 
   <!-- offcanvas -->
-  <div class="d-flex justify-content-center">
+  <div class="container w-100">
   <div class="mt-5 pt-3 row justify-content-center">
     <div class="tab-content" id="v-pills-tabContent">
 
@@ -112,7 +116,7 @@
 
         {% comment %} MESSAGES {% endcomment %}
         {% if perms.staff.can_view_inbox %}
-        <div class="tab-pane fade m-lg-5" id="v-pills-inbox" role="tabpanel" aria-labelledby="v-pills-inbox-tab">
+        <div class="tab-pane fade w-100 m-lg-5" id="v-pills-inbox" role="tabpanel" aria-labelledby="v-pills-inbox-tab">
              {% include 'staff/include/inbox.html'%} 
         </div>
         {% endif %}

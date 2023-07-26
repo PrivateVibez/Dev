@@ -28,7 +28,7 @@ class Staff(SoftDeleteModel):
     sent_by_fan = models.BooleanField(default=False, null=True)
 
     def __str__(self):
-        return str(self.Staff_From_Message)
+        return str(self.From)
 
 class PrivateRoomManager(models.Model):
     broadcaster = models.ForeignKey('auth.User', on_delete=models.CASCADE)

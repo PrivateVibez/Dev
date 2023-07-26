@@ -29,12 +29,6 @@ def staff_list(request, broc):
 
     staff_room_manager = StaffRoomManager.objects.get(Staff=staff.id)
     staff_list = StaffRoomManager.objects.all()
+    serializer = StaffRoomManagerSerializer(staff_list, many=True) 
     
-    json = StaffRoomManagerSerializer(staff_list)
-    
-    
-  
-    
-    jsonformat = JSONRenderer().render(json.data)
-    
-    return httpresponse(jsonformat, content_type='application/json')
+    return JsonResponse(serializer.data, safe=False)

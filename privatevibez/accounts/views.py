@@ -171,4 +171,15 @@ def bio_info(request):
     return JsonResponse('OK', safe=False) 
 
 
+def getTotalReports(request):
+    
+    
+    if request.method == "GET":
+        
+        reporty = request.GET.get('reporty')
+        user = Bad_Acters.objects.filter(Reporty = reporty).count()
+        return JsonResponse({'data':user}, safe=False)
+        
+
+
 

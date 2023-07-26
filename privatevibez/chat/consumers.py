@@ -250,14 +250,14 @@ class StaffChatConsumer(AsyncWebsocketConsumer):
         username = text_data_json['username']
         user = await sync_to_async(User.objects.get)(username=username)
         to_user = await sync_to_async(User.objects.get)(username=self.broc)
-        created_data = await sync_to_async(Staff.objects.create)(Staff_From_Message=user, Staff_To_Message=to_user, Message=message)
+        created_data = await sync_to_async(Staff.objects.create)(From=user, To=to_user, Message=message)
         staff_list, created = await sync_to_async(StaffRoomManager.objects.get_or_create)(broadcaster=to_user)
 
  
         self.channel_layer.group_send(
             self.room_group_name,
                 {
-                    'type': 'private_chat_message',
+                    'type': 'staff_chat_message',
                     'message': message,
                     'username': created_data.To
                 }
@@ -326,7 +326,7 @@ class StaffChatConsumerBroc(JsonWebsocketConsumer):
         self.last_submission_time[self.user_name] = current_time
         broc = User.objects.get(username=self.broc)
         user = User.objects.get(username=self.user_name)
-        Private.objects.create(Staff_From_Message=user, Staff_To_Message=broc, Message=message)
+        Staff.objects.create(From=broc, To=user, Message=message)
 
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
@@ -346,13 +346,13 @@ class StaffChatConsumerBroc(JsonWebsocketConsumer):
     def room_join_data(self, event):
         broc = User.objects.get(username=event['broc'])
         user = User.objects.get(username=event['user'])
-        data = Staff.objects.filter(Staff_From_Message=user, Staff_To_Message=broc)
+        data = Staff.objects.filter(From=broc, To=user)
         data = [{
         "From": obj.From.username,
         "To": obj.To.username,
         "Message": obj.Message,
         "Timestamp": obj.Timestamp.strftime("%d-%m-%Y %H:%M"),
-        "sent_by": obj.From_id
+        "sent_by": obj.From.username
     } for obj in data]
         self.send(text_data=json.dumps({
             'data': data
@@ -361,13 +361,13 @@ class StaffChatConsumerBroc(JsonWebsocketConsumer):
     def chat_message(self, event):
         broc = User.objects.get(username=event['broc'])
         user = User.objects.get(username=event['user'])
-        data = Staff.objects.filter(Staff_From_Message=user, Staff_To_Message=broc)
+        data = Staff.objects.filter(From=broc, To=user)
         data = [{
         "From": obj.From.username,
         "To": obj.To.username,
         "Message": obj.Message,
         "Timestamp": obj.Timestamp.strftime("%d-%m-%Y %H:%M"),
-        "sent_by": obj.From_id
+        "sent_by": obj.From.username    
     } for obj in data]
         self.send(text_data=json.dumps({
             'data': data

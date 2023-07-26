@@ -1,0 +1,19 @@
+
+          let data = JSON.parse(e.data);
+          let msg_wraper = document.getElementById("staff_msg");
+          msg_wraper.innerHTML = "";
+          let msg_container = "";
+          console.log(data)
+          data.data.forEach(function(datum) {
+            if(datum.sent_by === false){
+              msg_container = `<div class="text-muted d-flex justify-content-end"><small class="broc_chat_room_message_username font-weight-bold text-dark">${datum.To}</small></div><div class="card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4 ml-auto" style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">${datum.Message}</div>`;
+            }else{
+              msg_container = `<div class="text-muted d-flex"><small class="broc_chat_room_message_username font-weight-bold text-dark">${datum.From}</small></div><div class="card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4" style="border-radius: 13px; width: fit-content; background: #9dffde;">${datum.Message}</div>`;
+            }
+            let new_element = document.createElement('div');
+            new_element.innerHTML = msg_container;
+            msg_wraper.appendChild(new_element);
+          });
+          let staff_broc_chat_room_messages = document.getElementById("staff_broc_chat_room_messages");
+          staff_broc_chat_room_messages.scrollTop = staff_broc_chat_room_messages.scrollHeight;
+          document.getElementById('staff_broc_chat_room_message_field').value = '';

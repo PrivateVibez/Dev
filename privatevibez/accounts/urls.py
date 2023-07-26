@@ -12,6 +12,7 @@ urlpatterns = [
     path('Buy_Vibez/', views.Buy_Vibez, name="Buy_Vibez"),
     path('Profile_Pic/', views.Profile_Pic, name="Profile_Pic"),
     path('bio_info/', views.bio_info, name="bio_info"),
+    path('getTotalReports/', views.getTotalReports, name="getTotalReports"),
 
 
 

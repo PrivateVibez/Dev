@@ -7,9 +7,7 @@
     <div class="row">
         <div class="col-md-12 mb-3">
             <div class="card" style="width:900px;">
-                <div class="card-header">
-                    <span><i class="bi bi-table me-2"></i></span> Blocked By Broacaster
-                </div>
+
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="example" class="table table-striped data-table" style="width: 100%">
@@ -17,10 +15,26 @@
                                 <tr>
                                   <th>Reporty</th>
                                   <th>Reported</th>
-                                  <th></th>
+                                  <th>Message</th>
+                                  <th>Status</th>
+                                  <th>Number of Reports</th>
+                                  <th>Send warning</th>
+
                                 </tr>
                             </thead>   
-                            <tbody id="bad_acter_table_body"></tbody>          
+                            <tbody id="bad_acter_table_body">
+                                {% for bad_acter in bad_acters_list %}
+                                <tr>
+                                    <td>{{ bad_acter.reporty }}</td>
+                                    <td>{{ bad_acter.reported }}</td>
+                                    <td>{{ bad_acter.message }}</td>
+                                    <td>{{ bad_acter.status }}</td>
+                                    <td>{{ bad_acter.total_reports }}</td>
+                                    <td><button class="btn btn-primary"  data-toggle="modal" data-target="#sendWarningModal" onclick="sendWarning({{ bad_acter.id }})">Send warning</button></td>
+                                </tr>
+   
+                                {% endfor %}
+                            </tbody>          
                         </table>
                     </div>
                 </div>
@@ -28,51 +42,102 @@
         </div>
     </div>
 </div>
+
+
+
+
+{% comment %} Send warning Modal {% endcomment %}
+
+<!-- Modal -->
+<div class="modal fade" id="sendWarningModal" tabindex="-1" role="dialog" aria-labelledby="sendWarningModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Send Warning</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea class="form-control" id="message" rows="3"></textarea>
+              </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 <script>
 let bad_acter_list = [];
-{% for bad_acter in bad_acters %}
-    bad_acter_list.push({id: "{{ bad_acter.id }}", reportly: "{{ bad_acter.Reporty }}", reported: "{{ bad_acter.Reported }}", msg: "{{ bad_acter.Message }}"})
-{% endfor %}
-function bad_acter_table_generator(){
-    let table = document.getElementById("bad_acter_table_body");
-    table.innerHTML = "";
-    document.getElementById("bad_act_len").innerHTML = bad_acter_list.length;
-    for(let i = 0; i < bad_acter_list.length; i++){
-        // create a new table row
-        let newRow = document.createElement("tr");
-        // create cells containing data
-        let reportlyCell = document.createElement("td");
-        reportlyCell.textContent = bad_acter_list[i].reportly;
-        let reportedCell = document.createElement("td");
-        reportedCell.textContent = bad_acter_list[i].reported;
-        let btnCell = document.createElement("td");
-        btnCell.innerHTML = bad_acter_list[i].msg;
-        // add cells to row
-        newRow.appendChild(reportlyCell);
-        newRow.appendChild(reportedCell);
-        newRow.appendChild(btnCell);
-        // add the new row to the table
-        table.appendChild(newRow);
-}};
 
-bad_acter_table_generator();
-
-let protocol_bad = "";
-if(window.location.protocol == "http:"){
-    protocol_bad = "ws";
-}else if(window.location.protocol == "https:"){
-    protocol_bad = "wss";
-}
-let socket_bad = new WebSocket(`${protocol_bad}://${window.location.host}/ws/bad_acters/`);
-socket_bad.onmessage = function(e) {
-    let data = JSON.parse(e.data);
-    bad_acter_list = [];
-    for(let i = 0; i < data.length; i++) {
-        bad_acter_list.push({id: data[i].id, reportly: data[i].Reporty__username, reported: data[i].Reported__username, msg: data[i].Message});
+async function fetchBadActerData(bad_acter) {
+    try {
+        const totalReports = await getTotalReports(some_reporty_id);
+        bad_acter_list.push({
+            id: "{{ bad_acter.id }}",
+            reportly: "{{ bad_acter.Reporty }}",
+            reported: "{{ bad_acter.Reported }}",
+            msg: "{{ bad_acter.Message }}",
+            totalReports: totalReports
+        });
+    } catch (errors) {
+        console.log(errors);
     }
-    bad_acter_table_generator();
 }
-socket_bad.onclose = function(e){
-    console.error('WebSocket closed unexpectedly');
+
+
+function getTotalReports(reporty_id) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            method: 'GET',
+            url: "/accounts/getTotalReports/",
+            mimeType: "multipart/form-data",
+            data: {
+                'reporty': reporty_id,
+                'csrfmiddlewaretoken': "{{csrf_token}}",
+            },
+            dataType: 'json',
+            success: function (data) {
+                resolve(data.totalReports);
+            },
+            error: function (errors) {
+                reject(errors);
+            }
+        });
+    });
 }
+
+
+function sendWarning(bad_acter_id) {
+    $.ajax({
+        method: 'POST',
+        url: "/accounts/sendWarning/",
+        mimeType: "multipart/form-data",
+        data: {
+            'bad_acter_id': bad_acter_id,
+            'message': document.getElementById('message').value,
+            'csrfmiddlewaretoken': "{{csrf_token}}",
+        },
+        dataType: 'json',
+        success: function (data) {
+            if (data.status == 'success') {
+                alert('Warning sent');
+            } else {
+                alert('Something went wrong');
+            }
+        },
+        error: function (errors) {
+            console.log(errors);
+        }
+    });
+}
+
+
+
+
 </script>
