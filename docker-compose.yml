@@ -7,9 +7,12 @@ services:
     image: ubuntu:latest
     volumes:
     - ./privatevibez:/privatevibez
-    - /app/db # Mounting /mnt/Python to /app/db
     command: >
       sh -c "
+        python /mnt/Python/MediaFlow.py && 
+        python manage.py clearsessions &&
+        python manage.py makemigrations &&
+        python manage.py migrate &&
         python manage.py runserver 0.0.0.0:8000
       " 
 
