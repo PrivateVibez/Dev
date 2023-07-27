@@ -56,6 +56,36 @@ class Dice_Data(models.Model):
     Six_Dice_Time    = models.IntegerField(null=True,blank=True)
     def __str__(self):
         return str(self.User)
+   
+   
+class Slot_Machine_limit(models.Model):
+    
+    Number_of_Three_of_a_kind_winners     = models.IntegerField(null=True, blank=True)
+    Number_of_Two_of_a_kind_winners       = models.IntegerField(null=True, blank=True)
+    Number_of_Three_of_a_kind_losers      = models.IntegerField(null=True, blank=True)
+    Number_of_Two_of_a_kind_losers        = models.IntegerField(null=True, blank=True)
+    Timestamp                   = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return str(self.Three_of_a_kind_winners)
+    
+    
+
+class Slot_Machine(models.Model):
+    User                      = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    Slot_cost_per_spin        = models.IntegerField(null=True,blank=True)
+    Win_3_of_a_kind_prize     = models.CharField(max_length=200,null=True,blank=True)
+    Win_2_of_a_kind_prize     = models.CharField(max_length=200,null=True,blank=True)
+    Prize                     = models.CharField(max_length=200,null=True,blank=True)
+    Winner                    = models.ForeignKey('auth.User', on_delete=models.CASCADE,null=True,blank=True, related_name = 'Winner')
+    timestamp                 = models.DateTimeField(null=True)
+    
+    def __str__(self):
+        return str(self.User)
+    
+    
+    
+    
 
 class Follows(models.Model):
     User        = models.ForeignKey('auth.User', on_delete=models.CASCADE)

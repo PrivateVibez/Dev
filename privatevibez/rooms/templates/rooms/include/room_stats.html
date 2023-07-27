@@ -1,0 +1,50 @@
+<div class="msg-list-fvm message-list" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
+
+  <h3 style='color:crimson; margin:10px 0 0 10px;'>Room Stats</h3>
+
+  <div class="msg-text" style="font-family: Tahoma, Arial, Helvetica, sans-serif; box-sizing: border-box; padding: 2px 5px 3px; overflow-wrap: break-word; word-break: break-word;">
+
+      <a href="private-chat/{{room_data.User}}" target="_blank" class="my-3" style="text-decoration:none; color:purple;">
+          Chat (Total : {{private_chat_all.count}} | Pending request : {{private_request_pending.count}})
+      </a>
+
+
+      <div class="my-2">Toys connected : 
+          <span id="nb_total_toys">{{room_data.Toys}}</span> 
+          (Yours : <span id="nb_toys_streamer">{{room_data.Toys}}
+
+          </span> | Viewers : <span id="nb_toys_viewers">0</span>)
+          
+      </div>
+
+      <div class="my-2">Total earned : {{room_data.Earnings}}</div>
+
+      <div class="my-2">Number of explosions : {{room_data.Explosions}}</div>
+
+      {% if room_data.Is_Active == True %}
+          <button onclick="room_offline()">Go offline</button>
+      {% else %}
+      <button onclick="room_online()">Go online</button>
+      {% endif %}
+      
+      <div id="save_offline" style="display: none" class="my-2">You are offline</div>
+
+
+  </div>
+
+  <div class="d-flex flex-column">
+      
+      <form id="block_countries" class="col-8 justify-content-center">
+      <label for="select_countries"> Select countries to block </label>
+      <select class="my-5 rounded-lg" id="select_countries" multiple="multiple" name="select_countries" style="width: 1rem%">
+
+          <option value="select_US">Select US</option>
+          <option value="select_Canada">Select Canada</option>
+
+
+        </select>
+
+        <button class="btn-primary rounded p-3" type="submit">Save</button>
+      </form>
+  </div>
+</div>

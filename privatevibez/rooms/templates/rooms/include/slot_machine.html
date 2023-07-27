@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+    <style>
+      /* CSS reset { */
+        body,div,h1,button,p{margin:0;padding:0}
+        button{font-family:inherit;font-size:inherit;font-style:inherit;font-weight:inherit}
+        a:active,a:focus {outline: 0}
+        /* } */
+        
+        body, input, select, textarea {font:18px/18px "Helvetica Neue",Helvetica,Arial,sans-serif;}
+        body {
+          background:#ddd url(https://subtlepatterns.com/patterns/texturetastic_gray.png);
+        }
+        
+        h1 {
+          text-align:center;
+          margin-top: 20px;
+          font-size: 1.75em;
+          font-weight: normal;
+          color: #000000;
+        }
+        
+        h1, a {
+          text-shadow: 0 1px 0 rgba(255,255,255,.8);
+        }
+        
+        #sm {
+        background: rgb(238,238,238);
+        background: -moz-linear-gradient(top, rgba(238,238,238,1) 0%, rgba(204,204,204,1) 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(238,238,238,1)), color-stop(100%,rgba(204,204,204,1)));
+        background: -webkit-linear-gradient(top, rgba(238,238,238,1) 0%,rgba(204,204,204,1) 100%);
+        background: -o-linear-gradient(top, rgba(238,238,238,1) 0%,rgba(204,204,204,1) 100%);
+        background: -ms-linear-gradient(top, rgba(238,238,238,1) 0%,rgba(204,204,204,1) 100%);
+        background: linear-gradient(top, rgba(238,238,238,1) 0%,rgba(204,204,204,1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#cccccc',GradientType=0 );
+        
+          width: 540px;
+          margin: 10px auto 20px;
+          padding: 20px;
+          border-radius: 50px;
+        }
+        
+        #sm, .lever button {box-shadow: 0 3px 9px rgba(0,0,0,.25)}
+          .group, .reel, .lever {display: inline-block;}
+          .group, .lever {
+        background: rgb(252,234,187);
+        background: -moz-linear-gradient(top, rgba(252,234,187,1) 0%, rgba(252,205,77,1) 50%, rgba(248,181,0,1) 51%, rgba(251,223,147,1) 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,234,187,1)), color-stop(50%,rgba(252,205,77,1)), color-stop(51%,rgba(248,181,0,1)), color-stop(100%,rgba(251,223,147,1)));
+        background: -webkit-linear-gradient(top, rgba(252,234,187,1) 0%,rgba(252,205,77,1) 50%,rgba(248,181,0,1) 51%,rgba(251,223,147,1) 100%);
+        background: -o-linear-gradient(top, rgba(252,234,187,1) 0%,rgba(252,205,77,1) 50%,rgba(248,181,0,1) 51%,rgba(251,223,147,1) 100%);
+        background: -ms-linear-gradient(top, rgba(252,234,187,1) 0%,rgba(252,205,77,1) 50%,rgba(248,181,0,1) 51%,rgba(251,223,147,1) 100%);
+        background: linear-gradient(top, rgba(252,234,187,1) 0%,rgba(252,205,77,1) 50%,rgba(248,181,0,1) 51%,rgba(251,223,147,1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fceabb', endColorstr='#fbdf93',GradientType=0 );
+          }
+        
+        .group {
+          border-radius: 30px;
+          padding: 20px 0 20px 20px;
+        }
+        
+          .reel {
+        background: #fff;
+        background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(241,241,241,1) 50%, rgba(225,225,225,1) 51%, rgba(246,246,246,1) 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(50%,rgba(241,241,241,1)), color-stop(51%,rgba(225,225,225,1)), color-stop(100%,rgba(246,246,246,1)));
+        background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(241,241,241,1) 50%,rgba(225,225,225,1) 51%,rgba(246,246,246,1) 100%);
+        background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(241,241,241,1) 50%,rgba(225,225,225,1) 51%,rgba(246,246,246,1) 100%);
+        background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(241,241,241,1) 50%,rgba(225,225,225,1) 51%,rgba(246,246,246,1) 100%);
+        background: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(241,241,241,1) 50%,rgba(225,225,225,1) 51%,rgba(246,246,246,1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f6f6f6',GradientType=0 );
+        
+            text-align:center;
+            float: left;
+            padding:0 10px;
+            width: 80px;
+            height: 100px;
+            overflow: hidden;
+            margin-right: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 7px rgba(0,0,0,.3) inset, 0 0px 1px rgba(0,0,0,.2) inset;
+          }
+            .reel div {
+              position: relative;
+              top: -48px;
+            }
+            .reel p {
+              font-weight: bold;
+              height: 60px;
+              margin-top: 10px;
+            }
+            .reel p:nth-child(1) {color:#c60}
+            .reel p:nth-child(2) {color:#690}
+            .reel p:nth-child(3) {color:#630}
+        
+        .lever {
+          float: right;
+          padding-right: 20px;
+        }
+          .lever button {
+            text-align:center;
+            border-radius: 10px;
+            line-height: 100px;
+            width: 100px;
+            border: none;
+            font-size:1.8em;
+            -webkit-transition: all .2s ease;
+            -moz-transition: all .2s ease;
+            -o-transition: all .2s ease;
+        background: rgb(252,255,244);
+        background: -moz-linear-gradient(top, rgba(252,255,244,1) 0%, rgba(233,233,206,1) 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,255,244,1)), color-stop(100%,rgba(233,233,206,1)));
+        background: -webkit-linear-gradient(top, rgba(252,255,244,1) 0%,rgba(233,233,206,1) 100%);
+        background: -o-linear-gradient(top, rgba(252,255,244,1) 0%,rgba(233,233,206,1) 100%);
+        background: -ms-linear-gradient(top, rgba(252,255,244,1) 0%,rgba(233,233,206,1) 100%);
+        background: linear-gradient(top, rgba(252,255,244,1) 0%,rgba(233,233,206,1) 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfff4', endColorstr='#e9e9ce',GradientType=0 );
+          }
+          .lever button:active {
+            color: #900;
+            box-shadow: 0 1px 4px rgba(0,0,0,.3);
+            margin: 2px 0 -2px;
+          }
+        
+        .msg {
+          text-align: center;
+          color: #000000;
+          font-size:1.8em;
+          padding: 25px 0 5px;
+          text-shadow: 0 -1px 0 rgba(0,0,0,.3), 0 1px 0 rgba(255,255,255,.5);
+        }
+        
+        a {
+          color: #222cff;
+          margin-top: 15px;
+          text-align: center;
+          display: block;
+          text-decoration:none;
+        }
+        
+        a:hover {
+          color:#ff4c00
+        }
+    </style>
+  </head>
+  <body>
+
+    <h1>Slot Machine</h1>
+    <h3 class="row justify-content-center">Cost per spin {{slot_machine_data.Slot_cost_per_spin}}</h3>
+
+    {% if user_data.Vibez > slot_machine_data.Slot_cost_per_spin %}
+<div id="sm">
+  <div class="group lever">
+    <button id="start">Start</button>
+  </div>
+  <div class="group">
+    <div class="reel"></div>
+    <div class="reel"></div>
+    <div class="reel"></div>
+  </div>
+  <p class="msg">Press Start</p>
+</div>
+
+{% else %}
+<h3 class="row justify-content-center">You need more Vibez to play</h3>
+{% endif %}
+    <script>
+
+
+const csrfToken = '{{ csrf_token }}';
+
+// Function to fetch data using AJAX POST
+function fetchData(vibez) {
+
+  $.ajax({
+    url: '/room/deduct_vibez/{{slot_machine_data.Slot_cost_per_spin}}',
+    type: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
+    },
+    data: JSON.stringify({
+        user_id: {{request.user.id}},
+        cost: vibez,
+    }),
+    success: function (data) {
+        // Display the fetched data (example: update the DOM)
+        console.log(data);
+    },
+    error: function (xhr, textStatus, errorThrown) {
+        console.error('Error fetching data:', xhr.responseText);
+        // Handle any errors that occurred during the fetch process
+    },
+});
+
+}
+
+function give_prize(prize){
+
+  $.ajax({
+    url: '/room/get_prize/',
+    type: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken,
+    },
+    data: JSON.stringify({
+        winner: {{request.user.id}},
+        broadcaster: {{broadcaster_user.id}},
+        prize_won: prize,
+    }),
+    success: function (data) {
+        // Display the fetched data (example: update the DOM)
+        console.log(data);
+    },
+    error: function (xhr, textStatus, errorThrown) {
+        console.error('Error fetching data:', xhr.responseText);
+        // Handle any errors that occurred during the fetch process
+    },
+});
+
+}
+
+/*
+	Slot Machine
+*/
+$('#start').click(() => {
+var sm = (function(undefined){
+
+	var tMax = 3000, // animation time, ms
+		height = 210,
+		speeds = [],
+		r = [],
+		reels = [
+			['An',   'Bj','bob'],
+			['an',  'Bj', 'bob'],
+			['an', 'Bj',  'bob']
+		],
+		$reels, $msg,
+		start;
+
+	function init(){
+		$reels = $('.reel').each(function(i, el){
+			el.innerHTML = '<div><p>' + reels[i].join('</p><p>') + '</p></div><div><p>' + reels[i].join('</p><p>') + '</p></div>'
+		});
+
+		$msg = $('.msg');
+
+		$('#start').click(action);
+	}
+
+
+function action(){
+
+  fetchData();
+
+		if (start !== undefined) return;
+
+		for (var i = 0; i < 3; ++i) {
+			speeds[i] = Math.random() + .5;	
+			r[i] = (Math.random() * 3 | 0) * height / 3;
+		}
+
+		$msg.html('Spinning...');
+		animate();
+	}
+
+	function animate(now){
+		if (!start) start = now;
+		var t = now - start || 0;
+
+		for (var i = 0; i < 3; ++i)
+			$reels[i].scrollTop = (speeds[i] / tMax / 2 * (tMax - t) * (tMax - t) + r[i]) % height | 0;
+
+		if (t < tMax)
+			requestAnimationFrame(animate);
+		else {
+			start = undefined;
+			check();
+		}
+	}
+
+	function check(){ 
+    
+    let prize = document.getElementById("prize");
+   
+    if (r[0] === r[1] && r[1] === r[2]) {
+      //Won 3 of a Kind
+      $msg.html('You won! Enjoy your ' + reels[1][(r[0] / 70 + 1) % 3 | 0].split(' ')[0]);
+
+      prize.innerHTML = {{slot_machine_data.Win_3_of_a_kind_prize}}
+
+      if (typeof prize.innerHTML === "undefined") {
+        // Code to handle when prize.innerHTML is undefined
+        give_prize(prize.innerHTML);
+      } else {
+
+      }
+      
+
+    } else if (r[0] === r[1] || r[1] === r[2] || r[0] === r[2]) {
+      //Won 2 of a Kind
+      $msg.html('Two of a kind! You won a bob pic.');
+
+      prize.innerHTML = {{slot_machine_data.Win_2_of_a_kind_prize}}
+      
+      if (typeof prize.innerHTML === "undefined") {
+        // Code to handle when prize.innerHTML is undefined
+        give_prize(prize.innerHTML);
+      } else {
+
+      }
+
+    } else {
+      $msg.html('Try again');
+    }
+	}
+
+	return {init: init}
+
+})();
+
+$(sm.init);
+});
+    </script>
+  </body>
+</html>
