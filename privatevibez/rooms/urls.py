@@ -11,9 +11,12 @@ urlpatterns = [
     path('Save_RoomPatterns/', views.Save_RoomPatterns, name="Save_RoomPatterns"),
     path('go_online/', views.go_online, name="go_online"),
     path('go_offline/', views.go_offline, name="go_offline"),
+    path('invite_private_chat/', views.invite_private_chat, name="invite_private_chat"),
     path('block_countries/', views.block_countries, name="block_countries"),
     path('set_slot_machine/', views.set_slot_machine, name="set_slot_machine"),
     path('deduct_vibez/<int:vibez>', views.deduct_vibez, name="deduct_vibez"),
     path('get_prize/', views.get_prize, name="get_prize"),
+    path('lovense/generate_broadcaster_qrcode/', views.generate_broadcaster_qrcode, name="generate_broadcaster_qrcode"),
+    
     
 ]

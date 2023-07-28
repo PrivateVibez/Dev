@@ -1,6 +1,8 @@
 from django.db import models
 from django_softdelete.models import SoftDeleteModel
 
+
+
 # Create your models here.
 class Public(SoftDeleteModel):
     User      = models.ForeignKey('auth.User', on_delete=models.CASCADE)

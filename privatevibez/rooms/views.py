@@ -12,6 +12,9 @@ import json
 from .models import Slot_Machine
 from .forms import Slot_MachineForm
 from django.http import HttpResponse as httpresponse
+import requests
+from cryptography.fernet import Fernet
+from django.conf import settings
 
 # Create your views here.
 def Room(request, Broadcaster):
@@ -25,6 +28,12 @@ def Room(request, Broadcaster):
             room_name_json       = mark_safe(json.dumps(broadcaster_user.username))
             room_name            = broadcaster_user.username
             username             = mark_safe(json.dumps(request.user.username))
+            rooms                = Room_Data.objects.all()
+            room_users_data      = User_Data.objects.all()    
+            broadcaster_status   = User_Status.objects.get(User = User.objects.get(username = Broadcaster))
+            room_data            = Room_Data.objects.get(User = User.objects.get(username = Broadcaster))
+            # room_sesson          = Room_Sesson.objects.get(User = User.objects.get(username = Broadcaster))
+            broadcaster_data     = User_Data.objects.get(User = User.objects.get(username = Broadcaster))
 
 
             
@@ -33,9 +42,12 @@ def Room(request, Broadcaster):
                 broc_private_list = broc_manager.fan_list.all()
             except PrivateRoomManager.DoesNotExist:
                 broc_private_list = []
+                
             private_chat         = Private.objects.filter(From=request.user, To=broadcaster_user)
             public_chat          = Public.objects.filter(Room = User.objects.get(username=Broadcaster)).all
-            follows              = Follows.objects.filter(User = request.user).all
+            follows              = Follows.objects.filter(User = request.user).all()
+            
+            
             thumbs_up_count      = Thumbs.objects.filter(Broacaster = User.objects.get(username = Broadcaster), Thumb = "Up").count
             thumbs_down_count    = Thumbs.objects.filter(Broacaster = User.objects.get(username = Broadcaster), Thumb = "Down").count
             if Thumbs.objects.filter(User = request.user,Broacaster = User.objects.get(username = Broadcaster),Thumb = "Up").exists():
@@ -56,17 +68,13 @@ def Room(request, Broadcaster):
                 user =User_Status.objects.get(User = request.user.id)
                 
                 if user.Status == "User":
-                    rooms                = Room_Data.objects.all()
-                    room_users_data      = User_Data.objects.all()    
-                    broadcaster_status   = User_Status.objects.get(User = User.objects.get(username = Broadcaster))
-                    room_data            = Room_Data.objects.get(User = User.objects.get(username = Broadcaster))
-                    # room_sesson          = Room_Sesson.objects.get(User = User.objects.get(username = Broadcaster))
-                    broadcaster_data     = User_Data.objects.get(User = User.objects.get(username = Broadcaster))
+ 
                     slot_machine_data = Slot_Machine.objects.filter(User=broadcaster_user.id).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
                                 
                 elif user.Status == "Broadcaster":
                     
-                    slot_machine_data = Slot_Machine.objects.filter(User=request.user).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
+                    if Slot_Machine.objects.filter(User=request.user).exists():
+                        slot_machine_data = Slot_Machine.objects.filter(User=request.user).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
                 
                 
             except User_Status.DoesNotExist:
@@ -250,12 +258,12 @@ def set_slot_machine(request):
     
     if request.method == "POST":
         form = Slot_MachineForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             form.save()
         else:
             print(form.errors)
             
-            return JsonResponse(form.errors, safe=False)
+            return JsonResponse("Saved", safe=False)
 
 
 @csrf_exempt
@@ -274,10 +282,101 @@ def deduct_vibez(request,vibez):
 def get_prize(request):
     
     if request.method == 'POST':
-        owner = Slot_Machine.objects.get(User = request.POST.get('broadcaster'))
-        winner = User.objects.get(User = request.POST.get('winner'))
-        owner.Winner = winner
-        owner.Prize = request.POST.get('prize_won')
-        owner.save()
+  
+        url = "https://api.lovense-api.com/api/lan/v2/command"
+        d_token = settings.LOVENSE_DEV_KEY
         
-        return JsonResponse("saved", safe=False)
+        utoken = User_Data.objects.get(User = request.user)
+        data = {
+            "token":d_token,
+            "uid": request.user.id,
+            "command": "Function",
+            "action": request.POST.get('prize_won'),
+            "timeSec": float(request.POST.get('duration')),
+            "apiVer": 1,
+                }
+        
+        headers = {
+            "Content-Type": "application/json"
+        }
+        
+        try:
+            # Make the POST request using the requests library
+            response = requests.post(url, json=data, headers=headers)
+
+            # Check the response status code for success (e.g., 200)
+            if response.status_code == 200:
+                # Handle the successful response data
+                response_data = response.json()
+                
+        
+                owner = Slot_Machine.objects.get(User = request.POST.get('broadcaster'))
+                winner = User.objects.get(User = request.POST.get('winner'))
+                owner.Winner = winner
+                owner.Prize = request.POST.get('prize_won')
+                owner.save()
+        
+ 
+                
+                return JsonResponse(response_data)
+
+            # Handle other status codes if needed
+            else:
+                return JsonResponse({"error": "Failed to make the POST request."}, status=response.status_code)
+
+        except requests.exceptions.RequestException as e:  
+            return JsonResponse({"error": str(e)}, status=500) 
+    
+    
+    
+    
+@csrf_exempt
+def generate_broadcaster_qrcode(request):
+   
+    url = "https://api.lovense-api.com/api/lan/getQrCode"
+    d_token = settings.LOVENSE_DEV_KEY
+    
+    utoken = User_Data.objects.get(User = request.user)
+    data = {
+        "token":d_token,
+        "uid": request.user.id,
+        "uname": request.user.username,
+        "utoken": utoken.U_token,
+        "v": 2,
+            }
+    
+    headers = {
+        "Content-Type": "application/json"
+    }
+    
+    try:
+        # Make the POST request using the requests library
+        response = requests.post(url, json=data, headers=headers)
+
+        # Check the response status code for success (e.g., 200)
+        if response.status_code == 200:
+            # Handle the successful response data
+            response_data = response.json()
+            
+            return JsonResponse(response_data)
+
+        # Handle other status codes if needed
+        else:
+            return JsonResponse({"error": "Failed to make the POST request."}, status=response.status_code)
+
+    except requests.exceptions.RequestException as e:  
+        return JsonResponse({"error": str(e)}, status=500) 
+    
+
+
+def invite_private_chat(request):
+    
+    if request.method == "POST":
+        
+        user_id = request.POST.get('user_id')
+        broadcaster = request.POST.get('room_id')
+        
+        
+        
+    
+    return JsonResponse('OK', safe=False)

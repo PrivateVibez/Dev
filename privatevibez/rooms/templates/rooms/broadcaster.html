@@ -8,7 +8,7 @@
 
     {% endif %}
 
-    {% if broadcaster_status.Status == "Broadcaster" %}
+    {% if user_status == "Broadcaster" %}
 
     <div class="chat_room" style="font: 1em UbuntuRegular, Arial, Helvetica, sans-serif;">
         <div class="topSectionWrapper" style="width: 100%; height: auto; display: block;">
@@ -61,12 +61,23 @@
                             <li class="nav-item">
                               <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Slot Machine</a>
                             </li>
+                            <li class="nav-item">
+                              <a class="nav-link" id="pills-lovense-toy-tab" data-toggle="pill" href="#pills-lovense-toy" role="tab" aria-controls="pills-lovense" aria-selected="false">Connect Lovense Toy</a>
+                            </li>
          
                           </ul>
                           <div class="tab-content" id="pills-tabContent">
 
-                            <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+
+                            <div class="tab-pane  show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                                 {% include 'rooms/include/room_stats.html' %}
+                            </div>
+
+                            <div class="tab-pane fade" id="pills-lovense-toy" role="tabpanel" aria-labelledby="pills-lovense-toy">
+                                <img class="" id="lovense_qr_code_img">
+                             
+
+                                <button class="btn btn-primary w-25" onclick="generate_lovense_qrcode()" id="lovense_qrcode_btn">Generate Qr Code</button>
                             </div>
 
                             <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
@@ -163,93 +174,28 @@
 
 
 
-    function ajax_blocked_countries(){
-        var data = [];
-        $("#wrapper_countries .selected-wrapper .selected").each(function() {
-            data.push($(this).attr("data-value"));
-        });
-
-        $.ajax({
-        method:'POST',
-        url: " ",
-        data:{
-                'countries':data,
-                'room': {{room_data.id}},
-                'csrfmiddlewaretoken':"{{csrf_token}}",
-            },
-            success:function(){
-                document.getElementById('save_blocked_countries').style.display = 'block'
-            }
-    })
-    }
-
-    function ajax_blocked_US(){
-        var data = [];
-        $("#wrapper_US .selected-wrapper .selected").each(function() {
-            data.push($(this).attr("data-value"));
-        });
-
-        $.ajax({
-        method:'POST',
-        url: " ",
-        data:{
-                'states':data,
-                'room': {{room_data.id}},
-                'csrfmiddlewaretoken':"{{csrf_token}}",
-            },
-            success:function(){
-                document.getElementById('save_blocked_US').style.display = 'block'
-            }
-    })
-    }
-
-    function ajax_blocked_Canada(){
-        var data = [];
-        $("#wrapper_Canada .selected-wrapper .selected").each(function() {
-            data.push($(this).attr("data-value"));
-        });
-
-        $.ajax({
-        method:'POST',
-        url: " ",
-        data:{
-                'providences':data,
-                'room': {{room_data.id}},
-                'csrfmiddlewaretoken':"{{csrf_token}}",
-            },
-            success:function(){
-                document.getElementById('save_blocked_Canada').style.display = 'block'
-            }
-    })
-    }
-
-
-    function room_online() {
+    function generate_lovense_qrcode(){
         $.ajax({
             method:'POST',
-            url: "room/go_online/",
-            data:{
-                    'room': {{room_data.id}},
-                    'csrfmiddlewaretoken':"{{csrf_token}}",
-                },
-                success:function(){
-                    document.getElementById('save_offline').style.display = 'none'
-                }
+            url: "lovense/generate_broadcaster_qrcode/",
+            data: {
+                'csrfmiddlewaretoken':"{{csrf_token}}",
+            },
+            success:function(data)
+            {
+                console.log(data.data.qr)
+                const qrCodeImg = document.getElementById('lovense_qr_code_img');
+                qrCodeImg.src = data.data.qr;
+                qrCodeImg.style.display = 'block'; //
+            },
+            errors:function(errors){
+                console.log(errors.responseText)
+            }
         })
     }
 
-    function room_offline() {
-        $.ajax({
-            method:'POST',
-            url: "room/go_offline/",
-            data:{
-                    'room': {{room_data.id}},
-                    'csrfmiddlewaretoken':"{{csrf_token}}",
-                },
-                success:function(){
-                    document.getElementById('save_offline').style.display = 'none'
-                }
-        })
-    }
+
+
+
 
 </script>

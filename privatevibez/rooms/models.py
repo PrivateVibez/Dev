@@ -1,7 +1,9 @@
 from django.db import models
 
-# Create your models here.
 
+# Create your models here.
+    
+    
 class Room_Data(models.Model):
     User                  = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     Tab                   = models.CharField(max_length=200,null=True,blank=True)

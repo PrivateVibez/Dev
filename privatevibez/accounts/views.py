@@ -11,6 +11,9 @@ from rooms.models import *
 from django.contrib.auth.decorators import login_required
 from staff.models import StaffManager
 from django.utils import timezone
+from cryptography.fernet import Fernet
+import secrets
+from django.conf import settings
 
 def Logout(request):
     
@@ -101,6 +104,7 @@ def Registration_Broadcaster_info(request):
         user.first_name      = request.POST.get('first_name')
         user.last_name       = request.POST.get('last_name')
         user_data.Birth_Date = request.POST.get('Birth_date')
+
         user.save()
         user_data.save()
         return JsonResponse('OK', safe=False) 
@@ -158,13 +162,19 @@ def bio_info(request):
     room_data               = Room_Data.objects.get(User = request.user)
     print(request.POST)
     user_data.Real_Name     = request.POST.get('Real_Name')
-
     user_data.Age           = request.POST.get('Age')
     user_data.I_Am          = request.POST.get('I_Am')
     user_data.Interested_In = request.POST.get('Interested_In')
     user_data.Location      = request.POST.get('Location')
     user_data.Language      = request.POST.get('Language')
     user_data.Body_Type     = request.POST.get('Body_Type')
+    
+    fernet               = Fernet(settings.FERNET_KEY)
+    random_token         = secrets.token_urlsafe(32)
+    U_token              = fernet.encrypt(random_token.encode())
+    
+    user_data.U_token      = U_token
+    
     room_data.Tab           = request.POST.get('Tab')
     room_data.save()
     user_data.save()

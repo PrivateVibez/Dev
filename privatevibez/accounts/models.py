@@ -18,6 +18,7 @@ class User_Data(models.Model):
     Language       = models.CharField(max_length=200,null=True,blank=True)
     Body_Type      = models.CharField(max_length=200,null=True,blank=True)
     Vibez          = models.IntegerField(null=True,blank=True,default=0)
+    U_token        = models.CharField(max_length=200,null=True,blank=True)
     Image          = models.ImageField(upload_to='profile_pic',null=True,blank=True)
     Id_File        = models.ImageField(upload_to='ID',null=True,blank=True)
     Timestamp      = models.DateTimeField(auto_now_add=True)     

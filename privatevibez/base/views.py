@@ -65,7 +65,7 @@ def home(request):
                 room_users_data = User_Data.objects.all()
                 
         
-        roms_list = Room_Data.objects.all()
+        rooms_list = Room_Data.objects.all()
 
         room_users_data = User_Data.objects.all()
 

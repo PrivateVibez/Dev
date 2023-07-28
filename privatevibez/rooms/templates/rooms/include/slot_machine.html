@@ -168,6 +168,12 @@
 {% else %}
 <h3 class="row justify-content-center">You need more Vibez to play</h3>
 {% endif %}
+
+<div id="prize">
+
+</div>
+
+{% if slot_machine_data %}
     <script>
 
 
@@ -199,7 +205,7 @@ function fetchData(vibez) {
 
 }
 
-function give_prize(prize){
+function give_prize(prize,time){
 
   $.ajax({
     url: '/room/get_prize/',
@@ -212,6 +218,8 @@ function give_prize(prize){
         winner: {{request.user.id}},
         broadcaster: {{broadcaster_user.id}},
         prize_won: prize,
+        duration:time,
+    
     }),
     success: function (data) {
         // Display the fetched data (example: update the DOM)
@@ -290,30 +298,22 @@ function action(){
    
     if (r[0] === r[1] && r[1] === r[2]) {
       //Won 3 of a Kind
-      $msg.html('You won! Enjoy your ' + reels[1][(r[0] / 70 + 1) % 3 | 0].split(' ')[0]);
+      $msg.html('You won! 3 of a kind! Enjoy ' + {{slot_machine_data.Win_3_of_a_kind_prize}} + ' Vibez');
 
       prize.innerHTML = {{slot_machine_data.Win_3_of_a_kind_prize}}
 
-      if (typeof prize.innerHTML === "undefined") {
-        // Code to handle when prize.innerHTML is undefined
-        give_prize(prize.innerHTML);
-      } else {
+      give_prize(prize.innerHTML,20);
 
-      }
       
 
     } else if (r[0] === r[1] || r[1] === r[2] || r[0] === r[2]) {
       //Won 2 of a Kind
-      $msg.html('Two of a kind! You won a bob pic.');
+      $msg.html('You won! 2 of a kind! Enjoy ' + {{slot_machine_data.Win_2_of_a_kind_prize}} + ' Vibez');
 
       prize.innerHTML = {{slot_machine_data.Win_2_of_a_kind_prize}}
       
-      if (typeof prize.innerHTML === "undefined") {
-        // Code to handle when prize.innerHTML is undefined
-        give_prize(prize.innerHTML);
-      } else {
+        give_prize(prize.innerHTML,5);
 
-      }
 
     } else {
       $msg.html('Try again');
@@ -327,5 +327,8 @@ function action(){
 $(sm.init);
 });
     </script>
+
+{% endif %}
+
   </body>
 </html>

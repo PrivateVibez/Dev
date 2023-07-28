@@ -117,13 +117,30 @@
 
                             <div class="col" id="left_buttons_Custom" style="display:none;">
                                 <div ts="UU">
+
                                     <div style="position: absolute; height: 76px; width: 280px; background-color:black;color:#6cc6ba;border-radius:6px; padding:5px;top:20px;" id="text_goal_target2">
+
                                         <input placeholder="Enter how many Vibez" type="number" id="custom_Vibez" class="form-control" ></input>
-                                        <div id="user_vibez_data">You have {{user_data.Vibez}} Vibez </div>
-                                        <button  class="btn btn-link" style="color:#6cc6ba;" data-toggle="modal" data-target="#Buy_Vibez_Modal">Get More</button>
-                                        <div onclick="custom_button()" class="btn btn-dark" style="color:#6cc6ba;position: absolute;font-size: 15px;font-weight: normal;left: 150px;width: 110px;bottom: 1px;">
+
+                                        <div id="user_vibez_data">You have {{user_data.Vibez}} Vibez
+                                         </div>
+
+                                        <button  class="btn btn-link" style="color:#6cc6ba;" 
+                                        data-toggle="modal" data-target="#Buy_Vibez_Modal">
+                                        Get More</button>
+                                        
+                                        
+                                        <div onclick="
+                                        {% if request.user.is_authenticated %}
+                                        custom_button()
+                                        {% else %}
+                                        login_first()
+                                        {% endif %}"
+                                         class="btn btn-dark" style="color:#6cc6ba;position: absolute;font-size: 15px;font-weight: normal;left: 150px;width: 110px;bottom: 1px;">
                                             Send Vibez
                                         </div>
+
+
                                     </div>
                                 </div>
                             </div>
@@ -338,7 +355,7 @@
                                 </div>
                                 {% endif %}
 
-                                {% if Ask_data is True and private.Ative is False %}
+                                {% if Ask_data is True and private.Active is False %}
                                 <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
 
                                     <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;"></div>
@@ -379,16 +396,12 @@
 
                                     </div>
 
-                                    <div class="input-group mb-3" style="bottom: 27px; left: 0px; position: absolute;">
-                                        
-                                        <form id="private_chat_room_form" class="d-flex w-100">
-                                            <input type="text" class="form-control" name="private_chat_room_message_field" required>
-                                            <div class="input-group-append">
-                                                <button type="submit" class="btn btn-primary">Send</button>
-                                            </div>
-                                        </form>
+                                    <div class="col d-flex h-100 justify-content-center align-items-center" style="height:100%;">
 
+                                  
+                                    <button class="btn btn-primary display-3" id="private_chat_room_back_button" onclick="invite_model_chat()" style="width:150px; font-size:1rem; height:50px; left: 0px;">Invite Model to a private chat</button>
                                     </div>
+
                                 {% endif %}
 
                             </div>
@@ -763,12 +776,35 @@
     </div>
 </div>
 
+
+{% comment %} MODAL FOR USERS WHO ARE NOT LOGGED IN {% endcomment %}
+<div class="modal fade" id="loginfirst" tabindex="-1" role="dialog" aria-labelledby="loginfirst" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Please Login or Register first.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">OKAY</button>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 <input id="users_id" type='number' style="display:none;" value="{{request.user.id}}"></input>
 <input id="broadcasters_id" style="display:none;" value="{{room_data.User.id}}"></input>
 <input id="rooms_id" style="display:none;" type='number' value="{{room_data.id}}"></input>
 <input id="user_username" style="display:none;" value="{{request.user.username}}"></input>
 <input id="room_username" style="display:none;" value="{{room_data.User}}"></input>
 
+{% if request.user.is_authenticated %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Your code here
@@ -826,7 +862,9 @@ let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicCh
 
     // Send message
     var public_chat_room_form = document.getElementById('public_chat_room_form');
-    console.log(public_chat_room_form);
+    
+    if(public_chat_room_form !== null){
+       
     public_chat_room_form.addEventListener('submit', function(e) {
         e.preventDefault();
         var message_field = document.getElementsByName('public_chat_room_message_field')[0];
@@ -837,6 +875,7 @@ let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicCh
         message_field.value = '';
         message_field.focus();
     });
+}
     // Close WebSocket on page close
     window.onbeforeunload = function() {
         public_socket.close();
@@ -908,8 +947,35 @@ let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicCh
 
       });
 
+    </script>
+
+{% endif %}
 
 
+
+
+<script>
+
+    function invite_model_chat(room_id) {
+        $.ajax({
+            method:'POST',
+            url: "/room/invite_private_chat/",
+            mimeType:"multipart/form-data",
+            data:{  
+                    'room_id'  : room_id,
+                    'user_id'  : {{request.user.id}},   
+                    'csrfmiddlewaretoken':"{{csrf_token}}",
+                },
+                'dataType': 'json',
+                success:function(data){
+                  console.log(data)
+                },
+                errors:function(errors){
+                    console.log(errors.responseText)
+                }
+                
+            });
+    }
 
        
     function Thumb_Down(){
@@ -1064,6 +1130,3 @@ let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicCh
 
 
 </script>
-
- 
-

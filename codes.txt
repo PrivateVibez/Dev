@@ -17,3 +17,107 @@
           let staff_broc_chat_room_messages = document.getElementById("staff_broc_chat_room_messages");
           staff_broc_chat_room_messages.scrollTop = staff_broc_chat_room_messages.scrollHeight;
           document.getElementById('staff_broc_chat_room_message_field').value = '';
+
+
+
+
+
+
+
+          // for blocking block_countries
+
+
+          
+    function ajax_blocked_countries(){
+        var data = [];
+        $("#wrapper_countries .selected-wrapper .selected").each(function() {
+            data.push($(this).attr("data-value"));
+        });
+
+        $.ajax({
+        method:'POST',
+        url: " ",
+        data:{
+                'countries':data,
+                'room': {{room_data.id}},
+                'csrfmiddlewaretoken':"{{csrf_token}}",
+            },
+            success:function(){
+                document.getElementById('save_blocked_countries').style.display = 'block'
+            }
+    })
+    }
+
+    function ajax_blocked_US(){
+        var data = [];
+        $("#wrapper_US .selected-wrapper .selected").each(function() {
+            data.push($(this).attr("data-value"));
+        });
+
+        $.ajax({
+        method:'POST',
+        url: " ",
+        data:{
+                'states':data,
+                'room': {{room_data.id}},
+                'csrfmiddlewaretoken':"{{csrf_token}}",
+            },
+            success:function(){
+                document.getElementById('save_blocked_US').style.display = 'block'
+            }
+    })
+    }
+
+    function ajax_blocked_Canada(){
+        var data = [];
+        $("#wrapper_Canada .selected-wrapper .selected").each(function() {
+            data.push($(this).attr("data-value"));
+        });
+
+        $.ajax({
+        method:'POST',
+        url: " ",
+        data:{
+                'providences':data,
+                'room': {{room_data.id}},
+                'csrfmiddlewaretoken':"{{csrf_token}}",
+            },
+            success:function(){
+                document.getElementById('save_blocked_Canada').style.display = 'block'
+            }
+    })
+    }
+
+
+
+
+
+// check if a room is online
+
+    function room_online() {
+        $.ajax({
+            method:'POST',
+            url: "room/go_online/",
+            data:{
+                    'room': {{room_data.id}},
+                    'csrfmiddlewaretoken':"{{csrf_token}}",
+                },
+                success:function(){
+                    document.getElementById('save_offline').style.display = 'none'
+                }
+        })
+    }
+
+    function room_offline() {
+        $.ajax({
+            method:'POST',
+            url: "room/go_offline/",
+            data:{
+                    'room': {{room_data.id}},
+                    'csrfmiddlewaretoken':"{{csrf_token}}",
+                },
+                success:function(){
+                    document.getElementById('save_offline').style.display = 'none'
+                }
+        })
+    }
