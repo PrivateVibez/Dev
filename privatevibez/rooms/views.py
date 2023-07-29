@@ -399,7 +399,7 @@ def trigger_toy(broadcaster_id,price,user_id,feature,strength,timesec):
         "command":"Pattern",
         "rule":"V:1,F:" + str(feature) + ";" + "S:1000#",
         "strength": str(strength),
-        "timeSec": timesec,
+        "timeSec": timesec * 60,
         "apiVer": 2,
             }     
     headers = {
