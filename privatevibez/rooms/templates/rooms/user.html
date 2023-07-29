@@ -153,8 +153,8 @@
 
                                 <div class="list_tip_btn" Style="background-color:black;border:7px solid black; border-radius:6px;">
 
-                                    <div class="tip_btn" style="background-color:lightcoral; {% if user_data == None or user_data.Vibes < 5 %} cursor:not-allowed {% endif %}" 
-                                    {% if user_data != None and user_data.Vibes > 5 %} onclick="confirm_send(number = '{{room_Data.Price_MMM_button}}', btn='mmm')" 
+                                    <div class="tip_btn" style="background-color:lightcoral; {% if user_data == None and user_data.Vibez < 5 %} cursor:not-allowed {% endif %}" 
+                                    {% if user_data != None and user_data.Vibez > room_data.Price_MMM_button %} onclick="confirm_send(number = '{{room_data.Price_MMM_button}}', btn='mmm')" 
                                     {% endif %}>
 
                                         <div>MMM</div>
@@ -164,8 +164,8 @@
                                         <p style="font-size:10px;">{{room_data.Price_MMM_button}} Vibez</p>
                                     </div>
 
-                                    <div class="tip_btn" style="background-color:lightsalmon; {% if user_data == None or user_data.Vibes < 35 %}cursor:not-allowed {% endif %}" 
-                                    {% if user_data != None and user_data.Vibes > 5 %} 
+                                    <div class="tip_btn" style="background-color:lightsalmon; {% if user_data == None or user_data.Vibez < room_data.Price_OH_button %}cursor:not-allowed {% endif %}" 
+                                    {% if user_data != None or user_data.Vibez > room_Data.Price_OH_button %} 
                                     onclick="confirm_send(number = '{{room_Data.Price_OH_button}}', btn='oh')" {% endif %}>
 
                                         <div>OH</div>
@@ -176,10 +176,10 @@
                                     </div>
 
                                     <div class="tip_btn" style="background-color: lightgreen;; 
-                                    {% if user_data == None or user_data.Vibes < 70 %}
+                                    {% if user_data == None or user_data.Vibez < room_data.Price_OHYes_button %}
                                     cursor:not-allowed {% endif %}"  
-                                    {% if user_data != None and user_data.Vibes > 5 %} 
-                                    onclick="confirm_send(number = '{{room_Data.Price_OHYes_button}}', btn='ohyes')" {% endif %}>
+                                    {% if user_data != None and user_data.Vibez > room_data.Price_OHYes_button %} 
+                                    onclick="confirm_send(number = '{{room_data.Price_OHYes_button}}', btn='ohyes')" {% endif %}>
 
                                         <div>OH YES</div>
 
@@ -927,6 +927,8 @@ let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicCh
     
         // Send message
         var private_form = document.getElementById('private_chat_room_form');
+
+        if(private_form !== null){
         private_form.addEventListener('submit', function(e) {
             e.preventDefault();
             var message_field = document.getElementsByName('private_chat_room_message_field')[0];
@@ -937,6 +939,8 @@ let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicCh
             message_field.value = '';
             message_field.focus();
         });
+
+    }
         // Close WebSocket on page close
         window.onbeforeunload = function() {
             private_socket.close();
@@ -1128,5 +1132,28 @@ let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicCh
                 })
     }
 
+
+function confirm_send(number,btn){
+
+    $.ajax({
+        method:'POST',
+        url: "/room/fav_btn_trigger_toy/",
+        mimeType:"multipart/form-data",
+        data:{  
+                'button_type': btn,
+                'user_id'    : {{request.user.id}},
+                'room_id'    : {{room_data.User.id}},
+                'csrfmiddlewaretoken':"{{csrf_token}}",
+            },
+            'dataType': 'json',
+            success:function(data){
+                console.log(data)
+            },
+            errors:function(errors){
+                console.log(errors.responseText)
+            }
+
+            })
+}
 
 </script>

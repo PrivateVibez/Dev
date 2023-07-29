@@ -91,13 +91,13 @@
 
         {% if user_status == "Broadcaster" %}
             <p>
-                <a href="/accounts/registration_broadcaster/" style="color:black;text-decoration:none;">
+                <button style="color:black;text-decoration:none;" class="btn btn-transparent h1 rounded-3" data-toggle="modal" data-target="#private_chat_invites_modal">
 
                     (Total : {{private_chat_all.count}} | Pending request : {{private_request_pending.count}}) 
                 <span>
                     <i class="icofont-ui-message" style="color:#6cc6ba;"></i>
                 </span>
-                </a>
+                </button>
             </p> 
         {% endif %}
 
@@ -123,6 +123,33 @@
         </div>
     {% endfor %}
 {% endif %}
+
+
+
+{% comment %} MODAL FOR PRIVATE INVITES {% endcomment %}
+
+<div class="modal fade" id="private_chat_invites_modal" tabindex="-1" role="dialog" aria-labelledby="private_chat_invites_modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Private Chat invites</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+      
+
+
+
+        </div>
+        <div class="modal-footer">
+
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 <!-- Login Modal-->
 
@@ -318,6 +345,44 @@
                                         <small id="emailHelp" class="form-text text-muted">By Vibez.</small>
                                     </div>                    
                                     <div class="form-group">
+                                        <label for="">Feature</label>
+
+                                        <select value="{{room_data.Price_MMM_button}}" class="form-control" id="Feature_MMM_button">
+
+                                            <option {% if room_data.Feature_MMM_button and room_data.Feature_MMM_button == "v" %}
+                                             selected{% endif %} value="v"
+                                             >Vibrate</option>
+
+                                            <option
+                                             {% if room_data.Feature_MMM_button and room_data.Feature_MMM_button == "r" %}
+                                              selected{% endif %} value="r"
+                                              >Rotate</option>
+
+                                            <option 
+                                            {% if room_data.Feature_MMM_button and room_data.Feature_MMM_button == "p" %}
+                                             selected{% endif %}
+                                              value="p">Pump</option>
+
+                                            <option
+                                             {% if room_data.Feature_MMM_button and room_data.Feature_MMM_button == "t" %}
+                                              selected{% endif %}
+                                               value="t">Thrusting</option>
+
+                                            <option
+                                             {% if room_data.Feature_MMM_button and room_data.Feature_MMM_button == "f" %} 
+                                             selected
+                                             {% endif %} 
+                                             value="f">Fingering</option>
+
+                                            <option 
+                                            {% if room_data.Feature_MMM_button and room_data.Feature_MMM_button == "s" %}
+                                             selected{% endif %}
+                                              value="s">
+                                              Suction</option>
+
+                                        </select>
+                                    </div>                    
+                                    <div class="form-group">
                                         <label for="exampleInputEmail1">Duration</label>
                                         <input type="number" class="form-control" id="Duration_MMM_button" aria-describedby="emailHelp" value="{{room_data.Duration_MMM_button}}">
                                         <small id="emailHelp" class="form-text text-muted">in Min.</small>
@@ -325,7 +390,7 @@
                                     
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Strength</label>
-                                        <input type="number" class="form-control" id="Strength_MMM_button" aria-describedby="emailHelp" value="{{room_data.Strength_MMM_button}}">
+                                        <input type="text" class="form-control" id="Strength_MMM_button" aria-describedby="emailHelp" value="{{room_data.Strength_MMM_button}}">
                                     </div>  
                                 </div>
                             </div>   
@@ -339,7 +404,41 @@
                                         <label for="exampleInputEmail1">Price</label>
                                         <input type="number" class="form-control" id="Price_OH_button" aria-describedby="emailHelp" value="{{room_data.Price_OH_button}}">
                                         <small id="emailHelp" class="form-text text-muted">By Vibez.</small>
-                                    </div>                    
+                                    </div>  
+                                    
+                                    <div class="form-group">
+                                        <label for="">Feature</label>
+
+                                        <select class="form-control" id="Feature_OH_button">
+
+                                            <option {% if room_data.Feature_OH_button and room_data.Feature_OH_button == "v" %} selected{% endif %}  value="v">Vibrate</option>
+
+                                            <option
+                                            {% if room_data.Feature_OH_button and room_data.Feature_OH_button == "r" %} selected{% endif %}  
+                                             value="r">
+                                             Rotate</option>
+
+                                            <option
+                                            {% if room_data.Feature_OH_button and room_data.Feature_OH_button == "p" %} selected{% endif %}  
+                                            value="p">Pump</option>
+
+                                            <option
+                                            {% if room_data.Feature_OH_button and room_data.Feature_OH_button == "t" %} selected{% endif %}  
+
+                                            value="t">Thrusting</option>
+
+                                            <option
+                                            {% if room_data.Feature_OH_button and room_data.Feature_OH_button == "f" %} selected{% endif %} 
+
+                                            value="f">Fingering</option>
+
+                                            <option
+                                            {% if room_data.Feature_OH_button and room_data.Feature_OH_button == "s" %} selected{% endif %}  
+                                            value="s">Suction</option>
+
+                                        </select>
+                                    </div> 
+                                                     
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Duration</label>
                                         <input type="number" class="form-control" id="Duration_OH_button" aria-describedby="emailHelp" value="{{room_data.Duration_OH_button}}">
@@ -348,7 +447,7 @@
                                     
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Strength</label>
-                                        <input type="number" class="form-control" id="Strength_OH_button" aria-describedby="emailHelp" value="{{room_data.Strength_OH_button}}">
+                                        <input type="text" class="form-control" id="Strength_OH_button" aria-describedby="emailHelp" value="{{room_data.Strength_OH_button}}">
                                     </div>  
                                 </div>
                             </div>                  
@@ -362,7 +461,50 @@
                                         <label for="exampleInputEmail1">Price</label>
                                         <input type="number" class="form-control" id="Price_OHYes_button" aria-describedby="emailHelp" value="{{room_data.Price_OHYes_button}}">
                                         <small id="emailHelp" class="form-text text-muted">By Vibez.</small>
-                                    </div>                    
+                                    </div> 
+
+                                    <div class="form-group">
+                                        <label for="">Feature</label>
+
+                                        <select class="form-control" id="Feature_OHYes_button">
+                                            <option
+                                            {% if room_data.Feature_OHYes_button and room_data.Feature_OHYes_button == "v" %}
+                                             selected{% endif %}  
+                                             
+                                            value="v">Vibrate</option>
+
+                                            <option
+                                            {% if room_data.Feature_OHYes_button and room_data.Feature_OHYes_button == "r" %}
+                                            selected
+                                            {% endif %}
+                                            value="r">Rotate</option>
+
+                                            <option
+                                            {% if room_data.Feature_OHYes_button and room_data.Feature_OHYes_button == "p" %}
+                                            selected
+                                            {% endif %}
+                                            value="p">Pump</option>
+
+                                            <option
+                                            {% if room_data.Feature_OHYes_button and room_data.Feature_OHYes_button == "t" %}
+                                            selected
+                                            {% endif %}
+                                            value="t">Thrusting</option>
+
+                                            <option
+                                            {% if room_data.Feature_OHYes_button and room_data.Feature_OHYes_button == "f" %}
+                                            selected
+                                            {% endif %}
+                                            value="f">Fingering</option>
+
+                                            <option
+                                            {% if room_data.Feature_OHYes_button and room_data.Feature_OHYes_button == "s" %}
+                                            selected
+                                            {% endif %}
+                                            value="s">Suction</option>
+                                        </select>
+                                    </div>  
+
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Duration</label>
                                         <input type="number" class="form-control" id="Duration_OHYes_button" aria-describedby="emailHelp" value="{{room_data.Duration_OHYes_button}}">
@@ -371,12 +513,25 @@
                                     
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Strength</label>
-                                        <input type="number" class="form-control" id="Strength_OHYes_button" aria-describedby="emailHelp" value="{{room_data.Strength_OHYes_button}}">
+                                        <input type="text" class="form-control" id="Strength_OHYes_button" aria-describedby="emailHelp" value="{{room_data.Strength_OHYes_button}}">
                                     </div>  
                                 </div>
                             </div>                  
                         </div> 
     
+                        <button class="mt-3 display-3 btn btn-transparent" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                            More Info
+                          </button>
+                        </p>
+
+                        <div class="collapse " id="collapseExample">
+                          <div class="card card-body">
+                            set strength in this format. 
+                            example: 5;10;20
+                            separate with semicolon.
+                            highest strength is 20.
+                          </div>
+                        </div>
                     </div> 
 
                     <div class="modal-footer">
@@ -524,6 +679,10 @@ function Save_RoomPatterns(){
                 'Price_OHYes':document.getElementById('Price_OHYes_button').value,
                 'Duration_OHYes':document.getElementById('Duration_OHYes_button').value,
                 'Strength_OHYes':document.getElementById('Strength_OHYes_button').value,
+
+                'Feature_OHYes':document.getElementById('Feature_OHYes_button').value,
+                'Feature_OH':document.getElementById('Feature_OH_button').value,
+                'Feature_MMM':document.getElementById('Feature_MMM_button').value,
                 'csrfmiddlewaretoken':"{{csrf_token}}",
             },
             success:function(){

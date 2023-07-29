@@ -10,11 +10,12 @@ from .models import *
 from django.utils.safestring import mark_safe
 import json
 from .models import Slot_Machine
-from .forms import Slot_MachineForm
+from .forms import Slot_MachineForm, Fav_vibezForm
 from django.http import HttpResponse as httpresponse
 import requests
 from cryptography.fernet import Fernet
 from django.conf import settings
+from django.shortcuts import render, get_object_or_404, redirect
 
 # Create your views here.
 def Room(request, Broadcaster):
@@ -68,8 +69,8 @@ def Room(request, Broadcaster):
                 user =User_Status.objects.get(User = request.user.id)
                 
                 if user.Status == "User":
- 
-                    slot_machine_data = Slot_Machine.objects.filter(User=broadcaster_user.id).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
+                    if Slot_Machine.objects.filter(User=broadcaster_user.id).exists():
+                        slot_machine_data = Slot_Machine.objects.filter(User=broadcaster_user.id).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
                                 
                 elif user.Status == "Broadcaster":
                     
@@ -224,6 +225,11 @@ def Save_RoomPatterns(request):
     room.Strength_MMM_button   = request.POST.get('Strength_MMM')
     room.Strength_OH_button    = request.POST.get('Strength_OH')
     room.Strength_OHYes_button = request.POST.get('Strength_OHYes')
+    
+    room.Feature_OHYes_button = request.POST.get('Feature_OHYes')
+    room.Feature_OH_button = request.POST.get('Feature_OH')
+    room.Feature_MMM_button = request.POST.get('Feature_MMM')
+    
     room.save()
     return JsonResponse('OK', safe=False)
 
@@ -380,3 +386,93 @@ def invite_private_chat(request):
         
     
     return JsonResponse('OK', safe=False)
+
+
+def trigger_toy(broadcaster_id,price,user_id,feature,strength,timesec):
+    
+    url = "https://api.lovense-api.com/api/lan/v2/command"
+    d_token = settings.LOVENSE_DEV_KEY
+
+    data = {
+        "token":d_token,
+        "uid": broadcaster_id,
+        "command":"Pattern",
+        "rule":"V:1,F:" + str(feature) + ";" + "S:1000#",
+        "strength": str(strength),
+        "timeSec": timesec,
+        "apiVer": 2,
+            }     
+    headers = {
+        "Content-Type": "application/json"
+    }
+    
+    try:
+        response = requests.post(url, json=data, headers=headers)
+        
+        if response.status_code == 200:
+   
+            # Handle the successful response data
+            response_data = response.json()
+            
+            player = User_Data.objects.get(User=user_id)
+            player.Vibez = player.Vibez - price
+            player.save()
+            
+            return JsonResponse({'data': response_data},safe=False)
+        else:
+
+            return JsonResponse({"error": "Failed to make the POST request."}, status=response.status_code)
+
+    except requests.exceptions.RequestException as e:  
+        return JsonResponse({"error": str(e)}, status=500) 
+    
+    return JsonResponse({"data": str(response.status_code)}, status=500) 
+
+def fav_btn_trigger_toy(request):
+    
+    if request.method == "POST":
+        room_data = Room_Data.objects.get(User=request.POST.get('room_id'))
+        user_id = User.objects.get(id = request.POST.get('user_id'))
+        
+        button_type = request.POST.get('button_type')
+        
+        if str(button_type) == "mmm":
+          
+            broadcaster_id = room_data.User_id
+            price = room_data.Price_MMM_button
+            user_id = user_id.id
+            feature = room_data.Feature_MMM_button
+            strength = room_data.Strength_MMM_button
+            timesec = room_data.Duration_MMM_button
+
+            # Call the trigger_toy() function with the extracted attributes
+            trigger_toy(broadcaster_id, price, user_id, feature, strength, timesec)
+             
+        if str(button_type) == "oh":
+            
+            broadcaster_id = room_data.User_id
+            price = room_data.Price_OH_button
+            user_id = user_id.id
+            feature = room_data.Feature_OH_button
+            strength = room_data.Strength_OH_button
+            timesec = room_data.Duration_OH_button
+
+            # Call the trigger_toy() function with the extracted attributes
+            trigger_toy(broadcaster_id, price, user_id, feature, strength, timesec)
+            
+        if str(button_type) == "ohyes":
+            
+            broadcaster_id = room_data.User_id
+            price = room_data.Price_OHYes_button
+            user_id = user_id.id
+            feature = room_data.Feature_OHYes_button
+            strength = room_data.Strength_OHYes_button
+            timesec = room_data.Duration_OHYes_button
+
+            # Call the trigger_toy() function with the extracted attributes
+            trigger_toy(broadcaster_id,price, user_id, feature, strength, timesec)
+        
+        return JsonResponse({'data': "success"},safe=False)
+    
+
+        

@@ -91,6 +91,7 @@
                         <li class="nav-item" role="presentation">
                             <button class="main-nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages-tab-pane" type="button" role="tab" aria-controls="female-tab-pane" aria-selected="false">MESSAGES</button>
                         </li>
+
     
                     </ul>
                     </br>
@@ -99,9 +100,11 @@
                         <div class="tab-pane fade show active" id="streamer-tab-pane" role="tabpanel" aria-labelledby="streamer-tab" tabindex="0">
                                 {% include "rooms/broadcaster.html" %}
                         </div>
+
                         <div class="tab-pane fade" id="messages-tab-pane" role="tabpanel" aria-labelledby="messages-tab" tabindex="0">                        
                             {% include "rooms/include/broadcaster_chat.html" %}               
                         </div>
+
     
                     </div>
 

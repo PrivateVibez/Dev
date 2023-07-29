@@ -298,9 +298,9 @@ function action(){
    
     if (r[0] === r[1] && r[1] === r[2]) {
       //Won 3 of a Kind
-      $msg.html('You won! 3 of a kind! Enjoy ' + {{slot_machine_data.Win_3_of_a_kind_prize}} + ' Vibez');
+      $msg.html('You won! 3 of a kind! Enjoy ' + ' Vibez');
 
-      prize.innerHTML = {{slot_machine_data.Win_3_of_a_kind_prize}}
+      prize.innerHTML = "{{slot_machine_data.Win_3_of_a_kind_prize}}"
 
       give_prize(prize.innerHTML,20);
 
@@ -308,9 +308,9 @@ function action(){
 
     } else if (r[0] === r[1] || r[1] === r[2] || r[0] === r[2]) {
       //Won 2 of a Kind
-      $msg.html('You won! 2 of a kind! Enjoy ' + {{slot_machine_data.Win_2_of_a_kind_prize}} + ' Vibez');
+      $msg.html('You won! 2 of a kind! Enjoy ' + ' Vibez');
 
-      prize.innerHTML = {{slot_machine_data.Win_2_of_a_kind_prize}}
+      prize.innerHTML = "{{slot_machine_data.Win_2_of_a_kind_prize}}"
       
         give_prize(prize.innerHTML,5);
 
