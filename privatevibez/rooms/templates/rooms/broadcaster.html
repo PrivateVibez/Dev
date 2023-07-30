@@ -87,32 +87,35 @@
                                         <form id="set_slot_machine" method="POST" action="{% url 'set_slot_machine' %}" class="col-8 gap-2">
                                             {% csrf_token %}
 
+                                           
+                                            
+                                            <label for="set_vibez_per_spin">Set vibez per spin</label>
+                                            <input type="number" value="
                                             {% if slot_machine_data %}
-                                            <label for="set_vibez_per_spin">Set vibez per spin</label>
-                                            <input type="number" value="{{slot_machine_data.Slot_cost_per_spin}}" class="form-control" id="set_vibez_per_spin" name="Slot_cost_per_spin">
+                                            {{slot_machine_data.Slot_cost_per_spin}}
+                                                    {% endif %}
+                                            " class="form-control" id="set_vibez_per_spin" name="Slot_cost_per_spin">
 
-                                            <input type="number" class="form-control d-none" id="set_vibez_per_spin" value="{{room_data.User.id}}" name="User">
-                                            
-                                            <label for="set_3_of_a_kind_prize">Set prize for 3 of a kind win</label>
-                                            <input type="text" value="{{slot_machine_data.Win_3_of_a_kind_prize}}" class="form-control" id="set_3_of_a_kind_prize" name="Win_3_of_a_kind_prize">
-                                            
-                                            <label for="set_2_of_a_kind_prize">Set prize for 2 of a kind win</label>
-                                            <input type="text" value="{{slot_machine_data.Win_2_of_a_kind_prize}}" class="form-control" id="set_2_of_a_kind_prize" name="Win_2_of_a_kind_prize">
-
-                                            {% else %}
-
-                                            <label for="set_vibez_per_spin">Set vibez per spin</label>
-                                            <input type="number" class="form-control" id="set_vibez_per_spin" name="Slot_cost_per_spin">
-
-                                            <input type="number" class="form-control d-none" id="set_vibez_per_spin" value="{{room_data.User.id}}" name="User">
-                                            
-                                            <label for="set_3_of_a_kind_prize">Set prize for 3 of a kind win</label>
-                                            <input type="text" value="" class="form-control" id="set_3_of_a_kind_prize" name="Win_3_of_a_kind_prize">
-                                            
-                                            <label for="set_2_of_a_kind_prize">Set prize for 2 of a kind win</label>
-                                            <input type="text" class="form-control" id="set_2_of_a_kind_prize" name="Win_2_of_a_kind_prize">
-                                            
+                                            <input type="number" class="form-control d-none" id="" value="
+                                            {% if slot_machine_data %}
+                                            {{room_data.User.id}}
                                             {% endif %}
+                                            " name="User">
+                                            
+                                            <label for="set_3_of_a_kind_prize">Set prize for 3 of a kind win</label>
+                                            <input type="text" value="
+                                            {% if slot_machine_data %}
+                                            {{slot_machine_data.Win_3_of_a_kind_prize}}
+                                            {% endif %}
+                                            " class="form-control" id="set_3_of_a_kind_prize" name="Win_3_of_a_kind_prize">
+                                            
+                                            <label for="set_2_of_a_kind_prize">Set prize for 2 of a kind win</label>
+                                            <input type="text" value="
+                                            {% if slot_machine_data %}
+                                            {{slot_machine_data.Win_2_of_a_kind_prize}}
+                                            {% endif %}
+                                            " class="form-control" id="set_2_of_a_kind_prize" name="Win_2_of_a_kind_prize">
+                               
 
 
                                             <button type="submit" class="btn btn-primary my-2">Set</button>

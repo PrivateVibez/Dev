@@ -67,10 +67,10 @@
               <h4 class="text-center font-weight-bold bg-light py-2 m-0">Private Chats</h4>
 
               <div class="card card-body pri_broc_chat_list p-0" id="fan_lists">
-                {% if broc_private_list %}
-                {% for fan in broc_private_list %}
-                <div class="d-flex justify-content-between mb-2 border-top pt-2 px-3" id="fan_list_username" onclick="toggle_private_broc_room('{{ fan }}')">
-                  <h4>{{ fan }}</h4>
+                {% if invitee_list %}
+                {% for fan in invitee_list %}
+                <div class="d-flex justify-content-between mb-2 border-top pt-2 px-3" id="fan_list_username" onclick="toggle_private_broc_room('{{ fan.username }}')">
+                  <h4 class="mt-5">{{ fan.name }}</h4>
                 </div>
                 {% endfor %}
                 {% else %}

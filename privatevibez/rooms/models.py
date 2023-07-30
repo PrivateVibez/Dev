@@ -1,11 +1,11 @@
 from django.db import models
-
+from django.conf import settings
 
 # Create your models here.
     
     
 class Room_Data(models.Model):
-    User                  = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    User                  = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     Tab                   = models.CharField(max_length=200,null=True,blank=True)
     Goal                  = models.IntegerField(null=True,blank=True, default=0)
     Public_Chat           = models.BooleanField(default=True)
@@ -32,7 +32,7 @@ class Room_Data(models.Model):
         return str(self.User)
 
 class Room_Sesson(models.Model):
-    User           = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    User           = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     Goal_Currrent  = models.IntegerField(null=True,blank=True, default=0)
     Timestamp      = models.DateTimeField(auto_now_add=True)     
     def __str__(self):
@@ -40,7 +40,7 @@ class Room_Sesson(models.Model):
 
 
 class Menu_Data(models.Model):
-    User       = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    User       = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     Vibez_Cost = models.IntegerField(null=True,blank=True)
     Menu_Name  = models.CharField(max_length=200,null=True,blank=True)
     Menu_Time  = models.CharField(max_length=200,null=True,blank=True)
@@ -49,7 +49,7 @@ class Menu_Data(models.Model):
         return str(self.User)
 
 class Dice_Data(models.Model):
-    User             = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    User             = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     One_Dice_Name    = models.CharField(max_length=200,null=True,blank=True)
     One_Dice_Time    = models.IntegerField(null=True,blank=True)
     Two_Dice_Name    = models.CharField(max_length=200,null=True,blank=True)
@@ -80,12 +80,12 @@ class Slot_Machine_limit(models.Model):
     
 
 class Slot_Machine(models.Model):
-    User                      = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    User                      = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     Slot_cost_per_spin        = models.IntegerField(null=True,blank=True)
     Win_3_of_a_kind_prize     = models.CharField(max_length=200,null=True,blank=True)
     Win_2_of_a_kind_prize     = models.CharField(max_length=200,null=True,blank=True)
     Prize                     = models.CharField(max_length=200,null=True,blank=True)
-    Winner                    = models.ForeignKey('auth.User', on_delete=models.CASCADE,null=True,blank=True, related_name = 'Winner')
+    Winner                    = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,null=True,blank=True, related_name = 'Winner')
     timestamp                 = models.DateTimeField(null=True)
     
     def __str__(self):
@@ -96,8 +96,8 @@ class Slot_Machine(models.Model):
     
 
 class Follows(models.Model):
-    User        = models.ForeignKey('auth.User', on_delete=models.CASCADE)
-    Broacaster  = models.ForeignKey('auth.User',null=True,blank=True, on_delete=models.CASCADE, related_name = 'Broacaster')
+    User        = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    Broacaster  = models.ForeignKey(settings.AUTH_USER_MODEL,null=True,blank=True, on_delete=models.CASCADE, related_name = 'Broacaster')
     Timestamp   = models.DateTimeField(auto_now_add=True)     
     def __str__(self):
         return str(self.User)
@@ -105,8 +105,8 @@ class Follows(models.Model):
 
 
 class Thumbs(models.Model):
-    User        = models.ForeignKey('auth.User', on_delete=models.CASCADE)
-    Broacaster  = models.ForeignKey('auth.User',null=True,blank=True, on_delete=models.CASCADE, related_name = 'Thumb_Broacaster')
+    User        = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    Broacaster  = models.ForeignKey(settings.AUTH_USER_MODEL,null=True,blank=True, on_delete=models.CASCADE, related_name = 'Thumb_Broacaster')
     Thumb       = models.CharField(max_length=200,null=True,blank=True)
     Timestamp   = models.DateTimeField(auto_now_add=True)     
     def __str__(self):

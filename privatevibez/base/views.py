@@ -8,6 +8,9 @@ from django.contrib.sessions.models import Session
 from django.contrib import messages
 from staff.models import StaffManager
 from django.shortcuts import redirect
+from django.conf import settings
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 
 

@@ -20,6 +20,13 @@ class StaffAdmin(admin.ModelAdmin):
     list_display_links = ('From', 'To', 'Message', 'Timestamp')
     list_per_page = 30
     
+    
+class Private_Chat_InviteeAdmin(admin.ModelAdmin):
+    list_display = ('broadcaster',)
+    list_display_links = ('broadcaster',)
+    list_per_page = 30
+    
 admin.site.register(Staff, StaffAdmin)
 admin.site.register(Private, PrivateAdmin)
 admin.site.register(PrivateRoomManager)
+admin.site.register(Private_Chat_Invitee,Private_Chat_InviteeAdmin)

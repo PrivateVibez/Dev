@@ -1,11 +1,12 @@
 from channels.generic.websocket import AsyncWebsocketConsumer, JsonWebsocketConsumer
 from asgiref.sync import sync_to_async, async_to_sync
 import json
-from django.contrib.auth.models import User
 from .models import Public, Private, PrivateRoomManager, Staff
 from staff.models import StaffRoomManager
 from django.db.models import Q
 import time
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 
 class PublicChatConsumer(AsyncWebsocketConsumer):

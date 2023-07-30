@@ -94,6 +94,8 @@ TEMPLATES = [
     },
 ]
 
+AUTH_USER_MODEL = 'accounts.CustomUser'
+
 
 WSGI_APPLICATION = 'privatevibez.wsgi.application'
 ASGI_APPLICATION = 'privatevibez.asgi.application'

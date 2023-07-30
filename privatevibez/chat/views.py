@@ -7,8 +7,10 @@ import json
 from staff.serializers import StaffRoomManagerSerializer
 from rest_framework.renderers import JSONRenderer
 from django.http import HttpResponse as httpresponse
-
+from django.conf import settings
+from django.contrib.auth import get_user_model
 User = get_user_model()
+
 
 def get_last_10_messages(chatId):
     chat = get_object_or_404(Public, id=chatId)

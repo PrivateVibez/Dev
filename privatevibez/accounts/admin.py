@@ -4,6 +4,7 @@ from django.contrib import admin
 from .models import * 
 
 admin.site.register(User_Status)
+admin.site.register(CustomUser)
 admin.site.register(User_Data)
 admin.site.register(Bad_Acters)
 
