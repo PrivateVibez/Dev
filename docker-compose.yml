@@ -18,13 +18,3 @@ services:
     environment:
     - SECRET_KEY=devsecretkey
     - DEBUG=1
-
-
-
-
-  # db:
-  #   image: postgres:13.0-alpine
-  #   environment:
-  #   - POSTGRES_DB=privatevibezdb
-  #   - POSTGRES_USER=devuser
-  #   - POSTGRES_PASSWORD=password
