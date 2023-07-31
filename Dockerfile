@@ -9,8 +9,6 @@ COPY ./requirements.txt ./requirements.txt
 
 COPY ./privatevibez /privatevibez
 
-COPY ./mnt /mnt
-
 WORKDIR /privatevibez
 
 EXPOSE 8000
