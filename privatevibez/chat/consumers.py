@@ -101,14 +101,14 @@ class PrivateChatConsumer(AsyncWebsocketConsumer):
             )
         else:
             self.channel_layer.group_send(
-                self.room_group_name,
-                {
-                    'type': 'private_chat_message',
-                    'message': message,
-                    'username': created_data.To
-                }
-            )
-        
+                    self.room_group_name,
+                    {
+                        'type': 'private_chat_message',
+                        'message': message,
+                        'username': created_data.To
+                    }
+                )
+            
 
     # Receive message from room group
     async def private_chat_message(self, event):
@@ -172,7 +172,7 @@ class PrivateChatConsumerBroc(JsonWebsocketConsumer):
         self.last_submission_time[self.user_name] = current_time
         broc = User.objects.get(username=self.broc)
         user = User.objects.get(username=self.user_name)
-        Private.objects.create(From=user, To=broc, Message=message, sent_by_fan=False)
+        Private.objects.create(From=broc, To=user, Message=message, sent_by_fan=False)
 
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
@@ -192,7 +192,9 @@ class PrivateChatConsumerBroc(JsonWebsocketConsumer):
     def room_join_data(self, event):
         broc = User.objects.get(username=event['broc'])
         user = User.objects.get(username=event['user'])
-        data = Private.objects.filter(From=user, To=broc)
+        data = Private.objects.filter(
+            Q(From=user, To=broc) | Q(To=user, From=broc)
+        )
         data = [{
         "From": obj.From.username,
         "To": obj.To.username,
@@ -207,7 +209,10 @@ class PrivateChatConsumerBroc(JsonWebsocketConsumer):
     def chat_message(self, event):
         broc = User.objects.get(username=event['broc'])
         user = User.objects.get(username=event['user'])
-        data = Private.objects.filter(From=user, To=broc)
+        data = Private.objects.filter(
+            Q(From=user, To=broc) | Q(To=user, From=broc)
+        )
+        
         data = [{
         "From": obj.From.username,
         "To": obj.To.username,

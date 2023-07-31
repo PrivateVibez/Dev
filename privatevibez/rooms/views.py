@@ -18,6 +18,7 @@ from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from .serializers import Private_Chat_InviteeSerializer
 from django.conf import settings
+from django.db.models import Q
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -40,26 +41,13 @@ def Room(request, Broadcaster):
             # room_sesson          = Room_Sesson.objects.get(User = User.objects.get(username = Broadcaster))
             broadcaster_data     = User_Data.objects.get(User = User.objects.get(username = Broadcaster))
 
-            if Private_Chat_Invitee.objects.filter(broadcaster = broadcaster_user, Invitee = request.user).exists():
-                private_chat_invitee = Private_Chat_Invitee.objects.get(broadcaster = broadcaster_user, Invitee = request.user)
+    
+        
+            private_chat = Private.objects.filter(
+                Q(From=request.user, To=broadcaster_user) | Q(To=request.user, From=broadcaster_user)
+            ).order_by('Timestamp')
 
-            
-            try:
-            
-                private_invitee_list = Private_Chat_Invitee.objects.filter(broadcaster = broadcaster_user)
-                invitee_list = []
-                for invitee in private_invitee_list:
-                    for user_data in invitee.Invitee.all():
-                        if user_data.Is_Accepted_Invite == True:
-                            invitee_list.append({
-                                'user_id': user_data.id,
-                                'name': user_data.username,
-                            })
-                        
-            except Private_Chat_Invitee.DoesNotExist:
-                invitee_list = []
                 
-            private_chat         = Private.objects.filter(From=request.user, To=broadcaster_user)
             public_chat          = Public.objects.filter(Room = User.objects.get(username=Broadcaster)).all
             follows              = Follows.objects.filter(User = request.user).all()
             
@@ -80,12 +68,36 @@ def Room(request, Broadcaster):
             else:
                 follow_button = False
                 
+                
+                try:
+            
+                        private_invitee_list = Private_Chat_Invitee.objects.get(broadcaster = broadcaster_user)
+                        private_invitee_list = private_invitee_list.Invitee.all()
+                        invitee_list = []
+            
+                        for user_data in private_invitee_list:
+                            if user_data.Is_Accepted_Invite == True:
+                                invitee_list.append({
+                                    'user_id': user_data.id,
+                                    'name': user_data.username,
+                                })
+                                
+                            if user_data.id == request.user.id and user_data.Is_Accepted_Invite == True:
+                                invite_accepted = True
+                                
+                            if user_data.id == request.user.id and user_data.Is_Accepted_Invite == False and user_data.Is_Sent_Invite == True:
+                                invite_sent = False
+                                
+                except Private_Chat_Invitee.DoesNotExist:
+                        invitee_list = []
+                
             try:
                 user =User_Status.objects.get(User = request.user.id)
                 
                 if user.Status == "User":
                     if Slot_Machine.objects.filter(User=broadcaster_user.id).exists():
                         slot_machine_data = Slot_Machine.objects.filter(User=broadcaster_user.id).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
+                        
                                 
                 elif user.Status == "Broadcaster":
                     
@@ -517,10 +529,11 @@ def get_invitees(request):
         invitees = []
         for invitee in invitee_list:
             
-            invitees.append({
-                'user_id': invitee.id,
-                'name'  : invitee.username,
-            })
+            if invitee.Is_Accepted_Invite == False:
+                    invitees.append({
+                        'user_id': invitee.id,
+                        'name'  : invitee.username,
+                    })
             
         
         return JsonResponse({"data":invitees}, safe=False)

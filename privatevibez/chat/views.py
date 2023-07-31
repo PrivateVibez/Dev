@@ -8,6 +8,7 @@ from staff.serializers import StaffRoomManagerSerializer
 from rest_framework.renderers import JSONRenderer
 from django.http import HttpResponse as httpresponse
 from django.conf import settings
+from .models import Private_Chat_Invitee
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -19,9 +20,16 @@ def get_last_10_messages(chatId):
 def fan_list(request, broc):
     try:
         broadcaster = User.objects.get(username=broc)
-        private_room_manager = PrivateRoomManager.objects.get(broadcaster=broadcaster)
-        fan_list = private_room_manager.fan_list.values('username')
-        return JsonResponse({'data': list(fan_list)})
+        private_room_manager = Private_Chat_Invitee.objects.get(broadcaster=broadcaster)
+        invitees = private_room_manager.Invitee.all()
+        fan_list = []
+        
+        for fan in invitees:
+            fan_list.append({
+                'user_id': fan.id,
+                'name': fan.username,
+            })
+        return JsonResponse({'data': fan_list})
     except:
         return JsonResponse({'data': []})
     

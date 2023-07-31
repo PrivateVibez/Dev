@@ -21,8 +21,8 @@ def Logout(request):
     
     # DELETE BOTH PRIVATE AND PUBLIC CHATS ONCE SESSION IS TERMINATED
     
-    Private.objects.filter(From_id = request.user).delete()
-    Public.objects.filter(User_id = request.user).delete()
+    # Private.objects.filter(From_id = request.user).delete()
+    # Public.objects.filter(User_id = request.user).delete()
     
     if StaffManager.objects.filter(staff_id = request.user).exists():
         StaffManager.objects.filter(staff_id = request.user).update(logout_time = timezone.now())

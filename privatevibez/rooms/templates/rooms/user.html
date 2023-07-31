@@ -310,21 +310,39 @@
 
                             <div class="tab-pane fade" id="nav-private-chat" role="tabpanel" aria-labelledby="nav-private-chat-tab">
 
-                                {% if private_chat_invitee and private_chat_invitee.Accepted is True %}
+                                {% if invite_accepted and invite_accepted is True %}
 
                                 <div id="private_chat_room_messages" style="min-width: 462px; max-height: 404px; overflow: auto; padding-bottom: 25px; padding-right: 8px;">
                                     {% for msg in private_chat %}
-                                    {% if msg.sent_by_fan %}
 
-                                    <div class="text-muted d-flex justify-content-end">
-                                        <small class="private_chat_room_message_username font-weight-bold text-dark">{{ msg.User }}</small>
+                                    
+                                    <div class="text-muted d-flex {% if msg.From == request.user %}justify-content-end {% else %} justify-content-start {% endif %}">
+                                        <small class="private_chat_room_message_username font-weight-bold text-dark">{{ msg.From }}</small>
                                     </div>
 
-                                    <div class="card card-body py-2 my-1 private_chat_room_message_text mb-4 ml-auto" style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">
+                                    <div class="card card-body py-2 my-1 private_chat_room_message_text mb-4 
+                                    {% if msg.From == request.user %}ml-auto {% else %} mr-0 {% endif %}
+                                    " style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">
                                         {{ msg.Message }}
-                                    </div>
+                                    </div> 
+
+                            
+                                    
+                             
+                                    
 
 
+    
+                                    
+ 
+
+                                 
+
+
+
+                              
+                                    {% endfor %}
+                                    
                                     {% comment %} Message box {% endcomment %}
                                     <div class="input-group mb-3" style="bottom: 27px; left: 0px; position: absolute;">
                                         <form id="private_chat_room_form" class="d-flex w-100">
@@ -335,24 +353,13 @@
                                         </form>
                                     </div>
 
-                                    {% else %}
 
-                                    <div class="text-muted d-flex">
-                                        <small class="private_chat_room_message_username font-weight-bold text-dark">{{ msg.User }}</small>
-                                    </div>
-
-                                    <div class="card card-body py-2 my-1 private_chat_room_message_text mb-4" style="border-radius: 13px; width: fit-content;">
-                                        {{ msg.Message }}
-                                    </div>
-
-                                    {% endif %}
-                                    {% endfor %}
                                     </div>
                                 
-                                {% endif %}
+                                {% else %}
 
-
-                                {% if private_chat_invitee.Invite_sent %}
+                                    
+                                {% if invite_sent %}
 
                                 <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
                                     <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;"></div>
@@ -369,40 +376,45 @@
                                     </div>
                                  {% endif %}
 
+                                {% endif %}
+                        </div>
 
-                            <div class="tab-pane fade" id="nav-connect-my-toy" role="tabpanel" aria-labelledby="nav-connect-my-toy-tab">
+                        
 
-                                <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
 
-                                    <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;"></div>
+                        <div class="tab-pane fade" id="nav-connect-my-toy" role="tabpanel" aria-labelledby="nav-connect-my-toy-tab">
 
-                                    <div class="msg-list-fvm message-list" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
+                            <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
 
-                                        <center>
-                                            <div id="start-vibes">
+                                <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;"></div>
 
-                                                <h2 class="mt-3"><a> Price is {{room_Data.Price_share_vibes}} vibez per minute. </a></h2>
+                                <div class="msg-list-fvm message-list" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
 
-                                                <span>
-                                                    <button class="btn btn-success mt-2" onclick="lovense_viewer()" id="start">
-                                                        Start
-                                                    </button>
-                                                </span>
-                                                <br>
+                                    <center>
+                                        <div id="start-vibes">
 
-                                            </div>
+                                            <h2 class="mt-3"><a> Price is {{room_Data.Price_share_vibes}} vibez per minute. </a></h2>
 
-                                            <div id="wrapper_connect_viewer" class="container" style="display: none">
-                                                <h3 class="mt-2 mb-3">Scan the QR code with your lovense app</h3>
-                                                <img src="" id="qrcode_viewer"><br><br>
-                                                <button class="btn btn-danger" onclick="stop_lovense_viewer">Stop</button>
-                                            </div>
+                                            <span>
+                                                <button class="btn btn-success mt-2" onclick="lovense_viewer()" id="start">
+                                                    Start
+                                                </button>
+                                            </span>
+                                            <br>
 
-                                        </center>
-                                    </div>
+                                        </div>
+
+                                        <div id="wrapper_connect_viewer" class="container" style="display: none">
+                                            <h3 class="mt-2 mb-3">Scan the QR code with your lovense app</h3>
+                                            <img src="" id="qrcode_viewer"><br><br>
+                                            <button class="btn btn-danger" onclick="stop_lovense_viewer">Stop</button>
+                                        </div>
+
+                                    </center>
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
                 </div>
             

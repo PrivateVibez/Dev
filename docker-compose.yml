@@ -9,7 +9,7 @@ services:
     - ./privatevibez:/privatevibez
     command: >
       sh -c "
-      python /mnt/python/MediaFlow.py && 
+ 
         python manage.py runserver 0.0.0.0:8000
       " 
 

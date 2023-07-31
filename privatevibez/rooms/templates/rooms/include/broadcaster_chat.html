@@ -224,11 +224,12 @@ function toggle_private_broc_room(username, isUserClicked) {
         let msg_wraper = document.getElementById("pri_fans_msg");
         msg_wraper.innerHTML = "";
         let msg_container = "";
+        console.log(data)
         data.data.forEach(function(datum) {
           if(datum.sent_by === false){
-            msg_container = `<div class="text-muted d-flex justify-content-end"><small class="broc_chat_room_message_username font-weight-bold text-dark">${datum.To}</small></div><div class="card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4 ml-auto" style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">${datum.Message}</div>`;
+            msg_container = `<div class="text-muted d-flex justify-content-end"><small class="broc_chat_room_message_username font-weight-bold text-dark">${datum.From}</small></div><div class="card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4 ml-auto" style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">${datum.Message}</div>`;
           }else{
-            msg_container = `<div class="text-muted d-flex"><small class="broc_chat_room_message_username font-weight-bold text-dark">${datum.From}</small></div><div class="card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4" style="border-radius: 13px; width: fit-content; background: #9dffde;">${datum.Message}</div>`;
+            msg_container = `<div class="text-muted d-flex justify-content-start"><small class="broc_chat_room_message_username font-weight-bold text-dark">${datum.From}</small></div><div class="card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4" style="border-radius: 13px; width: fit-content; background: #9dffde;">${datum.Message}</div>`;
           }
           let new_element = document.createElement('div');
           new_element.innerHTML = msg_container;
@@ -238,6 +239,10 @@ function toggle_private_broc_room(username, isUserClicked) {
         private_broc_chat_room_messages.scrollTop = private_broc_chat_room_messages.scrollHeight;
         document.getElementById('private_broc_chat_room_message_field').value = '';
     }
+    socket.onerror = function (error) {
+      console.error('WebSocket error:', error);
+      console.log(error)
+    };
 
     let pri_broc_form = document.getElementById('private_broc_chat_room_form');
     pri_broc_form.addEventListener('submit', function(e) {
@@ -276,8 +281,8 @@ function fetchFans(broc) {
         for (var i = 0; i < fans.length; i++) {
           var fan = fans[i];
           var fanDiv = document.createElement("div");
-          fanDiv.innerHTML = `<div class="d-flex justify-content-between mb-2 border-top pt-2 px-3" id="fan_list_username" onclick="toggle_private_broc_room('${fan.username}')">
-                        <h4>${fan.username}</h4>
+          fanDiv.innerHTML = `<div class="d-flex justify-content-between mb-2 border-top pt-2 px-3" id="fan_list_username" onclick="toggle_private_broc_room('${fan.name}')">
+                        <h4>${fan.name}</h4>
                       </div>`;
           fanListUsername.appendChild(fanDiv);
         }
