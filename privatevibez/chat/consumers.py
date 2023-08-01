@@ -194,7 +194,7 @@ class PrivateChatConsumerBroc(JsonWebsocketConsumer):
         user = User.objects.get(username=event['user'])
         data = Private.objects.filter(
             Q(From=user, To=broc) | Q(To=user, From=broc)
-        )
+        ).order_by('Timestamp')
         data = [{
         "From": obj.From.username,
         "To": obj.To.username,
@@ -211,7 +211,7 @@ class PrivateChatConsumerBroc(JsonWebsocketConsumer):
         user = User.objects.get(username=event['user'])
         data = Private.objects.filter(
             Q(From=user, To=broc) | Q(To=user, From=broc)
-        )
+        ).order_by('Timestamp')
         
         data = [{
         "From": obj.From.username,
