@@ -1,4 +1,5 @@
-
+{% block base %}
+{% endblock base %}
 
 
 
@@ -31,11 +32,13 @@
       <div class="">
         <label for="">Recipient</label>
         <select id="recipient" placeholder="Recipient:" id="recipient" multiple="multiple" name="recipient" class="form-control">
-          <option value="user">Users</option>
-          <option value="staff">Staff</option>
-          <option value="broadcaster">Broadcasters</option>
+          <option value="User">Users</option>
+          <option value="Staff">Staff</option>
+          <option value="Broadcaster">Broadcasters</option>
         </select>
       </div>
+
+      <input type="text" id="subject" placeholder="Subject:" class="form-control">
 
       <div id="summernote" class="">
 
@@ -51,7 +54,9 @@
   </div>
 </div>
 
-
+<div id="staff" class="d-none">
+  {{request.user.id}}
+</div>
 
 
 
@@ -73,9 +78,47 @@
   {
     
     var recipient = $('#recipient').val();
+    var subject = $('#subject').val();
     var memoContent = $('#summernote').summernote('code');
-    console.log(memoContent);
-    console.log(recipient);
+
+
+    $.ajax({
+      method:'POST',
+      url: "/staff/save_memo/",
+      mimeType:"multipart/form-data",
+      data:{  
+          'staff'  : document.getElementById('staff').innerHTML,
+          'recipient' : recipient,
+          'memoContent' : memoContent,
+          'subject' : subject,
+          'csrfmiddlewaretoken':"{{csrf_token}}",
+      },
+      'dataType': 'json',
+      success:function(data){
+                // create a new table row
+  
+  
+                for (const item of data.data) {
+           
+                  let option = document.createElement("option");
+                  option.value = item.codename;
+                  option.text = item.name;
+                  option.selected = true;
+                  perms.append(option);
+   
+                }
+                const choices_2 = new Choices(perms, {
+                  removeItemButton: true, 
+              });
+    
+        
+      },
+      error:function(errors){
+          console.log(errors.responseText);
+      }
+  });
+
+
 
   }
 

@@ -3,6 +3,8 @@ from django.contrib.auth.models import User, Group, Permission
 from accounts.models import *
 from rooms.models import *
 from .models import *
+import os
+from django.conf import settings
 from chat.models import Staff
 from django.conf import settings
 from .forms import UserRegisterForm, AddStaffPermission, AddStaff
@@ -28,6 +30,7 @@ import json
 from django.shortcuts import get_object_or_404
 from django.views import View
 from .serializers import StaffMessagesSerializer
+from staff.models import Memos
 from django.db.models import Q
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -366,3 +369,56 @@ def getstaffmessages(request):
                 return JsonResponse({'data': serializer.data}, safe=False)
         
         
+def save_memo(request):
+        
+        if request.method == 'POST':
+                
+                staff = User.objects.get(id=request.POST.get('staff'))
+                subject = request.POST.get('subject')
+   
+                
+
+                
+                memoContent = request.POST.get('memoContent', '')
+                
+                if memoContent:
+                        memo = Memos.objects.create(
+                        From = staff,
+                        Subject = subject,
+                        )
+                        
+                        recipients = User.objects.filter(Status=request.POST.get('recipient'))
+                        
+                        project_directory = os.path.dirname(os.path.dirname(__file__))
+                        static_folder = os.path.join(project_directory, 'static/memos')
+                        
+                        file_path = os.path.join(static_folder, str(subject) + '.txt')
+
+                        # Write the memoContent to the file
+                        with open(file_path, 'w') as file:
+                                file.write(memoContent)
+                                
+                        for recipient in recipients:
+                                memo.To.add(recipient)
+                                
+                                            # Assuming your static folder is located at "static/"
+                        # Get the directory where views.py is located
+                        views_directory = os.path.dirname(os.path.abspath(__file__))
+
+                        # Create the 'memos' folder inside the views.py directory if it doesn't exist
+                        memos_folder = os.path.join(views_directory, 'memos')
+                        if not os.path.exists(memos_folder):
+                                os.makedirs(memos_folder)
+
+                        # Assuming 'subject' and 'memoContent' are valid variables
+                        file_name = str(subject) + '.txt'
+                        file_path = os.path.join(memos_folder, file_name)
+
+                        # Write the memoContent to the file
+                        with open(file_path, 'w') as file:
+                                file.write(memoContent)
+
+                        return HttpResponse('Memo content saved successfully.')
+                else:
+                        return HttpResponse('No memo content received.')
+                        

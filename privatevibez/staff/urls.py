@@ -16,4 +16,5 @@ urlpatterns = [
     path('getStaffInformation/', views.getStaffInformation, name="getStaffInformation"),
     path('deleteStaff/', views.deleteStaff, name="deleteStaff"),
     path('getstaffmessages/', views.getstaffmessages, name="getstaffmessages"),
+    path('save_memo/', views.save_memo, name="save_memo"),
 ]
