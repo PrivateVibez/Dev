@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import Permission
 from django.conf import settings
+from django_softdelete.models import SoftDeleteModel
 # Create your models here.
 
 class ToDoProject_Dev(models.Model):
@@ -11,6 +12,15 @@ class ToDoProject_Dev(models.Model):
     def __str__(self):
         return str(self.Name)
 
+
+class Memos(SoftDeleteModel):
+    From    = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name = 'Memos_From')
+    To      = models.ManyToManyField(settings.AUTH_USER_MODEL, null=True, blank=True, symmetrical=False, related_name="To_whom")
+    Message = models.CharField(max_length=200,null=True,blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return str(self.Message)
 
 class ToDolist_Dev(models.Model):
     ToDoProject = models.ForeignKey(ToDoProject_Dev, on_delete=models.CASCADE)

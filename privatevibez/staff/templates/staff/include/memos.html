@@ -1,0 +1,85 @@
+
+
+
+
+
+{% comment %} MODAL FOR SENDING MEMOS {% endcomment %}
+
+<div class="col gap-2">
+  <button type="button" class="btn btn-primary mt-2 rounded-2" style="height: 80px" data-toggle="modal" data-target="#memos_modal">
+    Compose Memo
+  </button>
+
+  <div class="col my-auto mt-4 justify-content-center align-content-center">
+
+    <div onmouseover="this.style.backgroundColor='lightgrey';"
+    onmouseout="this.style.backgroundColor='white';" class="text-center" ">Memo 1</div>
+    <div onmouseover="this.style.backgroundColor='lightgrey';"
+    onmouseout="this.style.backgroundColor='white';" class="text-center" ">Memo 1</div>
+
+
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="memos_modal" tabindex="-1" role="dialog" aria-labelledby="memos_modal" aria-hidden="true">
+
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+
+
+    <div class="modal-content d-block col gap-2">
+      <div class="">
+        <label for="">Recipient</label>
+        <select id="recipient" placeholder="Recipient:" id="recipient" multiple="multiple" name="recipient" class="form-control">
+          <option value="user">Users</option>
+          <option value="staff">Staff</option>
+          <option value="broadcaster">Broadcasters</option>
+        </select>
+      </div>
+
+      <div id="summernote" class="">
+
+      </div>
+
+      <div class="col gap-2 p-2">
+        <button type="button" onclick="send_memo()" class="btn btn-primary m-auto rounded-2" style="height: 80px; width:100px" data-toggle="modal" data-target="#memos_modal">
+          Send
+        </button>
+    </div>
+
+
+  </div>
+</div>
+
+
+
+
+
+
+<script>
+  $(document).ready(function() {
+    const element = document.getElementById('recipient');
+    const send_to = new Choices(element, {
+      removeItemButton: true, 
+  });
+
+     var memo = $('#summernote').summernote();
+
+
+
+  });
+
+  function send_memo()
+  {
+    
+    var recipient = $('#recipient').val();
+    var memoContent = $('#summernote').summernote('code');
+    console.log(memoContent);
+    console.log(recipient);
+
+  }
+
+
+
+
+</script>

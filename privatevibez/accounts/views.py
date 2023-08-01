@@ -61,7 +61,7 @@ def Login(request):
                         
         else:
             
-            messages.error(request, f'wrong password or username')
+            messages.error(request, f"wrong password or username. Please try again, If you don't have an account, please create one.")
         return redirect('Main_home') 
 
     
