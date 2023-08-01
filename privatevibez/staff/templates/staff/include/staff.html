@@ -11,6 +11,8 @@
       <th scope="col">Log out time</th>
       <th scope="col">Task</th>
       <th scope="col"></th>
+      <th scope="col"></th>
+      <th scope="col"></th>
       <th scope="col"><!-- Button trigger modal -->
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStaffmodal">
           Add Staff
@@ -23,7 +25,7 @@
     {% for session in sessions_info %}
 
     <tr>
- 
+      <td></td>
       <td>{{session.username}}</td>
       <td>{% if session.is_session_active %}Online 
         
@@ -31,6 +33,7 @@
         {% endif %}</td>
       <td>{{ session.login_time }}</td>
       <td>{% if not session.is_session_active %}{{ session.logout_time}}{% endif %}</td>
+      <td></td>
       <td> 
         <button type="button" onclick="get_staff_permission({{session.user_id}})" class="btn btn-primary" data-toggle="modal" data-target="#editPermissionmodal">
         Edit permission
@@ -101,10 +104,6 @@
         </form>
 
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
     </div>
   </div>
 </div>
@@ -119,7 +118,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Staff</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Edit Staff Permissions</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -149,10 +148,7 @@
         </form>
 
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+
     </div>
   </div>
 </div>
@@ -172,7 +168,7 @@
       <div class="modal-body">
         
         <form method="POST" action="" class="d-flex flex-column gap-4" enctype="multipart/form-data">
-    
+            {% csrf_token %}
           {% comment %} <div class=" image d-flex flex-column justify-content-center align-items-center"> <button class="btn btn-secondary"> 
             <img src="{% static 'profile_pic/FB_IMG_1663714514952_uJj6BOH.jpg' %}" id="staff_profile_pic" height="100" width="100" /></button>  </div> {% endcomment %}
 
@@ -242,10 +238,7 @@
         </form>
 
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+
     </div>
   </div>
 </div>

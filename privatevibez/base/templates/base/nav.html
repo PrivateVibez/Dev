@@ -761,4 +761,14 @@ function Save_RoomPatterns(){
             }
     })
 }
+
+
+function removeAlerts() {
+    $('.alert').fadeOut(300, function() {
+        $(this).remove();
+    });
+}
+
+// Call the removeAlerts() function after 3 seconds (3000 milliseconds)
+setTimeout(removeAlerts, 3000);
 </script>

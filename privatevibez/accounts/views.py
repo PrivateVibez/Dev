@@ -27,44 +27,44 @@ def Logout(request):
     if StaffManager.objects.filter(staff_id = request.user).exists():
         StaffManager.objects.filter(staff_id = request.user).update(logout_time = timezone.now())
     logout(request)
-    messages.error(request, 'You are Log out')
+    messages.error(request, 'You are logged out')
     return redirect('Main_home')
  
 def Login(request):
+    
     if request.POST:
         username = request.POST.get('username')
         password =request.POST.get('password')
-        flag_error = 0
+
+        
         user = authenticate(request, username=username, password=password)
+        
         if user is not None:
             login(request, user)
             messages.success(request, f'Thanks for coming back {username}!')
-            status = User_Status.objects.get(User = request.user).Status
-            if status:
-                status = User_Status.objects.get(User = request.user).Status
-                if status == "STAFF":
-                        return redirect('staff_home')
-                if status == "Broadcaster":
-                        return redirect(f'/room/{username}')
-                else:
-                    if StaffManager.objects.filter(staff_id = request.user).exists():
-                        return redirect('staff_home')
-                    
             
-            return redirect('Main_home')
+            if user.is_staff == False:
+                try:
+                    status = User_Status.objects.get(User = request.user).Status
+                    if status:
+                        status = User_Status.objects.get(User = request.user).Status
+
+                        if status == "Broadcaster":
+                                return redirect(f'/room/{username}')
+                        else:
+                            if StaffManager.objects.filter(staff_id = request.user).exists():
+                                return redirect('staff_home')
+                except Exception as e:
+                    return redirect('login')
+            else:
+                return redirect('staff_home')
+                        
         else:
-            flag_error = 1
-        try:
-            user = authenticate(request, username=User.objects.get(email=username).username, password=password)
-            if user is not None:
-                login(request, user)
-                messages.success(request, f'Thanks for coming back {username}!')
-                return redirect('Main_home')
-        except:
-            flag_error = 1
-        if flag_error == 2:
-            messages.error(request, 'Your username or password is invalid')
-    return render(request, 'accounts/login.html') 
+            
+            messages.error(request, f'wrong password or username')
+        return redirect('Main_home') 
+
+    
 
 
 

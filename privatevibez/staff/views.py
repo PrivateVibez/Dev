@@ -74,9 +74,12 @@ def home(request):
         sessions_info = []
         staff_ids = []
         
-        all_sessions = Session.objects.all()
+        active_sessions = Session.objects.filter(expire_date__gte=timezone.now())
+
+        # Filter sessions based on the is_staff field of the related User model
+        staff_sessions = [s for s in active_sessions if s.get_decoded() and User.objects.filter(pk=s.get_decoded().get('_auth_user_id'), is_staff=True).exists()]
+
         staff_list = StaffManager.objects.all()
-        
         
         # Query all existing Staff
         for staff in staff_list:
@@ -99,7 +102,7 @@ def home(request):
                    
                 })
                 
-                for session in all_sessions:
+                for session in staff_sessions:
    
                         session_data = session.get_decoded()
                         user_id = session_data.get('_auth_user_id')
@@ -170,7 +173,7 @@ def deleteStaff(request):
    
         staff_id = request.GET.get('staff_id')
        
-        staff = StaffManager.objects.get(staff_id_id=staff_id)
+        staff = User.objects.get(id=staff_id)
         staff.delete()
         return JsonResponse({'message': 'Staff deleted successfully.'})
 
@@ -279,7 +282,12 @@ def staffRegistration(request):
                                
                                 staff = StaffManager.objects.get(email=user_form.cleaned_data['email'])
                                 
-                                user_form.save()
+                                if User.objects.filter(email=user_form.cleaned_data['email']).exists():
+                                        
+                                        pass
+                                else:
+                                        user_form.save()
+                                        
                                 user = User.objects.get(username=user_form.cleaned_data['username'])
                                 
                                 staff_permissions = staff.user_permissions.all()
@@ -352,7 +360,7 @@ def getstaffmessages(request):
                 staff_id = request.GET.get('staff_id')
                 
                 user_id = User.objects.get(username = staff_id)
-                staff_messages = Staff.objects.filter(Q(From=user_id.id) | Q(From=request.user.id))
+                staff_messages = Staff.objects.filter(Q(From=user_id.id) | Q(From=request.user.id)).order_by('Timestamp')
 
                 serializer = StaffMessagesSerializer(staff_messages, many=True) 
                 return JsonResponse({'data': serializer.data}, safe=False)
