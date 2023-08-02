@@ -10,11 +10,11 @@ services:
     command: >
       sh -c "
  
-        python manage.py runserver 0.0.0.0:8080
+        python manage.py runserver 0.0.0.0:8000
       " 
 
     ports:
-    - 8081:8080
+    - 8000:8000
     environment:
     - SECRET_KEY=devsecretkey
     - DEBUG=1
