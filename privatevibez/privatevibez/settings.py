@@ -34,7 +34,7 @@ DEBUG = bool(int(os.environ.get('DEBUG', default=0)))
 ALLOWED_HOSTS = [
     '127.0.0.1',
     '127.0.0.1:',
-    'greatestvibes.herokuapp.com',
+    'dev.privatevibez.com',
     'localhost',
     'privatevibez.com',
     'wss://privatevibez.com'
