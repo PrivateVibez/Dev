@@ -11,7 +11,7 @@ COPY ./privatevibez /privatevibez
 
 WORKDIR /privatevibez
 
-EXPOSE 8081
+EXPOSE 8080
 
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
