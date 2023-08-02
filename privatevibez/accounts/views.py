@@ -83,7 +83,7 @@ def Registration(request):
             messages.success(request, f'Account Created for {username}!')
             return redirect("Main_home")
         else:
-            messages.error(request, f'something went wrong!')
+            messages.error(request, form.errors)
     else:    
         form =UserRegisterForm()
     return render(request, "accounts/registration.html", {'registration_form': form})

@@ -6,7 +6,7 @@ class CustomUser(AbstractUser):
     # Add new fields here
     Is_Accepted_Invite = models.BooleanField(default=False, blank=True)
     Is_Sent_Invite = models.BooleanField(default=False, blank=True)
-    Status     = models.CharField(max_length=20, null=True, blank=True)
+    Status     = models.CharField(max_length=20, null=True, blank=True, default="User")
     # ... add more fields as needed
 
     def __str__(self):
