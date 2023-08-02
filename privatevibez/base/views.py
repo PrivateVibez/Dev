@@ -22,11 +22,10 @@ def home(request):
                 blocked_broadcasters = Bad_Acters.objects.filter(Reporty = request.user.id)
                 try:
                         
-                        user_status_data = User_Status.objects.get(User = request.user)
+                        user_status_data = User.objects.get(id = request.user.id)
                         user_status      = user_status_data.Status
                         
-                
-                        user_status      = user_status_data.Status
+        
                         
                         rooms = Room_Data.objects.all()
                         rooms_list = []
@@ -68,9 +67,9 @@ def home(request):
                 room_users_data = User_Data.objects.all()
                 
         
-        rooms_list = Room_Data.objects.all()
+        rooms_list = Room_Data.objects.filter( User__Status="Broadcaster")
 
-        room_users_data = User_Data.objects.all()
+        room_users_data = User_Data.objects.filter( User__Status="Broadcaster")
 
                 
 

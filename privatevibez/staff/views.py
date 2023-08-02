@@ -29,7 +29,7 @@ from django.db.models.fields.files import ImageFieldFile
 import json
 from django.shortcuts import get_object_or_404
 from django.views import View
-from .serializers import StaffMessagesSerializer
+from .serializers import StaffMessagesSerializer, UserStatusSerializer
 from staff.models import Memos
 from django.db.models import Q
 from django.contrib.auth import get_user_model
@@ -41,9 +41,12 @@ User = get_user_model()
 def home(request):
         bad_acters_list = []
         
-        pending = User_Status.objects.filter(Status='Pending_Broadcaster')
-        pending_user_id = list(pending.values_list('User__id',flat=True))
+        pending = User.objects.filter(Status='Pending_Broadcaster')
+        pending_user_id = list(pending.values_list('id',flat=True))
+
+       
         user_data = User_Data.objects.filter(User__id__in=pending_user_id)
+        
         users_status = User_Status.objects.all()
         users_data = User_Data.objects.all()
         
@@ -133,8 +136,8 @@ def home(request):
 @csrf_exempt
 def Id_Status(request):
         user_id = request.POST.get('user_id')
-        print(user_id)
-        user_status = User_Status.objects.get(User=user_id)
+     
+        user_status = User.objects.get(id=user_id)
        
         if request.POST.get('Status') == 'Decline':
                 user_status.Status = "Decline_Broadcaster"
@@ -422,3 +425,18 @@ def save_memo(request):
                 else:
                         return HttpResponse('No memo content received.')
                         
+                        
+                        
+def getPendingBroadcasters(request):
+    
+        pending = User.objects.filter(Status='Pending_Broadcaster')
+        pending_user_id = list(pending.values_list('id',flat=True))
+
+
+        user_data = User_Data.objects.filter(User__id__in=pending_user_id)
+        
+        serializer = UserStatusSerializer(user_data, many=True)
+        
+
+        
+        return JsonResponse({'data':serializer.data}, safe=False)

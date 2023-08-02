@@ -80,98 +80,25 @@
 <section class="purple">
     <div class="body container-fluid" style="">
         <div class="row" style="">
-            <div class="col-12" style="border:2px solid black;border-radius: 6px">
+            <div class="col-12">
                 {% if user_status == "Broadcaster" %}
-                    <ul class="nav nav-tabs" id="myTab" role="tablist" style="width:100%;background-color:black;border-radius: 6px 6px 0px 0px;">
-                        <li class="nav-item" role="presentation">
-                            <button class="main-nav-link active" id="streamer-tab" data-bs-toggle="tab" data-bs-target="#streamer-tab-pane" type="button" role="tab" aria-controls="streamer-tab-pane" aria-selected="true">
-                                {{room_data.User}}
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="main-nav-link" id="messages-tab" data-bs-toggle="tab" data-bs-target="#messages-tab-pane" type="button" role="tab" aria-controls="female-tab-pane" aria-selected="false">MESSAGES</button>
-                        </li>
-
-    
-                    </ul>
-                    </br>
-                    </br>
-                    <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="streamer-tab-pane" role="tabpanel" aria-labelledby="streamer-tab" tabindex="0">
-                                {% include "rooms/broadcaster.html" %}
-                        </div>
-
-                        <div class="tab-pane fade" id="messages-tab-pane" role="tabpanel" aria-labelledby="messages-tab" tabindex="0">                        
-                            {% include "rooms/include/broadcaster_chat.html" %}               
-                        </div>
-
-    
-                    </div>
+ 
+     
+                {% include "rooms/broadcaster.html" %}               
 
 
 
 
-                {% else %}
-                <ul class="nav nav-tabs" id="myTab" role="tablist" style="width:100%;background-color:black;border-radius: 6px 6px 0px 0px;">
-                    <li class="nav-item" role="presentation">
-                        <button class="main-nav-link active" id="streamer-tab" data-bs-toggle="tab" data-bs-target="#streamer-tab-pane" type="button" role="tab" aria-controls="streamer-tab-pane" aria-selected="true">
-                            {{room_data.User}}
-                        </button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="main-nav-link" id="female-tab" data-bs-toggle="tab" data-bs-target="#female-tab-pane" type="button" role="tab" aria-controls="female-tab-pane" aria-selected="false">FEMALE</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="main-nav-link" id="male-tab" data-bs-toggle="tab" data-bs-target="#male-tab-pane" type="button" role="tab" aria-controls="male-tab-pane" aria-selected="false">MALE</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="main-nav-link" id="couples-tab" data-bs-toggle="tab" data-bs-target="#couples-tab-pane" type="button" role="tab" aria-controls="couples-tab-pane" aria-selected="false">COUPLES</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="main-nav-link" id="trans-tab" data-bs-toggle="tab" data-bs-target="#trans-tab-pane" type="button" role="tab" aria-controls="trans-tab-pane" aria-selected="false">TRANS</button>
-                    </li> 
-                </ul>
-                </br>
-                </br>
-                <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="streamer-tab-pane" role="tabpanel" aria-labelledby="streamer-tab" tabindex="0">
-                            {% include "rooms/user.html" %}
-                        {% if is_broadcaster == True %}
-                            {% include "rooms/broadcaster.html" %}
-                        {% endif %}
-                    </div>
-                    <div class="tab-pane fade" id="female-tab-pane" role="tabpanel" aria-labelledby="female-tab" tabindex="0">                        
-                        {% for room in rooms %}
-                            {% if room.Tab == "WOMEN" %}
-                                {% include 'base/include/broadcaster_cards.html'%}      
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                    <div class="tab-pane fade" id="male-tab-pane" role="tabpanel" aria-labelledby="male-tab" tabindex="0">
-                        
-                        {% for room in rooms %}
 
-                            {% if room.Tab == "MEN" %}
-                            
-                                {% include 'base/include/broadcaster_cards.html'%}      
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                    <div class="tab-pane fade" id="couples-tab-pane" role="tabpanel" aria-labelledby="couples-tab" tabindex="0">
-                        {% for room in rooms %}
-                            {% if room.Tab == "COUPLES" %}
-                                {% include 'base/include/broadcaster_cards.html'%}      
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                    <div class="tab-pane fade" id="trans-tab-pane" role="tabpanel" aria-labelledby="trans-tab" tabindex="0">
-                        {% for room in rooms %}
-                            {% if room.Tab == "TRANS" %}
-                                {% include 'base/include/broadcaster_cards.html'%}      
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
+                {% elif user_status == "Pending_Broadcaster" %}
+               
+                <div class="display-1 w-50 m-auto d-flex text-center">Please wait as we check your information. we will send you an email once approved.</div>
+
+                {% elif user_status == "User" or user_status is None %}
+                  
+                {% include "rooms/user.html" %}   
+
+              
                 {% endif %}
             </div>
         </div>

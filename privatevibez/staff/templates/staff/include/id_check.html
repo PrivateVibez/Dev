@@ -31,116 +31,124 @@
     </div>
 </div>
 <script>
-let check_list = [];
-{% for user in pending %}
-{% for data in user_data %}
-{% if data.User == user.User %}
-    check_list.push({id: "{{ data.id }}", first_name: "{{ user.User.first_name }}", last_name: "{{ user.User.last_name }}", birth_date: "{{ data.Birth_Date}}", file_url: "{{ data.Id_File.url }}"})
 
-{% endif %}
-{% endfor %}
-{% endfor %}
 
-function id_check_table_generator(){
-    let table = document.getElementById("table_body");
-    table.innerHTML = "";
-    document.getElementById("id_check_len").innerHTML = check_list.length;
-    for(let i = 0; i < check_list.length; i++){
-        // create a new table row
-        let newRow = document.createElement("tr");
-        // create cells containing data
-        let firstNameCell = document.createElement("td");
-        firstNameCell.textContent = check_list[i].first_name;
-        let lastNameCell = document.createElement("td");
-        lastNameCell.textContent = check_list[i].last_name;
-        let birthDateCell = document.createElement("td");
-        birthDateCell.textContent = check_list[i].birth_date;
-        // add cells to row
-        newRow.appendChild(firstNameCell);
-        newRow.appendChild(lastNameCell);
-        newRow.appendChild(birthDateCell);
-        // create the modal
-        let modalCell = document.createElement("td");
-        modalCell.innerHTML = `
-        <button type="button" data-bs-toggle="modal" data-bs-target="#info-${check_list[i].id}" style="border:none;outline:none;color:blue">
-                        Show
-                    </button>
-                    <div class="modal fade" id="info-${check_list[i].id}" tabindex="-1" role="dialog" aria-labelledby="pic-${check_list[i].id}" aria-hidden="true">
+function generate_IDs()
+{
+$.ajax({
+    method:'GET',
+    url: "/staff/getPendingBroadcasters/",
+        success:function(data){
+
+            var user_details = data.data;
+            let table = document.getElementById("table_body");
+            table.innerHTML = "";
+
+            for(var i=0;i<user_details.length;i++){
+                console.log(user_details[i])
+
+               
+               
+
+                    // create a new table row
+                    let newRow = document.createElement("tr");
+                    // create cells containing data
+                    let firstNameCell = document.createElement("td");
+                    firstNameCell.textContent = user_details[i].Real_Name;
+                    let lastNameCell = document.createElement("td");
+            
+                    let birthDateCell = document.createElement("td");
+                    birthDateCell.textContent = user_details[i].Birth_Date;
+                    // add cells to row
+                    newRow.appendChild(firstNameCell);
+                    newRow.appendChild(lastNameCell);
+                    newRow.appendChild(birthDateCell);
+                    // create the modal
+                    let modalCell = document.createElement("td");
+
+                    modalCell.innerHTML = `
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#info-${user_details[i].User}" style="border:none;outline:none;color:blue">
+                    <span class="text-white">Show</span>
+                      </button>
+                      
+                      <!-- Modal -->
+                      <div class="modal fade" id="info-${user_details[i].User}" tabindex="-1" role="dialog" aria-labelledby="pic-${user_details[i].User}" aria-hidden="true">
                         <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="Info">${check_list[i].first_name}'s Information</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div id="show_info">
-                                    <div class="modal-body">
-                                        <div class="card" style="width: 18rem;">
-                                            <img class="img-thumbnail" src="${check_list[i].file_url}"/>
-                                            <div class="card-body">
-                                                <h5 class="card-title">${check_list[i].id} ${check_list[i].last_name}</h5>
-                                                <p> ${check_list[i].birth_date}</p>
-              
-                                            </div> 
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" onclick ="Decline_Button()" class="btn btn-danger" data-dismiss="modal">Decline</button>
-                                        <button type="button" data-user-id="${check_list[i].id}" class="btn btn-success btn_approve_broadcaster">Approve</button>
-                                        
-                                    </div>
-                                </div>
-                                <div id="Decline_question" style="display:none;">
-                                    <div class="modal-body">
-                                        <h5 class="card-title">Tell ${check_list[i].first_name} why</h5>
-                                        </br>
-                                        <textarea class="form-control" id="Decline_message" aria-label="With textarea"></textarea>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" onclick ="Decline_Broactser()" class="btn btn-danger">Send</button>
-                                    </div>
-                                </div>
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">${user_details[i].Real_Name}'s Information</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
                             </div>
+                            <div class="modal-body">
+                                <div class="card" style="width: 18rem;">
+                                    <img class="img-thumbnail" src="${user_details[i].Image}"/>
+                                    <div class="card-body">
+                                        <h5 class="card-title">${user_details[i].User}</h5>
+                                        <p> ${user_details[i].Birth_Date}</p>
+            
+                                    </div> 
+                                </div>
+            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Decline</button>
+                                <button type="button" data-user-id="${user_details[i].User}" data-dismiss="modal" class="btn btn-success btn_approve_broadcaster">Approve</button>
+                                
+                            </div>
+                          </div>
                         </div>
-                    </div>`
-        newRow.appendChild(modalCell);
-        // add the new row to the table
-        table.appendChild(newRow);
-}};
+                      </div>
+                    `
+                    newRow.appendChild(modalCell);
+                    // add the new row to the table
+                    table.appendChild(newRow);
 
-id_check_table_generator();
 
-let protocol = "";
-if(window.location.protocol == "http:"){
-    protocol = "ws";
-}else if(window.location.protocol == "https:"){
-    protocol = "wss";
+            }
+
+            const btn_approve_broadcaster = document.querySelectorAll('.btn_approve_broadcaster');
+
+            btn_approve_broadcaster.forEach(function(button) {
+                button.addEventListener('click', function() {
+                   
+                  var userId = this.getAttribute('data-user-id');
+                  console.log(userId);
+                  $.ajax({
+                    method: 'POST',
+                    url: "/staff/idStatus/",
+                    mimeType: "multipart/form-data",
+                    data: {
+                      'Status': 'Approve',
+                      'user_id': userId,
+                      'csrfmiddlewaretoken': "{{csrf_token}}",
+                    },
+                    dataType: 'json',
+                    success: function() {
+                      
+        
+                        generate_IDs();
+                        check_modal();
+                    },
+                    error: function(error) {
+                      console.log(userId);
+                      console.log(error.responseText);
+                    }
+                  });
+                });
+              });
+
+          },
+            error:function(errors){
+                console.log(errors.responseText);
+            }
+})
 }
-let socket = new WebSocket(`${protocol}://${window.location.host}/ws/staff/`);
-socket.onmessage = function(e) {
-    let data = JSON.parse(e.data);
-    let pending = JSON.parse(data.pending);
-    let user_data = JSON.parse(data.user_data);
-    check_list = [];
-    let filtered_user_data = user_data.filter(user => pending.some(pending_user => pending_user.User__id === user.User_id));
-    filtered_user_data.forEach(user => {
-        check_list.push({
-            id: user.id,
-            first_name: user.User__first_name,
-            last_name: user.User__last_name,
-            birth_date: user.Birth_Date,
-            file_url: user.Id_File.url
-        });
-    });
-    id_check_table_generator();
-}
-socket.onclose = function(e){
-    console.error('WebSocket closed unexpectedly');
-}
+
+generate_IDs();
+
 </script>
 <script type="text/javascript">
-    const btn_approve_broadcaster = document.querySelectorAll('.btn_approve_broadcaster');
 
     function Decline_Button(){
         document.getElementById('show_info').style.display='none'
@@ -165,32 +173,30 @@ socket.onclose = function(e){
     
     {% comment %} Approve broadcaster {% endcomment %}
     
-    btn_approve_broadcaster.forEach(function(button) {
-        button.addEventListener('click', function() {
-          var userId = this.getAttribute('data-user-id');
-      
-          $.ajax({
-            method: 'POST',
-            url: "/staff/idStatus/",
-            mimeType: "multipart/form-data",
-            data: {
-              'Status': 'Approve',
-              'user_id': userId,
-              'csrfmiddlewaretoken': "{{csrf_token}}",
-            },
-            dataType: 'json',
-            success: function() {
-              console.log(userId);
-            },
-            error: function(error) {
-              console.log(userId);
-              console.log(error);
-            }
-          });
-        });
-      });
+
       
 
+
+function check_modal()
+{
+    var modalWithShow = $('.modal.show');
+
+    if (modalWithShow.length > 0) {
+      console.log('There are elements with class "modal" and "show" in the DOM.');
+    } else {
+        
+
+        // Now you can use the firstModal variable as needed
+
+        setTimeout(function(){
+            var firstModal = $('#table_body .modal.fade').first();
+            firstModal.modal('show');
+        }, 1000);
+    
+  
+      console.log('No elements with class "modal" and "show" found in the DOM.');
+    }
+}
 
     
 

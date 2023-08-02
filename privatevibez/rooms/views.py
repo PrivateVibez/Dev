@@ -28,7 +28,7 @@ def Room(request, Broadcaster):
     if request.user.is_authenticated:
              
             user_data        = User_Data.objects.get(User =  request.user)
-            user_status_data = User_Status.objects.get(User = request.user)
+            user_status_data = User.objects.get(id = request.user.id)
             user_status      = user_status_data.Status
             broadcaster_user     = User.objects.get(username = Broadcaster)
             room_name_json       = mark_safe(json.dumps(broadcaster_user.username))

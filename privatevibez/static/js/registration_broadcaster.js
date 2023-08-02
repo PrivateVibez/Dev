@@ -18,7 +18,7 @@ function ID_Next(){
     })
 }
 
-function Stumiting_id_words(){
+function Stumiting_id_words(){  
     const file = document.getElementById('Id_Card_File').files[0];
     const id_card_file = new FormData();
     id_card_file.append('file', file);
@@ -35,7 +35,10 @@ function Stumiting_id_words(){
             document.getElementById('Not_Shown_questions').style.display='none'
             document.getElementById('Stumiting_id_words').style.display='block'
 
-            }
+            },
+        error: function(error) {
+          console.log(error.responseText);
+        }
     })
 }
 
@@ -68,38 +71,92 @@ function Next_bio(){
             }
     })
 }
-function Next_Menu(){
 
-    $.ajax({
-        method:'POST',
-        url: "/accounts/bio_info/",
-        mimeType:"multipart/form-data",
-        data:{  
-                'Real_Name'     : document.getElementById('firstName').value,
-                'Age'           : document.getElementById('Age').value,
-                'I_Am'          : document.getElementById('I_Am').value,
-                'Tab'           : document.getElementById('tab').value,
-                'Interested_In' : document.getElementById('Interested_In').value,
-                'Location'      : document.getElementById('Location').value,
-                'Language'      : document.getElementById('Language').value,
-                'Body_Type'     : document.getElementById('Body_Type').value,
-                'csrfmiddlewaretoken':"{{csrf_token}}",
-            }
-            ,
-            'dataType': 'json',
-            success:function(){
-                document.getElementById('Menu_box').style.display='block'
-                document.getElementById('Menu_words').style.display='block'
-                document.getElementById('Menu_small_words').style.display='block'
-                document.getElementById('bio_box').style.display='none'
-                document.getElementById('bio_words').style.display='none'
-                document.getElementById('Shown_questions').style.display='none'
-                
+let cropper;
 
-            }
-         
-            })
-}
+function readImage(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+
+      reader.onload = function (e) {
+        var image = document.createElement('img');
+        image.src = e.target.result;
+
+        // Set the width of the image
+        image.style.width = '400px';
+
+        var imageContainer = document.getElementById('profile_wrapper');
+        imageContainer.innerHTML = '';
+        imageContainer.appendChild(image);
+
+        cropper = new Cropper(image, {
+          aspectRatio: 16 / 9,
+          crop(event) {
+            console.log(event.detail.x);
+            console.log(event.detail.y);
+            console.log(event.detail.width);
+            console.log(event.detail.height);
+            console.log(event.detail.rotate);
+            console.log(event.detail.scaleX);
+            console.log(event.detail.scaleY);
+          },
+        });
+      };
+
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  var imageInput = document.getElementById('Profile_Pic');
+
+  imageInput.addEventListener('change', function () {
+    readImage(this);
+  });
+
+
+function done(){
+
+      const croppedCanvas = cropper.getCroppedCanvas();
+      croppedCanvas.toBlob(function (blob) {
+        // Create a new FormData object
+        const formData = new FormData();
+  
+        // Append the cropped image Blob to the FormData object
+        formData.append('cropped_image', blob, 'cropped_image.jpg');
+  
+        // Append other form data fields to the FormData object
+        formData.append('Real_Name', document.getElementById('firstName').value);
+        formData.append('Age', document.getElementById('Age').value);
+        formData.append('I_Am', document.getElementById('I_Am').value);
+        formData.append('Tab', document.getElementById('tab').value);
+        formData.append('Interested_In', document.getElementById('Interested_In').value);
+        formData.append('Location', document.getElementById('Location').value);
+        formData.append('Language', document.getElementById('Language').value);
+        formData.append('Body_Type', document.getElementById('Body_Type').value);
+        formData.append('csrfmiddlewaretoken', "{{csrf_token}}");
+  
+        // Send the data via the AJAX POST request
+        $.ajax({
+          method: 'POST',
+          url: "/accounts/bio_info/",
+          data: formData,
+          dataType: 'json',
+          processData: false, // Prevent jQuery from processing the data
+          contentType: false, // Prevent jQuery from setting content type
+          success: function () {
+            document.getElementById('bio_box').style.display = 'none'
+            document.getElementById('bio_words').style.display = 'none'
+            document.getElementById('Shown_questions').style.display = 'none'
+            document.getElementById('Done_box').style.display = 'block'
+          },
+          error: function (xhr, status, error) {
+            console.error('Error sending the AJAX request:', error.responseText);
+          }
+        });
+      },  'image/jpeg' );
+  }
+  
+
 
 function Add_Menu_item(){
     $.ajax({
@@ -133,44 +190,7 @@ function Next_dice(){
     document.getElementById('Dice_small_words').style.display='block'
 
 }
-function Done(){
-    $.ajax({
-        method:'POST',
-        url: "/room/Dice_items/",
-        mimeType:"multipart/form-data",
-        data:{  
-                '1_dice_Name'  : document.getElementById('1_dice_Name').value,
-                '1_dice_Time'  : document.getElementById('1_dice_Time').value,
 
-                '2_dice_Name'  : document.getElementById('2_dice_Name').value,
-                '2_dice_Time'  : document.getElementById('2_dice_Time').value,
-
-                '3_dice_Name'  : document.getElementById('3_dice_Name').value,
-                '3_dice_Time'  : document.getElementById('3_dice_Time').value,
-
-                '4_dice_Name'  : document.getElementById('4_dice_Name').value,
-                '4_dice_Time'  : document.getElementById('4_dice_Time').value,
-
-                '5_dice_Name'  : document.getElementById('5_dice_Name').value,
-                '5_dice_Time'  : document.getElementById('5_dice_Time').value,
-
-                '6_dice_Name'  : document.getElementById('6_dice_Name').value,
-                '6_dice_Time'  : document.getElementById('6_dice_Time').value,
-
-                'csrfmiddlewaretoken':"{{csrf_token}}",
-            },
-            'dataType': 'json',
-            success:function(){
-                document.getElementById('Done_box').style.display='block'
-                document.getElementById('Dice_box').style.display='none'
-                document.getElementById('Dice_words').style.display='none'
-                document.getElementById('Dice_small_words').style.display='none'
-            }
-            })
-
-
-
-}
 
 
 

@@ -17,4 +17,5 @@ urlpatterns = [
     path('deleteStaff/', views.deleteStaff, name="deleteStaff"),
     path('getstaffmessages/', views.getstaffmessages, name="getstaffmessages"),
     path('save_memo/', views.save_memo, name="save_memo"),
+    path('getPendingBroadcasters/', views.getPendingBroadcasters, name="getPendingBroadcasters"),
 ]

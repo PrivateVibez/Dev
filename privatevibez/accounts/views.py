@@ -63,6 +63,7 @@ def Login(request):
             
             messages.error(request, f"wrong password or username. Please try again, If you don't have an account, please create one.")
         return redirect('Main_home') 
+    return render(request,'accounts/login.html')
 
     
 
@@ -115,7 +116,7 @@ def Registration_Broadcaster_info(request):
 def Registration_Broadcaster_ID(request):
         user_data               = User_Data.objects.get(User = request.user)
         user_data.Id_File       = request.FILES['file']
-        user_status             = User_Status.objects.get(User = request.user)
+        user_status             = User.objects.get(id=request.user.id)
         user_status.Status = "Pending_Broadcaster"
         user_data.save()
         user_status.save()
@@ -170,6 +171,7 @@ def bio_info(request):
     user_data.Location      = request.POST.get('Location')
     user_data.Language      = request.POST.get('Language')
     user_data.Body_Type     = request.POST.get('Body_Type')
+    user_data.Image        = request.FILES['cropped_image']
     
     fernet               = Fernet(settings.FERNET_KEY)
     random_token         = secrets.token_urlsafe(32)
@@ -192,6 +194,8 @@ def getTotalReports(request):
         user = Bad_Acters.objects.filter(Reporty = reporty).count()
         return JsonResponse({'data':user}, safe=False)
         
+        
+
 
 
 

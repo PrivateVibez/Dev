@@ -106,7 +106,7 @@
 
                   </div>
                   <div class="pt-1 mb-4">
-                      <button  type="button" onclick ="Next_Profile_Image()" class="btn btn-dark btn-lg btn-block" type="button">Next_Profile_Image</button>
+                      <button  type="button" onclick ="Next_Profile_Image()" class="btn btn-dark btn-lg btn-block" type="button">Next ProfileImage</button>
                   </div>
                 </div>
 
@@ -117,7 +117,14 @@
                     <div id="profile_image_box">
 
                       {% if user_data.Image %}
+                      <div class="d-flex">
                         <img src={{user_data.Image.url}} id="profile_image" width="400px">
+                      </div>
+
+                      {% else %}
+                      <div id="profile_wrapper" class="d-flex">
+                      </div>
+
                       {% endif %}
 
                     </div>
@@ -183,155 +190,11 @@
                     </div>
                   </div>
 
-                  <div class="pt-1 mb-4">
-                    <button  type="button" onclick ="Next_Menu()" class="btn btn-dark btn-lg btn-block" type="button">Next_Menu</button>
-                  </div>
-                </div>
-
-
-
-                <div id="Menu_box" style='display:none;'>
-                  <div class="form-outline mb-4">
-                    <div class="row">
-
-                      <div class="col">
-                        <input type="text" class="form-control" id="Vibez" placeholder="Vibez">
-                      </div>
-
-                      <div class="col">
-                        <input type="text" class="form-control" id="Menu_Name" placeholder="Menu Name">
-                      </div>
-
-                      <div class="col">
-                        <input type="text" class="form-control" id="Menu_Time" placeholder="time">
-                      </div>
-
-                      <div class="col">
-                        <input type="button" onclick ="Add_Menu_item()" value="Add" class="form-control">
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <a id="text_menu_target">
-                    {% for menu_items in menu_items %}
-                    <div class="form-outline mb-4">
-                      <div class="row">
-
-                        <div class="col">
-                          {{menu_items.Vibez_Cost}}
-                        </div>
-
-                        <div class="col">
-                          {{menu_items.Menu_Name}}
-                        </div>
-
-                        <div class="col">
-                          {{menu_items.Menu_Time}}
-                        </div>
-                      </div>                    
-                    </div>
-                    {% endfor %}
-                  </a>
-
-                  <div class="pt-1 mb-4">
-                    context,                 
-                    <button type="button" onclick ="Next_dice()" class="btn btn-dark btn-lg btn-block" type="button">Next_dic</button>
-                  </div>
-                </div>
-
-
-
-                <div id="Dice_box" style='display:none;'>
-                  <div class="form-outline mb-4">
-                    <div class="row">
-
-                      <div class="col">
-                        <p class="form-control">How many Vibez dose it coast to roll the dice</p>
-                      </div>
-
-                      <div class="col">
-                        <input type="number"  class="form-control" id="dice_Coast" placeholder="Dice Coast">
-                      </div>
-                    </div>
-                    
-                    <div class="row">
-                      <div class="col">
-                        <p class="form-control">#1</p>
-                      </div>
-                      <div class="col">
-                        <input type="text" class="form-control" id="1_dice_Name" placeholder="Menu Name">
-                      </div>
-                      <div class="col">
-                        <input type="text" class="form-control" id="1_dice_Time" placeholder="Time By Minute">
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col">
-                        <p class="form-control">#2</p>
-                      </div>
-                      <div class="col">
-                        <input type="text" class="form-control" id="2_dice_Name" placeholder="Menu Name">
-                      </div>
-                      <div class="col">
-                        <input type="text" class="form-control" id="2_dice_Time" placeholder="time">
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col">
-                        <p class="form-control">#3</p>
-                      </div>
-                      <div class="col">
-                        <input type="text" class="form-control" id="3_dice_Name" placeholder="Menu Name">
-                      </div>
-                      <div class="col">
-                        <input type="text" class="form-control" id="3_dice_Time" placeholder="time">
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col">
-                        <p class="form-control">#4</p>
-                      </div>
-                      <div class="col">
-                        <input type="text" class="form-control" id="4_dice_Name" placeholder="Menu Name">
-                      </div>
-                      <div class="col">
-                        <input type="text" class="form-control" id="4_dice_Time" placeholder="time">
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col">
-                        <p class="form-control">#5</p>
-                      </div>
-                      <div class="col">
-                        <input type="text" class="form-control" id="5_dice_Name" placeholder="Menu Name">
-                      </div>
-                      <div class="col">
-                        <input type="text" class="form-control" id="5_dice_Time" placeholder="time">
-                      </div>
-                    </div>
-
-                    <div class="row">
-                      <div class="col">
-                        <p class="form-control">#6</p>
-                      </div>
-                      <div class="col">
-                        <input type="text" class="form-control" id="6_dice_Name" placeholder="Menu Name">
-                      </div>
-                      <div class="col">
-                        <input type="text" class="form-control" id="6_dice_Time" placeholder="time">
-                      </div>
-                    </div>
-                    
+{% comment %} insert next btn {% endcomment %}
                     <div class="pt-1 mb-4">
-                      <button  type="button" onclick ="Done()" class="btn btn-dark btn-lg btn-block" type="button">Done</button>
+                      <button  type="button" onclick ="done()" class="btn btn-dark btn-lg btn-block" type="button">Done</button>
                     </div>
-                  </div>
                 </div>
-
 
 
                 <div id="Done_box" style='display:none;'>
@@ -380,6 +243,7 @@
       </div>
     </div>
   </div>
+  <script src="{% static 'js/cropper.min.js' %}"> </script>
   <script type="text/javascript" src="{% static 'js/registration_broadcaster.js' %}">
   </script>
 
@@ -387,29 +251,5 @@
   {% comment %} <link rel="stylesheet" href="{% static 'css/cropper.min.css' %}">
   <script type="text/javascript" src="{% static 'js/cropper.min.js' %}"></script> {% endcomment %}
 
-  <script>
-
-     var $image = $('#profile_image');
-
-    $image.cropper({
-      aspectRatio: 16 / 9,
-      crop: function(event) {
-        console.log(event.detail.x);
-        console.log(event.detail.y);
-        console.log(event.detail.width);
-        console.log(event.detail.height);
-        console.log(event.detail.rotate);
-        console.log(event.detail.scaleX);
-        console.log(event.detail.scaleY);
-      }
-    });
-    
-    // Get the Cropper.js instance after initialized
-    var cropper = $image.data('cropper'); 
-    
-
-
-
-  </script>
  
   {% endblock content %}

@@ -13,10 +13,10 @@ class Profile_Image(forms.ModelForm):
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
-
+    Status = forms.CharField(max_length=100, widget=forms.HiddenInput(),  initial="User")
     class Meta:
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['username',  'Status',  'email', 'password1', 'password2']
 
 
 
