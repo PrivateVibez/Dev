@@ -1,5 +1,9 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
+from asgiref.sync import sync_to_async
 import json
+from accounts.models import User_Data
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 
 class StaffConsumer(AsyncWebsocketConsumer):
@@ -17,11 +21,36 @@ class StaffConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-    async def user_update(self, event):
-        data = {
-        "pending": json.loads(event['data'])["pending"],
-        "user_data": json.loads(event['data'])["user_data"],
-        }
+    @sync_to_async
+    def get_pending_broadcasters(self,status):
+        return list(User_Data.objects.all().filter(User__Status=status))
+
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+        
+        status = data.get('Status')
+        user_id = data.get('user_id')
+
+        # Wrap the synchronous database update operation in sync_to_async
+        await sync_to_async(User.objects.filter(id=user_id).update)(Status=status)
+ 
+
+        # Wrap the synchronous database query operation in sync_to_async
+        pending_broadcasters = await self.get_pending_broadcasters("Pending_Broadcaster")
+
+        # Prepare the data to be sent back to the socket
+        data = [
+            {
+                "id": user.id,
+                "name": user.Real_Name,
+                "image": user.Image.url if user.Image else "",
+                "Birth_Date": user.Birth_Date,
+                # Add any other user fields you want to send back
+            }
+            for user in pending_broadcasters
+        ]
+
+        # Send the updated data back to the socket
         await self.send(text_data=json.dumps(data))
 
 

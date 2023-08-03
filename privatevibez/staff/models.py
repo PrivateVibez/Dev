@@ -53,7 +53,13 @@ class StaffRoomManager(models.Model):
 
     def __str__(self):
         return self.Staff.username
-    
+   
+class Decline_Message(models.Model):
+    Writer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name = 'Decline_Message_Owner')
+    Message = models.CharField(max_length=250,null=True,blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return str(self.Message)
 
 class StaffManager(models.Model):
         email = models.CharField(max_length=100,null=True,blank=True, unique=True)

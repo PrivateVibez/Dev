@@ -43,7 +43,7 @@
                                 <li><a data-toggle="modal" data-target="#Messages" ><i class="icofont-ui-message"></i>
                                     Messages</a></li>
 
-                                {% if user_status == "Broadcaster" %} 
+                                {% if user_status == "Broadcaster" or user_status == "Decline_Broadcaster" %} 
                                 <li><a data-toggle="modal" data-target="#Settings" ><i class="icofont-gear"></i> Settings</a></li>
 
                                 <li><a href="/room/{{request.user}}" ><i class="icofont-ui-video-chat"></i> My Room</a></li>

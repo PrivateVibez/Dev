@@ -7,6 +7,7 @@ class CustomUser(AbstractUser):
     Is_Accepted_Invite = models.BooleanField(default=False, blank=True)
     Is_Sent_Invite = models.BooleanField(default=False, blank=True)
     Status     = models.CharField(max_length=20, null=True, blank=True, default="User")
+    Decline_Message = models.CharField(max_length=250, null=True, blank=True)
     # ... add more fields as needed
 
     def __str__(self):

@@ -6,6 +6,7 @@ from . import views
 urlpatterns = [
     path('', views.home, name="staff_home"),
     path('idStatus/', views.Id_Status, name="Id_Status"),
+    path('addDeclineMsg/', views.addDeclineMsg, name="addDeclineMsg"),
     path('createStaff/', views.Create_Staff, name="Create_Staff"),
     path('editStaffPermission/', views.editStaffPermission, name="editStaffPermission"),
     path('sendStaffInvitation/', views.sendStaffInvitation, name="sendStaffInvitation"),

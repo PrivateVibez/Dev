@@ -121,3 +121,84 @@
                 }
         })
     }
+
+
+
+
+// AJAX GENERATE IDS
+
+
+function generate_IDs()
+{
+$.ajax({
+    method:'GET',
+    url: "/staff/getPendingBroadcasters/",
+        success:function(data){
+
+          var user_details = data.data;
+          let total_ID_checks = document.getElementById("id_check_len");
+          let table = document.getElementById("table_body");
+          table.innerHTML = "";
+          total_ID_checks.textContent = user_details.length;
+            console.log(user_details.length)
+            for(var i=0;i<user_details.length;i++){
+
+               
+               
+
+                    // create a new table row
+                    let newRow = document.createElement("tr");
+                    // create cells containing data
+                    let firstNameCell = document.createElement("td");
+                    firstNameCell.textContent = user_details[i].Real_Name;
+                    let lastNameCell = document.createElement("td");
+            
+                    let birthDateCell = document.createElement("td");
+                    birthDateCell.textContent = user_details[i].Birth_Date;
+                    // add cells to row
+                    newRow.appendChild(firstNameCell);
+                    newRow.appendChild(lastNameCell);
+                    newRow.appendChild(birthDateCell);
+                    // create the modal
+                    let modalCell = document.createElement("td");
+
+                    modalCell.innerHTML = `
+                    <button type="button" class="btn btn-primary openmodal" data-toggle="modal" data-target="#info-${user_details[i].User}" style="border:none;outline:none;color:blue">
+                    <span class="text-white">Show</span>
+                      </button>
+                      
+                      <!-- Modal -->
+                      <div class="modal fade" id="info-${user_details[i].User}" tabindex="-1" role="dialog" aria-labelledby="pic-${user_details[i].User}" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">${user_details[i].Real_Name}'s Information</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card" style="width: 18rem;">
+                                    <img class="img-thumbnail" src="${user_details[i].Image}"/>
+                                    <div class="card-body">
+                                        <h5 class="card-title">${user_details[i].User}</h5>
+                                        <p> ${user_details[i].Birth_Date}</p>
+            
+                                    </div> 
+                                </div>
+            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Decline</button>
+                                <button type="button" data-user-id="${user_details[i].User}" data-dismiss="modal" class="btn btn-success btn_approve_broadcaster">Approve</button>
+                                
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    `
+                    newRow.appendChild(modalCell);
+                    // add the new row to the table
+                    table.appendChild(newRow);
+
+
+            }

@@ -150,7 +150,7 @@
 
                             <div class="tab-pane fade" id="pills-settings-privacy" role="tabpanel" aria-labelledby="pills-settings-privacy">
                              
-                                Settings
+                                {% include 'rooms/include/settings.html' %}
                             </div>
 
                             <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
@@ -213,35 +213,7 @@
 
 <script>
 
-    var block_countries = document.getElementById('block_countries');
-    var select = document.getElementById('select_countries');
 
-    const choices = new Choices(select, {
-        removeItemButton: true, 
-    });
-
-
-    block_countries.onsubmit = (event) => {
-        event.preventDefault();
-        
-        const formData = new FormData(block_countries);
-        formData.append('broadcaster', room_data.id);
-        formData.append('csrfmiddlewaretoken', "{{ csrf_token }}");
-
-        $.ajax({
-            method:'POST',
-            url: "room/block_countries/",
-            contentType: false,  // Set this to false to let jQuery handle the content type automatically
-            processData: false, 
-                success:function(){
-                    document.getElementById('save_blocked_countries').style.display = 'block'
-                },
-            error: function(errors) {
-                    console.log(errors.responseText);
-                  },
-        });
-
-    }
 
 
 

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+    <style>
+      .custom-select {
+        border: 1px solid #ccc;
+        padding: 5px;
+        cursor: pointer;
+        max-height: 100px;
+        overflow-y: auto;
+      }
+      
+      .option {
+        padding: 5px;
+      }
+      
+      .option:hover {
+        background-color: #f0f0f0;
+      }
+      
+      .option.selected {
+        background-color: yellow;
+      }
+      
+      
+    </style>
+  </head>
+  <body>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-2">
+          <label for="select1">Block country:</label>
+          <div id="select1" style="height:100%" class="custom-select">
+            <div class="option" data-value="option1">Option 1</div>
+            <div class="option" data-value="option2">Option 2</div>
+            <div class="option" data-value="option3">Option 3</div>
+          </div>
+          <div class="col" style="width:100%">
+          
+            <button class="m-2 p-2 btn-danger" onclick="moveSelectedOptions('select1', 'select2')">Block</button>
+            
+          </div>
+        </div>
+
+        <div class="col-2">
+          <label for="select2">Block countries:</label>
+            <div id="select2" style="height:100%" class="custom-select">
+              <div class="option" data-value="option4">Option 4</div>
+              <div class="option" data-value="option5">Option 5</div>
+              <div class="option" data-value="option6">Option 6</div>
+            </div>
+      
+          <div class="col" style="width:100%">
+          
+            <button class="btn-secondary m-2 p-2" onclick="moveSelectedOptions('select2', 'select1')">Unblock</button>            
+          </div>
+
+      </div>
+    </div>
+  </body>
+  <script>
+    document.querySelectorAll('.custom-select .option').forEach((option) => {
+      option.addEventListener('click', function () {
+        this.classList.toggle('selected');
+      });
+    });
+    
+    function moveSelectedOptions(fromSelectId, toSelectId) {
+      const fromSelect = document.getElementById(fromSelectId);
+      const toSelect = document.getElementById(toSelectId);
+    
+      const selectedOptions = Array.from(fromSelect.getElementsByClassName('selected'));
+    
+      selectedOptions.forEach((option) => {
+        option.classList.remove('selected');
+        fromSelect.removeChild(option);
+        toSelect.appendChild(option);
+      });
+    }
+    
+  </script>
+</html>

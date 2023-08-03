@@ -7,4 +7,6 @@ admin.site.register(ToDolist_Dev)
 admin.site.register(StaffManager)
 admin.site.register(StaffRoomManager)
 admin.site.register(Memos)
+admin.site.register(Decline_Message)
+
 

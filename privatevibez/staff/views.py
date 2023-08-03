@@ -44,7 +44,8 @@ def home(request):
         pending = User.objects.filter(Status='Pending_Broadcaster')
         pending_user_id = list(pending.values_list('id',flat=True))
 
-       
+        decline_messages = Decline_Message.objects.all()
+        
         user_data = User_Data.objects.filter(User__id__in=pending_user_id)
         
         users_status = User_Status.objects.all()
@@ -135,19 +136,17 @@ def home(request):
         
 @csrf_exempt
 def Id_Status(request):
-        user_id = request.POST.get('user_id')
+        user_id = request.POST.get('User_id')
      
         user_status = User.objects.get(id=user_id)
        
         if request.POST.get('Status') == 'Decline':
                 user_status.Status = "Decline_Broadcaster"
+                user_status.Decline_Message = request.POST.get('message')
                 user_status.save()
                 return JsonResponse('OK', safe=False) 
-        if request.POST.get('Status') == 'Approve':
-                user_status.Status = "Broadcaster"
-                user_status.save()
-        print(user_status.Status)
-        return JsonResponse('OK', safe=False) 
+
+
 
 @csrf_exempt
 def Create_Staff(request):
@@ -440,3 +439,13 @@ def getPendingBroadcasters(request):
 
         
         return JsonResponse({'data':serializer.data}, safe=False)
+
+
+def addDeclineMsg(request):
+        
+        if request.method == "POST":
+                message = request.POST.get('decline_message_text')
+                Decline_Message.objects.create(Writer=request.user, Message=message)
+        else:
+                pass
+        return redirect('staff_home')

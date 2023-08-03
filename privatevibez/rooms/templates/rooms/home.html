@@ -94,6 +94,15 @@
                
                 <div class="display-1 w-50 m-auto d-flex text-center">Please wait as we check your information. we will send you an email once approved.</div>
 
+
+                {% elif user_status == "Decline_Broadcaster" %}
+
+                <div class="w-50 m-auto d-flex text-center">
+                    <span class="m-auto display-1 text-danger">
+                    {{user_status_data.Decline_Message}}
+                    </span>
+                </div>
+
                 {% elif user_status == "User" or user_status is None %}
                   
                 {% include "rooms/user.html" %}   
