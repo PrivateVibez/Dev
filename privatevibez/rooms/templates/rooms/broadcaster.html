@@ -44,7 +44,7 @@
             <div ts="Zv" data-listener-count-mousedown="1" data-listener-count-touchmove="1" class="resizeHandle" style="height: 425.312px; position: absolute; overflow: hidden; -webkit-tap-highlight-color: transparent; display: inline-block; box-sizing: border-box; cursor: ew-resize;"></div>
 
             
-            <div ts="x_" class="BaseTabsContainer m-2" id="ChatTabContainer" style="height: 445px; width: 25%; position: absolute; -webkit-tap-highlight-color: transparent; display:inline-block; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; border-radius: 6px;  box-sizing: border-box;border:2px solid black;background-color:#6cc6ba;color:#black;margin-left:20px;">
+            <div ts="x_" class="BaseTabsContainer container-fluid m-2" id="ChatTabContainer" style="height: 445px; width: 25%; position: absolute; -webkit-tap-highlight-color: transparent; display:inline-block; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; border-radius: 6px;  box-sizing: border-box;border:2px solid black;background-color:#6cc6ba;color:#black;margin-left:20px;">
 
 
                 <div class="tab-pane fade show active" id="nav-stats" role="tabpanel" aria-labelledby="nav-stats-tab">
@@ -55,38 +55,36 @@
 
                         </div>
 
-                        <ul class="nav nav-pills mb-3 d-flex flex-row gap-2" id="pills-tab" role="tablist">
-                            <li class="nav-item">
-
-                            </li>
-                            <li class="nav-item">
-
-                            </li>
-                            <li class="nav-item">
-
-                            </li>
-
-                          </ul>
-
-
-                          <div class="tab-content" id="pills-tabContent">
-
-
+                    
                             {% comment %} Chat {% endcomment %}
-                            <ul class="nav nav-pills mb-3 d-flex flex-row gap-2" id="pills-tab" role="tablist">
+                            <ul class="nav nav-pills mb-3 col gap-2" id="pills-tab" role="tablist">
                                 <li class="nav-item">
-                                    <a class="nav-link active" id="pills-chat-tab" data-toggle="pill" href="#pills-chat" role="tab" aria-controls="pills-chat" aria-selected="true">Chat</a>
-                                  </li>
-                            
-                            </ul>
+                                  <a class="nav-link active" id="pills-chat-tab" data-toggle="pill" href="#pills-chat" role="tab" aria-controls="pills-chat" aria-selected="true">Chat</a>
+                                </li>
+                                <li class="nav-item">
+                                  <a class="nav-link" id="pills-users-tab" data-toggle="pill" href="#pills-users" role="tab" aria-controls="pills-users" aria-selected="false">Users</a>
+                                </li>
+                                <li class="nav-item">
+                                  <a class="nav-link" id="pills-chat-settings-tab" data-toggle="pill" href="#pills-chat-settings" role="tab" aria-controls="pills-chat-settings" aria-selected="false">Chat Settings</a>
+                                </li>
+                              </ul>
+                              
 
-                            <div class="tab-content" id="pills-tabContent">
-                                <div class="tab-pane  show active" id="pills-chat" role="tabpanel" aria-labelledby="pills-chat-tab">
-                                    {% include "rooms/include/broadcaster_chat.html" %}     
-                                </div>
+
+                  
+                          <div class="tab-content" id="pills-tabContent">
+                            <div class="tab-pane fade" id="pills-chat" role="tabpanel" aria-labelledby="pills-chat-tab">
+                                {% include "rooms/include/broadcaster_chat.html" %}     
                             </div>
-
-                          </div>
+                            <div class="tab-pane fade" id="pills-users" role="tabpanel" aria-labelledby="pills-users-tab">
+                                {% include "rooms/include/users.html" %}     
+                            </div>
+                            <div class="tab-pane fade" id="pills-chat-settings" role="tabpanel" aria-labelledby="pills-chat-settings-tab">
+                                {% include "rooms/include/chat_settings.html" %}     
+                            </div>
+                        </div>
+                          
+                        </div>
 
                                 
                     </div>
@@ -120,9 +118,15 @@
                             <li class="nav-item">
                               <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Room Stats</a>
                             </li>
+
                             <li class="nav-item">
                               <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Slot Machine</a>
                             </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-bio-tab" data-toggle="pill" href="#pills-bio" role="tab" aria-controls="pills-bio" aria-selected="false">Bio</a>
+                              </li>
+
                             <li class="nav-item">
                               <a class="nav-link" id="pills-lovense-toy-tab" data-toggle="pill" href="#pills-lovense-toy" role="tab" aria-controls="pills-lovense" aria-selected="false">Connect Lovense Toy</a>
                             </li>
@@ -141,10 +145,12 @@
                             </div>
 
                             <div class="tab-pane fade" id="pills-lovense-toy" role="tabpanel" aria-labelledby="pills-lovense-toy">
-                                <img class="" id="lovense_qr_code_img">
-                             
 
-                                <button class="btn btn-primary w-25" onclick="generate_lovense_qrcode()" id="lovense_qrcode_btn">Generate Qr Code</button>
+                                <div class="container align-content-center gap-2">
+                                <img class="" id="lovense_qr_code_img"> 
+                                <button class="btn btn-primary d-flex m-auto p-3" onclick="generate_lovense_qrcode()" id="lovense_qrcode_btn">Generate Qr Code</button>
+                                </div>
+
                             </div>
 
 
@@ -153,49 +159,14 @@
                                 {% include 'rooms/include/settings.html' %}
                             </div>
 
+                            <div class="tab-pane fade" id="pills-bio" role="tabpanel" aria-labelledby="pills-bio">
+                             
+                                {% include 'rooms/include/bio.html' %}
+                            </div>
+
                             <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
 
-                                <div class="container-fluid">
-                                    <div class="row">
-                                        <form id="set_slot_machine" method="POST" action="{% url 'set_slot_machine' %}" class="col-8 gap-2">
-                                            {% csrf_token %}
-
-                                           
-                                            
-                                            <label for="set_vibez_per_spin">Set vibez per spin</label>
-                                            <input type="number" value="
-                                            {% if slot_machine_data %}
-                                            {{slot_machine_data.Slot_cost_per_spin}}
-                                                    {% endif %}
-                                            " class="form-control" id="set_vibez_per_spin" name="Slot_cost_per_spin">
-
-                                            <input type="number" class="form-control d-none" id="" value="
-                                            {% if slot_machine_data %}
-                                            {{room_data.User.id}}
-                                            {% endif %}
-                                            " name="User">
-                                            
-                                            <label for="set_3_of_a_kind_prize">Set prize for 3 of a kind win</label>
-                                            <input type="text" value="
-                                            {% if slot_machine_data %}
-                                            {{slot_machine_data.Win_3_of_a_kind_prize}}
-                                            {% endif %}
-                                            " class="form-control" id="set_3_of_a_kind_prize" name="Win_3_of_a_kind_prize">
-                                            
-                                            <label for="set_2_of_a_kind_prize">Set prize for 2 of a kind win</label>
-                                            <input type="text" value="
-                                            {% if slot_machine_data %}
-                                            {{slot_machine_data.Win_2_of_a_kind_prize}}
-                                            {% endif %}
-                                            " class="form-control" id="set_2_of_a_kind_prize" name="Win_2_of_a_kind_prize">
-                               
-
-
-                                            <button type="submit" class="btn btn-primary my-2">Set</button>
-                                        
-                                        </form>
-                                    </div>
-                                </div>
+                                {% include 'rooms/include/set_slot_machine.html' %}
                             </div>
 
                           </div>
@@ -213,7 +184,29 @@
 
 <script>
 
+    const room_id = {{room_data.User.id}} // Get the room ID from somewhere
 
+    const roomVisitorsSocket = new WebSocket(
+        'ws://' + window.location.host + `/ws/user_visitors/${room_id}/`
+    );
+    roomVisitorsSocket.onopen = function(e) {
+
+
+        console.log("socket open")
+        
+        // Update the visitors display on your page
+        // ...
+    };
+    
+    roomVisitorsSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        const visitors = data.visitors;
+
+        console.log(data)
+        
+        // Update the visitors display on your page
+        // ...
+    };
 
 
 

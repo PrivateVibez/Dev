@@ -193,6 +193,17 @@ def getTotalReports(request):
         reporty = request.GET.get('reporty')
         user = Bad_Acters.objects.filter(Reporty = reporty).count()
         return JsonResponse({'data':user}, safe=False)
+    
+    
+def get_IP_Address(request):
+    
+    if request.method == "POST":
+        
+        ip_address = request.POST.get('ip_address')
+        
+        
+    
+    return JsonResponse({'data':get_client_ip(request)}, safe=False)
         
         
 

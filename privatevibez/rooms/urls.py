@@ -6,6 +6,7 @@ urlpatterns = [
     path('Dice_items/', views.Dice_items, name="Dice_items"),
     path('Following/', views.Following, name="Following"),
     path('Thumbs/', views.Thumb, name="Thumb"),
+    path('visitor/', views.Visitor, name="visitor"),
     path('PrivateChatCheckBox/', views.PrivateChatCheckBox, name="PrivateChatCheckBox"),
     path('Chat/', views.Chat, name="Chat"),
     path('Save_RoomPatterns/', views.Save_RoomPatterns, name="Save_RoomPatterns"),

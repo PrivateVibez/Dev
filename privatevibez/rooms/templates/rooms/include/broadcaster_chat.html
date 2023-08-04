@@ -274,7 +274,7 @@ function fetchFans(broc) {
     if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
       var fans_json = JSON.parse(xhr.responseText);
       var fans = fans_json.data;
-      console.log(fans);
+
       var fanListUsername = document.getElementById("fan_lists");
       fanListUsername.innerHTML = "";
       if (fans.length) {

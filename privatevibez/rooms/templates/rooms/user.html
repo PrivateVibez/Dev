@@ -783,8 +783,29 @@
 {% if request.user.is_authenticated %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Your code here
+        // Send visitor ID
+        const room_id = {{room_data.User.id}} // Get the room ID from somewhere
+        console.log(room_id)
+        const userVisitorsSocket = new WebSocket(
+            'ws://' + window.location.host + `/ws/user_visitors/${room_id}/`
+        );
 
+        userVisitorsSocket.onopen = function(e) {
+            console.log({{request.user.id}})
+           
+            const data = {
+                user_id: {{request.user.id}}
+            };
+            userVisitorsSocket.send(JSON.stringify(data));
+        };
+        
+        userVisitorsSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const userVisitors = data.user_visitors;
+
+        };
+        
+        
         
 let protocol = "";
 if(window.location.protocol == "http:"){
@@ -920,6 +941,15 @@ let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicCh
         // Close WebSocket on page close
         window.onbeforeunload = function() {
             private_socket.close();
+
+
+            const data = {
+                user_id: {{request.user.id}},
+                leaving: true // Indicate that the user is leaving
+            };
+            userVisitorsSocket.send(JSON.stringify(data));
+
+            userVisitorsSocket.close();
         }
 
 

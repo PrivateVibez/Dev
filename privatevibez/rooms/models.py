@@ -2,7 +2,18 @@ from django.db import models
 from django.conf import settings
 
 # Create your models here.
-    
+
+class Block_Ip_Address(models.Model):
+
+    ip_address = models.GenericIPAddressField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+class Room_Visitors(models.Model):
+    User       = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    Timestamp  = models.DateTimeField(auto_now_add=True)     
+    def __str__(self):
+        return str(self.User)
+ 
     
 class Room_Data(models.Model):
     User                  = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -25,9 +36,11 @@ class Room_Data(models.Model):
     Feature_OHYes_button = models.CharField(max_length=1,null=True,blank=True)
     Feature_OH_button = models.CharField(max_length=1,null=True,blank=True)
     Feature_MMM_button = models.CharField(max_length=1,null=True,blank=True)
-    
+    Visitors              = models.ManyToManyField(Room_Visitors, null=True, blank=True)
     Is_Active             = models.BooleanField(default=False)
+    # Blocked_IP            = models.ManyToManyField(Block_Ip_Address, blank=True)
     Timestamp             = models.DateTimeField(auto_now_add=True)     
+    
     def __str__(self):
         return str(self.User)
 

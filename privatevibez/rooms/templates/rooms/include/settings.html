@@ -34,36 +34,141 @@
   <body>
 
     <div class="container-fluid">
+
+      <!--BLOCK COUNTRY -->
+
       <div class="row">
         <div class="col-2">
-          <label for="select1">Block country:</label>
-          <div id="select1" style="height:100%" class="custom-select">
-            <div class="option" data-value="option1">Option 1</div>
-            <div class="option" data-value="option2">Option 2</div>
-            <div class="option" data-value="option3">Option 3</div>
-          </div>
-          <div class="col" style="width:100%">
-          
-            <button class="m-2 p-2 btn-danger" onclick="moveSelectedOptions('select1', 'select2')">Block</button>
-            
-          </div>
-        </div>
 
+          <span class="">Block access to users in these countries:</span>
+
+      
+
+
+      </div>
+
+
+
+      
         <div class="col-2">
-          <label for="select2">Block countries:</label>
-            <div id="select2" style="height:100%" class="custom-select">
+
+          <div class="row">
+
+            
+
+            <div class="">
+          <label for="able_countries">Able to view:</label>
+            <div id="able_countries" style="height:100%" class="custom-select">
               <div class="option" data-value="option4">Option 4</div>
               <div class="option" data-value="option5">Option 5</div>
               <div class="option" data-value="option6">Option 6</div>
             </div>
-      
-          <div class="col" style="width:100%">
-          
-            <button class="btn-secondary m-2 p-2" onclick="moveSelectedOptions('select2', 'select1')">Unblock</button>            
+
+            <div class="col" style="width:100%">
+            
+              <button class="m-2 p-2 btn-danger rounded-3" onclick="moveSelectedOptions('able_countries', 'block_countries')">Block</button>
+            
+            </div>
+
+         </div>
+
           </div>
 
-      </div>
+          </div>
+
+               <div class="col-2">
+
+          <div class="row">
+            
+          <div class="">
+
+            <label for="block_countries">Block country:</label>
+            <div id="block_countries" style="height:100%" class="custom-select">
+              <div class="option" data-value="option1">Option 1</div>
+              <div class="option" data-value="option2">Option 2</div>
+              <div class="option" data-value="option3">Option 3</div>
+            </div>
+
+            <div class="col" style="width:100%">
+          
+            <button class="btn-secondary m-2 p-2 rounded-3" onclick="moveSelectedOptions('block_countries', 'able_countries')">Unblock</button>            
+          </div>
+        </div>
+          </div>
+
+          </div>
+
+
     </div>
+
+
+
+    <!-- BLOCK REGIONS-->
+
+          <div class="row">
+        <div class="col-2">
+
+          <span class="">Block access to users in these regions:</span>
+
+      
+
+
+      </div>
+
+
+
+      
+        <div class="col-2">
+
+          <div class="row">
+
+            
+
+            <div class="">
+          <label for="able_regions">Able to view:</label>
+            <div id="able_regions" style="height:100%" class="custom-select">
+              <div class="option" data-value="option4">Option 4</div>
+              <div class="option" data-value="option5">Option 5</div>
+              <div class="option" data-value="option6">Option 6</div>
+            </div>
+
+            <div class="col" style="width:100%">
+            
+              <button class="m-2 p-2 btn-danger rounded-3" onclick="moveSelectedOptions('able_regions', 'block_regions')">Block</button>
+            
+            </div>
+
+         </div>
+
+          </div>
+
+          </div>
+
+               <div class="col-2">
+
+          <div class="row">
+            
+          <div class="">
+
+            <label for="block_regions">Block regions:</label>
+            <div id="block_regions" style="height:100%" class="custom-select">
+              <div class="option" data-value="option1">Option 1</div>
+              <div class="option" data-value="option2">Option 2</div>
+              <div class="option" data-value="option3">Option 3</div>
+            </div>
+
+            <div class="col" style="width:100%">
+          
+            <button class="btn-secondary m-2 p-2 rounded-3" onclick="moveSelectedOptions('block_regions', 'able_regions')">Unblock</button>            
+          </div>
+        </div>
+          </div>
+
+          </div>
+
+
+    </div>
+  </div>
   </body>
   <script>
     document.querySelectorAll('.custom-select .option').forEach((option) => {

@@ -9,7 +9,6 @@ from django.contrib import messages
 from .models import *
 from django.utils.safestring import mark_safe
 import json
-from .models import Slot_Machine
 from .forms import Slot_MachineForm, Fav_vibezForm
 from django.http import HttpResponse as httpresponse
 import requests
@@ -18,6 +17,8 @@ from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
 from .serializers import Private_Chat_InviteeSerializer
 from django.conf import settings
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 from django.db.models import Q
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -552,3 +553,38 @@ def accept_privatechat(request):
   
         
         return JsonResponse({'data':"success"}, safe=False)
+    
+    
+@csrf_exempt
+def Visitor(request):
+    
+    if request.method == "POST":
+        
+        user_id = int(request.POST.get('user_id'))
+        room_id = int(request.POST.get('room_id'))
+        leaving = request.POST.get('leaving')
+        
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f'user_visitors_{room_id}',
+            {
+                'user_id': user_id,
+                'leaving': leaving,
+            }
+        )
+        
+        # try:
+            
+        #     Room_Visitors.objects.get(User=user_instance)
+            
+        # except Room_Visitors.DoesNotExist:
+        #     room_visitor = Room_Visitors.objects.create(User=user_instance)
+        #     # Add the visitor instance to the room's visitors
+        #     room_instance.Visitors.add(room_visitor)
+        #     room_instance.save()
+            
+        return JsonResponse({'data':"created"}, safe=False)
+            
+        
+    
+

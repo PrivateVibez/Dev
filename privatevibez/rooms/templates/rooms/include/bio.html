@@ -1,0 +1,69 @@
+<div class="container-fluid col gap-5">
+
+  <div class="row">
+
+    <div class="col-2">
+        <span class="h-5">
+          Profile Picture
+        </span>
+        <div id="profile_wrapper" class="d-flex">
+        </div>
+        <input class="form-control" id="Profile_Pic" type="file">
+    </div>
+
+  </div>
+
+  <div class="row">
+    <div class="col-2">
+      <span class="h-5">
+        Goal vibez:
+      </span>
+      <input class="">
+  </div>
+  </div>
+</div>
+
+
+<script>
+  let cropper;
+
+  function readImage(input) {
+      if (input.files && input.files[0]) {
+        var reader = new FileReader();
+  
+        reader.onload = function (e) {
+          var image = document.createElement('img');
+          image.src = e.target.result;
+  
+          // Set the width of the image
+          image.style.width = '400px';
+  
+          var imageContainer = document.getElementById('profile_wrapper');
+          imageContainer.innerHTML = '';
+          imageContainer.appendChild(image);
+  
+          cropper = new Cropper(image, {
+            aspectRatio: 16 / 9,
+            crop(event) {
+              console.log(event.detail.x);
+              console.log(event.detail.y);
+              console.log(event.detail.width);
+              console.log(event.detail.height);
+              console.log(event.detail.rotate);
+              console.log(event.detail.scaleX);
+              console.log(event.detail.scaleY);
+            },
+          });
+        };
+  
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+  
+    var imageInput = document.getElementById('Profile_Pic');
+  
+    imageInput.addEventListener('change', function () {
+      readImage(this);
+    });
+  
+</script>

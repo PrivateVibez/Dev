@@ -15,6 +15,7 @@ from channels.auth import AuthMiddlewareStack
 
 import chat.routing
 import staff.routing
+import rooms.routing
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', '.privatevibez.settings')
 
@@ -22,7 +23,7 @@ application = ProtocolTypeRouter({
     'http':get_asgi_application(),
     'websocket':AuthMiddlewareStack(
         URLRouter(
-            chat.routing.websocket_urlpatterns + staff.routing.websocket_urlpatterns
+            chat.routing.websocket_urlpatterns + staff.routing.websocket_urlpatterns + rooms.routing.websocket_urlpatterns
         )
     )
 })

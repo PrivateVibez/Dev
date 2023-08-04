@@ -20,9 +20,9 @@
       <div class="my-2">Number of explosions : {{room_data.Explosions}}</div>
 
       {% if room_data.Is_Active == True %}
-          <button onclick="room_offline()">Go offline</button>
+          <button class="btn btn-primary" onclick="room_offline()">Go offline</button>
       {% else %}
-      <button onclick="room_online()">Go online</button>
+      <button class="btn btn-primary h-3 p-2 m-2" onclick="room_online()">Go online</button>
       {% endif %}
       
       <div id="save_offline" style="display: none" class="my-2">You are offline</div>
