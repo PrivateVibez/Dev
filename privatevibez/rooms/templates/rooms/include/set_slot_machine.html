@@ -2,8 +2,8 @@
 <div class="container-fluid">
   <div class="row">
 
+    <form id="set_slot_machine" method="POST" action="{% url 'set_slot_machine' %}" class="col-8 gap-2">
       <div class="col-3">
-      <form id="set_slot_machine" method="POST" action="{% url 'set_slot_machine' %}" class="col-8 gap-2">
           {% csrf_token %}
 
          
@@ -13,9 +13,9 @@
           {% if slot_machine_data %}
           {{slot_machine_data.Slot_cost_per_spin}}
                   {% endif %}
-          " class="form-control" id="set_vibez_per_spin" name="Slot_cost_per_spin">
+          " class="" id="set_vibez_per_spin" name="Slot_cost_per_spin">
 
-          <input type="number" class="form-control d-none" id="" value="
+          <input type="number" class=" d-none" id="" value="
           {% if slot_machine_data %}
           {{room_data.User.id}}
           {% endif %}
@@ -26,20 +26,20 @@
           {% if slot_machine_data %}
           {{slot_machine_data.Win_3_of_a_kind_prize}}
           {% endif %}
-          " class="form-control" id="set_3_of_a_kind_prize" name="Win_3_of_a_kind_prize">
+          " class="" id="set_3_of_a_kind_prize" name="Win_3_of_a_kind_prize">
           
           <label for="set_2_of_a_kind_prize">Set prize for 2 of a kind win</label>
           <input type="text" value="
           {% if slot_machine_data %}
           {{slot_machine_data.Win_2_of_a_kind_prize}}
           {% endif %}
-          " class="form-control" id="set_2_of_a_kind_prize" name="Win_2_of_a_kind_prize">
+          " class="" id="set_2_of_a_kind_prize" name="Win_2_of_a_kind_prize">
 
 
 
-          <button type="submit" class="btn display-5 btn-primary my-2 p-3">Set</button>
+          <button type="submit" style="font-size:1.5rem;" class="btn h-4 btn-primary w-50 rounded-3 mx-auto my-2 p-3">Set</button>
       
+        </div>
       </form>
-  </div>
 </div>
 </div>

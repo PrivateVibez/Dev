@@ -62,7 +62,7 @@
                                   <a class="nav-link active" id="pills-chat-tab" data-toggle="pill" href="#pills-chat" role="tab" aria-controls="pills-chat" aria-selected="true">Chat</a>
                                 </li>
                                 <li class="nav-item">
-                                  <a class="nav-link" id="pills-users-tab" data-toggle="pill" href="#pills-users" role="tab" aria-controls="pills-users" aria-selected="false">Users</a>
+                                  <a class="nav-link" id="pills-users-tab" data-toggle="pill" href="#pills-users" role="tab" aria-controls="pills-users" aria-selected="false">Users (<span id="visitors"> </span>)</a>
                                 </li>
                                 <li class="nav-item">
                                   <a class="nav-link" id="pills-chat-settings-tab" data-toggle="pill" href="#pills-chat-settings" role="tab" aria-controls="pills-chat-settings" aria-selected="false">Chat Settings</a>
@@ -148,7 +148,7 @@
 
                                 <div class="container align-content-center gap-2">
                                 <img class="" id="lovense_qr_code_img"> 
-                                <button class="btn btn-primary d-flex m-auto p-3" onclick="generate_lovense_qrcode()" id="lovense_qrcode_btn">Generate Qr Code</button>
+                                <button class="btn btn-primary d-flex m-auto p-3" onclick="generate_lovense_qrcode()" style="font-size:1.5rem;" id="lovense_qrcode_btn">Generate Qr Code</button>
                                 </div>
 
                             </div>
@@ -194,18 +194,31 @@
 
         console.log("socket open")
         
-        // Update the visitors display on your page
-        // ...
+        // Send a trigger message to the server
+        roomVisitorsSocket.send(JSON.stringify({
+            action: 'retrieve_visitors'
+        }));
     };
     
     roomVisitorsSocket.onmessage = function(e) {
+        let num_of_visitors = document.getElementById('visitors')
+        let visitors_list = document.getElementById('visitor_list')
         const data = JSON.parse(e.data);
-        const visitors = data.visitors;
-
-        console.log(data)
+        const visitors = data.user_visitors;
+        const objectValuesArray = Object.values(visitors);
+        console.log(objectValuesArray.length)
+        console.log(visitors)
+        num_of_visitors.textContent = objectValuesArray.length
         
-        // Update the visitors display on your page
-        // ...
+
+        for(var i=0; i < objectValuesArray.length; i++)
+        {
+            let visitor = objectValuesArray[i]
+            let visitor_list_item = document.createElement('li')
+            visitor_list_item.classList.add('list-group-item')
+            visitor_list_item.textContent = visitor.username
+            visitors_list.appendChild(visitor_list_item)
+        }
     };
 
 

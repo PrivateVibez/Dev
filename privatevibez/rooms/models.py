@@ -9,7 +9,7 @@ class Block_Ip_Address(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
 class Room_Visitors(models.Model):
-    User       = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    User       = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True,blank=True)
     Timestamp  = models.DateTimeField(auto_now_add=True)     
     def __str__(self):
         return str(self.User)

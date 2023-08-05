@@ -4,10 +4,6 @@
 
   <div class="msg-text" style="font-family: Tahoma, Arial, Helvetica, sans-serif; box-sizing: border-box; padding: 2px 5px 3px; overflow-wrap: break-word; word-break: break-word;">
 
-      <a href="private-chat/{{room_data.User}}" target="_blank" class="my-3" style="text-decoration:none; color:purple;">
-          Chat (Total : {{private_chat_all.count}} | Pending request : {{private_request_pending.count}})
-      </a>
-
 
       <div class="my-2">
 
@@ -22,7 +18,7 @@
       {% if room_data.Is_Active == True %}
           <button class="btn btn-primary" onclick="room_offline()">Go offline</button>
       {% else %}
-      <button class="btn btn-primary h-3 p-2 m-2" onclick="room_online()">Go online</button>
+      <button class="btn btn-primary p-2 m-2" style="font-size:1.7rem;" onclick="room_online()">Go online</button>
       {% endif %}
       
       <div id="save_offline" style="display: none" class="my-2">You are offline</div>
