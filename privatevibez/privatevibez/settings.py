@@ -26,7 +26,7 @@ TEMPLATE_DIR=os.path.join(BASE_DIR,'templates')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = os.environ.get('SECRET_KEY')
-SECRET_KEY = 'django-insecure-+s=54=%y43vgzt(^mmnieb8gdl=4u@mh6r%enwp61t72w02k-n'
+SECRET_KEY = '*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.environ.get('DEBUG', default=0)))
@@ -43,6 +43,8 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+
+    'cities_light',
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -96,6 +98,8 @@ TEMPLATES = [
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
+
+SESSION_COOKIE_AGE = 3600
 
 WSGI_APPLICATION = 'privatevibez.wsgi.application'
 ASGI_APPLICATION = 'privatevibez.asgi.application'

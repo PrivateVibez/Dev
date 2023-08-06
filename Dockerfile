@@ -15,11 +15,12 @@ EXPOSE 8000
 
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \
-    /py/bin/pip install -r /requirements.txt && \
-    adduser -D -H privatevibez
+    /py/bin/pip install -r /requirements.txt 
+
 
 ENV PATH="/py/bin:$PATH"
 
-USER privatevibez
+RUN addgroup -g 1001 -S 1000 && adduser -u 1001 -S 1000 -G 1000
+
 
 CMD ["python", "/usr/bin/python3.py"]

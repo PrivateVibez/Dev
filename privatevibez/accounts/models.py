@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+
 from django.conf import settings
 
 class CustomUser(AbstractUser):
@@ -8,6 +9,10 @@ class CustomUser(AbstractUser):
     Is_Sent_Invite = models.BooleanField(default=False, blank=True)
     Status     = models.CharField(max_length=20, null=True, blank=True, default="User")
     Decline_Message = models.CharField(max_length=250, null=True, blank=True)
+    Ip_Address = models.CharField(max_length=250, null=True, blank=True)
+    Ip_Address_Expires = models.DateTimeField(null=True, blank=True) 
+    Country = models.CharField(max_length=250, null=True, blank=True)
+    Region = models.CharField(max_length=250, null=True, blank=True)
     # ... add more fields as needed
 
     def __str__(self):

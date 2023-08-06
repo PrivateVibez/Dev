@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from rooms.models import *
 from accounts.models import *
 from chat.models import *
+from cities_light.models import Country, Region, City
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.contrib import messages
@@ -101,6 +102,8 @@ def Room(request, Broadcaster):
                         
                                 
                 elif user.Status == "Broadcaster":
+                    countries = Country.objects.all()
+                    regions = Region.objects.all()
                     
                     if Slot_Machine.objects.filter(User=request.user).exists():
                         slot_machine_data = Slot_Machine.objects.filter(User=request.user).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
@@ -282,8 +285,22 @@ def go_offline(request):
     
 def block_countries(request):
     
+        url = "https://geo.ipify.org/api/v2/country,city"
+
+        data = {
+            "apiKey":"at_HxIk3g73CVFEeZN2rAAsT7a81ROxs",
+            "ipAddress": "180.190.7.16",
+                }
+        
+        headers = {
+            "Content-Type": "application/json"
+        }
+        
+        #response = requests.request("GET", url, headers=headers, params=data)
+        
+        return JsonResponse(response.json(), safe=False)
+
     
-    return JsonResponse('OK', safe=False)
 
 
 @csrf_exempt

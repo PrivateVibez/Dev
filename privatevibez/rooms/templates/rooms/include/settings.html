@@ -7,6 +7,8 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="">
+
+
     <style>
       .custom-select {
         border: 1px solid #ccc;
@@ -83,7 +85,7 @@
 
       <!--BLOCK COUNTRY -->
 
-      <div class="row gap-2 mt-2">
+      <div class="row gap-2 mt-2" style="height: 300px">
         <div class="col-2">
 
           <span class="">Block access to users in these countries:</span>
@@ -102,12 +104,14 @@
 
             
 
-            <div class="">
+            <div class="" style="height:100%">
           <label for="able_countries">Able to view:</label>
             <div id="able_countries" style="height:100%" class="custom-select">
-              <div class="option" data-value="option4">Option 4</div>
-              <div class="option" data-value="option5">Option 5</div>
-              <div class="option" data-value="option6">Option 6</div>
+              <input id="search-input-countries" type="text" placeholder="Search for a country">
+
+              {% for country in countries %}
+                  <div class="option" data-value="{{ country.code2 }}">{{ country.name }}</div>
+              {% endfor %}
             </div>
 
             <div class="col" style="width:100%">
@@ -130,9 +134,7 @@
 
             <label for="block_countries">Block country:</label>
             <div id="block_countries" style="height:100%" class="custom-select">
-              <div class="option" data-value="option1">Option 1</div>
-              <div class="option" data-value="option2">Option 2</div>
-              <div class="option" data-value="option3">Option 3</div>
+
             </div>
 
             <div class="col" style="width:100%">
@@ -173,9 +175,10 @@
             <div class="">
           <label for="able_regions">Able to view:</label>
             <div id="able_regions" style="height:100%" class="custom-select">
-              <div class="option" data-value="option4">Option 4</div>
-              <div class="option" data-value="option5">Option 5</div>
-              <div class="option" data-value="option6">Option 6</div>
+              <input id="search-input" type="text" placeholder="Search for a region">
+              {% for region in regions %}
+                  <div class="option_region" data-value="{{ region.name }}">{{ region.name }}</div>
+              {% endfor %}
             </div>
 
             <div class="col" style="width:100%">
@@ -198,9 +201,7 @@
 
             <label for="block_regions">Block regions:</label>
             <div id="block_regions" style="height:100%" class="custom-select">
-              <div class="option" data-value="option1">Option 1</div>
-              <div class="option" data-value="option2">Option 2</div>
-              <div class="option" data-value="option3">Option 3</div>
+
             </div>
 
             <div class="col" style="width:100%">
@@ -254,7 +255,67 @@
     </div>
   </div>
   </body>
+  
   <script>
+    var options = {
+      keys: ['textContent'], // Property to search in
+  };
+  var listDiv = document.querySelector('.list');
+  var fuse = new Fuse(listDiv.children, options);
+
+  // Search function
+  var searchInput = document.getElementById('search-input');
+  searchInput.addEventListener('input', function() {
+      var query = this.value;
+      var result = fuse.search(query);
+
+      // Hide/show elements based on search results
+      for (var i = 0; i < listDiv.children.length; i++) {
+          var div = listDiv.children[i];
+          if (result.includes(div)) {
+              div.style.display = 'block';
+          } else {
+              div.style.display = 'none';
+          }
+      }
+  });
+  
+/*
+    let block_countries = document.getElementById('block_countries');
+    let block_regions = document.getElementById('block_regions');
+
+
+    const block_countriesSocket = new WebSocket(
+      'ws://' + window.location.host + `/ws/block_countries/${room_id}/`
+  );
+  block_countriesSocket.onopen = function(e) {
+
+
+      console.log("socket open")
+      
+      // Send a trigger message to the server
+      block_countriesSocket.send(JSON.stringify({
+          action: ''
+      }));
+  };
+  
+  block_countriesSocket.onmessage = function(e) {
+      const data = JSON.parse(e.data);
+      const visitors = data.user_visitors;
+      const objectValuesArray = Object.values(visitors);
+      console.log(objectValuesArray.length)
+      console.log(visitors)
+      num_of_visitors.textContent = objectValuesArray.length
+      
+
+      for(var i=0; i < objectValuesArray.length; i++)
+      {
+
+      }
+  };
+*/
+
+
     document.querySelectorAll('.custom-select .option').forEach((option) => {
       option.addEventListener('click', function () {
         this.classList.toggle('selected');
@@ -273,6 +334,9 @@
         toSelect.appendChild(option);
       });
     }
+
+
+
     
   </script>
 </html>

@@ -8,16 +8,50 @@ from django.contrib.sessions.models import Session
 from django.contrib import messages
 from staff.models import StaffManager
 from django.shortcuts import redirect
+import requests
+from django.utils import timezone
+from datetime import timedelta
 from django.conf import settings
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
+def get_IpAddress():
+        
+        url = "https://api.ipify.org?format=text"
+        ip = requests.get(url).text
+        
+        return ip
 
-
+def get_Location(user_status_data,ip_address):
+        url = "https://geo.ipify.org/api/v2/country,city"
+        
+        data = {
+                "apiKey":"at_HxIk3g73CVFEeZN2rAAsT7a81ROxs",
+                "ipAddress": ip_address,
+        }
+        
+        response = requests.get(url, params=data)
+        
+        if response.status_code == 200:
+                json_data = response.json()
+                user_status_data.Ip_Address = ip_address
+                user_status_data.Ip_Address_Expires = timezone.now() + timedelta(days=7)
+                user_status_data.save()
+                for key, value in json_data.items():
+                        if key == "location":
+                                for key, value in value.items():
+                                        if key == "country":
+                                                user_status_data.Country = value
+                                                user_status_data.save()
+                                        if key == "region":
+                                                user_status_data.Region = value
+                                                user_status_data.save()
+                
+        else:
+                print("Request failed with status code:", response.status_code)
 
 def home(request):
 
-                
         if request.user.is_authenticated :
                 blocked_broadcasters = Bad_Acters.objects.filter(Reporty = request.user.id)
                 try:
@@ -25,7 +59,18 @@ def home(request):
                         user_status_data = User.objects.get(id = request.user.id)
                         user_status      = user_status_data.Status
                         
-        
+                        # if user_status_data.Ip_Address is None:
+                        #         ip_address = get_IpAddress()
+                        #         get_Location(user_status_data,ip_address)
+                        # else:
+                        #         if user_status_data.Ip_Address_Expires <= timezone.now():
+                        #                 user_status_data.Ip_Address_Expires = timezone.now() + timedelta(days=7)
+                        #                 ip_address = get_IpAddress()
+                        #                 get_Location(user_status_data,ip_address)
+ 
+                        
+                        # if user_status_data.Country is None:
+                        #         pass
                         
                         rooms = Room_Data.objects.all()
                         rooms_list = []
