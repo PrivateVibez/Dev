@@ -14,7 +14,7 @@
         border: 1px solid #ccc;
         padding: 5px;
         cursor: pointer;
-        max-height: 100px;
+        max-height: 200px;
         overflow-y: auto;
       }
       
@@ -109,8 +109,8 @@
             <div id="able_countries" style="height:100%" class="custom-select">
               <input id="search-input-countries" type="text" placeholder="Search for a country">
 
-              {% for country in countries %}
-                  <div class="option" data-value="{{ country.code2 }}">{{ country.name }}</div>
+              {% for country in filtered_countries %}
+                  <div class="option" data-value="{{ country.name }}">{{ country.name }}</div>
               {% endfor %}
             </div>
 
@@ -132,9 +132,11 @@
             
           <div class="">
 
-            <label for="block_countries">Block country:</label>
-            <div id="block_countries" style="height:100%" class="custom-select">
-
+            <label for="block_countries">Blocked country:</label>
+            <div id="block_countries" style="height:300px" class="custom-select">
+              {% for country in room_data_blocked_countries %}
+                  <div class="option" data-value="{{ country.Country }}">{{ country.Country }}</div>
+              {% endfor %}
             </div>
 
             <div class="col" style="width:100%">
@@ -174,16 +176,16 @@
 
             <div class="">
           <label for="able_regions">Able to view:</label>
-            <div id="able_regions" style="height:100%" class="custom-select">
+            <div id="able_regions" style="height:300px" class="custom-select">
               <input id="search-input" type="text" placeholder="Search for a region">
               {% for region in regions %}
-                  <div class="option_region" data-value="{{ region.name }}">{{ region.name }}</div>
+                  <div class="option" data-value="{{ region.name }}">{{ region.name }}</div>
               {% endfor %}
             </div>
 
             <div class="col" style="width:100%">
             
-              <button class="m-2 p-2 btn-danger rounded-3" onclick="moveSelectedOptions('able_regions', 'block_regions')">Block</button>
+              <button class="m-2 p-2 btn-danger rounded-3"  onclick="moveSelectedOptions('able_regions', 'block_regions')">Block</button>
             
             </div>
 
@@ -200,7 +202,7 @@
           <div class="">
 
             <label for="block_regions">Block regions:</label>
-            <div id="block_regions" style="height:100%" class="custom-select">
+            <div id="block_regions" style="height:300px" class="custom-select">
 
             </div>
 
@@ -217,29 +219,27 @@
 </div>
 <!-- Show Broadcast to gender-->
 
-<div class="row d-flex ml-5">
-  <div class="col-2">
-
-    <div class="row gap-4">
-      <div class="col-12">
+<div class="d-flex ml-5 mt-4">
+      <div class="col-2">
         <label for="block_regions">Show Broadcast to:</label>
       </div>
+
       <div class="col-12">
         
-        <div class="row gap-4">
-      <div class="col">
+        <div class="row">
+      <div class="col-1">
         <label for="block_regions">Male</label>
         <input class="" type="checkbox">
     </div>
-      <div class="col">
+      <div class="col-1">
         <label for="block_regions">Female</label>
         <input class="" type="checkbox">
     </div>
-      <div class="col">
+      <div class="col-1">
         <label for="block_regions">Couples</label>
         <input class="" type="checkbox">
     </div>
-      <div class="col">
+      <div class="col-1">
         <label for="block_regions">Trans</label>
         <input class="" type="checkbox">
     </div>
@@ -248,59 +248,132 @@
 
   </div>
 
-  </div>
-</div>
+
+
 
 
     </div>
   </div>
+
+  <div id="room_id">
+    {{room_data.User.id}}
+  </div>
   </body>
   
   <script>
-    var options = {
-      keys: ['textContent'], // Property to search in
-  };
-  var listDiv = document.querySelector('.list');
-  var fuse = new Fuse(listDiv.children, options);
 
-  // Search function
-  var searchInput = document.getElementById('search-input');
-  searchInput.addEventListener('input', function() {
-      var query = this.value;
-      var result = fuse.search(query);
-
-      // Hide/show elements based on search results
-      for (var i = 0; i < listDiv.children.length; i++) {
-          var div = listDiv.children[i];
-          if (result.includes(div)) {
-              div.style.display = 'block';
-          } else {
-              div.style.display = 'none';
-          }
-      }
-  });
   
-/*
-    let block_countries = document.getElementById('block_countries');
-    let block_regions = document.getElementById('block_regions');
+
+    const blockCountriesDiv = document.getElementById("block_countries");
+    const blockRegionsDiv  = document.getElementById('block_regions');
+
+    const prtcl = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    // Construct the WebSocket URL
+    const roomid = document.getElementById('room_id').innerHTML;
+    const socketURL = `${prtcl}//${window.location.host}/ws/blocking/${ {{room_data.User.id}}}/`;
+    
+    // Create the WebSocket connection
+    const block_countriesSocket = new WebSocket(socketURL);
 
 
-    const block_countriesSocket = new WebSocket(
-      'ws://' + window.location.host + `/ws/block_countries/${room_id}/`
-  );
-  block_countriesSocket.onopen = function(e) {
+    block_countriesSocket.onopen = function(e) {
 
 
       console.log("socket open")
       
       // Send a trigger message to the server
-      block_countriesSocket.send(JSON.stringify({
-          action: ''
-      }));
+
+      const observer = new MutationObserver((mutationsList, observer) => {
+        for (const mutation of mutationsList) {
+            if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
+                // Get the added node(s)
+                const addedNodes = mutation.addedNodes;
+                
+                // Loop through the added nodes
+                for (const addedNode of addedNodes) {
+                    // Check if the added node is an element
+                    if (addedNode.nodeType === Node.ELEMENT_NODE) {
+                        // Get the data-value attribute
+                        const dataValue = addedNode.getAttribute("data-value");
+                        let parentDiv = addedNode.parentNode;
+                        while (parentDiv && parentDiv.tagName !== "DIV") {
+                            parentDiv = parentDiv.parentNode;
+                        }
+                        // Trigger your event or execute your code with dataValue
+                        
+    
+                        if (parentDiv.getAttribute("id") == "block_countries")
+                        {
+                          console.log(dataValue);
+                          block_countriesSocket.send(JSON.stringify({
+                            room_id: room_id,
+                            type: "add_block",
+                            country: dataValue,
+                            action: parentDiv.getAttribute("id"),
+                          })); 
+                     
+                        }
+                        else{
+                        
+                          block_countriesSocket.send(JSON.stringify({
+                            room_id: room_id,
+                            type: "add_block",
+                            action: parentDiv.getAttribute("id"),
+                            region: dataValue,
+                          }));
+                        }
+                    }
+                }
+            }
+    
+                        // Handle removed nodes
+                        if (mutation.removedNodes.length > 0) {
+                          // Loop through the removed nodes
+                          for (const removedNode of mutation.removedNodes) {
+                              if (removedNode.nodeType === Node.ELEMENT_NODE) {
+                                  // Get the data-value attribute
+                                  const dataValue = removedNode.getAttribute("data-value");
+                                  let parentDiv = removedNode.parentNode;
+                                  while (parentDiv && parentDiv.tagName !== "DIV") {
+                                      parentDiv = parentDiv.parentNode;
+                                  }
+                                  // Handle WebSocket message or other actions for removed nodes
+                                  // ...
+                                  console.log(dataValue)
+    
+                                  if (parentDiv.getAttribute("id") == "block_countries")
+                                  {
+    
+                                    block_countriesSocket.send(JSON.stringify({
+                                      room_id: room_id,
+                                      type: "remove_block",
+                                      action: parentDiv.getAttribute("id"),
+                                      country: dataValue,
+                                    }));
+                                  }
+                                  if (parentDiv.getAttribute("id") == "block_region")
+                                  {
+    
+                                    block_countriesSocket.send(JSON.stringify({
+                                      room_id: room_id,
+                                      type: "remove_block",
+                                      action: parentDiv.getAttribute("id"),
+                                      region: dataValue,
+                                    }));
+                                  }
+                              }
+                          }
+                      }
+        }
+    });
+    
+    observer.observe(blockCountriesDiv, { childList: true });
+    observer.observe(blockRegionsDiv, { childList: true });
   };
   
   block_countriesSocket.onmessage = function(e) {
       const data = JSON.parse(e.data);
+      /*
       const visitors = data.user_visitors;
       const objectValuesArray = Object.values(visitors);
       console.log(objectValuesArray.length)
@@ -312,8 +385,12 @@
       {
 
       }
+      */
+      console.log(data)
   };
-*/
+
+
+
 
 
     document.querySelectorAll('.custom-select .option').forEach((option) => {

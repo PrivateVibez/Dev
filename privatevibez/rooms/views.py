@@ -103,6 +103,16 @@ def Room(request, Broadcaster):
                                 
                 elif user.Status == "Broadcaster":
                     countries = Country.objects.all()
+                    room_data_blocked_countries = room_data.Blocked_Countries.all()
+                    print(room_data_blocked_countries)
+              
+                    # Extract a list of blocked country IDs
+                    blocked_country_ids = room_data_blocked_countries.values_list('Country_id', flat=True)
+
+                    # Filter countries based on blocked country IDs
+                    filtered_countries = countries.exclude(id__in=blocked_country_ids)
+                    print(filtered_countries)
+
                     regions = Region.objects.all()
                     
                     if Slot_Machine.objects.filter(User=request.user).exists():

@@ -1,7 +1,20 @@
 from django.db import models
 from django.conf import settings
-
+from cities_light.models import Country, Region
 # Create your models here.
+
+class Blocked_Countries(models.Model):
+    Country    = models.ForeignKey(Country, on_delete=models.CASCADE, null=True,blank=True)
+    Timestamp  = models.DateTimeField(auto_now_add=True)     
+    def __str__(self):
+        return str(self.Country)
+    
+    
+class Blocked_Regions(models.Model):
+    Region     = models.ForeignKey(Region, on_delete=models.CASCADE, null=True,blank=True)
+    Timestamp  = models.DateTimeField(auto_now_add=True)     
+    def __str__(self):
+        return str(self.Region)
 
 class Block_Ip_Address(models.Model):
 
@@ -38,6 +51,8 @@ class Room_Data(models.Model):
     Feature_MMM_button = models.CharField(max_length=1,null=True,blank=True)
     Visitors              = models.ManyToManyField(Room_Visitors, null=True, blank=True)
     Is_Active             = models.BooleanField(default=False)
+    Blocked_Countries       = models.ManyToManyField(Blocked_Countries, related_name='block_countries', blank=True)
+    Blocked_Regions       = models.ManyToManyField(Blocked_Regions, related_name='block_regions', blank=True)
     # Blocked_IP            = models.ManyToManyField(Block_Ip_Address, blank=True)
     Timestamp             = models.DateTimeField(auto_now_add=True)     
     

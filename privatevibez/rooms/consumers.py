@@ -2,7 +2,8 @@
 
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from .models import Room_Data, Room_Visitors
+from .models import Room_Data, Room_Visitors,  Blocked_Countries, Blocked_Regions
+from cities_light.models import Country, Region
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -106,7 +107,7 @@ class BlockedCountriesConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_id = self.scope['url_route']['kwargs']['room_id']
     
-        self.room_group_name = 'blocked_countries_%s' % (self.room_id)
+        self.room_group_name = 'blocking_places_%s' % (self.room_id)
 
         # Join room group
         await self.channel_layer.group_add(
@@ -114,15 +115,131 @@ class BlockedCountriesConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         await self.accept()
-
+            
+    
+    @database_sync_to_async
+    def block_countries(self,country):
+        room_data = Room_Data.objects.get(User_id=self.room_id)
+                
+        try:
+            country_instance = Country.objects.get(code2=country)
+            blocking_instance = Blocked_Countries.objects.create(Country=country_instance)
+            
+            try:
+                room_data.Blocked_Countries.add(blocking_instance)
+                blocked_countries = room_data.Blocked_Countries.all()
+                self.send_blocked_countries({'blocked_countries': blocked_countries})
+            except Room_Data.DoesNotExist:
+                
+                pass
+        except Country.DoesNotExist:
+            pass
+        
+    
+    @database_sync_to_async
+    def block_regions(self,region):
+            try:
+                region_instance = Region.objects.get(name=region)
+                blocking_instance = Blocked_Regions.objects.create(Region=region_instance)
+                
+                try:
+                    room_data.Blocked_Regions.add(blocking_instance)
+                    blocked_regions = room_data.Blocked_Regions.all()
+                    self.send_blocked_regions({'blocked_regions': blocked_regions})
+                except Room_Data.DoesNotExist:
+                    
+                    pass
+            except Region.DoesNotExist:
+                pass
+            
+            pass
+     
+    @database_sync_to_async
+    def remove_country(self,country):
+            try:
+                country_instance = Country.objects.get(name=country)
+                blocking_instance = Blocked_Countries.objects.get(Country=country_instance)
+                
+                try:
+                    room_data.Blocked_Countries.remove(blocking_instance)
+                except Room_Data.DoesNotExist:
+                    
+                    pass
+            except Country.DoesNotExist:
+                pass
+            
+            pass
+    
+     
+    @database_sync_to_async
+    def remove_region(self,region):
+            try:
+                region_instance = Region.objects.get(name=region)
+                blocking_instance = Blocked_Regions.objects.get(Region=region_instance)
+                
+                try:
+                    room_data.Blocked_Regions.remove(blocking_instance)
+                except Room_Data.DoesNotExist:
+                    
+                    pass
+            except Country.DoesNotExist:
+                pass
+        
+            pass
+    
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
             self.room_group_name,
             self.channel_name
         )
+
+    async def send_blocked_countries(self, data):
+        await self.send(text_data=json.dumps(data))
+        
+        
+    async def send_blocked_regions(self, data):
+        await self.send(text_data=json.dumps(data))
+
     
-    async def receive(self, text_data):
+
+    async def add_block(self,action, country, region):
+        print("srs")
+        print(action)
+        if action is not None and action == "block_countries":
+            await self.block_countries(country)
+        
+        if action is not None and action == "block_regions":
+            await self.block_regions(region)
+
+
+    
+    async def remove_block(self, text_data):
         data = json.loads(text_data)
         action = data.get('action', None)
+        country = data.get('country', None)
+        region = data.get('region', None)
         
-        await self.send(text_data=json.dumps({'user_visitors': visitors}))
+        if action is not None and action == "block_countries":
+            
+            await self.remove_country(country)
+
+        
+        if action is not None and action == "block_regions":
+            await self.remove_region(region)
+            
+            
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+
+        method = data.get('type')
+        action = data.get('action', None)
+        country = data.get('country', None)
+        region = data.get('region', None)
+        
+        print('sss')
+        if method == "add_block":
+            print(method)
+            await self.add_block(action,country,region)
+        if method == "remove_block":
+            await self.remove_block(action,country,region)
+    
