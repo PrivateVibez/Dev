@@ -59,18 +59,18 @@ def home(request):
                         user_status_data = User.objects.get(id = request.user.id)
                         user_status      = user_status_data.Status
                         
-                        # if user_status_data.Ip_Address is None:
-                        #         ip_address = get_IpAddress()
-                        #         get_Location(user_status_data,ip_address)
-                        # else:
-                        #         if user_status_data.Ip_Address_Expires <= timezone.now():
-                        #                 user_status_data.Ip_Address_Expires = timezone.now() + timedelta(days=7)
-                        #                 ip_address = get_IpAddress()
-                        #                 get_Location(user_status_data,ip_address)
+                        if user_status_data.Ip_Address is None:
+                                ip_address = get_IpAddress()
+                                get_Location(user_status_data,ip_address)
+                        else:
+                                if user_status_data.Ip_Address_Expires <= timezone.now():
+                                        user_status_data.Ip_Address_Expires = timezone.now() + timedelta(days=7)
+                                        ip_address = get_IpAddress()
+                                        get_Location(user_status_data,ip_address)
  
                         
-                        # if user_status_data.Country is None:
-                        #         pass
+                        if user_status_data.Country is None:
+                                pass
                         
                         rooms = Room_Data.objects.all()
                         rooms_list = []
