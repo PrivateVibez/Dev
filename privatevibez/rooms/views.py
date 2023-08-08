@@ -13,10 +13,12 @@ import json
 from .forms import Slot_MachineForm, Fav_vibezForm
 from django.http import HttpResponse as httpresponse
 import requests
+from .decorators import check_user_blocked_ip
+from accounts.forms import CustomPasswordChangeForm
 from cryptography.fernet import Fernet
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
-from .serializers import Private_Chat_InviteeSerializer
+from .serializers import Private_Chat_InviteeSerializer, CountrySerializer, RegionSerializer
 from django.conf import settings
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
@@ -25,6 +27,28 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 # Create your views here.
+
+def change_password(request):
+    changepassform = CustomPasswordChangeForm(request.user)
+    if request.method == 'POST':
+        changepassform = CustomPasswordChangeForm(request.user, request.POST)
+        if changepassform.is_valid():
+            user = changepassform.save()
+            update_session_auth_hash(request, user)  # Important to update the session's auth hash
+            return redirect('password_change_done')
+    else:
+        changepassform = CustomPasswordChangeForm(request.user)
+        return changepassform
+
+
+
+def user_blocked(request):
+    return render(request, 'rooms/user_blocked.html')
+
+
+
+#check if user's region or country is not blocked by the room
+@check_user_blocked_ip(redirect_url="/room/blocked/404/")
 def Room(request, Broadcaster):
 
     if request.user.is_authenticated:
@@ -104,16 +128,22 @@ def Room(request, Broadcaster):
                 elif user.Status == "Broadcaster":
                     countries = Country.objects.all()
                     room_data_blocked_countries = room_data.Blocked_Countries.all()
-                    print(room_data_blocked_countries)
-              
+
                     # Extract a list of blocked country IDs
                     blocked_country_ids = room_data_blocked_countries.values_list('Country_id', flat=True)
 
                     # Filter countries based on blocked country IDs
                     filtered_countries = countries.exclude(id__in=blocked_country_ids)
-                    print(filtered_countries)
 
                     regions = Region.objects.all()
+                    room_data_blocked_regions = room_data.Blocked_Regions.all()
+    
+                    
+                    blocked_region_ids = room_data_blocked_regions.values_list('Region_id', flat=True)
+                    filtered_regions = regions.exclude(id__in=blocked_region_ids)
+
+                    change_password(request)
+                    # change_email(request)
                     
                     if Slot_Machine.objects.filter(User=request.user).exists():
                         slot_machine_data = Slot_Machine.objects.filter(User=request.user).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
@@ -614,4 +644,31 @@ def Visitor(request):
             
         
     
+@csrf_exempt
+def search_countries(request):
+        
+        if request.method == "GET":
+            country = request.GET.get('search')
+            if country is not None:
+                country = Country.objects.filter(name__icontains=country)
+                serializer = CountrySerializer(country, many=True)
+                return JsonResponse({'data':serializer.data}, safe=False)
+            else:
+                return JsonResponse({'data':"empty"}, safe=False)
+        else:
+            return JsonResponse({'data':"none"}, safe=False)
+
+    
+@csrf_exempt
+def search_regions(request):
+        
+        if request.method == "GET":
+            region = request.GET.get('search')
+            region = Region.objects.filter(display_name__icontains=region)
+            serializer = RegionSerializer(region, many=True)
+            
+            return JsonResponse({'data':serializer.data}, safe=False)
+        else:
+            return JsonResponse({'data':"none"}, safe=False)
+
 

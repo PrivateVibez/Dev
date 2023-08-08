@@ -23,4 +23,12 @@ urlpatterns = [
     path('lovense/generate_broadcaster_qrcode/', views.generate_broadcaster_qrcode, name="generate_broadcaster_qrcode"),
     
     
+    # Search Countries
+     path('search_countries/', views.search_countries, name="search_countries"),
+     path('search_regions/', views.search_regions, name="search_regions"),
+     
+     #blocked users
+     path('blocked/404/', views.user_blocked, name="user_blocked"),
+    
+    
 ]

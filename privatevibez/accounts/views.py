@@ -13,6 +13,7 @@ from staff.models import StaffManager
 from django.utils import timezone
 from cryptography.fernet import Fernet
 import secrets
+from django.contrib.auth import update_session_auth_hash
 from django.conf import settings
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -207,6 +208,15 @@ def get_IP_Address(request):
         
         
 
-
+def change_password(request):
+    if request.method == 'POST':
+        form = CustomPasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important to update the session's auth hash
+            return redirect('password_change_done')
+    else:
+        form = CustomPasswordChangeForm(request.user)
+    return render(request, 'change_password.html', {'form': form})
 
 

@@ -122,10 +122,11 @@ class BlockedCountriesConsumer(AsyncWebsocketConsumer):
         room_data = Room_Data.objects.get(User_id=self.room_id)
                 
         try:
-            country_instance = Country.objects.get(code2=country)
-            blocking_instance = Blocked_Countries.objects.create(Country=country_instance)
+            country_instance = Country.objects.get(name=country)
+            blocking_instance, created = Blocked_Countries.objects.get_or_create(Country=country_instance)
             
             try:
+
                 room_data.Blocked_Countries.add(blocking_instance)
                 blocked_countries = room_data.Blocked_Countries.all()
                 self.send_blocked_countries({'blocked_countries': blocked_countries})
@@ -138,11 +139,13 @@ class BlockedCountriesConsumer(AsyncWebsocketConsumer):
     
     @database_sync_to_async
     def block_regions(self,region):
+            room_data = Room_Data.objects.get(User_id=self.room_id)
             try:
                 region_instance = Region.objects.get(name=region)
-                blocking_instance = Blocked_Regions.objects.create(Region=region_instance)
-                
+                blocking_instance, created = Blocked_Regions.objects.get_or_create(Region=region_instance)
+
                 try:
+
                     room_data.Blocked_Regions.add(blocking_instance)
                     blocked_regions = room_data.Blocked_Regions.all()
                     self.send_blocked_regions({'blocked_regions': blocked_regions})
@@ -156,12 +159,14 @@ class BlockedCountriesConsumer(AsyncWebsocketConsumer):
      
     @database_sync_to_async
     def remove_country(self,country):
+            room_data = Room_Data.objects.get(User_id=self.room_id)
             try:
                 country_instance = Country.objects.get(name=country)
                 blocking_instance = Blocked_Countries.objects.get(Country=country_instance)
                 
                 try:
                     room_data.Blocked_Countries.remove(blocking_instance)
+                    print("removed csountry")
                 except Room_Data.DoesNotExist:
                     
                     pass
@@ -173,8 +178,9 @@ class BlockedCountriesConsumer(AsyncWebsocketConsumer):
      
     @database_sync_to_async
     def remove_region(self,region):
+            room_data = Room_Data.objects.get(User_id=self.room_id)
             try:
-                region_instance = Region.objects.get(name=region)
+                region_instance = Region.objects.get(display_name=region)
                 blocking_instance = Blocked_Regions.objects.get(Region=region_instance)
                 
                 try:
@@ -203,8 +209,7 @@ class BlockedCountriesConsumer(AsyncWebsocketConsumer):
     
 
     async def add_block(self,action, country, region):
-        print("srs")
-        print(action)
+
         if action is not None and action == "block_countries":
             await self.block_countries(country)
         
@@ -213,18 +218,15 @@ class BlockedCountriesConsumer(AsyncWebsocketConsumer):
 
 
     
-    async def remove_block(self, text_data):
-        data = json.loads(text_data)
-        action = data.get('action', None)
-        country = data.get('country', None)
-        region = data.get('region', None)
+    async def remove_block(self, action,country,region):
         
-        if action is not None and action == "block_countries":
-            
+        if action is not None and action == "able_countries":
+            print(action)
+        
             await self.remove_country(country)
 
         
-        if action is not None and action == "block_regions":
+        if action is not None and action == "able_regions":
             await self.remove_region(region)
             
             
@@ -236,9 +238,9 @@ class BlockedCountriesConsumer(AsyncWebsocketConsumer):
         country = data.get('country', None)
         region = data.get('region', None)
         
-        print('sss')
+  
         if method == "add_block":
-            print(method)
+  
             await self.add_block(action,country,region)
         if method == "remove_block":
             await self.remove_block(action,country,region)

@@ -37,9 +37,26 @@
 
     <div class="container-fluid">
 
-    
-      <!-- Personal Data -->
+      <!-- Security -->
       <div class="row gap-2">
+        <div class="row">
+
+          <span class="display-4">
+            Security
+          </span>
+       
+      </div>
+        <div class="row">
+
+          <span class="h-5">
+            <a href="" data-toggle="modal" data-target="#changePasswordModal">Change your password</a>
+          </span>
+       
+      </div>
+    </div>
+
+      <!-- Personal Data -->
+      <div class="row gap-2 mt-5">
         <div class="row">
         <div class="col-2">
           <span class="display-4">
@@ -47,6 +64,7 @@
           </span>
         </div>
       </div>
+    </div>
 
 
       <!-- Email Address-->
@@ -54,16 +72,25 @@
         <div class="row">
         <div class="col-2">
           <span class="h-4">
+           
             Email Address
+            
           </span>
         </div>
         <div class="col-2">
-          <label for="email" class="h-4"></label>
-          <input class="" id="email">
+          <div class="row">
+            <span class="">{{room_data.User.email}}</span>
+          </div>
+          <div class="row">
+            <span class="">Email Status</span>
+          </div>
+          <div class="row">
+            <span class=""><a href="" data-toggle="modal" data-target="#changeEmailModal">change email address</a></span>
+          </div>
         </div>
       </div>
 
-      <div class="row">
+      <div class="row my-4">
         <div class="col-2">
           <span class="h-4">
             I am:*
@@ -83,15 +110,63 @@
 
     </div>
 
+
+
+     <!--Broadcaster Settings-->
+     <div class="container-fluid row gap-2 my-5">
+      <span class="display-4">
+        Broadcaster Settings
+      </span>
+
+      <div class="col-2 gap-2">
+        <div class="row my-5">
+          List my cam on the homepage:
+        </div>
+        <div class="row my-5">
+          Show my cam to these genders:*
+        </div>
+
+        
+      </div>
+      <div class="col-2">
+        <div class="row my-5">
+          <select class="">
+            <option class="" value="Yes">Yes</option>
+            <option class="" value="nO">Yes</option>
+          </select>
+        </div>
+        <div class="row gap-5">
+          <div class="col-2">
+            <label for="block_regions">Male</label>
+            <input class="" type="checkbox">
+        </div>
+          <div class="col-2">
+            <label for="block_regions">Female</label>
+            <input class="" type="checkbox">
+        </div>
+          <div class="col-2">
+            <label for="block_regions">Couples</label>
+            <input class="" type="checkbox">
+        </div>
+          <div class="col-2">
+            <label for="block_regions">Trans</label>
+            <input class="" type="checkbox">
+        </div>
+        </div>
+
+        
+      </div>
+
+
+
+  </div>
+
       <!--BLOCK COUNTRY -->
 
-      <div class="row gap-2 mt-2" style="height: 300px">
+      <div class="row gap-2 my-5" style="height: 300px">
         <div class="col-2">
 
           <span class="">Block access to users in these countries:</span>
-
-      
-
 
       </div>
 
@@ -106,8 +181,8 @@
 
             <div class="" style="height:100%">
           <label for="able_countries">Able to view:</label>
+          <input id="search-input-countries" type="text" placeholder="Search for a country">
             <div id="able_countries" style="height:100%" class="custom-select">
-              <input id="search-input-countries" type="text" placeholder="Search for a country">
 
               {% for country in filtered_countries %}
                   <div class="option" data-value="{{ country.name }}">{{ country.name }}</div>
@@ -155,7 +230,7 @@
 
     <!-- BLOCK REGIONS-->
 
-          <div class="row">
+          <div class="row my-5">
         <div class="col-2">
 
           <span class="">Block access to users in these regions:</span>
@@ -176,9 +251,9 @@
 
             <div class="">
           <label for="able_regions">Able to view:</label>
+          <input id="search-input-regions" type="text" placeholder="Search for a region">
             <div id="able_regions" style="height:300px" class="custom-select">
-              <input id="search-input" type="text" placeholder="Search for a region">
-              {% for region in regions %}
+              {% for region in filtered_regions %}
                   <div class="option" data-value="{{ region.name }}">{{ region.name }}</div>
               {% endfor %}
             </div>
@@ -203,7 +278,9 @@
 
             <label for="block_regions">Block regions:</label>
             <div id="block_regions" style="height:300px" class="custom-select">
-
+              {% for region in room_data_blocked_regions %}
+              <div class="option" data-value="{{ region.Region }}">{{ region.Region }}</div>
+              {% endfor %}
             </div>
 
             <div class="col" style="width:100%">
@@ -219,45 +296,86 @@
 </div>
 <!-- Show Broadcast to gender-->
 
-<div class="d-flex ml-5 mt-4">
-      <div class="col-2">
-        <label for="block_regions">Show Broadcast to:</label>
-      </div>
 
-      <div class="col-12">
-        
-        <div class="row">
-      <div class="col-1">
-        <label for="block_regions">Male</label>
-        <input class="" type="checkbox">
-    </div>
-      <div class="col-1">
-        <label for="block_regions">Female</label>
-        <input class="" type="checkbox">
-    </div>
-      <div class="col-1">
-        <label for="block_regions">Couples</label>
-        <input class="" type="checkbox">
-    </div>
-      <div class="col-1">
-        <label for="block_regions">Trans</label>
-        <input class="" type="checkbox">
-    </div>
-
-  </div>
-
-  </div>
-
-
-
-
-
-    </div>
-  </div>
-
-  <div id="room_id">
+  <div class="d-none" id="room_id">
     {{room_data.User.id}}
   </div>
+
+
+
+  <!-- Modal for changing password -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="post">
+          {% csrf_token %}
+          
+          <div class="col mb-4">
+            <div class="row">
+              <label for="old_password">New Password</label>
+              <input class="form-control" id="password1">
+            </div>
+            <div class="row">
+              <label for="old_password">Retype Password</label>
+              <input class="form-control" id="password2">
+            </div>
+          </div>
+          <div class"row align-items-center">
+            <button class="btn btn-primary" type="submit">Change Password</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          </div>
+         
+        </form>
+        
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+  <!-- Modal for changing Email -->
+  <div class="modal fade" id="changeEmailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Change Email</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="post">
+            {% csrf_token %}
+            
+            <div class="col mb-4">
+              <div class="row">
+                <label for="old_password">New Email</label>
+                <input class="form-control" id="password1">
+              </div>
+            </div>
+            <div class"row align-items-center">
+              <button class="btn btn-primary" type="submit">Change Email</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+           
+          </form>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+
+
   </body>
   
   <script>
@@ -339,9 +457,9 @@
                                   }
                                   // Handle WebSocket message or other actions for removed nodes
                                   // ...
-                                  console.log(dataValue)
+                                  
     
-                                  if (parentDiv.getAttribute("id") == "block_countries")
+                                  if (parentDiv.getAttribute("id") == "able_countries")
                                   {
     
                                     block_countriesSocket.send(JSON.stringify({
@@ -350,8 +468,10 @@
                                       action: parentDiv.getAttribute("id"),
                                       country: dataValue,
                                     }));
+                                    console.log(parentDiv.getAttribute("id"))
+                                    
                                   }
-                                  if (parentDiv.getAttribute("id") == "block_region")
+                                  if (parentDiv.getAttribute("id") == "able_regions")
                                   {
     
                                     block_countriesSocket.send(JSON.stringify({
@@ -360,6 +480,7 @@
                                       action: parentDiv.getAttribute("id"),
                                       region: dataValue,
                                     }));
+                                    console.log(parentDiv.getAttribute("id"))
                                   }
                               }
                           }
@@ -391,13 +512,15 @@
 
 
 
-
+function region_country_selection_event() {
 
     document.querySelectorAll('.custom-select .option').forEach((option) => {
       option.addEventListener('click', function () {
         this.classList.toggle('selected');
       });
     });
+
+  }
     
     function moveSelectedOptions(fromSelectId, toSelectId) {
       const fromSelect = document.getElementById(fromSelectId);
@@ -411,6 +534,134 @@
         toSelect.appendChild(option);
       });
     }
+
+
+
+ 
+
+  region_country_selection_event();
+
+    // Ajax for searching countries
+    var currentSearch = "";  // To keep track of the current search input
+    var displayedOptions = [];
+
+    $("#search-input-countries").on("input", function() {
+      var userInput = $(this).val();
+      
+      if (userInput === currentSearch) {
+        return;  // If the search input didn't change, no need to update
+    }
+
+    currentSearch = userInput; 
+
+      // Make an AJAX request
+      $.ajax({
+        type: "GET",
+        url: "/room/search_countries/",
+        data: {
+          search: userInput
+      },  
+        dataType: "json",
+        success: function (data) {
+          let countries = data.data;
+          let countryOptions = "";
+
+          for (var i = 0; i < countries.length; i++) {
+              let country = countries[i];
+              countryOptions += `<div class="option" data-value="${country.name}">${country.name}</div>`;
+              displayedOptions.push(country.name);  // Update the displayed options
+          }
+
+          // Update the options only if there's a change in search input
+          if (userInput === currentSearch) {
+              $("#able_countries").empty().html(countryOptions);
+              region_country_selection_event();
+              
+              function moveSelectedOptions(fromSelectId, toSelectId) {
+                const fromSelect = document.getElementById(fromSelectId);
+                const toSelect = document.getElementById(toSelectId);
+              
+                const selectedOptions = Array.from(fromSelect.getElementsByClassName('selected'));
+              
+                selectedOptions.forEach((option) => {
+                  option.classList.remove('selected');
+                  fromSelect.removeChild(option);
+                  toSelect.appendChild(option);
+                });
+              }
+              
+          }
+      },
+        error: function (errors) {
+          console.log(errors.responseText);
+        },
+  
+      });
+
+  });
+
+
+  //Ajax for searching regions
+  var currentSearchRegions = "";  // To keep track of the current search input
+  var displayedOptionsRegions = [];
+
+
+  $("#search-input-regions").on("input", function() {
+    var userInput = $(this).val();
+    
+    if (userInput === currentSearchRegions) {
+      return;  // If the search input didn't change, no need to update
+  }
+
+  currentSearchRegions = userInput; 
+
+
+    // Make an AJAX request
+    $.ajax({
+      type: "GET",
+      url: "/room/search_regions/",
+      data: {
+        search: userInput
+    },
+      dataType: "json",
+      success: function (data) {
+        let regions = data.data;
+        let regionOptions = "";
+
+        for (var i = 0; i < regions.length; i++) {
+            let region = regions[i];
+            console.log(region)
+            regionOptions += `<div class="option" data-value="${region.display_name}">${region.display_name}</div>`;
+            displayedOptionsRegions.push(region.display_name);  // Update the displayed options
+        }
+
+        // Update the options only if there's a change in search input
+        if (userInput === currentSearchRegions) {
+            $("#able_regions").empty().html(regionOptions);
+
+            region_country_selection_event();
+              
+            function moveSelectedOptions(fromSelectId, toSelectId) {
+              const fromSelect = document.getElementById(fromSelectId);
+              const toSelect = document.getElementById(toSelectId);
+            
+              const selectedOptions = Array.from(fromSelect.getElementsByClassName('selected'));
+            
+              selectedOptions.forEach((option) => {
+                option.classList.remove('selected');
+                fromSelect.removeChild(option);
+                toSelect.appendChild(option);
+              });
+            }
+        }
+    },
+      error: function (errors) {
+        console.log(errors.responseText);
+      },
+
+    });
+
+});
 
 
 

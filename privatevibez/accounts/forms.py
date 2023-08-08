@@ -1,5 +1,6 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+
+from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from accounts.models import User_Data
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -26,5 +27,11 @@ class UserFnLnameForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name']
+        
+    
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    # Add any additional fields or customization here, if needed
+    pass
 
 
