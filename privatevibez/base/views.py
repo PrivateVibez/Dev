@@ -72,49 +72,34 @@ def home(request):
                         if user_status_data.Country is None:
                                 pass
                         
-                        rooms = Room_Data.objects.all()
+                        rooms = Room_Data.objects.filter( User__Status="Broadcaster")
                         rooms_list = []
-                        blocked_user_ids = [b.Reported.id for b in blocked_broadcasters]
-                        
+                        user_data = User_Data.objects.filter(User__in=[data.User for data in rooms])
+                       
                         for room in rooms:
-                                if room.User.id in blocked_user_ids:
-                                        pass
-                                else:
-                                                rooms_list.append({'User': room.User,
-                                                'Tab': room.Tab,
-                                                'Goal': room.Goal,
-                                                'Public_Chat': room.Public_Chat,
-                                                'Private_Chat': room.Private_Chat,
-                                                'Private_Chat_Price': room.Private_Chat_Price,
-                                                'Price_MMM_button': room.Price_MMM_button,
-                                                'Price_OH_button': room.Price_OH_button,
-                                                'Price_OHYes_button': room.Price_OHYes_button,
-                                                'Duration_MMM_button': room.Duration_MMM_button,
-                                                'Duration_OH_button': room.Duration_OH_button,
-                                                'Duration_OHYes_button': room.Duration_OHYes_button,
-                                                'Strength_MMM_button': room.Strength_MMM_button,
-                                                'Strength_OH_button': room.Strength_OH_button,
-                                                'Strength_OHYes_button': room.Strength_OHYes_button,
-                                                
-                                                })
-                                        
-                        if user_status == 'Staff':
-                                room_users_data = User_Data.objects.all()
-                           
-                        else:
-                                user_data        = User_Data.objects.get(User = request.user)
-                                pass
-                        
+                                is_blocked = False  # Initialize a flag to indicate if user's country is blocked
+                                for blocked_country in room.Blocked_Countries.all():
+                                        country = blocked_country.Country.code2
+                                        if country == user_status_data.Country:
+                                                is_blocked = True  # Set the flag if user's country is blocked
+                                                break  # No need to check other blocked countries once blocked is found
+                                if not is_blocked:
+                                        rooms_list.append(room)  # Append room if user's country is not blocked
+
+
+                        print('s')    
+                        print(rooms_list)
                 except(User_Status.DoesNotExist, User_Data.DoesNotExist):
                         if StaffManager.objects.filter(staff_id_id = request.user).exists():
                                 return redirect('staff/')
         else:
-                room_users_data = User_Data.objects.all()
+        #         room_users_data = User_Data.objects.all()
+                pass
                 
         
-        rooms_list = Room_Data.objects.filter( User__Status="Broadcaster")
+        # rooms_list = Room_Data.objects.filter( User__Status="Broadcaster")
 
-        room_users_data = User_Data.objects.filter( User__Status="Broadcaster")
+        # room_users_data = User_Data.objects.filter( User__Status="Broadcaster")
 
                 
 

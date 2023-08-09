@@ -77,57 +77,51 @@
                         <button class="main-nav-link active" id="streamer-tab" data-bs-toggle="tab" data-bs-target="#streamer-tab-pane" type="button" role="tab" aria-controls="streamer-tab-pane" aria-selected="true">FEATURED</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                    <button class="main-nav-link" id="female-tab" data-bs-toggle="tab" data-bs-target="#female-tab-pane" type="button" role="tab" aria-controls="female-tab-pane" aria-selected="false">FEMALE</button>
+                    <button class="main-nav-link broadcaster-nav" id="female-tab" data-bs-toggle="tab" data-bs-target="#female-tab-pane" type="button" data-tab="WOMEN" role="tab" aria-controls="female-tab-pane" aria-selected="false">FEMALE</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                    <button class="main-nav-link" id="male-tab" data-bs-toggle="tab" data-bs-target="#male-tab-pane" type="button" role="tab" aria-controls="male-tab-pane" aria-selected="false">MALE</button>
+                    <button class="main-nav-link broadcaster-nav" data-tab="MEN" id="male-tab" data-bs-toggle="tab" data-bs-target="#male-tab-pane" type="button" role="tab" aria-controls="male-tab-pane" aria-selected="false">MALE</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="main-nav-link" id="couples-tab" data-bs-toggle="tab" data-bs-target="#couples-tab-pane" type="button" role="tab" aria-controls="couples-tab-pane" aria-selected="false">COUPLES</button>
+                        <button class="main-nav-link broadcaster-nav" data-tab="COUPLES" id="couples-tab" data-bs-toggle="tab" data-bs-target="#couples-tab-pane" type="button" role="tab" aria-controls="couples-tab-pane" aria-selected="false">COUPLES</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="main-nav-link" id="trans-tab" data-bs-toggle="tab" data-bs-target="#trans-tab-pane" type="button" role="tab" aria-controls="trans-tab-pane" aria-selected="false">TRANS</button>
+                        <button class="main-nav-link broadcaster-nav" data-tab="TRANS" id="trans-tab" data-bs-toggle="tab" data-bs-target="#trans-tab-pane" type="button" role="tab" aria-controls="trans-tab-pane" aria-selected="false">TRANS</button>
                     </li> 
                 </ul>
                 </br>
                 </br>
                 <div class="tab- container" id="myTabContent">
-                    <div class="tab-pane fade show active row justify-content-center" id="streamer-tab-pane" role="tabpanel" aria-labelledby="streamer-tab" tabindex="0">
+                    <div class="tab-pane fade show active row justify-content-center" id="tab-pane" role="tabpanel" aria-labelledby="streamer-tab" tabindex="0">
                         {% for room in rooms_list %}
-                        
-                            {% include 'base/include/broadcaster_cards.html'%}   
-                     
+                       
+                        {% include "base/include/broadcaster_cards.html" %}
                         {% endfor %}
 
                     </div>
-                    <div class="tab-pane fade" id="female-tab-pane" role="tabpanel" aria-labelledby="female-tab" tabindex="0">                        
-                        {% for room in rooms %}
-                            {% if room.Tab == "WOMEN" %}
-                                {% include 'base/include/broadcaster_cards.html'%}      
-                            {% endif %}
-                        {% endfor %}
+
+                    <div class="tab-pane fade row justify-content-center" id="WOMEN-tab-pane" role="tabpanel" aria-labelledby="women-tab" tabindex="0">
+
+
                     </div>
-                    <div class="tab-pane fade" id="male-tab-pane" role="tabpanel" aria-labelledby="male-tab" tabindex="0">
-                        {% for room in rooms %}
-                            {% if room.Tab == "MEN" %}
-                                {% include 'base/include/broadcaster_cards.html'%}      
-                            {% endif %}
-                        {% endfor %}
+
+                    <div class="tab-pane fade row justify-content-center" id="MEN-tab-pane" role="tabpanel" aria-labelledby="men-tab" tabindex="0">
+
+
                     </div>
-                    <div class="tab-pane fade" id="couples-tab-pane" role="tabpanel" aria-labelledby="couples-tab" tabindex="0">
-                        {% for room in rooms %}
-                            {% if room.Tab == "COUPLES" %}
-                                {% include 'base/include/broadcaster_cards.html'%}      
-                            {% endif %}
-                        {% endfor %}
+
+                    <div class="tab-pane fade row justify-content-center" id="COUPLES-tab-pane" role="tabpanel" aria-labelledby="couples-tab" tabindex="0">
+
+
                     </div>
-                    <div class="tab-pane fade" id="trans-tab-pane" role="tabpanel" aria-labelledby="trans-tab" tabindex="0">
-                        {% for room in rooms %}
-                            {% if room.Tab == "TRANS" %}
-                                {% include 'base/include/broadcaster_cards.html'%}      
-                            {% endif %}
-                        {% endfor %}
+
+                    <div class="tab-pane fade row justify-content-center" id="TRANS-tab-pane" role="tabpanel" aria-labelledby="trans-tab" tabindex="0">
+
+
                     </div>
+
+
+
                 </div>
             </div>
         </div>
@@ -174,7 +168,7 @@
 
 
 <script>
-
+/*
     function get_IP_Address(ip){
         $.ajax({
             method:'POST',
@@ -208,7 +202,72 @@
     })
     .catch(error => {
         console.error("Error fetching data:", error);
-    }); 
+    });
+
+    */
+    
+    let broadcasterWrapper = document.getElementById("myTabContent");
+    let fetchbroadcasters = document.querySelectorAll('.broadcaster-nav');
+
+ 
+    fetchbroadcasters.forEach(fetchbroadcaster => {
+        fetchbroadcaster.addEventListener('click', function(){
+            var broadcaster = this.getAttribute('data-tab');
+            let wrapper = document.getElementById(`tab-pane`);
+            wrapper.innerHTML = '';
+            console.log(broadcaster);
+            $.ajax({
+                method:'GET',
+                url: "accounts/get_broadcaster/",
+                data: {
+                    'broadcaster': broadcaster,
+          
+                },
+                success:function(data)
+                {
+                    console.log(data)
+
+                    var userArray = JSON.parse(data.user_data);
+                    var roomArray = JSON.parse(data.room_data);
+
+                    for (var i = 0; i < userArray.length; i++) {
+                    var userData = userArray[i];
+                    var roomData = roomArray[i];
+                    console.log(roomData)
+                    
+                    
+                   
+                    let broadcaster_content = `
+                    <a href="/room/${roomData.User}" class="d-flex col-lg-3" style="text-decoration: none; margin: 0.1rem">
+                        <!-- Card -->
+                                <div class="card flex-grow-1">
+                                    <img src="${userData.Image}" class="img-fluid" style="width: 200px; height:150px; object-fit:cover" alt="">   
+                                    <div class="card-title p-5">
+                                        <span style="font-weight:700; font-size: 20px; color:#1db9a7;">
+                                            ${userData.Real_Name}
+                                        </span>
+                                        <span class="text-dark" style="float: right; font-weight:700;">200 <i class="icofont-eye-alt"></i></span>
+                                    </div>
+                                    <p class="p-2">Lorem ipsum dolor sit amet.</p>
+                    
+                                </div>
+                                
+                            
+                    </a>
+                    `;
+                    
+                    wrapper.insertAdjacentHTML('beforeend', broadcaster_content);
+
+
+                    }
+                },
+                errors:function(errors){
+                    console.log(errors.responseText)
+                }
+            })
+        })
+    })
+    
 </script>
 {% endblock %}
 

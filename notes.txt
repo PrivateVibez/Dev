@@ -36,3 +36,41 @@ STAFF
 GEOAPI
 acc: 898852
 key: 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
+
+
+
+
+
+#BLOCKED USER CODE 
+
+                        rooms_list = []
+                        blocked_user_ids = [b.Reported.id for b in blocked_broadcasters]
+                        
+                        for room in rooms:
+                                if room.User.id in blocked_user_ids:
+                                        pass
+                                else:
+                                                rooms_list.append({'User': room.User,
+                                                'Tab': room.Tab,
+                                                'Goal': room.Goal,
+                                                'Public_Chat': room.Public_Chat,
+                                                'Private_Chat': room.Private_Chat,
+                                                'Private_Chat_Price': room.Private_Chat_Price,
+                                                'Price_MMM_button': room.Price_MMM_button,
+                                                'Price_OH_button': room.Price_OH_button,
+                                                'Price_OHYes_button': room.Price_OHYes_button,
+                                                'Duration_MMM_button': room.Duration_MMM_button,
+                                                'Duration_OH_button': room.Duration_OH_button,
+                                                'Duration_OHYes_button': room.Duration_OHYes_button,
+                                                'Strength_MMM_button': room.Strength_MMM_button,
+                                                'Strength_OH_button': room.Strength_OH_button,
+                                                'Strength_OHYes_button': room.Strength_OHYes_button,
+                                                
+                                                })
+                                        
+                        if user_status == 'Staff':
+                                room_users_data = User_Data.objects.all()
+                           
+                        else:
+                                user_data        = User_Data.objects.get(User = request.user)
+                                pass
