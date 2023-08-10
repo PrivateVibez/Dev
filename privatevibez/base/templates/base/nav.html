@@ -166,6 +166,44 @@
 
 <!-- Login Modal-->
 
+<div class="modal fade" id="login_modal" tabindex="-1" role="dialog" aria-labelledby="login_modal_label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="login_modal_label">Login</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="/accounts/login/" method="POST">
+            {% csrf_token %}
+
+            {% block user_login_credentials %}
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="username">Email address or username</label>
+                    <input type="type" class="form-control" id="username" name="username" aria-describedby="emailHelp" placeholder="Enter email or Username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                </div>
+                <div class="small text-center">
+                    <p>New to PriveVibez? <a href='/accounts/signup/' type="button" class="btn btn-link" onclick='change_signUp()'> Sign up now.</a></p>
+                </div>
+            </div>
+            {% endblock user_login_credentials %}
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="btn_submit_store">LogIn</button>
+            </div>
+        </form>
+      </div>
+    </div>
+</div>
+
   <!-- Registration Modal-->
   {% block registration_modal %}
 <div class="modal fade" id="registration_modal" tabindex="-1" role="dialog" aria-labelledby="registration_modal_label" aria-hidden="true">

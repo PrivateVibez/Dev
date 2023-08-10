@@ -7,33 +7,16 @@
           {% csrf_token %}
 
          
-          
           <label for="set_vibez_per_spin">Set vibez per spin</label>
-          <input type="number" value="
-          {% if slot_machine_data %}
-          {{slot_machine_data.Slot_cost_per_spin}}
-                  {% endif %}
-          " class="" id="set_vibez_per_spin" name="Slot_cost_per_spin">
+          <input type="number" value="{% if slot_machine_data %}{{slot_machine_data.Slot_cost_per_spin}}{% endif %}" class="" id="set_vibez_per_spin" name="Slot_cost_per_spin">
 
-          <input type="number" class=" d-none" id="" value="
-          {% if slot_machine_data %}
-          {{room_data.User.id}}
-          {% endif %}
-          " name="User">
+          <input type="number" class=" d-none" id="" value="{% if slot_machine_data %}{{room_data.User.id}}{% endif %}" name="User">
           
           <label for="set_3_of_a_kind_prize">Set prize for 3 of a kind win</label>
-          <input type="text" value="
-          {% if slot_machine_data %}
-          {{slot_machine_data.Win_3_of_a_kind_prize}}
-          {% endif %}
-          " class="" id="set_3_of_a_kind_prize" name="Win_3_of_a_kind_prize">
+          <input type="text" value="{% if slot_machine_data %}{{slot_machine_data.Win_3_of_a_kind_prize}}{% endif %}" class="" id="set_3_of_a_kind_prize" name="Win_3_of_a_kind_prize">
           
           <label for="set_2_of_a_kind_prize">Set prize for 2 of a kind win</label>
-          <input type="text" value="
-          {% if slot_machine_data %}
-          {{slot_machine_data.Win_2_of_a_kind_prize}}
-          {% endif %}
-          " class="" id="set_2_of_a_kind_prize" name="Win_2_of_a_kind_prize">
+          <input type="text" value="{% if slot_machine_data %}{{slot_machine_data.Win_2_of_a_kind_prize}}{% endif %}" class="" id="set_2_of_a_kind_prize" name="Win_2_of_a_kind_prize">
 
 
 

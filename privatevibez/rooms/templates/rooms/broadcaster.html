@@ -130,6 +130,10 @@
                             </li>
 
                             <li class="nav-item">
+                              <a class="nav-link" id="pills-room-rules-tab" data-toggle="pill" href="#pills-room-rules" role="tab" aria-controls="pills-room-rules" aria-selected="true">Room Rules</a>
+                            </li>
+
+                            <li class="nav-item">
                               <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Slot Machine</a>
                             </li>
 
@@ -147,7 +151,7 @@
                               </li>
          
                           </ul>
-                          <div class="tab-content mt-5" id="pills-tabContent">
+                          <div class="tab-content" style="margin-top:50px" id="pills-tabContent">
 
 
                             <div class="tab-pane  show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
@@ -159,6 +163,24 @@
                                 <div class="container align-content-center gap-2">
                                 <img class="" id="lovense_qr_code_img"> 
                                 <button class="btn btn-primary d-flex m-auto p-3" onclick="generate_lovense_qrcode()" style="font-size:1.5rem;" id="lovense_qrcode_btn">Generate Qr Code</button>
+                                </div>
+
+                            </div>
+
+                            <div class="tab-pane fade" id="pills-room-rules" role="tabpanel" aria-labelledby="pills-room-rules">
+
+                                <div class="container-fluid align-content-center">
+                                    <div class="row gap-3">
+                                        <div class="col-12">
+                                            <h3>Room Rules</h3>
+                                        </div>
+                                        <div class="col-12">
+                                            <textarea class="form-control" id="room_rules" rows="10" style="resize:none;">{{room_data.Room_Rules}}</textarea>
+                                        </div>
+                                        <div class="col-12">
+                                            <button class="btn btn-primary" onclick="update_room_rules()">Update</button>
+                                        </div>
+                                    </div>
                                 </div>
 
                             </div>
@@ -247,6 +269,28 @@
                 const qrCodeImg = document.getElementById('lovense_qr_code_img');
                 qrCodeImg.src = data.data.qr;
                 qrCodeImg.style.display = 'block'; //
+            },
+            errors:function(errors){
+                console.log(errors.responseText)
+            }
+        })
+    }
+
+
+    function update_room_rules()
+    {
+        $.ajax({
+            method: 'POST',
+            url: "update_room_rules/",
+            data: {
+    
+                'room_rules':document.getElementById('room_rules').value,
+                'csrfmiddlewaretoken':"{{csrf_token}}",
+            },
+            success:function(data)
+            {
+                console.log(data.data)
+
             },
             errors:function(errors){
                 console.log(errors.responseText)

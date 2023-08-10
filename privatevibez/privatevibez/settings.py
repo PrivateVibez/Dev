@@ -99,7 +99,9 @@ TEMPLATES = [
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 
-SESSION_COOKIE_AGE = 3600
+SESSION_COOKIE_AGE = 30 * 24 * 60 * 60
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_SAVE_EVERY_REQUEST = True
 
 WSGI_APPLICATION = 'privatevibez.wsgi.application'
 ASGI_APPLICATION = 'privatevibez.asgi.application'

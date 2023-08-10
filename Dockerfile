@@ -23,4 +23,4 @@ ENV PATH="/py/bin:$PATH"
 RUN addgroup -g 1001 -S 1000 && adduser -u 1001 -S 1000 -G 1000
 
 
-CMD ["python", "/usr/bin/python3.py"]
+CMD ["python","-u", "/usr/bin/python3.py"]

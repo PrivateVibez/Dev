@@ -53,7 +53,7 @@ class Room_Data(models.Model):
     Is_Active             = models.BooleanField(default=False)
     Blocked_Countries       = models.ManyToManyField(Blocked_Countries, related_name='block_countries', blank=True)
     Blocked_Regions       = models.ManyToManyField(Blocked_Regions, related_name='block_regions', blank=True)
-    # Blocked_IP            = models.ManyToManyField(Block_Ip_Address, blank=True)
+    Room_Rules            = models.TextField(null=True,blank=True)
     Timestamp             = models.DateTimeField(auto_now_add=True)     
     
     def __str__(self):

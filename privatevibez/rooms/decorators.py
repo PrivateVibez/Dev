@@ -37,7 +37,7 @@ def check_user_blocked_ip(redirect_url='/'):
         except (User.DoesNotExist, Room_Data.DoesNotExist):
                 return redirect(redirect_url)
       else:
-        return redirect('/accounts/login')
+        return view_func(request, *args, **kwargs)
       
       
     return check_user

@@ -93,7 +93,7 @@
                 </br>
                 <div class="tab- container" id="myTabContent">
                     <div class="tab-pane fade show active row justify-content-center" id="tab-pane" role="tabpanel" aria-labelledby="streamer-tab" tabindex="0">
-                        {% for room in rooms_list %}
+                        {% for room in combined_fields_list %}
                        
                         {% include "base/include/broadcaster_cards.html" %}
                         {% endfor %}
@@ -128,43 +128,7 @@
     </div>
 </section>
 
-<div class="modal fade" id="login_modal" tabindex="-1" role="dialog" aria-labelledby="login_modal_label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="login_modal_label">Login</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <form action="/accounts/login/" method="POST">
-            {% csrf_token %}
 
-            {% block user_login_credentials %}
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="username">Email address or username</label>
-                    <input type="type" class="form-control" id="username" name="username" aria-describedby="emailHelp" placeholder="Enter email or Username">
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
-                </div>
-                <div class="small text-center">
-                    <p>New to PriveVibez? <a href='/accounts/signup/' type="button" class="btn btn-link" onclick='change_signUp()'> Sign up now.</a></p>
-                </div>
-            </div>
-            {% endblock user_login_credentials %}
-
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary" id="btn_submit_store">LogIn</button>
-            </div>
-        </form>
-      </div>
-    </div>
-</div>
 
 
 <script>
@@ -233,7 +197,7 @@
                     for (var i = 0; i < userArray.length; i++) {
                     var userData = userArray[i];
                     var roomData = roomArray[i];
-                    console.log(roomData)
+                    console.log(roomData.Blocked_Countries)
                     
                     
                    

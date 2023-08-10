@@ -10,7 +10,7 @@ from django.contrib import messages
 from .models import *
 from django.utils.safestring import mark_safe
 import json
-from .forms import Slot_MachineForm, Fav_vibezForm
+from .forms import Slot_MachineForm, Fav_vibezForm, BioForm
 from django.http import HttpResponse as httpresponse
 import requests
 from .decorators import check_user_blocked_ip
@@ -153,7 +153,8 @@ def Room(request, Broadcaster):
                 messages.error(request, 'User does not exist')
     
     else:
-        pass
+        room_data = Room_Data.objects.get(User = User.objects.get(username = Broadcaster))
+
     return render(request, "rooms/home.html", locals())
 
 
@@ -346,15 +347,30 @@ def block_countries(request):
 @csrf_exempt
 def set_slot_machine(request):
     
-    
     if request.method == "POST":
         form = Slot_MachineForm(request.POST)
         if form.is_valid():
-            form.save()
+            try:
+                existing_instance = Slot_Machine.objects.get(
+                    User=request.user
+                )
+                
+                print("existing", flush=True)
+                existing_instance.Slot_cost_per_spin = form.cleaned_data['Slot_cost_per_spin']
+                existing_instance.Win_3_of_a_kind_prize = form.cleaned_data['Win_3_of_a_kind_prize']
+                existing_instance.Win_2_of_a_kind_prize = form.cleaned_data['Win_2_of_a_kind_prize']
+                existing_instance.save()
+                # A duplicate instance already exists
+                # Handle the case where a duplicate is found
+            except Slot_Machine.DoesNotExist:
+                # No duplicate instance found, proceed to save
+                instance = form.save(commit=False)
+                instance.User = request.user
+                instance.save()
         else:
-            print(form.errors)
-            
-            return JsonResponse("Saved", safe=False)
+            print(form.errors, flush=True)
+
+        return redirect('/')
 
 
 @csrf_exempt
@@ -671,4 +687,60 @@ def search_regions(request):
         else:
             return JsonResponse({'data':"none"}, safe=False)
 
+
+def update_room_rules(request):
+    
+    
+    if request.method == 'POST':
+        
+        room_id = request.user
+        room_instance = Room_Data.objects.get(User=room_id)
+        
+        room_instance.Room_Rules = request.POST.get('room_rules')
+        room_instance.save()
+        
+        return JsonResponse({'data':"success"}, safe=False)
+    
+    
+    
+def submit_bio(request):
+    
+    if request.method == 'POST':
+        form = BioForm(request.POST,request.FILES)
+        
+        if form.is_valid():
+            user = request.user
+            goal_vibez = form.cleaned_data['goal_vibez']
+            username = form.cleaned_data['username']
+            real_name = form.cleaned_data['real_name']
+            I_am = form.cleaned_data['I_am']
+            Interested_In = form.cleaned_data['Interested_In']
+            Location = form.cleaned_data['Location']
+            Language = form.cleaned_data['Language']
+            Body_Type = form.cleaned_data['Body_Type']
+            profile_pic = form.cleaned_data['profile_pic']
+            
+            room_data = Room_Data.objects.get(User=user)
+            
+            room_data.Goal = goal_vibez
+            room_data.save()
+            
+            user_data = User_Data.objects.get(User=user)
+            user.username = username
+            user.save()
+            
+            user_data.Real_Name = real_name
+            user_data.I_am = I_am
+            user_data.Interested_In = Interested_In
+            user_data.Location = Location
+            user_data.Language = Language
+            user_data.Body_Type = Body_Type
+            
+            if profile_pic is not None:
+                user_data.Profile_Pic = profile_pic
+                user_data.save()
+        else:
+            print(form.errors,flush=True)
+        print(form,flush=True)
+        return JsonResponse({'data':"success"}, safe=False)
 

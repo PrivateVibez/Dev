@@ -222,62 +222,77 @@ def change_password(request):
         form = CustomPasswordChangeForm(request.user)
     return render(request, 'change_password.html', {'form': form})
 
+def room_data_func(broadcaster_gender,user_country,user_region):
+    
+    room_data = Room_Data.objects.filter(User__Status="Broadcaster",Tab=broadcaster_gender)
+    room_list = []
+    for room in room_data:
+        
+        country_blocked = False
+        region_blocked = False
+        for blocked_country in room.Blocked_Countries.all():
+            if blocked_country.Country.code2 == user_country:
+                country_blocked = True
+                break  # If the user's country is blocked, no need to check other blocked countries
+        
+        for blocked_region in room.Blocked_Regions.all():
+            if blocked_region.Region.display_name == user_region:
+                region_blocked = True
+                break
+        if not country_blocked and not region_blocked:
+            room_list.append(room.User.id)
+
+                
+
+    
+    # Retrieve User_Data objects based on the User objects associated with the retrieved Room_Data
+    user_data = User_Data.objects.filter(User__in=room_list)
+    user_instances = User.objects.filter(user_data__in=user_data)
+    room_data = Room_Data.objects.filter(Tab=broadcaster_gender,User__in=user_instances)    
+    
+    
+    room_data_serializer = Room_DataSerializer(room_data, many=True)
+    user_data_serializer = User_DataSerializer(user_data, many=True)
+    user_serializer = UserSerializer(user_instances, many=True)
+    
+    serialized_user_data = JSONRenderer().render(user_data_serializer.data)
+    serialized_room_data = JSONRenderer().render(room_data_serializer.data)
+    serialized_user_instance = JSONRenderer().render(user_serializer.data)
+    
+    # If needed, you can decode the JSON bytes to a string
+    serialized_user_data_str = serialized_user_data.decode('utf-8')
+    serialized_room_data_str = serialized_room_data.decode('utf-8')
+    serialized_user_instance_str = serialized_user_data.decode('utf-8')
+    # Now you can include the serialized data in your AJAX response
+    
+    
+    response_data = {
+        'user_data': serialized_user_data_str,
+        'room_data': serialized_room_data_str,
+        'user_instance_data':serialized_user_instance_str
+        # Other response data if needed
+    }
+
+    return response_data
 
 def get_broadcaster(request):
         
         if request.method == 'GET':
             
             broadcaster_gender = request.GET.get('broadcaster')
-            
-            if broadcaster_gender is not None and broadcaster_gender != "FEATURED":
-                room_data = Room_Data.objects.filter(Tab=broadcaster_gender)
-                print(broadcaster_gender)
-                print('sassa')
-                # Retrieve User_Data objects based on the User objects associated with the retrieved Room_Data
-                user_data = User_Data.objects.filter(User__in=[data.User for data in room_data])
-                user_instances = User.objects.filter(user_data__in=user_data)
-            
-                room_data_serializer = Room_DataSerializer(room_data, many=True)
-                user_data_serializer = User_DataSerializer(user_data, many=True)
-                user_serializer = UserSerializer(user_instances, many=True)
-                
-                serialized_user_data = JSONRenderer().render(user_data_serializer.data)
-                serialized_room_data = JSONRenderer().render(room_data_serializer.data)
-                serialized_user_instance = JSONRenderer().render(user_serializer.data)
-                
-                # If needed, you can decode the JSON bytes to a string
-                serialized_user_data_str = serialized_user_data.decode('utf-8')
-                serialized_room_data_str = serialized_room_data.decode('utf-8')
-                serialized_user_instance_str = serialized_user_data.decode('utf-8')
-                # Now you can include the serialized data in your AJAX response
-                
-                
-                response_data = {
-                    'user_data': serialized_user_data_str,
-                    'room_data': serialized_room_data_str,
-                    'user_instance_data':serialized_user_instance_str
-                    # Other response data if needed
-                }
-
-                return JsonResponse(response_data)
+            if request.user.is_authenticated:
+                if broadcaster_gender is not None and broadcaster_gender != "FEATURED":
+                    user = request.user
+                    user_country = user.Country
+                    user_region = user.Region
+                    response_data = room_data_func(broadcaster_gender,user_country,user_region)
+                    
+                    return JsonResponse(response_data, safe=False)
             else:
-                
-                room_data = Room_Data.objects.all()
-                user_data = User_Data.objects.all()
-                
-                room_data_serializer = Room_DataSerializer(room_data, many=True)
-                user_data_serializer = User_DataSerializer(user_data, many=True)
-                
-                
-                serialized_user_data = JSONRenderer().render(user_data_serializer.data)
-                serialized_room_data = JSONRenderer().render(room_data_serializer.data)
-
-                serialized_user_data_str = serialized_user_data.decode('utf-8')
-                serialized_room_data_str = serialized_room_data.decode('utf-8')
-                
-                response_data = {
-                    'user_data': serialized_user_data_str,
-                    'room_data': serialized_room_data_str,
-                    # Other response data if needed
-                }
-                return JsonResponse(response_data)
+                if request.user.is_anonymous:
+                        guest_ip = request.session.get('ip_address')
+                        guest_country = request.session.get('guest_country')
+                        guest_region = request.session.get('guest_region')
+                        
+                        response_data = room_data_func(broadcaster_gender,guest_country,guest_region)
+                        return JsonResponse(response_data, safe=False)

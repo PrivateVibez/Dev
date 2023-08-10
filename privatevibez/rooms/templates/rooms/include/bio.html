@@ -3,11 +3,12 @@
   <div class="col">
 
     <div class="col-2">
-        <span class="display-6">
-          Profile Picture
-        </span>
-        <div id="profile_wrapper" class="d-flex">
+        <div id="profile_wrapper" class="d-flex my-2">
+          {% if broadcaster_data.Image %}
+          <img src="{{broadcaster_data.Image.url}}" style="height:220px; width: 250px" alt="Profile Picture" class="img-fluid rounded-circle">
+          {% endif %}
         </div>
+
         <input class="form-control" id="Profile_Pic" type="file">
     </div>
 
@@ -20,7 +21,7 @@
       <span class="h-3">
         Goal vibez:
       </span>
-      <input class="">
+      <input placeholder="{{room_data.Goal}}" name="goal_vibez" value="{{room_data.Goal}}" class="">
     </div>
 
 
@@ -31,7 +32,72 @@
       <span class="h-5">
         Username
       </span>
-      <input class="">
+      <input type="text" placeholder="{{broadcaster_user.username}}" id="re_username" name="re_username" value="{{broadcaster_user.username}}" class="">
+    </div>
+ 
+  <!-- change real name -->
+
+    <div class="col-2">
+      <span class="h-5">
+        Real Name
+      </span>
+      <input placeholder="{{broadcaster_data.Real_Name}}" value="{{broadcaster_data.Real_Name}}" name="real_name" class="">
+    </div>
+
+
+  <!-- change I am -->
+
+    <div class="col-2 d-flex gap-3 my-2">
+      <label for="I_am">I am</label>
+      <select name="I_am" class="h-5">
+        <option class="" {% if room_data.Tab == "WOMEN"  %}selected {% else %}{% endif %} value="WOMEN">Woman</option>
+        <option class=""{% if room_data.Tab == "MEN"  %}selected {% else %}{% endif %} value="MEN">Men</option>
+        <option class="" {% if room_data.Tab == "COUPLES"  %}selected {% else %}{% endif %} value="COUPLES">Couples</option>
+        <option class="" {% if room_data.Tab == "TRANS"  %}selected {% else %}{% endif %} value="TRANS">Trans</option>
+      </select>
+
+    </div>
+  <!-- change Interested in -->
+
+    <div class="col-2">
+      <label for="interested_in">Interested in</label>
+      <select name="Interested_In" class="h-5">
+        <option class="" {% if broadcaster_data.Interested_In == "WOMEN"  %}selected {% else %}{% endif %} value="WOMEN">Woman</option>
+        <option class="" {% if broadcaster_data.Interested_In == "MEN"  %}selected {% else %}{% endif %} value value="MEN">Men</option>
+        <option class="" {% if broadcaster_data.Interested_In == "COUPLES"  %}selected {% else %}{% endif %} value value="COUPLES">Couples</option>
+        <option class="" {% if broadcaster_data.Interested_In == "TRANS"  %}selected {% else %}{% endif %} value value="TRANS">Trans</option>
+      </select>
+
+    </div>
+
+
+  <!-- change Location -->
+
+    <div class="col-2">
+      <span class="h-5">
+        Location
+      </span>
+      <input name="Location" value="{{broadcaster_data.Location}}" placeholder="{{broadcaster_data.Location}}" id="Location" class="">
+
+    </div>
+ 
+  <!-- change Language -->
+
+    <div class="col-2">
+      <span class="h-5">
+        Language
+      </span>
+      <input name="Language" value="{{broadcaster_data.Language}}" placeholder="{{broadcaster_data.Language}}" id="Language" class="">
+
+    </div>
+  <!-- change Body type -->
+
+    <div class="col-2">
+      <span class="h-5">
+        Body Type
+      </span>
+      <input name="Body_Type" value="{{broadcaster_data.Body_Type}}" placeholder="{{broadcaster_data.Body_Type}}" id="Body_Type" class="">
+
     </div>
  
 
@@ -41,7 +107,7 @@
 
     <div class="col">
       <div class="col-2 align-content-center">
-        <button type="submit" style="font-size:1.5rem;" class="btn h-2 btn-primary w-50 mx-auto my-2 p-3">Set</button>
+        <button type="button" id="submit_bio_form" style="font-size:1.5rem;" class="btn h-2 btn-primary w-50 mx-auto my-2 p-3">Set</button>
       </div>
     </div>
 
@@ -91,5 +157,96 @@
     imageInput.addEventListener('change', function () {
       readImage(this);
     });
+
+
+    $('#submit_bio_form').click(function(event) {
+  
+      
+      if (cropper) { // Check if cropper is initialized
+        const croppedCanvas = cropper.getCroppedCanvas();
+        // Rest of your code
+     
+      croppedCanvas.toBlob(function (blob) {
+        // Create a new FormData object
+        const formData = new FormData();
+  
+        // Append the cropped image Blob to the FormData object
+      var IamOptionValue = $('select[name="I_am"]').val();
+      var InterestedOptionValue = $('select[name="Interested_In"]').val();
+      var username = document.getElementById("re_username").value;
+      formData.append('cropped_image', blob, 'cropped_image.jpg');
+      formData.append('goal_vibez', $('input[name="goal_vibez"]').val());
+      formData.append('username',username);
+      formData.append('real_name', $('input[name="real_name"]').val());
+      formData.append('I_am', IamOptionValue);
+      formData.append('Interested_In',InterestedOptionValue);
+      formData.append('Location', $('input[name="Location"]').val());
+      formData.append('Language', $('input[name="Language"]').val());
+      formData.append('Body_Type', $('input[name="Body_Type"]').val());
+      formData.append('csrfmiddlewaretoken', "{{csrf_token}}");
+      
+      // Make AJAX request
+      $.ajax({
+          type: 'POST',
+          url: 'room/submit-bio',  // Replace with your actual URL
+          data: formData,
+          processData: false,  // Prevent jQuery from processing the data
+          contentType: false,  // Let the server set the content type
+          success: function(response) {
+              // Handle success
+              console.log('Form submitted successfully');
+              console.log(response);  // Log the server response
+          },
+          error: function(xhr, textStatus, errorThrown) {
+              // Handle error
+              console.error('Form submission failed');
+              console.error(xhr.responseText);
+          }
+      });
+    },  'image/jpeg' );
+
+  }
+
+  else{
+    const formData = new FormData();
+  
+    // Append the cropped image Blob to the FormData object
+  var IamOptionValue = $('select[name="I_am"]').val();
+  var InterestedOptionValue = $('select[name="Interested_In"]').val();
+  var username = document.getElementById("re_username").value;
+  formData.append('goal_vibez', $('input[name="goal_vibez"]').val());
+  formData.append('username', username);
+  formData.append('real_name', $('input[name="real_name"]').val());
+  formData.append('I_am', IamOptionValue);
+  formData.append('Interested_In',InterestedOptionValue);
+  formData.append('Location', $('input[name="Location"]').val());
+  formData.append('Language', $('input[name="Language"]').val());
+  formData.append('Body_Type', $('input[name="Body_Type"]').val());
+  formData.append('csrfmiddlewaretoken', "{{csrf_token}}");
+  
+  // Make AJAX request
+  $.ajax({
+      type: 'POST',
+      url: 'submit_bio/',  // Replace with your actual URL
+      data: formData,
+      processData: false,  // Prevent jQuery from processing the data
+      contentType: false,  // Let the server set the content type
+      success: function(response) {
+          // Handle success
+          console.log('Form submitted successfully');
+          console.log(response);  // Log the server response
+      },
+      error: function(xhr, textStatus, errorThrown) {
+          // Handle error
+          console.error('Form submission failed');
+          console.error(xhr.responseText);
+      }
+  });
+  }
+
+    });
+
+
+
   
 </script>

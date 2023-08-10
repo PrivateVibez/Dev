@@ -497,7 +497,7 @@
                 <div class="tab-pane fade show active" id="nav-bio" role="tabpanel" aria-labelledby="nav-bio-tab">
                     <div class="msg-list-fvm message-list" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
 
-                        <h2>{{broadcaster_data.User}}'s Bio</h2>
+                        <h2>{{room_data.User}}'s Bio</h2>
 
                         <table id="bio">
                             <tr>
@@ -537,7 +537,7 @@
                 <div class="tab-pane fade" id="nav-room-rules" role="tabpanel" aria-labelledby="nav-room-rules-tab">
                     <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
                         <h2>{{room_data.User}}'s Room Rules</h2>
-                        <p>{{room_Data.Room_rules}}</p>
+                        <p>{{ room_data.Room_Rules|linebreaks }}</p>
                     </div>
                 </div>
 
