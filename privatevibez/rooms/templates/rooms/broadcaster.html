@@ -210,6 +210,9 @@
         </div>
 
 </div>
+<div id="messages" class="alert">
+
+</div>
 <div ts="Zv" data-listener-count-mousedown="1" data-listener-count-touchmove="1" class="resizeHandle" style="height: 425.312px; width: 8px; position: absolute; overflow: hidden; -webkit-tap-highlight-color: transparent; display: inline-block; box-sizing: border-box; cursor: ew-resize;"></div>
 
 <link rel="stylesheet" href="{% static 'css/multi.css' %}">
@@ -238,6 +241,11 @@
         let visitors_list = document.getElementById('visitor_list')
         const data = JSON.parse(e.data);
         const visitors = data.user_visitors;
+        const item_availed = data.item_availed;
+        console.log(item_availed)
+        if (visitors)
+        {
+            
         const objectValuesArray = Object.values(visitors);
         console.log(objectValuesArray.length)
         console.log(visitors)
@@ -248,10 +256,63 @@
         {
             let visitor = objectValuesArray[i]
             let visitor_list_item = document.createElement('li')
-            visitor_list_item.classList.add('list-group-item')
             visitor_list_item.textContent = visitor.username
+            visitor_list_item.classList.add('list-group-item')
+            visitor_list_item.style.width = 'max-content'
+            visitor_list_item.style.border = 'transparent'
+            visitor_list_item.style.background ='transparent'
             visitors_list.appendChild(visitor_list_item)
         }
+    }
+
+
+        if(item_availed)
+        {
+            let user = "";
+            let wrapper = document.createElement('div');
+            Object.keys(item_availed).forEach(function(key) {
+                var value = item_availed[key];
+                console.log(key + ": " + value);
+                
+                let item_list_item = document.createElement('span')
+                let user = document.createElement('span');
+                let price = document.createElement('span');
+                wrapper.classList.add('row');
+                user.classList.add('list-group-item')
+                item_list_item.classList.add('list-group-item');
+                price.classList.add('list-group-item');
+            
+                if (key === "user") {
+
+                    user.textContent = value;
+                    user.style.color = "purple";
+                    user.style.width = "max-content";
+                    user.style.border = "transparent";
+                    user.style.background = "transparent";
+                    wrapper.appendChild(user);
+            
+                } else if (key === "item") {
+                    item_list_item.textContent = value;
+                    item_list_item.style.color = "purple";
+                    item_list_item.style.width = "max-content";
+                    item_list_item.style.border = "transparent";
+                    item_list_item.style.background = "transparent";
+                    wrapper.appendChild(item_list_item);
+                }
+                else if (key === "price") {
+                    price.textContent = value + " vibez!";
+                    price.style.color = "purple";
+                    price.style.width = "max-content";
+                    price.style.border = "transparent";
+                    price.style.background = "transparent";
+                    wrapper.appendChild(price);
+                }
+            });
+            visitors_list.appendChild(wrapper);
+
+            }
+
+
     };
 
 
@@ -290,6 +351,11 @@
             success:function(data)
             {
                 console.log(data.data)
+                var message = document.getElementById('messages')
+                var status = document.createElement('span')
+                status.classList.add('alert-success')
+                message.appendChild(status)
+                
 
             },
             errors:function(errors){

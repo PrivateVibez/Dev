@@ -196,6 +196,12 @@
               // Handle success
               console.log('Form submitted successfully');
               console.log(response);  // Log the server response
+
+              var message = document.getElementById('messages');
+              var status = document.createElement('span');
+              message.classList.add('alert-success');
+              status.textContent = "successfully saved!"
+              message.appendChild(status);  
           },
           error: function(xhr, textStatus, errorThrown) {
               // Handle error

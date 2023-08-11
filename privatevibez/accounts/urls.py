@@ -16,6 +16,10 @@ urlpatterns = [
     path('getTotalReports/', views.getTotalReports, name="getTotalReports"),
     path('get_broadcaster/', views.get_broadcaster, name="get_broadcaster"),
 
-
+     #update password
+     path('changepassword/', views.changepassword, name="changepassword"),
+     
+         #  updating email
+     path('change_email/', views.change_email, name="change_email"),
 
 ]

@@ -42,4 +42,6 @@ class BioForm(forms.Form):
     profile_pic = forms.ImageField(label='Profile Pic',required=False)
     
     
+
+    
     

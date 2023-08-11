@@ -29,7 +29,14 @@ class UserVisitorsConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
     
-    
+    async def show_itemAvailed(self, event):
+        data = event['data']
+        print(data,flush=True)
+        modified_data = {
+        "item_availed": data
+            }
+        await self.send(text_data=json.dumps(modified_data))
+        
     def add_visitor_to_room(self,room,visitor):
         room = room
         room_instance = room.Visitors.add(visitor)
@@ -74,6 +81,8 @@ class UserVisitorsConsumer(AsyncWebsocketConsumer):
         if action == 'retrieve_visitors':
             await self.broadcast_user_visitors()
 
+        if action == 'bought_item':
+            await self.show_bought_item()
         user_id = data.get('user_id', None)
         is_leaving = data.get('leaving', False)
         

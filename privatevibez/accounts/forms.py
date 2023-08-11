@@ -35,3 +35,15 @@ class CustomPasswordChangeForm(PasswordChangeForm):
     pass
 
 
+
+class ChangePasswordForm(forms.Form):
+  
+  password1 = forms.CharField(label='Password',required=True)
+  password2 = forms.CharField(label='Password',required=True)
+    
+
+
+class ChangeEmailForm(forms.Form):
+    
+    email = forms.EmailField(label='Email',required=True)
+

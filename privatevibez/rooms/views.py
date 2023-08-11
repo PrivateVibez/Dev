@@ -53,7 +53,7 @@ def Room(request, Broadcaster):
 
     if request.user.is_authenticated:
              
-            user_data        = User_Data.objects.get(User =  request.user)
+            user_datas        = User_Data.objects.get(User =  request.user)
             user_status_data = User.objects.get(id = request.user.id)
             user_status      = user_status_data.Status
             broadcaster_user     = User.objects.get(username = Broadcaster)
@@ -126,6 +126,9 @@ def Room(request, Broadcaster):
                         
                                 
                 elif user.Status == "Broadcaster":
+                    
+                    availed_items = Item_Availed.objects.filter(Room = room_data).all()
+                    
                     countries = Country.objects.all()
                     room_data_blocked_countries = room_data.Blocked_Countries.all()
 
@@ -360,6 +363,7 @@ def set_slot_machine(request):
                 existing_instance.Win_3_of_a_kind_prize = form.cleaned_data['Win_3_of_a_kind_prize']
                 existing_instance.Win_2_of_a_kind_prize = form.cleaned_data['Win_2_of_a_kind_prize']
                 existing_instance.save()
+                messages.success(request, "Slot Machine saved successfully")
                 # A duplicate instance already exists
                 # Handle the case where a duplicate is found
             except Slot_Machine.DoesNotExist:
@@ -367,10 +371,12 @@ def set_slot_machine(request):
                 instance = form.save(commit=False)
                 instance.User = request.user
                 instance.save()
+                messages.success(request, "Slot Machine saved successfully")
         else:
+            messages.error(request, "Something went wrong")
             print(form.errors, flush=True)
 
-        return redirect('/')
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
 @csrf_exempt
@@ -546,6 +552,31 @@ def trigger_toy(broadcaster_id,price,user_id,feature,strength,timesec):
     
     return JsonResponse({"data": str(response.status_code)}, status=500) 
 
+
+def availed_item(user,room_id,item,price):
+    user_data = User_Data.objects.get(User=user)
+    room = Room_Data.objects.get(User_id=room_id)
+    item = Item_Availed.objects.create(Room=room,User=user,Item=item, Cost=price)
+    user_data.Availed.add(item)
+    # Get the channel layer
+    channel_layer = get_channel_layer()
+    channel_name = "broadcaster_visitor_" + str(room_id)
+    print(channel_name,flush=True)
+    
+    # Prepare data to send
+    data = {
+        "user": user.username,
+        "item": item.Item,
+        "price": item.Cost  # Changed "Cost" to "Price"
+    }
+    
+    # Send the data to the WebSocket consumer
+    async_to_sync(channel_layer.group_send)(
+        channel_name,
+        {"type": "show.itemAvailed", "data": data}
+    )
+    
+
 def fav_btn_trigger_toy(request):
     
     if request.method == "POST":
@@ -555,7 +586,10 @@ def fav_btn_trigger_toy(request):
         button_type = request.POST.get('button_type')
         
         if str(button_type) == "mmm":
-          
+            
+            availed_item(user_id,room_data.User_id,"MMM",room_data.Price_MMM_button)
+            
+            
             broadcaster_id = room_data.User_id
             price = room_data.Price_MMM_button
             user_id = user_id.id
@@ -568,6 +602,8 @@ def fav_btn_trigger_toy(request):
              
         if str(button_type) == "oh":
             
+            availed_item(user_id,room_data.User_id,"OH",room_data.Price_OH_button)
+            
             broadcaster_id = room_data.User_id
             price = room_data.Price_OH_button
             user_id = user_id.id
@@ -579,6 +615,9 @@ def fav_btn_trigger_toy(request):
             trigger_toy(broadcaster_id, price, user_id, feature, strength, timesec)
             
         if str(button_type) == "ohyes":
+            
+            
+            availed_item(user_id,room_data.User_id,"OHYes",room_data.Price_OHYes_button)
             
             broadcaster_id = room_data.User_id
             price = room_data.Price_OHYes_button
@@ -695,11 +734,15 @@ def update_room_rules(request):
         
         room_id = request.user
         room_instance = Room_Data.objects.get(User=room_id)
-        
-        room_instance.Room_Rules = request.POST.get('room_rules')
-        room_instance.save()
-        
-        return JsonResponse({'data':"success"}, safe=False)
+        rules = request.POST.get('room_rules')
+        if rules is not None:
+            room_instance.Room_Rules = request.POST.get('room_rules')
+            room_instance.save()
+            messages.success(request,"Room rules updated")
+            return JsonResponse({"data":"Room rules updated"},safe=False)
+        else:
+            messages.error(request,"Room rules is empty")
+            return JsonResponse({"data":"Room rules updated"}, safe=False)
     
     
     
@@ -743,4 +786,7 @@ def submit_bio(request):
             print(form.errors,flush=True)
         print(form,flush=True)
         return JsonResponse({'data':"success"}, safe=False)
+    
+    
+    
 

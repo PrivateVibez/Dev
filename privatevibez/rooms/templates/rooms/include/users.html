@@ -1,8 +1,13 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
-            <div id="visitor_list" class="row">
-       
+            <div id="visitor_list" class="col">
+            {% for items in availed_items %}
+                <span style="color:purple; display:block; width:max-content; border:transparent; background:transparent;">
+                    {{items.User}} {{items.Item}} {{items.Cost}} vibez
+                </span>
+            
+                {% endfor %}
             </div>
         </div>
     </div>

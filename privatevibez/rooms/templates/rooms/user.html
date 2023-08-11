@@ -153,8 +153,8 @@
 
                                 <div class="list_tip_btn" Style="background-color:black;border:7px solid black; border-radius:6px;">
 
-                                    <div class="tip_btn" style="background-color:lightcoral; {% if user_data == None and user_data.Vibez < 5 %} cursor:not-allowed {% endif %}" 
-                                    {% if user_data != None and user_data.Vibez > room_data.Price_MMM_button %} onclick="confirm_send(number = '{{room_data.Price_MMM_button}}', btn='mmm')" 
+                                    <div class="tip_btn" style="background-color:lightcoral; {% if user_data == None and user_data.Vibez < 10 %}cursor:not-allowed {% endif %}"  
+                                    {% if user_data != None or user_data.Vibez > room_data.Price_MMM_button %} onclick="confirm_send(number = '{{room_data.Price_MMM_button}}', btn='mmm')" 
                                     {% endif %}>
 
                                         <div>MMM</div>
@@ -165,8 +165,8 @@
                                     </div>
 
                                     <div class="tip_btn" style="background-color:lightsalmon; {% if user_data == None or user_data.Vibez < room_data.Price_OH_button %}cursor:not-allowed {% endif %}" 
-                                    {% if user_data != None or user_data.Vibez > room_Data.Price_OH_button %} 
-                                    onclick="confirm_send(number = '{{room_Data.Price_OH_button}}', btn='oh')" {% endif %}>
+                                    {% if user_data != None or user_data.Vibez > room_data.Price_OH_button %} 
+                                    onclick="confirm_send(number = '{{room_data.Price_OH_button}}', btn='oh')" {% endif %}>
 
                                         <div>OH</div>
 
@@ -175,7 +175,7 @@
                                         <p style="font-size:10px;">{{room_data.Price_OH_button}} Vibez</p>
                                     </div>
 
-                                    <div class="tip_btn" style="background-color: lightgreen;; 
+                                    <div class="tip_btn" style="background-color: lightgreen;
                                     {% if user_data == None or user_data.Vibez < room_data.Price_OHYes_button %}
                                     cursor:not-allowed {% endif %}"  
                                     {% if user_data != None and user_data.Vibez > room_data.Price_OHYes_button %} 

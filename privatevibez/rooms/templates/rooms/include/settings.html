@@ -314,17 +314,17 @@
         </button>
       </div>
       <div class="modal-body">
-        <form method="post">
+        <form method="post" action="{% url 'changepassword' %}">
           {% csrf_token %}
           
           <div class="col mb-4">
             <div class="row">
               <label for="old_password">New Password</label>
-              <input class="form-control" id="password1">
+              <input type="password" name="password1" class="form-control" id="pass1">
             </div>
             <div class="row">
               <label for="old_password">Retype Password</label>
-              <input class="form-control" id="password2">
+              <input type="password" name="password2" class="form-control" id="pass2">
             </div>
           </div>
           <div class"row align-items-center">
@@ -354,13 +354,13 @@
           </button>
         </div>
         <div class="modal-body">
-          <form method="post">
+          <form method="post" action="{% url 'change_email' %}">
             {% csrf_token %}
             
             <div class="col mb-4">
               <div class="row">
-                <label for="old_password">New Email</label>
-                <input class="form-control" id="password1">
+                <label for="">New Email</label>
+                <input class="form-control" name="email" id="useremail">
               </div>
             </div>
             <div class"row align-items-center">

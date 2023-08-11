@@ -36,6 +36,11 @@ urlpatterns = [
      
     #  updating room rules
      path('update_room_rules/', views.update_room_rules, name="update_room_rules"),
+     
+     
+
+     
+
     
     
 ]

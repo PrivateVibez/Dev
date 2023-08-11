@@ -1,4 +1,5 @@
 from django.db import models
+from rooms.models import Room_Data
 from django.contrib.auth.models import AbstractUser
 
 from django.conf import settings
@@ -42,6 +43,7 @@ class User_Data(models.Model):
     U_token        = models.CharField(max_length=200,null=True,blank=True)
     Image          = models.ImageField(upload_to='profile_pic',null=True,blank=True)
     Id_File        = models.ImageField(upload_to='ID',null=True,blank=True)
+    Availed        = models.ManyToManyField('Item_Availed',related_name='Item_Avail',blank=True)
     Timestamp      = models.DateTimeField(auto_now_add=True)     
     def __str__(self):
         return str(self.User)
@@ -64,5 +66,14 @@ class Memos(models.Model):
     def __str__(self):
         return str(self.Message)
 
+
+class Item_Availed(models.Model):
+    Room = models.ForeignKey(Room_Data, related_name="Broadcaster",on_delete=models.CASCADE, null=True, blank=True)
+    User = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True,blank=True)
+    Item = models.CharField(max_length=200,null=True,blank=True)
+    Cost = models.CharField(max_length=200,null=True,blank=True)
+    Timestamp  = models.DateTimeField(auto_now_add=True)     
+    def __str__(self):
+        return str(self.Item)
 
 

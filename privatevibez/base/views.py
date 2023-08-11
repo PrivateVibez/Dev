@@ -133,7 +133,8 @@ def home(request):
         if request.user.is_authenticated:
                 blocked_broadcasters = Bad_Acters.objects.filter(Reporty = request.user.id)
                 try:
-                        
+                        user_datas        = User_Data.objects.get(User =  request.user)
+
                         user_status_data = User.objects.get(id = request.user.id)
                         user_status      = user_status_data.Status
                         
