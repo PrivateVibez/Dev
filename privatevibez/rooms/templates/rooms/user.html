@@ -23,10 +23,10 @@
 
 <div id="main" class="chat">
 
-    <div class="chat_room" style="font: 1em UbuntuRegular, Arial, Helvetica, sans-serif;">
+    <div class="chat_room container-fluid" style="font: 1em UbuntuRegular, Arial, Helvetica, sans-serif;">
 
-        <div class="topSectionWrapper" style="width: 100%; height: auto; display: block;">
-            <div ts="n4" id="VideoPanel" style="height: auto; width: 59%; position: relative; overflow: visible; -webkit-tap-highlight-color: transparent; display: inline-block; border-radius: 6px; box-sizing: border-box; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; font-size: 11px;background-color:#6cc6ba;border:2px solid black;padding:2px;">
+        <div class="topSectionWrapper row" style="width: 100%; height: auto; display: block;">
+            <div ts="n4" id="" class="col-7" style="height: auto; position: relative; overflow: visible; -webkit-tap-highlight-color: transparent; display:inline-block; border-radius: 6px; box-sizing: border-box; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; font-size: 11px;background-color:#6cc6ba;border:2px solid black;padding:2px;">
 
                 <div style="display: block;">
 
@@ -68,6 +68,7 @@
                 <div class="container p-auto"> {% if room_data.Is_Active %} Online {% else %} Offline {% endif %} </div>
 
 
+                {% if request.user.is_authenticated %}
                     <div class="container">
 
                         <div class="row">
@@ -191,33 +192,38 @@
                             </div>
                         </div>
                     </div>
+                    {% endif %}
+
                 </div>
             </div>
 
-            <div ts="Zv" data-listener-count-mousedown="1" data-listener-count-touchmove="1" class="resizeHandle" style="height: 425.312px; position: absolute; overflow: hidden; -webkit-tap-highlight-color: transparent; display: inline-block; box-sizing: border-box; cursor: ew-resize;"></div>
 
-                <div ts="x_" class="BaseTabsContainer" id="ChatTabContainer" style="height: 445px; width: 40%; position: absolute; -webkit-tap-highlight-color: transparent; display: inline-block; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; border-radius: 6px;  box-sizing: border-box;border:2px solid black;background-color:#6cc6ba;color:#black;margin-left:20px;">
+                <div ts="x_" class="col-4" id="ChatTabContainer" style="height: 445px; position: absolute; -webkit-tap-highlight-color: transparent; display: inline-block; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; border-radius: 6px;  box-sizing: border-box;border:2px solid black;background-color:#6cc6ba;color:#black;margin-left:20px;">
 
                     <div ts="DD"  id="tab-row" data-paction="Chat" style="position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; width: 100%; box-sizing: border-box;">
 
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            
+                            <button class="tab nav-link" id="nav-chat-tab" data-bs-toggle="tab" data-bs-target="#nav-chat" type="button" role="tab" aria-controls="nav-chat" aria-selected="false">Chat</button>
 
+                            {% if request.user.is_authenticated %}
                             <button class="tab nav-link active" id="nav-interact-tab" data-bs-toggle="tab" data-bs-target="#nav-interact" type="button" role="tab" aria-controls="nav-interact" aria-selected="true">Interact</button>
 
-                            <button class="tab nav-link" id="nav-chat-tab" data-bs-toggle="tab" data-bs-target="#nav-chat" type="button" role="tab" aria-controls="nav-chat" aria-selected="false">Chat</button>
 
                             <button class="tab nav-link" id="nav-private-chat-tab" data-bs-toggle="tab" data-bs-target="#nav-private-chat" type="button" role="tab" aria-controls="nav-private-chat" aria-selected="false">Private Chat</button>
 
 
                             <button class="tab nav-link" id="nav-connect-my-toy-tab" data-bs-toggle="tab" data-bs-target="#nav-connect-my-toy" type="button" role="tab" aria-controls="nav-connect-toy" aria-selected="false">Connect My Toy</button>
-
+                            {% endif %}
                         </div>
                     </div>
 
-                    <div ts="wZ" style="height: 100%; width: 100%; position: relative; -webkit-tap-highlight-color: transparent; display: block;">
+                    <div ts="wZ" style="height: 100%; width: 100%; position: relative; -webkit-tap-highlight-color: transparent; display: inline;">
 
                         <div class="tab-content" id="nav-tabContent">
                             <!-- interact -->
+
+                            {% if request.user.is_authenticated %}
                             <div class="tab-pane fade show active" id="nav-interact" role="tabpanel" aria-labelledby="nav-note-tab">
 
                                 <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
@@ -258,6 +264,7 @@
 
                                 </div>
                             </div>
+                            {% endif %}
 
                             <div class="tab-pane fade" id="nav-chat" role="tabpanel" aria-labelledby="nav-chat-tab">
                                 {% if room_data.Public_Chat == True %}
@@ -292,7 +299,7 @@
 
                                     </div>
 
-                                    <div class="input-group mb-3" style="bottom: 27px; left: 0px; position: absolute;">
+                                    <div class="input-group mb-3 h-100" style="top: 360px; left: 0px; position: absolute;">
                                         <form id="public_chat_room_form" class="d-flex w-100">
                                             <input type="text" class="form-control" name="public_chat_room_message_field" required>
                                             <div class="input-group-append">
@@ -344,7 +351,7 @@
                                     {% endfor %}
                                     
                                     {% comment %} Message box {% endcomment %}
-                                    <div class="input-group mb-3" style="bottom: 27px; left: 0px; position: absolute;">
+                                    <div class="input-group mb-3" style="bottom: 27px; left: 0px; position: relative;">
                                         <form id="private_chat_room_form" class="d-flex w-100">
                                             <input type="text" class="form-control" name="private_chat_room_message_field" required>
                                             <div class="input-group-append">
@@ -426,7 +433,7 @@
 
 </div>
 
-<div ts="x_" class="BaseTabsContainer" id="BottomBoxContainer" style="height: 446.312px; width: 98.5%; -webkit-tap-highlight-color: transparent; display: inline-block; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; border-radius: 4px 4px 2px 2px; margin: 25px 0px 0px 10px; box-sizing: border-box;">
+<div ts="x_" class="BaseTabsContainer" id="BottomBoxContainer" style="height: 446.312px; width: 98.5%; -webkit-tap-highlight-color: transparent; display: inline-block; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; border-radius: 4px 4px 2px 2px; margin: 90px 0px 0px 10px; box-sizing: border-box;">
 
     <div ts="DD" data-paction="Chat" style="position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; width: 100%; box-sizing: border-box;">
 
@@ -436,6 +443,7 @@
 
             <button class="tab nav-link" id="nav-room-rules-tab" data-bs-toggle="tab" data-bs-target="#nav-room-rules" type="button" role="tab" aria-controls="nav-room-rules" aria-selected="false">Room Rules</button>
 
+            {% if request.user.is_authenticated %}
             <button class="tab nav-link" id="nav-following-tab" data-bs-toggle="tab" data-bs-target="#nav-following" type="button" role="tab" aria-controls="nav-following" aria-selected="false">Following</button>
             <div class="pull-right">
 
@@ -486,6 +494,12 @@
                 </button>
 
             </div>
+
+            {% else %}
+            <div class="pull-right">
+                <a href="{% url 'Registration' %}"><p class="h-2">Sign up now and enjoy the vibez!</p></a>
+            </div>
+            {% endif %}
         </div>
     </div>
 
