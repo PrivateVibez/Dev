@@ -1,6 +1,8 @@
 
 {% load static %}
+
 <div id="main" class="chat container-fluid">
+
     {% if broadcaster_status.Status == "Pending_Broadcaster"%}
     <div ts="n4" id="VideoPanel" style="height: auto; width: 59%; position: relative; overflow: visible; -webkit-tap-highlight-color: transparent;background-color:transparent; display: inline-block; border-radius: 2px; box-sizing: border-box; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; font-size: 11px;border:none;">
         <h1> We are still looking though your Information</h1>
@@ -210,16 +212,14 @@
         </div>
 
 </div>
-<div id="messages" class="alert">
 
-</div>
 <div ts="Zv" data-listener-count-mousedown="1" data-listener-count-touchmove="1" class="resizeHandle" style="height: 425.312px; width: 8px; position: absolute; overflow: hidden; -webkit-tap-highlight-color: transparent; display: inline-block; box-sizing: border-box; cursor: ew-resize;"></div>
 
 <link rel="stylesheet" href="{% static 'css/multi.css' %}">
 <script type="text/javascript" src="{% static 'js/multi.js' %}"></script>
 
 <script>
-
+    var message = document.getElementById('alerts')
     const room_id = {{room_data.User.id}} // Get the room ID from somewhere
 
     const roomVisitorsSocket = new WebSocket(
@@ -340,6 +340,7 @@
 
     function update_room_rules()
     {
+        
         $.ajax({
             method: 'POST',
             url: "update_room_rules/",
@@ -350,11 +351,19 @@
             },
             success:function(data)
             {
-                console.log(data.data)
-                var message = document.getElementById('messages')
+                stat = data.data;
+                
                 var status = document.createElement('span')
-                status.classList.add('alert-success')
+                status.textContent = stat
+                message.classList.add('alert')
+                message.style.textAlign = 'center'
+                message.classList.add('alert-success')
+                message.style.display = 'block';
                 message.appendChild(status)
+                console.log(message)
+                setTimeout(function() {
+                    message.remove(); // Clear the message content
+                }, 2000); 
                 
 
             },

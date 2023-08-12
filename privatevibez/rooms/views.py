@@ -283,6 +283,7 @@ def PrivateChatCheckBox(request):
     return JsonResponse('OK', safe=False) 
 
 def Chat(request):
+    print(request.POST.get('PrivateChatPrice'),flush=True)
     room_data = Room_Data.objects.get(User = request.user)
     room_data.Public_Chat = request.POST.get('Public_Chat_Check')
     room_data.Private_Chat_Price = int(request.POST.get('PrivateChatPrice'))
@@ -738,11 +739,11 @@ def update_room_rules(request):
         if rules is not None:
             room_instance.Room_Rules = request.POST.get('room_rules')
             room_instance.save()
-            messages.success(request,"Room rules updated")
+     
             return JsonResponse({"data":"Room rules updated"},safe=False)
         else:
-            messages.error(request,"Room rules is empty")
-            return JsonResponse({"data":"Room rules updated"}, safe=False)
+        
+            return JsonResponse({"data":"Room rules is empty"}, safe=False)
     
     
     

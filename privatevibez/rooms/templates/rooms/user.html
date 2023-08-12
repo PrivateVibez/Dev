@@ -23,6 +23,16 @@
 
 <div id="main" class="chat">
 
+    {% if not request.user.is_authenticated %}
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <script type="text/javascript" data-cfasync="false" async src="https://poweredby.jads.co/js/jads.js"></script>
+            <ins id="1031043" data-width="908" data-height="270"></ins>
+            <script type="text/javascript" data-cfasync="false" async>(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1031043});</script>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="chat_room container-fluid" style="font: 1em UbuntuRegular, Arial, Helvetica, sans-serif;">
 
         <div class="topSectionWrapper row" style="width: 100%; height: auto; display: block;">
@@ -179,7 +189,7 @@
                                     <div class="tip_btn" style="background-color: lightgreen;
                                     {% if user_data == None or user_data.Vibez < room_data.Price_OHYes_button %}
                                     cursor:not-allowed {% endif %}"  
-                                    {% if user_data != None and user_data.Vibez > room_data.Price_OHYes_button %} 
+                                    {% if user_data != None or user_data.Vibez > room_data.Price_OHYes_button %} 
                                     onclick="confirm_send(number = '{{room_data.Price_OHYes_button}}', btn='ohyes')" {% endif %}>
 
                                         <div>OH YES</div>
@@ -191,6 +201,15 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    {% else %}
+                    <div class="container">
+                    <div class="row justify-content-center">
+                    <script type="text/javascript" data-cfasync="false" async src="https://poweredby.jads.co/js/jads.js"></script>
+                    <ins id="1031041" data-width="468" data-height="72"></ins>
+                    <script type="text/javascript" data-cfasync="false" async>(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1031041});</script>
+                    </div>
                     </div>
                     {% endif %}
 
@@ -299,7 +318,7 @@
 
                                     </div>
 
-                                    <div class="input-group mb-3 h-100" style="top: 360px; left: 0px; position: absolute;">
+                                    <div class="input-group mb-3" style="top: 360px; left: 0px; position: absolute;">
                                         <form id="public_chat_room_form" class="d-flex w-100">
                                             <input type="text" class="form-control" name="public_chat_room_message_field" required>
                                             <div class="input-group-append">
@@ -351,7 +370,7 @@
                                     {% endfor %}
                                     
                                     {% comment %} Message box {% endcomment %}
-                                    <div class="input-group mb-3" style="bottom: 27px; left: 0px; position: relative;">
+                                    <div class="input-group mb-3" style="bottom: 0px; left: 0px; position: absolute;">
                                         <form id="private_chat_room_form" class="d-flex w-100">
                                             <input type="text" class="form-control" name="private_chat_room_message_field" required>
                                             <div class="input-group-append">
@@ -433,7 +452,18 @@
 
 </div>
 
-<div ts="x_" class="BaseTabsContainer" id="BottomBoxContainer" style="height: 446.312px; width: 98.5%; -webkit-tap-highlight-color: transparent; display: inline-block; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; border-radius: 4px 4px 2px 2px; margin: 90px 0px 0px 10px; box-sizing: border-box;">
+
+<!--ADS-->
+{% if not request.user.is_authenticated %}
+<div class="container-fluid">
+    <div class="row justify-content-center align-content-center">
+        <script type="text/javascript" data-cfasync="false" async src="https://poweredby.jads.co/js/jads.js"></script>
+        <ins id="1031045" data-width="728" data-height="102"></ins>
+        <script type="text/javascript" data-cfasync="false" async>(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1031045});</script>
+    </div>
+    {% endif %}
+
+<div ts="x_" class="BaseTabsContainer" id="BottomBoxContainer" style="height: 446.312px; width: 98.5%; -webkit-tap-highlight-color: transparent; display: inline-block; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; border-radius: 4px 4px 2px 2px; margin: 10px 0px 0px 10px; box-sizing: border-box;">
 
     <div ts="DD" data-paction="Chat" style="position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; width: 100%; box-sizing: border-box;">
 
@@ -794,6 +824,7 @@
 <input id="user_username" style="display:none;" value="{{request.user.username}}"></input>
 <input id="room_username" style="display:none;" value="{{room_data.User}}"></input>
 
+
 {% if request.user.is_authenticated %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -979,7 +1010,7 @@ let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicCh
 
 
 <script>
-
+    var message = document.getElementById('alerts')
     function invite_model_chat(room_id) {
         $.ajax({
             method:'POST',
@@ -1169,6 +1200,18 @@ function confirm_send(number,btn){
             'dataType': 'json',
             success:function(data){
                 console.log(data)
+                var stat = data.data
+                var status = document.createElement('span')
+                status.textContent = stat
+                message.classList.add('alert')
+                message.style.textAlign = 'center'
+                message.classList.add('alert-success')
+                message.style.display = 'block';
+                message.appendChild(status)
+                setTimeout(function() {
+                    message.remove(); // Clear the message content
+                }, 2000); 
+
             },
             errors:function(errors){
                 console.log(errors.responseText)

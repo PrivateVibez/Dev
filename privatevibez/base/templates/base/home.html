@@ -68,10 +68,33 @@
     }
 </style>
 
-<section class="purple">
-    <div class="body container" style="margin-left:5%;">
-        <div class="body container" style="margin-left:5%;">
-            <div class="row " style="border:2px solid black;border-radius: 6px">
+<section class="purple container-fluid">
+
+    {% if not request.user.is_authenticated %}
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <script type="text/javascript" data-cfasync="false" async src="https://poweredby.jads.co/js/jads.js"></script>
+            <ins id="1031043" data-width="908" data-height="270"></ins>
+            <script type="text/javascript" data-cfasync="false" async>(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1031043});</script>
+        </div>
+    </div>
+    {% endif %}
+
+        <div class="body mx-5 row justify-content-center" style="">
+
+            {% if not request.user.is_authenticated %}
+            <!--ADS-->
+            <div class="ads" style="width:max-content;">
+                <!-- JuicyAds v3.0 -->
+               <script type="text/javascript" data-cfasync="false" async src="https://poweredby.jads.co/js/jads.js"></script>
+               <ins id="1031047" data-width="160" data-height="612"></ins>
+               <script type="text/javascript" data-cfasync="false" async>(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1031047});</script>
+               <!--JuicyAds END-->
+            </div>
+            {% endif %}
+
+
+            <div class="col-9" style="border:2px solid black;border-radius: 6px">
                 <ul class="nav nav-tabs" id="myTab" role="tablist" style="width:100%;background-color:black;border-radius: 6px 6px 0px 0px;">
                     <li class="nav-item" role="presentation">
                         <button class="main-nav-link active broadcaster-nav" data-tab="FEATURED" id="streamer-tab" data-bs-toggle="tab" data-bs-target="#streamer-tab-pane" type="button" role="tab" aria-controls="streamer-tab-pane" aria-selected="true">FEATURED</button>
@@ -124,8 +147,21 @@
 
                 </div>
             </div>
+            {% if not request.user.is_authenticated %}
+            <!--ADS-->
+            <div class="ads" style="width:max-content;">
+                         <!-- JuicyAds v3.0 -->
+                        <script type="text/javascript" data-cfasync="false" async src="https://poweredby.jads.co/js/jads.js"></script>
+                        <ins id="1031047" data-width="160" data-height="612"></ins>
+                        <script type="text/javascript" data-cfasync="false" async>(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1031047});</script>
+                        <!--JuicyAds END-->
+            </div>
+            {% endif %}
+
         </div>
-    </div>
+        
+
+    
 </section>
 
 
@@ -202,7 +238,7 @@
                     
                    
                     let broadcaster_content = `
-                    <a href="/room/${roomData.User}" class="d-flex col-lg-3" style="text-decoration: none; margin: 0.1rem">
+                    <a href="/room/${userData.Real_Name}" class="d-flex col-lg-3" style="text-decoration: none; margin: 0.1rem">
                         <!-- Card -->
                                 <div class="card flex-grow-1">
                                     <img src="${userData.Image}" class="img-fluid" style="width: 200px; height:150px; object-fit:cover" alt="">   

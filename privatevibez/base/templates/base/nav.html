@@ -127,6 +127,10 @@
     {% endfor %}
 {% endif %}
 
+<div id="alerts" class="">
+
+</div>
+
 
 
 
@@ -613,7 +617,7 @@
                         {% else %}
                         <input type="checkbox" class="form-check-input" onclick="PrivateChat_CheckBox()" id="PrivateChat" aria-describedby="PrivateChatHelp">
                         {% endif %}
-                        <input type="number" class="form-control" id="PrivateChatPrice" aria-describedby="PrivateChatPriceHelp" style="display:none;" value="{{room_data.Private_Chat_Price}}">
+
                         <label class="form-check-label" for="PrivateChat"> Private Chat</label>
                         <small id="PrivateChatHelp" class="form-text text-muted">Do you want your room to have a private chat.</small>
                     </div> 
@@ -621,7 +625,7 @@
                     <div class="form-group" id="Private_Chat_Price">
                         {% if room_data.Private_Chat is True %}
                             <label for="PrivateChatPrice">Private Chat Price</label>
-                            <input type="number" class="form-control" id="PrivateChatPrice" aria-describedby="PrivateChatPriceHelp" value="{{room_data.Private_Chat_Price}}">
+                            <input type="text" class="form-control" id="PrivateChatPrice" aria-describedby="PrivateChatPriceHelp" value="">
                             <small id="PrivateChatPriceHelp" class="form-text text-muted">You can put a pice pre Vibe.</small>
                         {% endif %}
                     </div>  
@@ -764,11 +768,12 @@ function Save_Chat(){
         mimeType:"multipart/form-data",
         data:{  
             'Public_Chat_Check'  : PublicChatCheck,
-            'PrivateChatPrice'   : document.getElementById('PrivateChatPrice').value,
+            'PrivateChatPrice'   : parseFloat(document.getElementById('PrivateChatPrice').value),
             'csrfmiddlewaretoken':"{{csrf_token}}",
         },
         'dataType': 'json',
-        success:function(){
+        success:function(data){
+            console.log(data)
             $("#Settings_close").trigger("click");
         }
     })

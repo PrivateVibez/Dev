@@ -222,7 +222,7 @@ def change_password(request):
         form = CustomPasswordChangeForm(request.user)
     return render(request, 'change_password.html', {'form': form})
 
-def room_data_func(broadcaster_gender,user_country,user_region):
+def room_data_func(request,broadcaster_gender,user_country,user_region):
     
     if broadcaster_gender != "FEATURED":
         room_data = Room_Data.objects.filter(User__Status="Broadcaster",Tab=broadcaster_gender)
@@ -242,6 +242,15 @@ def room_data_func(broadcaster_gender,user_country,user_region):
                     break
             if not country_blocked and not region_blocked:
                 room_list.append(room.User.id)
+                
+                
+            if request.user.is_authenticated:
+                if Bad_Acters.objects.filter(Reporty = request.user.id).exists():
+                        blocked_broadcasters = Bad_Acters.objects.filter(Reporty = request.user.id)
+                        for blocked_broadcaster in blocked_broadcasters:
+                                if any(item == blocked_broadcaster.Reported.id for item in room_list):
+                                        room_list = [item for item in room_list if item != blocked_broadcaster.Reported.id]  
+            print(room_list,flush=True)
     else:
         room_data = Room_Data.objects.filter(User__Status="Broadcaster")
         room_list = []
@@ -260,6 +269,13 @@ def room_data_func(broadcaster_gender,user_country,user_region):
                     break
             if not country_blocked and not region_blocked:
                 room_list.append(room.User.id)
+                
+        if request.user.is_authenticated:
+            if Bad_Acters.objects.filter(Reporty = request.user.id).exists():
+                    blocked_broadcasters = Bad_Acters.objects.filter(Reporty = request.user.id)
+                    for blocked_broadcaster in blocked_broadcasters:
+                            if any(item == blocked_broadcaster.Reported.id for item in room_list):
+                                    room_list = [item for item in room_list if item != blocked_broadcaster.Reported.id]  
         print(room_list,flush=True)
 
     
@@ -308,11 +324,11 @@ def get_broadcaster(request):
                 user_region = user.Region
                 if broadcaster_gender is not None and broadcaster_gender != "FEATURED":
 
-                    response_data = room_data_func(broadcaster_gender,user_country,user_region)
+                    response_data = room_data_func(request,broadcaster_gender,user_country,user_region)
                     
                     return JsonResponse(response_data, safe=False)
                 else:
-                    response_data = room_data_func(broadcaster_gender,user_country,user_region)
+                    response_data = room_data_func(request,broadcaster_gender,user_country,user_region)
                     return JsonResponse(response_data, safe=False)
             else:
                 if request.user.is_anonymous:
@@ -320,7 +336,7 @@ def get_broadcaster(request):
                         guest_country = request.session.get('guest_country')
                         guest_region = request.session.get('guest_region')
                         
-                        response_data = room_data_func(broadcaster_gender,guest_country,guest_region)
+                        response_data = room_data_func(request,broadcaster_gender,guest_country,guest_region)
                         return JsonResponse(response_data, safe=False)
 
 

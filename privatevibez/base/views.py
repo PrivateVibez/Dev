@@ -83,8 +83,10 @@ def get_guest_location(request,ip_address):
           
 
 
-def room_data_func(user_country,user_region):
-        users = User.objects.filter(Status="Broadcaster")       
+def room_data_func(request,user_country,user_region):
+        
+        users = User.objects.filter(Status="Broadcaster")
+                
         combined_fields_list = []
         for user in users:
                 user_data_list = User_Data.objects.filter(User=user)
@@ -123,7 +125,12 @@ def room_data_func(user_country,user_region):
             
                 if any(item["user_id"] == room for item in combined_fields_list):
                         combined_fields_list = [item for item in combined_fields_list if item["user_id"] != room]
+                
+                 
                         
+                        
+                                
+
         return combined_fields_list
 
 
@@ -152,8 +159,7 @@ def home(request):
                                 pass
                         
                         
-                        combined_fields_list = room_data_func(user_status_data.Country,user_status_data.Region)
-                        
+                        combined_fields_list = room_data_func(request,user_status_data.Country,user_status_data.Region)
                         
                 except(User_Status.DoesNotExist, User_Data.DoesNotExist):
                         if StaffManager.objects.filter(staff_id_id = request.user).exists():
@@ -173,14 +179,14 @@ def home(request):
                                         get_guest_location(request,guest_ip)
                                         guest_country = request.session.get('guest_country')
                                         guest_region = request.session.get('guest_region')
-                                        combined_fields_list = room_data_func(guest_country,guest_region)
+                                        combined_fields_list = room_data_func(request,guest_country,guest_region)
                                         
                                         
                                         # rooms_list = Room_Data.objects.filter( User__Status="Broadcaster")
                                         # room_users_data = User_Data.objects.filter( User__Status="Broadcaster")
                         else:
-                                combined_fields_list = room_data_func(guest_country,guest_region)
-                                print(combined_fields_list,flush=True)
+                                combined_fields_list = room_data_func(request,guest_country,guest_region)
+                                
 
 
         return render(request, "base/home.html", locals())
