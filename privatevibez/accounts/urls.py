@@ -14,7 +14,7 @@ urlpatterns = [
     path('bio_info/', views.bio_info, name="bio_info"),
     path('get_IP_Address/', views.get_IP_Address, name="get_IP_Address"),
     path('getTotalReports/', views.getTotalReports, name="getTotalReports"),
-    path('get_broadcaster/', views.get_broadcaster, name="get_broadcaster"),
+    path('tabbroadcaster/', views.get_broadcaster, name="tabbroadcaster"),
 
      #update password
      path('changepassword/', views.changepassword, name="changepassword"),

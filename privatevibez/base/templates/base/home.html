@@ -80,6 +80,18 @@
     </div>
     {% endif %}
 
+    <!--Search Bar-->
+
+    <div class="d-flex justify-content-center p-2">
+        <div class="col-8">
+            <form method="GET" action="{% url 'searchbroadcaster' %}" class="form-inline my-2 my-lg-0 d-flex justify-content-center">
+                <input class="form-control mr-sm-2 w-50" style="height:40px" name="search" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0 col-1 font-weight-bold" style="height:40px" type="submit">Search</button>
+              </form>
+        </div>
+    </div>
+
+
         <div class="body mx-5 row justify-content-center" style="">
 
             {% if not request.user.is_authenticated %}
@@ -97,19 +109,37 @@
             <div class="col-9" style="border:2px solid black;border-radius: 6px">
                 <ul class="nav nav-tabs" id="myTab" role="tablist" style="width:100%;background-color:black;border-radius: 6px 6px 0px 0px;">
                     <li class="nav-item" role="presentation">
-                        <button class="main-nav-link active broadcaster-nav" data-tab="FEATURED" id="streamer-tab" data-bs-toggle="tab" data-bs-target="#streamer-tab-pane" type="button" role="tab" aria-controls="streamer-tab-pane" aria-selected="true">FEATURED</button>
+
+                        <form method="GET" action="{% url 'tabbroadcaster' %}" class="form-inline my-2 my-lg-0 d-flex justify-content-center">
+                            <input type="hidden" value="FEATURED" name="Tab">
+                            <button class="main-nav-link broadcaster-nav" data-tab="FEATURED" id="FEATURED" data-bs-toggle="tab" data-bs-target="#streamer-tab-pane" type="submit" role="tab" aria-controls="streamer-tab-pane" aria-selected="true">FEATURED</button>
+                        </form>
                     </li>
                     <li class="nav-item" role="presentation">
-                    <button class="main-nav-link broadcaster-nav" id="female-tab" data-bs-toggle="tab" data-bs-target="#female-tab-pane" type="button" data-tab="WOMEN" role="tab" aria-controls="female-tab-pane" aria-selected="false">FEMALE</button>
+                    <form method="GET" action="{% url 'tabbroadcaster' %}" class="form-inline my-2 my-lg-0 d-flex justify-content-center">
+                        <input type="hidden" value="WOMEN" name="Tab">
+                        <button class="main-nav-link broadcaster-nav" data-tab="FEMALE" id="WOMEN" data-bs-toggle="tab" data-bs-target="#streamer-tab-pane" type="submit" role="tab" aria-controls="streamer-tab-pane" aria-selected="true">FEMALE</button>
+                    </form>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                    <form method="GET" action="{% url 'tabbroadcaster' %}" class="form-inline my-2 my-lg-0 d-flex justify-content-center">
+                        <input type="hidden" value="MEN" name="Tab">
+                        <button class="main-nav-link broadcaster-nav" id="MEN" data-tab="FEMALE" data-bs-toggle="tab" data-bs-target="#streamer-tab-pane" type="submit" role="tab" aria-controls="streamer-tab-pane" aria-selected="true">MALE</button>
+                    </form>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <form method="GET" action="{% url 'tabbroadcaster' %}" class="form-inline my-2 my-lg-0 d-flex justify-content-center">
+                            <input type="hidden" value="COUPLES" name="Tab">
+                            <button class="main-nav-link broadcaster-nav" data-tab="COUPLES" id="COUPLES" data-bs-toggle="tab" data-bs-target="#streamer-tab-pane" type="submit" role="tab" aria-controls="streamer-tab-pane" aria-selected="true">COUPLES</button>
+                        </form>
                     </li>
                     <li class="nav-item" role="presentation">
-                    <button class="main-nav-link broadcaster-nav" data-tab="MEN" id="male-tab" data-bs-toggle="tab" data-bs-target="#male-tab-pane" type="button" role="tab" aria-controls="male-tab-pane" aria-selected="false">MALE</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="main-nav-link broadcaster-nav" data-tab="COUPLES" id="couples-tab" data-bs-toggle="tab" data-bs-target="#couples-tab-pane" type="button" role="tab" aria-controls="couples-tab-pane" aria-selected="false">COUPLES</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="main-nav-link broadcaster-nav" data-tab="TRANS" id="trans-tab" data-bs-toggle="tab" data-bs-target="#trans-tab-pane" type="button" role="tab" aria-controls="trans-tab-pane" aria-selected="false">TRANS</button>
+                        <form method="GET" action="{% url 'tabbroadcaster' %}" class="form-inline my-2 my-lg-0 d-flex justify-content-center">
+                            <input type="hidden" value="TRANS" name="Tab">
+                            <button class="main-nav-link broadcaster-nav" data-tab="TRANS" id="TRANS" data-bs-toggle="tab" data-bs-target="#streamer-tab-pane" type="submit" role="tab" aria-controls="streamer-tab-pane" aria-selected="true">TRANS</button>
+                        </form>
                     </li> 
                 </ul>
                 </br>
@@ -121,29 +151,17 @@
                         {% include "base/include/broadcaster_cards.html" %}
                         {% endfor %}
 
-                    </div>
-
-                    <div class="tab-pane fade row justify-content-center" id="WOMEN-tab-pane" role="tabpanel" aria-labelledby="women-tab" tabindex="0">
-
-
-                    </div>
-
-                    <div class="tab-pane fade row justify-content-center" id="MEN-tab-pane" role="tabpanel" aria-labelledby="men-tab" tabindex="0">
-
-
-                    </div>
-
-                    <div class="tab-pane fade row justify-content-center" id="COUPLES-tab-pane" role="tabpanel" aria-labelledby="couples-tab" tabindex="0">
-
+                        {% if no_broadcaster_found %}
+                        <div class="container-fluid">
+                            <div class="d-flex justify-content-center">
+                            <span class="display-2 fonti-weight-bold">
+                                No broadcaster found
+                            </span>
+                            </div>
+                        </div>
+                        {% endif %}
 
                     </div>
-
-                    <div class="tab-pane fade row justify-content-center" id="TRANS-tab-pane" role="tabpanel" aria-labelledby="trans-tab" tabindex="0">
-
-
-                    </div>
-
-
 
                 </div>
             </div>
@@ -206,68 +224,16 @@
 
     */
     
-    let broadcasterWrapper = document.getElementById("myTabContent");
-    let fetchbroadcasters = document.querySelectorAll('.broadcaster-nav');
+    const urlParams = new URLSearchParams(window.location.search);
 
- 
-    fetchbroadcasters.forEach(fetchbroadcaster => {
-        fetchbroadcaster.addEventListener('click', function(){
-            var broadcaster = this.getAttribute('data-tab');
-            let wrapper = document.getElementById(`tab-pane`);
-            wrapper.innerHTML = '';
-            console.log(broadcaster);
-            $.ajax({
-                method:'GET',
-                url: "accounts/get_broadcaster/",
-                data: {
-                    'broadcaster': broadcaster,
-          
-                },
-                success:function(data)
-                {
-                    console.log(data)
-
-                    var userArray = JSON.parse(data.user_data);
-                    var roomArray = JSON.parse(data.room_data);
-
-                    for (var i = 0; i < userArray.length; i++) {
-                    var userData = userArray[i];
-                    var roomData = roomArray[i];
-                    console.log(roomData.Blocked_Countries)
-                    
-                    
-                   
-                    let broadcaster_content = `
-                    <a href="/room/${userData.Real_Name}" class="d-flex col-lg-3" style="text-decoration: none; margin: 0.1rem">
-                        <!-- Card -->
-                                <div class="card flex-grow-1">
-                                    <img src="${userData.Image}" class="img-fluid" style="width: 200px; height:150px; object-fit:cover" alt="">   
-                                    <div class="card-title p-5">
-                                        <span style="font-weight:700; font-size: 20px; color:#1db9a7;">
-                                            ${userData.Real_Name}
-                                        </span>
-                                        <span class="text-dark" style="float: right; font-weight:700;">200 <i class="icofont-eye-alt"></i></span>
-                                    </div>
-                                    <p class="p-2">Lorem ipsum dolor sit amet.</p>
-                    
-                                </div>
-                                
-                            
-                    </a>
-                    `;
-                    
-                    wrapper.insertAdjacentHTML('beforeend', broadcaster_content);
-
-
-                    }
-                },
-                errors:function(errors){
-                    console.log(errors.responseText)
-                }
-            })
-        })
-    })
+    // Get the value of the 'Tab' parameter
+    const tabValue = urlParams.get('Tab'); 
     
+    if(tabValue)
+    {
+        tab = document.getElementById(tabValue);
+        tab.classList.add('active');
+    }
 </script>
 {% endblock %}
 

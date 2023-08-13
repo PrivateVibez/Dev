@@ -6,4 +6,6 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name="Main_home"),
+    path('searchbroadcaster/', views.searchbroadcaster, name="searchbroadcaster"),
+    
 ]

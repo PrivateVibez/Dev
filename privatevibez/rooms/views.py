@@ -128,7 +128,7 @@ def Room(request, Broadcaster):
                 elif user.Status == "Broadcaster":
                     
                     availed_items = Item_Availed.objects.filter(Room = room_data).all()
-                    
+                    print(availed_items,flush=True)
                     countries = Country.objects.all()
                     room_data_blocked_countries = room_data.Blocked_Countries.all()
 
@@ -791,3 +791,16 @@ def submit_bio(request):
     
     
 
+def save_hashtags(request):
+    
+    if request.method == "POST":
+        hashtags = request.POST.get('hashtags')
+        if hashtags is not None:
+            room_data = Room_Data.objects.get(User=request.user)
+            room_data.hashtags = hashtags
+            room_data.save()
+            return JsonResponse({'data':"Hashtags successfully saved!"}, safe=False)
+        else:
+            return JsonResponse({'data':"Hashtags is empty."}, safe=False)
+        
+     

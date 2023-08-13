@@ -1,30 +1,82 @@
-<div class="msg-list-fvm message-list" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
-
-  <h3 style='color:crimson; margin:10px 0 0 10px;'>Room Stats</h3>
-
-  <div class="msg-text" style="font-family: Tahoma, Arial, Helvetica, sans-serif; box-sizing: border-box; padding: 2px 5px 3px; overflow-wrap: break-word; word-break: break-word;">
+<div class="msg-list-fvm message-list container-fluid" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
 
 
-      <div class="my-2">
 
-          </span> Viewers: <span id="nb_toys_viewers">0</span>
+  <div class="msg-text row gap-3" style="font-family: Tahoma, Arial, Helvetica, sans-serif; box-sizing: border-box; padding: 2px 5px 3px; overflow-wrap: break-word; word-break: break-word;">
+
+    <h3 style='color:crimson; margin:10px 0 0 10px;'>Room Stats</h3>
+      <div class="my-2 col-2">
+
+        <span id="nb_toys_viewers">Viewers: 0</span>
           
+          <div class="my-2">Total earned: {{room_data.Earnings}}</div>
+
+          <div class="my-2">Number of explosions : {{room_data.Explosions}}</div>
       </div>
 
-      <div class="my-2">Total earned: {{room_data.Earnings}}</div>
 
-      <div class="my-2">Number of explosions : {{room_data.Explosions}}</div>
+      <div class="my-2 col-2">
 
-      {% if room_data.Is_Active == True %}
-          <button class="btn btn-primary" onclick="room_offline()">Go offline</button>
-      {% else %}
-      <button class="btn btn-primary p-2 m-2" style="font-size:1.7rem;" onclick="room_online()">Go online</button>
-      {% endif %}
-      
-      <div id="save_offline" style="display: none" class="my-2">You are offline</div>
+      </div>
+
 
 
   </div>
 
 
+  <div class="row">
+    <span class="font-weight-bold">Hashtags:</span>
+
+      <div class="col-3">
+        <textarea class="form-control" id="hashtags" rows="5" style="resize:none;">{% if room_data.hashtags %}{{room_data.hashtags}}{% endif %}</textarea>   
+        
+      </div>
+  </div>
+
+<div class="row my-2">
+  <div class="col-1">
+    <button class="btn btn-primary w-50" style="font-size:1.7rem" onclick="save_hashtags()">Save</button>
+  </div>
 </div>
+
+</div>
+
+
+
+<script>
+
+  function save_hashtags(){
+
+    $.ajax({
+      url: "hashtags/save",
+      type: "POST",
+      data: {
+        room_id: {{room_data.id}},
+         hashtags: $('#hashtags').val(),
+         csrfmiddlewaretoken:"{{csrf_token}}",
+        },
+      success: function(data){
+        var stat = data.data;
+
+        stat = data.data;
+                
+        var status = document.createElement('span')
+        status.textContent = stat
+        message.classList.add('alert')
+        message.style.textAlign = 'center'
+        message.classList.add('alert-success')
+        message.style.display = 'block';
+        message.appendChild(status)
+        console.log(message)
+        setTimeout(function() {
+            message.remove(); // Clear the message content
+        }, 2000); 
+
+
+      }
+    });
+  }
+
+</script>
+
+

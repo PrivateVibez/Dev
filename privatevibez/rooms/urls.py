@@ -38,6 +38,10 @@ urlpatterns = [
      path('update_room_rules/', views.update_room_rules, name="update_room_rules"),
      
      
+    #Room Stats
+    
+         path('hashtags/save', views.save_hashtags, name="save_hashtags"),
+     
 
      
 

@@ -317,19 +317,66 @@ def get_broadcaster(request):
         
         if request.method == 'GET':
             
-            broadcaster_gender = request.GET.get('broadcaster')
+            broadcaster_gender = request.GET.get('Tab')
             if request.user.is_authenticated:
                 user = request.user
                 user_country = user.Country
                 user_region = user.Region
                 if broadcaster_gender is not None and broadcaster_gender != "FEATURED":
-
-                    response_data = room_data_func(request,broadcaster_gender,user_country,user_region)
-                    
-                    return JsonResponse(response_data, safe=False)
+                        broadcasters = Room_Data.objects.filter(Tab=broadcaster_gender,User__Status="Broadcaster")
                 else:
-                    response_data = room_data_func(request,broadcaster_gender,user_country,user_region)
-                    return JsonResponse(response_data, safe=False)
+                        broadcasters = Room_Data.objects.filter(User__Status="Broadcaster")
+                print(broadcaster_gender,flush=False)
+                user_ids = broadcasters.values_list('User__id', flat=True)
+                users = User.objects.filter(id__in=user_ids)    
+                                                            
+                combined_fields_list = []
+                for user in users:
+                        user_data_list = User_Data.objects.filter(User=user)
+                        room_data_list = Room_Data.objects.filter(User=user)
+                        
+                        for user_data in user_data_list:
+                                
+                                combined_fields_list.append({
+                                                                "user_id": user.id,
+                                                                "username": user.username,
+                                                                "Image": user_data.Image.url,
+                                                                })
+
+                
+                rooms_list = []
+                
+                for broadcaster in broadcasters:
+                                                        
+                        country_blocked = False
+                        region_blocked = False
+                        for blocked_country in broadcaster.Blocked_Countries.all():
+                                if blocked_country.Country.code2 == user_country:
+                                        country_blocked = True
+                                        break  # If the user's country is blocked, no need to check other blocked countries
+                        
+                        for blocked_region in broadcaster.Blocked_Regions.all():
+                                if blocked_region.Region.display_name == user_region:
+                                        region_blocked = True
+                                        break
+                        if country_blocked or region_blocked:
+                                rooms_list.append(broadcaster.User.id)
+                                
+               
+                        for room in rooms_list:
+                
+                                if any(item["user_id"] == room for item in combined_fields_list):
+                                        combined_fields_list = [item for item in combined_fields_list if item["user_id"] != room]
+                                        
+                                        
+                        if Bad_Acters.objects.filter(Reporty = request.user.id).exists():
+                                blocked_broadcasters = Bad_Acters.objects.filter(Reporty = request.user.id)
+                                for blocked_broadcaster in blocked_broadcasters:
+                                        if any(item == blocked_broadcaster.Reported.id for item in combined_fields_list):
+                                                combined_fields_list = [item for item in room_list if item != blocked_broadcaster.Reported.id]
+                print(combined_fields_list,flush=True)                          
+                return render(request, "base/home.html", locals())          
+ 
             else:
                 if request.user.is_anonymous:
                         guest_ip = request.session.get('ip_address')

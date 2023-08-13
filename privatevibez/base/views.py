@@ -9,6 +9,11 @@ from django.contrib import messages
 from staff.models import StaffManager
 from django.shortcuts import redirect
 import requests
+from accounts.serializers import User_DataSerializer, Room_DataSerializer,UserSerializer
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
+from django.http import JsonResponse
+from django.db.models import Q
 from django.utils import timezone
 from datetime import timedelta
 from django.conf import settings
@@ -192,5 +197,132 @@ def home(request):
         return render(request, "base/home.html", locals())
 
 
+
+def searchbroadcaster(request):
+        
+        if request.method == "GET":
+                
+                search = request.GET.get('search')
+                if search is not None:
+                        
+                        broadcasters = Room_Data.objects.filter(Q(hashtags__icontains=search) | Q(User__username__icontains=search))
+                        
+                        if broadcasters.exists():
+                                
+                                if request.user.is_authenticated:
+                                        user = request.user
+                                        user_country = user.Country
+                                        user_region = user.Region
+                                        
+                                        user_ids = broadcasters.values_list('User__id', flat=True)
+                                        users = User.objects.filter(id__in=user_ids)    
+                                                                                    
+                                        combined_fields_list = []
+                                        for user in users:
+                                                user_data_list = User_Data.objects.filter(User=user)
+                                                room_data_list = Room_Data.objects.filter(User=user)
+                                                
+                                                for user_data in user_data_list:
+                                                        
+                                                        combined_fields_list.append({
+                                                                                        "user_id": user.id,
+                                                                                        "username": user.username,
+                                                                                        "Image": user_data.Image.url,
+                                                                                        })
+
+                                        
+                                        rooms_list = []
+                                        
+                                        for broadcaster in broadcasters:
+                                                                                
+                                                country_blocked = False
+                                                region_blocked = False
+                                                for blocked_country in broadcaster.Blocked_Countries.all():
+                                                        if blocked_country.Country.code2 == user_country:
+                                                                country_blocked = True
+                                                                break  # If the user's country is blocked, no need to check other blocked countries
+                                                
+                                                for blocked_region in broadcaster.Blocked_Regions.all():
+                                                        if blocked_region.Region.display_name == user_region:
+                                                                region_blocked = True
+                                                                break
+                                                if country_blocked or region_blocked:
+                                                        rooms_list.append(broadcaster.User.id)
+                                                        
+                                                print(rooms_list,flush=True)        
+                                                for room in rooms_list:
+                                        
+                                                        if any(item["user_id"] == room for item in combined_fields_list):
+                                                                combined_fields_list = [item for item in combined_fields_list if item["user_id"] != room]
+                                                                
+                                                                
+                                                if Bad_Acters.objects.filter(Reporty = request.user.id).exists():
+                                                        blocked_broadcasters = Bad_Acters.objects.filter(Reporty = request.user.id)
+                                                        for blocked_broadcaster in blocked_broadcasters:
+                                                                if any(item == blocked_broadcaster.Reported.id for item in combined_fields_list):
+                                                                        combined_fields_list = [item for item in room_list if item != blocked_broadcaster.Reported.id]
+                                                                                
+                                        
+                                        return render(request, "base/home.html", locals())                                      
+                                else:
+                                      
+                                        combined_fields_list = []
+                                        guest_country = request.session.get('guest_country')
+                                        guest_region = request.session.get('guest_region')
+                                        
+                                        user_ids = broadcasters.values_list('User__id', flat=True)
+                                        users = User.objects.filter(id__in=user_ids)    
+                                                                                    
+                                        combined_fields_list = []
+                                        for user in users:
+                                                user_data_list = User_Data.objects.filter(User=user)
+                                                room_data_list = Room_Data.objects.filter(User=user)
+                                                
+                                                for user_data in user_data_list:
+                                                        
+                                                        combined_fields_list.append({
+                                                                                        "user_id": user.id,
+                                                                                        "username": user.username,
+                                                                                        "Image": user_data.Image.url,
+                                                                                        })
+
+                                      
+                                        rooms_list = []
+
+                                        for room in broadcasters:
+                                                is_blocked = False  # Initialize a flag to indicate if user's country is 
+                                                is_blocked_region = False #
+                                                for blocked_country in room.Blocked_Countries.all():
+                                                        country = blocked_country.Country.code2
+                                                        if country == guest_country:
+                                                                is_blocked = True  # Set the flag if user's country is blocked
+                                                                
+                                                                break 
+                                                for blocked_regions in room.Blocked_Regions.all():
+                                                        region = blocked_regions.Region.display_name
+                                                        if region == guest_region:
+                                                                is_blocked = True
+                                                                
+                                                if is_blocked or is_blocked_region:
+                                                        rooms_list.append(room.User.id) # Append room if user's country is not blocked
+
+                                        
+                                        for room in rooms_list:
+                                        
+                                                if any(item["user_id"] == room for item in combined_fields_list):
+                                                        combined_fields_list = [item for item in combined_fields_list if item["user_id"] != room]
+                                                
+                                                
+                                                        
+                                                        
+                                                                
+
+                                       
+                                print(combined_fields_list,flush=True)
+                                return render(request, "base/home.html", locals())  
+
+                        else:
+                                
+                                return render(request, "base/home.html", {"no_broadcaster_found": True})  
 
 

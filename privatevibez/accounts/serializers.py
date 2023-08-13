@@ -7,14 +7,14 @@ User = get_user_model()
 class User_DataSerializer(serializers.ModelSerializer):
     class Meta:
         model = User_Data
-        fields = '__all__'  # You can specify specific fields if needed
+        fields = ['id','Real_Name','Image']  # You can specify specific fields if needed
         
 class Room_DataSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room_Data
-        fields = '__all__'  # You can specify specific fields if needed
+        fields = ['id','Tab']  # You can specify specific fields if needed
         
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'  # You can specify specific fields if needed
+        fields = ['id']  # You can specify specific fields if needed

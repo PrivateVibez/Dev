@@ -42,6 +42,14 @@
                     </div>
                 </div>
 
+                <div class="my-2 col-2">
+                    {% if room_data.Is_Active == True %}
+                    <button class="btn btn-secondary" onclick="room_offline()">Go offline</button>
+                    {% else %}
+                    <button class="btn bg-dark p-2 m-2 text-white font-weight-bold" style="font-size:1.7rem;" onclick="room_online()">Go online</button>
+                    {% endif %}
+                  </div>
+
             </div>
 
             <div ts="Zv" data-listener-count-mousedown="1" data-listener-count-touchmove="1" class="resizeHandle" style="height: 425.312px; position: absolute; overflow: hidden; -webkit-tap-highlight-color: transparent; display: inline-block; box-sizing: border-box; cursor: ew-resize;"></div>
@@ -176,7 +184,7 @@
                                         <div class="col-12">
                                             <h3>Room Rules</h3>
                                         </div>
-                                        <div class="col-12">
+                                        <div class="col-5">
                                             <textarea class="form-control" id="room_rules" rows="10" style="resize:none;">{{room_data.Room_Rules}}</textarea>
                                         </div>
                                         <div class="col-12">
