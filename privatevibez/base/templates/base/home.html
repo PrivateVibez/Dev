@@ -146,15 +146,15 @@
                 </br>
                 <div class="tab- container" id="myTabContent">
                     <div class="tab-pane fade show active row justify-content-center" id="tab-pane" role="tabpanel" aria-labelledby="streamer-tab" tabindex="0">
-                        {% for room in combined_fields_list %}
+                        {% for room in broadcaster_data %}
                        
                         {% include "base/include/broadcaster_cards.html" %}
                         {% endfor %}
 
-                        {% if no_broadcaster_found %}
+                        {% if no_broadcaster_found or not broadcaster_data %}
                         <div class="container-fluid">
                             <div class="d-flex justify-content-center">
-                            <span class="display-2 fonti-weight-bold">
+                            <span class="display-2 font-weight-bold">
                                 No broadcaster found
                             </span>
                             </div>
@@ -164,6 +164,23 @@
                     </div>
 
                 </div>
+
+                <nav aria-label="" style="width:min-content; display:contents; position:absolute">
+                    {% if broadcaster_data.has_previous %}
+                    <ul class="pagination col-2" style="width:min-content;">
+                        <li class="page-item">
+                        <a class="page-link" href="?page={{ broadcaster_data.previous_page_number }}">Previous</a>
+                        </li>
+                      {% endif %}
+
+                      {% if broadcaster_data.has_next %}
+                      <li class="page-item" style="width:min-content;">
+                        <a class="page-link" href="?page={{ broadcaster_data.next_page_number }}">Next</a>
+                      </li>
+                      {% endif %}
+                    </ul>
+                  </nav>
+                  
             </div>
             {% if not request.user.is_authenticated %}
             <!--ADS-->

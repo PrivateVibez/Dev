@@ -29,6 +29,7 @@ class UserVisitorsConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
     
+    # Display availed items in broadcaster room
     async def show_itemAvailed(self, event):
         data = event['data']
         print(data,flush=True)
@@ -37,9 +38,17 @@ class UserVisitorsConsumer(AsyncWebsocketConsumer):
             }
         await self.send(text_data=json.dumps(modified_data))
         
+        
     def add_visitor_to_room(self,room,visitor):
         room = room
         room_instance = room.Visitors.add(visitor)
+        
+        if room.Total_Viewers is not None:
+            room.Total_Viewers += 1
+            
+        else:
+            room.Total_Viewers = 1
+        room.save()
         
     @database_sync_to_async
     def get_all_visitors(self):

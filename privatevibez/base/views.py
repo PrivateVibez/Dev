@@ -16,6 +16,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.utils import timezone
 from datetime import timedelta
+from django.core.paginator import Paginator
 from django.conf import settings
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -92,14 +93,14 @@ def room_data_func(request,user_country,user_region):
         
         users = User.objects.filter(Status="Broadcaster")
                 
-        combined_fields_list = []
+        broadcaster_data = []
         for user in users:
                 user_data_list = User_Data.objects.filter(User=user)
                 room_data_list = Room_Data.objects.filter(User=user)
                 
                 for user_data in user_data_list:
                         
-                        combined_fields_list.append({
+                        broadcaster_data.append({
                                                         "user_id": user.id,
                                                         "username": user.username,
                                                         "Image": user_data.Image.url,
@@ -128,20 +129,22 @@ def room_data_func(request,user_country,user_region):
         
         for room in rooms_list:
             
-                if any(item["user_id"] == room for item in combined_fields_list):
-                        combined_fields_list = [item for item in combined_fields_list if item["user_id"] != room]
+                if any(item["user_id"] == room for item in broadcaster_data):
+                        broadcaster_data = [item for item in broadcaster_data if item["user_id"] != room]
                 
                  
                         
                         
                                 
 
-        return combined_fields_list
+        return broadcaster_data if broadcaster_data else None
 
 
 
 def home(request):
-
+        
+        items_per_page = 3  # Number of items per page
+        page_number = request.GET.get('page', 1) 
         if request.user.is_authenticated:
                 blocked_broadcasters = Bad_Acters.objects.filter(Reporty = request.user.id)
                 try:
@@ -164,7 +167,9 @@ def home(request):
                                 pass
                         
                         
-                        combined_fields_list = room_data_func(request,user_status_data.Country,user_status_data.Region)
+                        broadcaster_data = room_data_func(request,user_status_data.Country,user_status_data.Region)
+                        broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
+
                         
                 except(User_Status.DoesNotExist, User_Data.DoesNotExist):
                         if StaffManager.objects.filter(staff_id_id = request.user).exists():
@@ -184,24 +189,41 @@ def home(request):
                                         get_guest_location(request,guest_ip)
                                         guest_country = request.session.get('guest_country')
                                         guest_region = request.session.get('guest_region')
-                                        combined_fields_list = room_data_func(request,guest_country,guest_region)
+                                        broadcaster_data = room_data_func(request,guest_country,guest_region)
+                
                                         
-                                        
-                                        # rooms_list = Room_Data.objects.filter( User__Status="Broadcaster")
-                                        # room_users_data = User_Data.objects.filter( User__Status="Broadcaster")
+                                        broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
+                                
                         else:
-                                combined_fields_list = room_data_func(request,guest_country,guest_region)
+                                broadcaster_data = room_data_func(request,guest_country,guest_region)
+                                broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
+                        
+                        
+                                print(broadcaster_data,flush=True)
+                                
                                 
 
 
         return render(request, "base/home.html", locals())
 
-
+def paginate_list(page_number, user_data_list, items_per_page):
+    
+    paginator = Paginator(user_data_list, items_per_page)
+    
+    try:
+        page = paginator.page(page_number)
+    except PageNotAnInteger:
+        page = paginator.page(1)
+    except EmptyPage:
+        page = paginator.page(paginator.num_pages)
+    
+    return page
 
 def searchbroadcaster(request):
-        
+        items_per_page = 4  # Number of items per page
+        page_number = request.GET.get('page', 1) 
         if request.method == "GET":
-                
+
                 search = request.GET.get('search')
                 if search is not None:
                         
@@ -217,14 +239,15 @@ def searchbroadcaster(request):
                                         user_ids = broadcasters.values_list('User__id', flat=True)
                                         users = User.objects.filter(id__in=user_ids)    
                                                                                     
-                                        combined_fields_list = []
+                                        broadcaster_data = []
                                         for user in users:
+                                                
                                                 user_data_list = User_Data.objects.filter(User=user)
                                                 room_data_list = Room_Data.objects.filter(User=user)
                                                 
                                                 for user_data in user_data_list:
                                                         
-                                                        combined_fields_list.append({
+                                                        broadcaster_data.append({
                                                                                         "user_id": user.id,
                                                                                         "username": user.username,
                                                                                         "Image": user_data.Image.url,
@@ -252,35 +275,35 @@ def searchbroadcaster(request):
                                                 print(rooms_list,flush=True)        
                                                 for room in rooms_list:
                                         
-                                                        if any(item["user_id"] == room for item in combined_fields_list):
-                                                                combined_fields_list = [item for item in combined_fields_list if item["user_id"] != room]
+                                                        if any(item["user_id"] == room for item in broadcaster_data):
+                                                                broadcaster_data = [item for item in broadcaster_data if item["user_id"] != room]
                                                                 
                                                                 
                                                 if Bad_Acters.objects.filter(Reporty = request.user.id).exists():
                                                         blocked_broadcasters = Bad_Acters.objects.filter(Reporty = request.user.id)
                                                         for blocked_broadcaster in blocked_broadcasters:
-                                                                if any(item == blocked_broadcaster.Reported.id for item in combined_fields_list):
-                                                                        combined_fields_list = [item for item in room_list if item != blocked_broadcaster.Reported.id]
+                                                                if any(item == blocked_broadcaster.Reported.id for item in broadcaster_data):
+                                                                        broadcaster_data = [item for item in room_list if item != blocked_broadcaster.Reported.id]
                                                                                 
                                         
                                         return render(request, "base/home.html", locals())                                      
                                 else:
-                                      
-                                        combined_fields_list = []
+                                        
+                                        broadcaster_data = []
                                         guest_country = request.session.get('guest_country')
                                         guest_region = request.session.get('guest_region')
                                         
                                         user_ids = broadcasters.values_list('User__id', flat=True)
                                         users = User.objects.filter(id__in=user_ids)    
                                                                                     
-                                        combined_fields_list = []
+                                        broadcaster_data = []
                                         for user in users:
                                                 user_data_list = User_Data.objects.filter(User=user)
                                                 room_data_list = Room_Data.objects.filter(User=user)
                                                 
                                                 for user_data in user_data_list:
                                                         
-                                                        combined_fields_list.append({
+                                                        broadcaster_data.append({
                                                                                         "user_id": user.id,
                                                                                         "username": user.username,
                                                                                         "Image": user_data.Image.url,
@@ -309,20 +332,27 @@ def searchbroadcaster(request):
                                         
                                         for room in rooms_list:
                                         
-                                                if any(item["user_id"] == room for item in combined_fields_list):
-                                                        combined_fields_list = [item for item in combined_fields_list if item["user_id"] != room]
+                                                if any(item["user_id"] == room for item in broadcaster_data):
+                                                        broadcaster_data = [item for item in broadcaster_data if item["user_id"] != room]
                                                 
                                                 
                                                         
                                                         
-                                                                
+                                        broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
+                
 
-                                       
-                                print(combined_fields_list,flush=True)
+                                
+                                
+                                print(broadcaster_data,flush=True)
                                 return render(request, "base/home.html", locals())  
 
                         else:
                                 
                                 return render(request, "base/home.html", {"no_broadcaster_found": True})  
+                else:
+                        if page_number is not None:
+                                broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
+
+                        print("request is not get",flush=True)
 
 

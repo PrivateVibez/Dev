@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from .forms import *
 from .models import *
+from base.views import paginate_list
+from django.core.paginator import Paginator
 from chat.models import Private, Public
 from rooms.models import *
 from django.contrib.auth.decorators import login_required
@@ -313,78 +315,98 @@ def room_data_func(request,broadcaster_gender,user_country,user_region):
 
     return response_data
 
+
+def filter_broadcasters(user,user_country,user_region,broadcaster_gender):
+
+    
+    if broadcaster_gender is not None and broadcaster_gender != "FEATURED":
+            broadcasters = Room_Data.objects.filter(Tab=broadcaster_gender,User__Status="Broadcaster")
+    else:
+            broadcasters = Room_Data.objects.filter(User__Status="Broadcaster")
+    print(broadcaster_gender,flush=False)
+    
+    user_ids = broadcasters.values_list('User__id', flat=True)
+    users = User.objects.filter(id__in=user_ids)    
+                                                
+    combined_fields_list = []
+    for user in users:
+            user_data_list = User_Data.objects.filter(User=user)
+            room_data_list = Room_Data.objects.filter(User=user)
+            
+            for user_data in user_data_list:
+                    
+                    combined_fields_list.append({
+                                                    "user_id": user.id,
+                                                    "username": user.username,
+                                                    "Image": user_data.Image.url,
+                                                    })
+
+    
+    rooms_list = []
+    
+    for broadcaster in broadcasters:
+                                            
+            country_blocked = False
+            region_blocked = False
+            for blocked_country in broadcaster.Blocked_Countries.all():
+                    if blocked_country.Country.code2 == user_country:
+                            country_blocked = True
+                            break  # If the user's country is blocked, no need to check other blocked countries
+            
+            for blocked_region in broadcaster.Blocked_Regions.all():
+                    if blocked_region.Region.display_name == user_region:
+                            region_blocked = True
+                            break
+            if country_blocked or region_blocked:
+                    rooms_list.append(broadcaster.User.id)
+                    
+    
+            for room in rooms_list:
+    
+                    if any(item["user_id"] == room for item in combined_fields_list):
+                            combined_fields_list = [item for item in combined_fields_list if item["user_id"] != room]
+                            
+                            
+            if Bad_Acters.objects.filter(Reporty = user).exists():
+                    blocked_broadcasters = Bad_Acters.objects.filter(Reporty = request.user.id)
+                    for blocked_broadcaster in blocked_broadcasters:
+                            if any(item == blocked_broadcaster.Reported.id for item in combined_fields_list):
+                                    combined_fields_list = [item for item in room_list if item != blocked_broadcaster.Reported.id]
+    
+    return combined_fields_list
+
+
+
 def get_broadcaster(request):
         
         if request.method == 'GET':
-            
+            items_per_page = 4  # Number of items per page
+            page_number = request.GET.get('page', 1) 
             broadcaster_gender = request.GET.get('Tab')
+            
             if request.user.is_authenticated:
+                
                 user = request.user
                 user_country = user.Country
                 user_region = user.Region
-                if broadcaster_gender is not None and broadcaster_gender != "FEATURED":
-                        broadcasters = Room_Data.objects.filter(Tab=broadcaster_gender,User__Status="Broadcaster")
-                else:
-                        broadcasters = Room_Data.objects.filter(User__Status="Broadcaster")
-                print(broadcaster_gender,flush=False)
-                user_ids = broadcasters.values_list('User__id', flat=True)
-                users = User.objects.filter(id__in=user_ids)    
-                                                            
-                combined_fields_list = []
-                for user in users:
-                        user_data_list = User_Data.objects.filter(User=user)
-                        room_data_list = Room_Data.objects.filter(User=user)
-                        
-                        for user_data in user_data_list:
-                                
-                                combined_fields_list.append({
-                                                                "user_id": user.id,
-                                                                "username": user.username,
-                                                                "Image": user_data.Image.url,
-                                                                })
+                
+                broadcaster_data = filter_broadcasters(user,user_country,user_region,broadcaster_gender) 
+                broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
 
-                
-                rooms_list = []
-                
-                for broadcaster in broadcasters:
-                                                        
-                        country_blocked = False
-                        region_blocked = False
-                        for blocked_country in broadcaster.Blocked_Countries.all():
-                                if blocked_country.Country.code2 == user_country:
-                                        country_blocked = True
-                                        break  # If the user's country is blocked, no need to check other blocked countries
-                        
-                        for blocked_region in broadcaster.Blocked_Regions.all():
-                                if blocked_region.Region.display_name == user_region:
-                                        region_blocked = True
-                                        break
-                        if country_blocked or region_blocked:
-                                rooms_list.append(broadcaster.User.id)
-                                
-               
-                        for room in rooms_list:
-                
-                                if any(item["user_id"] == room for item in combined_fields_list):
-                                        combined_fields_list = [item for item in combined_fields_list if item["user_id"] != room]
-                                        
-                                        
-                        if Bad_Acters.objects.filter(Reporty = request.user.id).exists():
-                                blocked_broadcasters = Bad_Acters.objects.filter(Reporty = request.user.id)
-                                for blocked_broadcaster in blocked_broadcasters:
-                                        if any(item == blocked_broadcaster.Reported.id for item in combined_fields_list):
-                                                combined_fields_list = [item for item in room_list if item != blocked_broadcaster.Reported.id]
-                print(combined_fields_list,flush=True)                          
                 return render(request, "base/home.html", locals())          
  
             else:
                 if request.user.is_anonymous:
+                        user = request.user
                         guest_ip = request.session.get('ip_address')
                         guest_country = request.session.get('guest_country')
                         guest_region = request.session.get('guest_region')
                         
-                        response_data = room_data_func(request,broadcaster_gender,guest_country,guest_region)
-                        return JsonResponse(response_data, safe=False)
+                        broadcaster_data = filter_broadcasters(user,guest_country,guest_region,broadcaster_gender)
+                        broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
+
+                        print(broadcaster_data,flush=True) 
+                        return render(request, "base/home.html", locals()) 
 
 
 

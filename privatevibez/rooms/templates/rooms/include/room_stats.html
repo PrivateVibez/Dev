@@ -1,29 +1,34 @@
 <div class="msg-list-fvm message-list container-fluid" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
 
-
-
   <div class="msg-text row gap-3" style="font-family: Tahoma, Arial, Helvetica, sans-serif; box-sizing: border-box; padding: 2px 5px 3px; overflow-wrap: break-word; word-break: break-word;">
 
-    <h3 style='color:crimson; margin:10px 0 0 10px;'>Room Stats</h3>
-      <div class="my-2 col-2">
+    <h3 class="display-5" style='color:crimson; margin:10px 0 0 10px;'>Room Stats</h3>
+      <div class="my-2 col-6">
 
-        <span id="nb_toys_viewers">Viewers: 0</span>
-          
-          <div class="my-2">Total earned: {{room_data.Earnings}}</div>
+          <table class="table table-borderless">
+            <thead>
+              <tr>
+                <th scope="col"><span class="display-6">Viewers</span></th>
+                <th scope="col"><span class="display-6">Number of explosions</span></th>
+                <th scope="col"><span class="display-6">Total Earned</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row"><p class="h3"><strong>{{room_data.Total_Viewers}}</strong></p></th>
+                <td><p class="h3"><strong>None</strong></p></td>
+                <td><p class="h2"><strong>{{room_data.Revenue}}</strong></p></td>
+              </tr>
 
-          <div class="my-2">Number of explosions : {{room_data.Explosions}}</div>
+            </tbody>
+          </table>
       </div>
-
-
-      <div class="my-2 col-2">
-
-      </div>
-
-
 
   </div>
 
 
+  <!--Room Hashtags-->
+  
   <div class="row">
     <span class="font-weight-bold">Hashtags:</span>
 

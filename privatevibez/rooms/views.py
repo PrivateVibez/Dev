@@ -559,6 +559,14 @@ def availed_item(user,room_id,item,price):
     room = Room_Data.objects.get(User_id=room_id)
     item = Item_Availed.objects.create(Room=room,User=user,Item=item, Cost=price)
     user_data.Availed.add(item)
+    
+    # add revenues
+    if room.Revenue is not None:
+        room.Revenue = room.Revenue + int(price)
+    else:
+        room.Revenue = int(price)
+    room.save()
+    
     # Get the channel layer
     channel_layer = get_channel_layer()
     channel_name = "broadcaster_visitor_" + str(room_id)

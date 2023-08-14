@@ -6,6 +6,8 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name="Main_home"),
+    
+    # url for searching broadcaster
     path('searchbroadcaster/', views.searchbroadcaster, name="searchbroadcaster"),
     
 ]

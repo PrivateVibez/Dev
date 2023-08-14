@@ -61,7 +61,10 @@
 
 
                     <div class="roomSubjectTooltip roomSubjectToolTipColor" data-testid="room-subject-tooltip" style="width: 500px; visibility: hidden;">Goal reached!  Thanks to all tippers! #teen #18 #shy #young #skinny</div>
+
                 </div>
+
+
                 <div ts="j0" id="TheaterModePlayer" data-listener-count-fullscreenchange="1" style="height: 322.312px; width: 100%; position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; background-color: rgb(0, 0, 0);border-radius:6px;">
 
                     <div ts="EQ" class="videoPlayerDiv" style="height: 100%; width: 100%; position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; background: url({% static './images/bg/cam_notice_bg.jpg' %}) center center / cover rgb(51, 51, 51); left: 0px;">
@@ -164,19 +167,27 @@
 
                                 <div class="list_tip_btn" Style="background-color:black;border:7px solid black; border-radius:6px;">
 
-                                    <div class="tip_btn" style="background-color:lightcoral; {% if user_data == None and user_data.Vibez < 10 %}cursor:not-allowed {% endif %}"  
-                                    {% if user_data != None or user_data.Vibez > room_data.Price_MMM_button %} onclick="confirm_send(number = '{{room_data.Price_MMM_button}}', btn='mmm')" 
-                                    {% endif %}>
+                                    <div class="tip_btn" style="background-color:lightcoral;
+                                    {% if user_data == None and user_data.Vibez < 10 %}
+                                    cursor:not-allowed 
+                                    {% endif %}"
+                                    {% if user_datas != None or user_datas.Vibez > room_data.Price_MMM_button %}
+                                     onclick="confirm_send(number = '{{room_data.Price_MMM_button}}', btn='mmm')"
+                                     {% endif %}>
 
                                         <div>MMM</div>
 
-                                        <lottie-player src="https://lottie.host/441e1aa5-2ddf-40d1-b0ed-b7eacd9c2ded/tG0pVeXDFC.json"  background="transparent"  speed="0.5"  style="height: 20px;"  loop autoplay></lottie-player>
+                                    <lottie-player src="https://lottie.host/441e1aa5-2ddf-40d1-b0ed-b7eacd9c2ded/tG0pVeXDFC.json"  background="transparent"  speed="0.5"  style="height: 20px;"  loop autoplay></lottie-player>
 
                                         <p style="font-size:10px;">{{room_data.Price_MMM_button}} Vibez</p>
+
                                     </div>
 
-                                    <div class="tip_btn" style="background-color:lightsalmon; {% if user_data == None or user_data.Vibez < room_data.Price_OH_button %}cursor:not-allowed {% endif %}" 
-                                    {% if user_data != None or user_data.Vibez > room_data.Price_OH_button %} 
+                                    <div class="tip_btn" style="background-color:lightsalmon; 
+                                    {% if user_datas == None or user_datas.Vibez < room_data.Price_OH_button %}
+                                    cursor:not-allowed 
+                                    {% endif %}" 
+                                    {% if user_datas != None or user_datas.Vibez > room_data.Price_OH_button %} 
                                     onclick="confirm_send(number = '{{room_data.Price_OH_button}}', btn='oh')" {% endif %}>
 
                                         <div>OH</div>
@@ -184,12 +195,13 @@
                                         <lottie-player src="https://lottie.host/441e1aa5-2ddf-40d1-b0ed-b7eacd9c2ded/tG0pVeXDFC.json"  background="transparent"  speed="1.5"  style="height: 20px;"  loop autoplay></lottie-player>
 
                                         <p style="font-size:10px;">{{room_data.Price_OH_button}} Vibez</p>
+
                                     </div>
 
                                     <div class="tip_btn" style="background-color: lightgreen;
-                                    {% if user_data == None or user_data.Vibez < room_data.Price_OHYes_button %}
+                                    {% if user_datas == None or user_datas.Vibez < room_data.Price_OHYes_button %}
                                     cursor:not-allowed {% endif %}"  
-                                    {% if user_data != None or user_data.Vibez > room_data.Price_OHYes_button %} 
+                                    {% if user_datas != None or user_datas.Vibez > room_data.Price_OHYes_button %} 
                                     onclick="confirm_send(number = '{{room_data.Price_OHYes_button}}', btn='ohyes')" {% endif %}>
 
                                         <div>OH YES</div>
@@ -197,6 +209,7 @@
                                         <lottie-player src="https://lottie.host/441e1aa5-2ddf-40d1-b0ed-b7eacd9c2ded/tG0pVeXDFC.json"  background="transparent"  speed="2.5"  style="height: 20px;"  loop autoplay></lottie-player>
 
                                         <p style="font-size:10px;">{{room_data.Price_OHYes_button}} Vibez</p>
+
                                     </div>
                                 </div>
                             </div>
@@ -204,13 +217,13 @@
                     </div>
 
                     {% else %}
-                    <div class="container">
+                <div class="container">
                     <div class="row justify-content-center">
                     <script type="text/javascript" data-cfasync="false" async src="https://poweredby.jads.co/js/jads.js"></script>
                     <ins id="1031041" data-width="468" data-height="72"></ins>
                     <script type="text/javascript" data-cfasync="false" async>(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1031041});</script>
                     </div>
-                    </div>
+                </div>
                     {% endif %}
 
                 </div>
@@ -226,6 +239,7 @@
                             <button class="tab nav-link" id="nav-chat-tab" data-bs-toggle="tab" data-bs-target="#nav-chat" type="button" role="tab" aria-controls="nav-chat" aria-selected="false">Chat</button>
 
                             {% if request.user.is_authenticated %}
+
                             <button class="tab nav-link active" id="nav-interact-tab" data-bs-toggle="tab" data-bs-target="#nav-interact" type="button" role="tab" aria-controls="nav-interact" aria-selected="true">Interact</button>
 
 
@@ -233,6 +247,7 @@
 
 
                             <button class="tab nav-link" id="nav-connect-my-toy-tab" data-bs-toggle="tab" data-bs-target="#nav-connect-my-toy" type="button" role="tab" aria-controls="nav-connect-toy" aria-selected="false">Connect My Toy</button>
+
                             {% endif %}
                         </div>
                     </div>
@@ -243,6 +258,7 @@
                             <!-- interact -->
 
                             {% if request.user.is_authenticated %}
+
                             <div class="tab-pane fade show active" id="nav-interact" role="tabpanel" aria-labelledby="nav-note-tab">
 
                                 <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
@@ -270,12 +286,17 @@
                                           <div class="tab-pane fade" id="v-pills-Slots" role="tabpanel" aria-labelledby="v-pills-Slots-tab" tabindex="0">
                                             <div id="slot" class="container-fluid">
                                             {% if request.user.is_authenticated %}
+
                                             {% include "rooms/include/slot_machine.html" %}
+
                                             {% else %}
+
                                             <h3 style='color:crimson; margin:10px 0 0 10px;'>
                                                 Please Login to play
                                             </h3>
+
                                             {% endif %}
+
                                             </div>
                                           </div>
                                         </div>
@@ -283,12 +304,15 @@
 
                                 </div>
                             </div>
+
                             {% endif %}
 
                             <div class="tab-pane fade" id="nav-chat" role="tabpanel" aria-labelledby="nav-chat-tab">
+
                                 {% if room_data.Public_Chat == True %}
 
                                     <div id="public_chat_room_messages" style="min-width: 462px; max-height: 404px; overflow: auto; padding-bottom: 25px; padding-right: 8px;">
+
                                     {% for msg in public_chat %}
                                     {% if msg.User == user %}
 
@@ -326,6 +350,7 @@
                                             </div>
                                         </form>
                                     </div>
+
                                 {% else %}
                                 
                                 <div class="msg-list-fvm message-list" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
@@ -352,21 +377,6 @@
                                         {{ msg.Message }}
                                     </div> 
 
-                            
-                                    
-                             
-                                    
-
-
-    
-                                    
- 
-
-                                 
-
-
-
-                              
                                     {% endfor %}
                                     
                                     {% comment %} Message box {% endcomment %}
@@ -395,11 +405,15 @@
                                 </div>
 
                                 {% else %}
+
                                 <div class="col d-flex justify-content-center align-items-center" style="height:50%;">
 
                                   
-                                    <button class="btn btn-primary display-3" id="private_chat_room_back_button" onclick="invite_model_chat({{room_data.User.id}})" id="invite_model_chat" style="width:150px; font-size:1rem; height:50px; left: 0px;">Invite Model to a private chat</button>
-                                    </div>
+                                <button class="btn btn-primary display-3" id="private_chat_room_back_button" onclick="invite_model_chat({{room_data.User.id}})" id="invite_model_chat" style="width:150px; font-size:1rem; height:50px; left: 0px;">
+                                    Invite Model to a private chat
+                                </button>
+                            </div>
+
                                  {% endif %}
 
                                 {% endif %}
@@ -419,7 +433,11 @@
                                     <center>
                                         <div id="start-vibes">
 
-                                            <h2 class="mt-3"><a> Price is {{room_Data.Price_share_vibes}} vibez per minute. </a></h2>
+                                        <h2 class="mt-3">
+
+                                        <a> Price is {{room_Data.Price_share_vibes}} vibez per minute. </a>
+
+                                        </h2>
 
                                             <span>
                                                 <button class="btn btn-success mt-2" onclick="lovense_viewer()" id="start">
@@ -431,9 +449,11 @@
                                         </div>
 
                                         <div id="wrapper_connect_viewer" class="container" style="display: none">
+
                                             <h3 class="mt-2 mb-3">Scan the QR code with your lovense app</h3>
                                             <img src="" id="qrcode_viewer"><br><br>
                                             <button class="btn btn-danger" onclick="stop_lovense_viewer">Stop</button>
+
                                         </div>
 
                                     </center>
@@ -455,13 +475,15 @@
 
 <!--ADS-->
 {% if not request.user.is_authenticated %}
+
 <div class="container-fluid">
     <div class="row justify-content-center align-content-center">
         <script type="text/javascript" data-cfasync="false" async src="https://poweredby.jads.co/js/jads.js"></script>
         <ins id="1031045" data-width="728" data-height="102"></ins>
         <script type="text/javascript" data-cfasync="false" async>(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1031045});</script>
     </div>
-    {% endif %}
+
+{% endif %}
 
 <div ts="x_" class="BaseTabsContainer" id="BottomBoxContainer" style="height: 446.312px; width: 98.5%; -webkit-tap-highlight-color: transparent; display: inline-block; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; border-radius: 4px 4px 2px 2px; margin: 10px 0px 0px 10px; box-sizing: border-box;">
 
@@ -493,6 +515,7 @@
                         </span>
 
                     {% endif %}
+
                     {% if thumbs_Down_color is True %}
 
                         <span class="ml-4" onclick="Thumb_Down()" stlye="cursor:none;">
@@ -515,9 +538,13 @@
                     <div id="follow">
                         <span>
                                 {% if follow_button is True %}
+
                                 Following
+
                                 {% else %}
+
                                 + Follow
+
                                 {% endif %}
                         </span>
                     </div>
@@ -526,9 +553,11 @@
             </div>
 
             {% else %}
+
             <div class="pull-right">
                 <a href="{% url 'Registration' %}"><p class="h-2">Sign up now and enjoy the vibez!</p></a>
             </div>
+
             {% endif %}
         </div>
     </div>
@@ -626,12 +655,18 @@
 
                             <div class="tab-content" id="v-pills-tabContent">
                                 <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+
                                     <input class="realButtons" type="file" name="profile_pic" style="width: 400px!important;height:50px!important;border:none!important">
+
                                     <p class="text-light">Please Select a Profile Pic</p>
+
                                     <button type='submit' class="realButtons rounded-pill bg-danger text-light p-3" name='Edit_Profile_settings' value='submit' style="border:none;">Submit</button>
+
                                 </div>
+
                                 <div class="tab-pane fade" id="v-pills-vibes" role="tabpanel" aria-labelledby="v-pills-vibes-tab">
                                 </div>
+
                             </div>
 
                         </div>
@@ -670,7 +705,9 @@
         </div>
     </div>
 </div>
-<!-- Modal -->
+
+
+<!-- Modal for buying vibez -->
 <div class="modal fade" style="color:black;" id="Buy_Vibez_Modal" tabindex="-1" role="dialog" aria-labelledby="Buy_Vibez_Modal_Label" aria-hidden="true">
 
     <div class="modal-dialog" role="document">
@@ -797,7 +834,7 @@
 </div>
 
 
-{% comment %} MODAL FOR USERS WHO ARE NOT LOGGED IN {% endcomment %}
+<!--MODAL FOR USERS WHO ARE NOT LOGGED IN --> 
 <div class="modal fade" id="loginfirst" tabindex="-1" role="dialog" aria-labelledby="loginfirst" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
