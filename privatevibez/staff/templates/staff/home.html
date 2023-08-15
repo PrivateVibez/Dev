@@ -23,8 +23,8 @@
 
                     {% if perms.staff.can_view_dashboard %}
                     <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">
-                        <span class="me-2"><i class="bi bi-speedometer2"></i></span>
-                        <span>Dashboard</span>
+                        <span class="me-2 text-white"><i class="bi bi-speedometer2"></i></span>
+                        <span class="text-white">Dashboard</span>
                     </button>
                     {% endif %}
                     {% comment %} MESSAGES {% endcomment %}
@@ -33,7 +33,7 @@
                     {% if perms.staff.can_view_inbox %}
                     <button class="nav-link" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-inbox" type="button" role="tab" aria-controls="v-pills-inbox" aria-selected="true">
                         <span class="me-2"><i class="bi bi-speedometer2"></i></span>
-                        <span>Messages</span>
+                        <span class="text-white">Messages</span>
                     </button>
                     {% endif %}
 
@@ -42,14 +42,14 @@
                     {% if perms.staff.can_view_staff %}
                     <button class="nav-link" id="v-pills-createstaff-tab" data-bs-toggle="pill" data-bs-target="#v-pills-createstaff" type="button" role="tab" aria-controls="v-pills-createstaff" aria-selected="true">
                         <span class="me-2"><i class="bi bi-speedometer2"></i></span>
-                        <span>Staff</span>
+                        <span class="text-white">Staff</span>
                     </button>
                     {% endif %}
 
                     {% comment %} MEMOS {% endcomment %}
                     <button class="nav-link" id="v-pills-memos-tab" data-bs-toggle="pill" data-bs-target="#v-pills-memos" type="button" role="tab" aria-controls="v-pills-memos" aria-selected="true">
                         <span class="me-2"><i class="bi bi-speedometer2"></i></span>
-                        <span>Memos</span>
+                        <span class="text-white">Memos</span>
                     </button>
 
 
@@ -61,27 +61,31 @@
                         People
                     </div>
 
-                    <button class="nav-link d-flex justify-content-between" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">
+                    <button class="nav-link d-flex justify-content-between" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-idcheck" type="button" role="tab" aria-controls="v-pills-idcheck" aria-selected="false">
                         <div>
                             <span class="me-2"><i class="bi bi-credit-card-2-front"></i></span>
-                            <span>ID Check</span>
+                            <span class="text-white">ID Check</span>
                         </div>
                         <span class="badge bg-light text-dark" id="id_check_len">0</span>
                     </button>
+
+
                     {% endif %}
 
                     {% if perms.staff.can_view_bad_acters %}
-                    <button class="nav-link d-flex justify-content-between" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">
+
+                    <button class="nav-link d-flex justify-content-between" id="v-pills-badacters-tab" data-bs-toggle="pill" data-bs-target="#v-pills-badacters" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">
                         <div>
                             <span class="me-2"><i class="bi bi-person-lines-fill"></i></span>
-                            <span>Bad Acters</span>
+                            <span class="text-white">Bad Acters</span>
                         </div>
                         <span class="badge bg-light text-dark" id="bad_act_len">
                             {% if total_bad_acters_count %}
                             {{total_bad_acters_count}}
                             {% endif %}
                         </span>
-                    </button> 
+                    </button>
+
                     {% endif %}
 
 
@@ -96,7 +100,7 @@
 
                     <button class="nav-link" id="v-pills-To_Do-tab" data-bs-toggle="pill" data-bs-target="#v-pills-To_Do" type="button" role="tab" aria-controls="v-pills-To_Do" aria-selected="false">
                         <span class="me-2"><i class="bi bi-list-check"></i></span>
-                        <span>To Do List</span>
+                        <span class="text-white">To Do List</span>
                     </button>
                     {% endif %}
 
@@ -135,36 +139,22 @@
 
         
         {% if perms.staff.can_view_id_check %}
-        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+        <div class="tab-pane fade" id="v-pills-idcheck" role="tabpanel" aria-labelledby="v-pills-profile-tab">
             {% include 'staff/include/id_check.html'%}
         </div>
         {% endif %}
 
         {% if perms.staff.can_view_bad_acters %}
-        <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+        <div class="tab-pane fade" id="v-pills-badacters" role="tabpanel" aria-labelledby="v-pills-messages-tab">
             {% include 'staff/include/bad_acters.html'%}
         </div>
         {% endif %}
 
-        {% comment %} MEMOS {% endcomment %}
 
-        <div class="tab-pane fade" id="v-pills-memos" role="tabpanel" aria-labelledby="v-pills-memos-tab">
-            {% include 'staff/include/memos.html'%}
-        </div>
-    
-
-
-
-        {% comment %} <div class="tab-pane fade" id="v-pills-To_Do" role="tabpanel" aria-labelledby="v-pills-To_Do-tab">
-            {% include 'staff/include/To_Do.html'%}
-        </div> {% endcomment %}
     </div>
     
+  </div>
 </div>
-</div>
-    
-
-
 
 
 {% endblock content %}

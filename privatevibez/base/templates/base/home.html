@@ -85,8 +85,8 @@
     <div class="d-flex justify-content-center p-2">
         <div class="col-8">
             <form method="GET" action="{% url 'searchbroadcaster' %}" class="form-inline my-2 my-lg-0 d-flex justify-content-center">
-                <input class="form-control mr-sm-2 w-50" style="height:40px" name="search" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0 col-1 font-weight-bold" style="height:40px" type="submit">Search</button>
+                <input class="form-control mr-sm-2 w-50" style="height:40px" name="search" value="{% if search %}{{search}}{% endif %}" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn my-2 my-sm-0 col-1 btn-outline-dark font-weight-bold" style="height:40px; color:#6cc6ba" type="submit"><p class="h4 font-weight-bold">Search</p></button>
               </form>
         </div>
     </div>
@@ -106,7 +106,7 @@
             {% endif %}
 
 
-            <div class="col-9" style="border:2px solid black;border-radius: 6px">
+            <div class="col-9" style="border:2px solid black;border-radius: 6px; padding:0px">
                 <ul class="nav nav-tabs" id="myTab" role="tablist" style="width:100%;background-color:black;border-radius: 6px 6px 0px 0px;">
                     <li class="nav-item" role="presentation">
 
@@ -165,7 +165,8 @@
 
                 </div>
 
-                <nav aria-label="" style="width:min-content; display:contents; position:absolute">
+            <div class="container-fluid mb-5">
+                <div aria-label="" class="" style="width:min-content; position:absolute; margin-botton:0px">
                     {% if broadcaster_data.has_previous %}
                     <ul class="pagination col-2" style="width:min-content;">
                         <li class="page-item">
@@ -179,7 +180,8 @@
                       </li>
                       {% endif %}
                     </ul>
-                  </nav>
+                  </div>
+                </div>
                   
             </div>
             {% if not request.user.is_authenticated %}

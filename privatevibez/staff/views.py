@@ -141,19 +141,24 @@ def Id_Status(request):
         user_status = User.objects.get(id=user_id)
        
         if request.POST.get('Status') == 'Decline':
+                
                 user_status.Status = "Decline_Broadcaster"
                 user_status.Decline_Message = request.POST.get('message')
                 user_status.save()
+                
                 return JsonResponse('OK', safe=False) 
 
 
 
 @csrf_exempt
 def Create_Staff(request):
+        
     if request.method == "POST":
         form =UserRegisterForm(request.POST)
         if form.is_valid():
+                
             form.save()
+            
             username = form.cleaned_data.get('username')
             user     = authenticate(request, username=username, password=form.cleaned_data.get('password1'))
             login(request, user)
@@ -164,7 +169,9 @@ def Create_Staff(request):
             
             messages.success(request, f'Account Created for {username}!')
             return redirect(request.META.get('HTTP_REFERER', '/'))
+    
         else:
+                
             print(form.errors)
             messages.error(request, form.errors)
     else:    
@@ -180,6 +187,7 @@ def deleteStaff(request):
        
         staff = User.objects.get(id=staff_id)
         staff.delete()
+        
         return JsonResponse({'message': 'Staff deleted successfully.'})
 
 
@@ -214,6 +222,7 @@ def getStaffInformation(request):
         
         staff_id = request.GET.get('staff')
         staff = StaffManager.objects.values('email','fname','lname','address').get(staff_id_id=staff_id)
+        
         staff_id_and_profile_pic_and_bday = StaffManager.objects.values('profile_pic','birthday').get(staff_id_id=staff_id)
         
         staff_profile_pic = staff_id_and_profile_pic_and_bday['profile_pic']
@@ -228,6 +237,7 @@ def editStaffPermission(request):
 
                 user = User.objects.get(id=request.POST.get('staff')) 
                 permission_codenames = request.POST.getlist('existing_permissions')
+                
                 content_type = ContentType.objects.get_for_model(StaffManager)
                 permissions = Permission.objects.filter(content_type=content_type, codename__in=permission_codenames)
                 
@@ -243,6 +253,7 @@ def sendStaffInvitation(request):
                 
                 form = AddStaffPermission(request.POST)
                 if form.is_valid():
+                        
                         email = form.cleaned_data['email']
                         permissions = form.cleaned_data['permissions']
 
@@ -259,6 +270,7 @@ def sendStaffInvitation(request):
                         
                         # send email to staff
                         message = "click the link and fill in the form:\n\nhttp://127.0.0.1:8000/staff/staffRegistration/"
+                        
                         send_mail('Staff Invitation!', message, settings.EMAIL_HOST, [email])
 
                         messages.success(request, f'Invitation Sent!')
@@ -403,7 +415,7 @@ def save_memo(request):
                         for recipient in recipients:
                                 memo.To.add(recipient)
                                 
-                                            # Assuming your static folder is located at "static/"
+                        # Assuming your static folder is located at "static/"
                         # Get the directory where views.py is located
                         views_directory = os.path.dirname(os.path.abspath(__file__))
 

@@ -1,5 +1,20 @@
 
+const loadingScreen = document.getElementById('loading');
+    
+// Show the loading screen before making the AJAX request
+function showLoadingScreen() {
+    loadingScreen.style.display = 'block';
+}
+
+// Hide the loading screen after the AJAX request is complete
+function hideLoadingScreen() {
+    loadingScreen.style.display = 'none';
+}
+
+
+
 function ID_Next(){
+  showLoadingScreen();
     $.ajax({
         method:'POST',
         url: "/accounts/saveBroacasterInfo/",
@@ -14,11 +29,14 @@ function ID_Next(){
             success:function(){
               document.getElementById('info_box').style.display='none'
               document.getElementById('id_card_box').style.display='block'
+
+              hideLoadingScreen();
               }
     })
 }
 
 function Stumiting_id_words(){  
+    showLoadingScreen();
     const file = document.getElementById('Id_Card_File').files[0];
     const id_card_file = new FormData();
     id_card_file.append('file', file);
@@ -34,7 +52,7 @@ function Stumiting_id_words(){
             document.getElementById('id_card_box').style.display='none'
             document.getElementById('Not_Shown_questions').style.display='none'
             document.getElementById('Stumiting_id_words').style.display='block'
-
+            hideLoadingScreen();
             },
         error: function(error) {
           console.log(error.responseText);
@@ -43,6 +61,7 @@ function Stumiting_id_words(){
 }
 
 function Next_Profile_Image(){
+    
     document.getElementById('Registration_words').style.display='none'
     document.getElementById('Stumiting_id_words').style.display='none'
     document.getElementById('Shown_questions').style.display='block'
@@ -67,7 +86,7 @@ function Next_bio(){
             document.getElementById('bio_words').style.display='block'
             document.getElementById('Profile_pic_words').style.display='none'
             document.getElementById('profile_pic_box').style.display='none'
-        
+            hideLoadingScreen();
             }
     })
 }
@@ -75,6 +94,7 @@ function Next_bio(){
 let cropper;
 
 function readImage(input) {
+
     if (input.files && input.files[0]) {
       var reader = new FileReader();
 
@@ -115,7 +135,7 @@ function readImage(input) {
 
 
 function done(){
-
+      showLoadingScreen();
       const croppedCanvas = cropper.getCroppedCanvas();
       croppedCanvas.toBlob(function (blob) {
         // Create a new FormData object
@@ -148,6 +168,8 @@ function done(){
             document.getElementById('bio_words').style.display = 'none'
             document.getElementById('Shown_questions').style.display = 'none'
             document.getElementById('Done_box').style.display = 'block'
+
+            hideLoadingScreen();
           },
           error: function (xhr, status, error) {
             console.error('Error sending the AJAX request:', error.responseText);

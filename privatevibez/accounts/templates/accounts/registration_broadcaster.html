@@ -4,8 +4,16 @@
 {% block content %}
 
 
-
 <section class="vh-100" style="background-color: #6cc6ba;">
+
+
+<div class="loading-wrapper" id="loading" style="position: absolute;
+top: 50%;
+left: 50%;
+z-index: 1;
+display:none;">
+  {% include "accounts/components/loading.html" %}
+  </div>
 
   <div class="container py-5 h-100">
     
@@ -28,7 +36,6 @@
                   </i>
                   <span class="h1 fw-bold mb-0">Interactive Pleasures</span>
                 </div>
-
 
                 <h5 class="fw-normal mb-3 pb-3" id="Dice_words" style="letter-spacing: 1px;display:none;">Rool That Dice</h5>
 
@@ -77,7 +84,7 @@
 
                   </div>
                   <div class="pt-1 mb-4">
-                    <button type="button" onclick ="ID_Next()" class="btn btn-dark btn-lg btn-block">Next to id</button>
+                    <button type="button" onclick ="ID_Next()" class="btn btn-dark btn-lg btn-block">Next</button>
                   </div>
                 </div>
 
@@ -102,11 +109,11 @@
 
                     <p class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;"> The last questions will not be shared with anyone outside the staff of PrivateVibez</p>
 
-                    <p class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;"> While we are going through the information you have summit you can fill the rest of your bio out to get you room ready</p>
+                    <p class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;"> While we are going through the information you have summit you can fill the rest of your bio out to get your room ready</p>
 
                   </div>
                   <div class="pt-1 mb-4">
-                      <button  type="button" onclick ="Next_Profile_Image()" class="btn btn-dark btn-lg btn-block" type="button">Next ProfileImage</button>
+                      <button  type="button" onclick ="Next_Profile_Image()" class="btn btn-dark btn-lg btn-block" type="button">Next</button>
                   </div>
                 </div>
 
@@ -220,7 +227,9 @@
       </div>
     </div>  
   </div>
+
 </section>
+
 
 
 

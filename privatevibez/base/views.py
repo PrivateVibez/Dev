@@ -9,6 +9,7 @@ from django.contrib import messages
 from staff.models import StaffManager
 from django.shortcuts import redirect
 import requests
+from django.contrib.sessions.models import Session
 from accounts.serializers import User_DataSerializer, Room_DataSerializer,UserSerializer
 from rest_framework.renderers import JSONRenderer
 from rest_framework.parsers import JSONParser
@@ -143,7 +144,7 @@ def room_data_func(request,user_country,user_region):
 
 def home(request):
         
-        items_per_page = 3  # Number of items per page
+        items_per_page = 4  # Number of items per page
         page_number = request.GET.get('page', 1) 
         if request.user.is_authenticated:
                 blocked_broadcasters = Bad_Acters.objects.filter(Reporty = request.user.id)
@@ -336,8 +337,9 @@ def searchbroadcaster(request):
                                                         broadcaster_data = [item for item in broadcaster_data if item["user_id"] != room]
                                                 
                                                 
-                                                        
-                                                        
+                                        # Store broadcaster data in a session
+                                        request.session['user_data_list'] = broadcaster_data 
+                                                   
                                         broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
                 
 
@@ -351,8 +353,10 @@ def searchbroadcaster(request):
                                 return render(request, "base/home.html", {"no_broadcaster_found": True})  
                 else:
                         if page_number is not None:
+                                # get the stored broadcaster data
+                                broadcaster_data = request.session.get('user_data_list')
                                 broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
-
+                                return render(request, "base/home.html", locals())  
                         print("request is not get",flush=True)
 
 

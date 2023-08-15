@@ -278,7 +278,21 @@
             </ul>  
             <div class="tab-content" id="myTabContent">
 
-                <div class="tab-pane fade show active" id="Profile_Image" role="tabpanel" aria-labelledby="Profile_Image-tab">Profile_Image</div>
+                <div class="tab-pane fade show active" id="Profile_Image" role="tabpanel" aria-labelledby="Profile_Image-tab">
+                    
+                    <form method="POST" enctype="multipart/form-data" action="{% url 'Profile_Pic' %}"
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="">
+                            {% if user_datas.Image %}
+                            <img src="P{{user_datas.Image}}" alt="profile_picture" class="img-responsive">
+                            {% endif %}
+                        </div>
+                        <div class="">
+                            <span class="">{{user_datas.User.username}}</span>
+                        </div>
+                    </div>
+                </div>
 
 
                 {% block broadcast_info %}

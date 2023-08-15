@@ -112,7 +112,7 @@ def Room(request, Broadcaster):
                                 invite_accepted = True
                                 
                             if user_data.id == request.user.id and user_data.Is_Accepted_Invite == False and user_data.Is_Sent_Invite == True:
-                                invite_sent = False
+                                invite_sent = True
                                 
                 except Private_Chat_Invitee.DoesNotExist:
                         invitee_list = []
@@ -492,19 +492,24 @@ def invite_private_chat(request):
         
         broadcaster = User.objects.get(id = broadcaster_id)
         user = User.objects.get(id = user_id)
+        user.Is_Sent_Invite = True
+        user.save()
         
         if Private_Chat_Invitee.objects.filter(broadcaster = broadcaster).exists():
             broadcaster = Private_Chat_Invitee.objects.get(broadcaster = broadcaster)
             broadcaster_invitee_list = broadcaster.Invitee.all()
+            
+
             if user not in broadcaster_invitee_list:
                 broadcaster.Invitee.add(user)
-                invitee_instance = Private_Chat_Invitee.objects.get(Invitee=user)
-                invitee_instance.Is_Sent_Invite = True
+
+         
+
+                    
         else:
             broadcaster = Private_Chat_Invitee.objects.create(broadcaster=broadcaster)
             broadcaster.Invitee.add(user)
-            invitee_instance = Private_Chat_Invitee.objects.get(Invitee=user)
-            invitee_instance.Is_Sent_Invite = True
+
 
         
         
