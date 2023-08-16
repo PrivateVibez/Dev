@@ -12,7 +12,7 @@
     <div class="offcanvas offcanvas-start sidebar-nav bg-dark row" tabindex="-1" id="sidebar">
         <div class="offcanvas-body p-0">
             <nav class="navbar-dark">
-                <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <div class="nav flex-column nav-pills me-3 justify-content-start" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                     <div class="text-muted small fw-bold text-uppercase px-3">
                         {{ request.user }}
                     </div>
@@ -22,34 +22,34 @@
               
 
                     {% if perms.staff.can_view_dashboard %}
-                    <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">
-                        <span class="me-2 text-white"><i class="bi bi-speedometer2"></i></span>
+                    <button class="nav-link active d-flex justify-content-between" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">
                         <span class="text-white">Dashboard</span>
+                        <span class=" text-white"><i class="bi text-white bi-speedometer2"></i></span>
                     </button>
                     {% endif %}
                     {% comment %} MESSAGES {% endcomment %}
                     
 
                     {% if perms.staff.can_view_inbox %}
-                    <button class="nav-link" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-inbox" type="button" role="tab" aria-controls="v-pills-inbox" aria-selected="true">
-                        <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                    <button class="nav-link d-flex justify-content-between" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-inbox" type="button" role="tab" aria-controls="v-pills-inbox" aria-selected="true">
                         <span class="text-white">Messages</span>
+                        <span class=""><i class="bi text-white bi-chat"></i></span>
                     </button>
                     {% endif %}
 
                     {% comment %} create account for staff {% endcomment %}
 
                     {% if perms.staff.can_view_staff %}
-                    <button class="nav-link" id="v-pills-createstaff-tab" data-bs-toggle="pill" data-bs-target="#v-pills-createstaff" type="button" role="tab" aria-controls="v-pills-createstaff" aria-selected="true">
-                        <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                    <button class="nav-link d-flex justify-content-between" id="v-pills-createstaff-tab" data-bs-toggle="pill" data-bs-target="#v-pills-createstaff" type="button" role="tab" aria-controls="v-pills-createstaff" aria-selected="true">
                         <span class="text-white">Staff</span>
+                        <span class=""><i class="bi text-white bi-person"></i></span>
                     </button>
                     {% endif %}
 
                     {% comment %} MEMOS {% endcomment %}
-                    <button class="nav-link" id="v-pills-memos-tab" data-bs-toggle="pill" data-bs-target="#v-pills-memos" type="button" role="tab" aria-controls="v-pills-memos" aria-selected="true">
-                        <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+                    <button class="nav-link d-flex justify-content-between" id="v-pills-memos-tab" data-bs-toggle="pill" data-bs-target="#v-pills-memos" type="button" role="tab" aria-controls="v-pills-memos" aria-selected="true">
                         <span class="text-white">Memos</span>
+                        <span class=""><i class="bi text-white bi-card-checklist"></i></span>
                     </button>
 
 
@@ -63,7 +63,7 @@
 
                     <button class="nav-link d-flex justify-content-between" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-idcheck" type="button" role="tab" aria-controls="v-pills-idcheck" aria-selected="false">
                         <div>
-                            <span class="me-2"><i class="bi bi-credit-card-2-front"></i></span>
+                            <span class=""><i class="bi text-white bi-person-vcard-fill"></i></span>
                             <span class="text-white">ID Check</span>
                         </div>
                         <span class="badge bg-light text-dark" id="id_check_len">0</span>
@@ -74,9 +74,9 @@
 
                     {% if perms.staff.can_view_bad_acters %}
 
-                    <button class="nav-link d-flex justify-content-between" id="v-pills-badacters-tab" data-bs-toggle="pill" data-bs-target="#v-pills-badacters" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">
+                    <button class="nav-link d-flex justify-content-between" id="v-pills-badacters-tab" data-bs-toggle="pill" data-bs-target="#v-pills-badacter" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">
                         <div>
-                            <span class="me-2"><i class="bi bi-person-lines-fill"></i></span>
+                            <span class="me-2"><i class="bi text-white bi-exclamation-square"></i></span>
                             <span class="text-white">Bad Acters</span>
                         </div>
                         <span class="badge bg-light text-dark" id="bad_act_len">
@@ -98,9 +98,9 @@
                         Dev
                     </div>
 
-                    <button class="nav-link" id="v-pills-To_Do-tab" data-bs-toggle="pill" data-bs-target="#v-pills-To_Do" type="button" role="tab" aria-controls="v-pills-To_Do" aria-selected="false">
-                        <span class="me-2"><i class="bi bi-list-check"></i></span>
+                    <button class="nav-link d-flex justify-content-between" id="v-pills-To_Do-tab" data-bs-toggle="pill" data-bs-target="#v-pills-To_Do" type="button" role="tab" aria-controls="v-pills-To_Do" aria-selected="false">
                         <span class="text-white">To Do List</span>
+                        <span class="me-2"><i class="bi text-white bi-list-check"></i></span>
                     </button>
                     {% endif %}
 
@@ -145,7 +145,7 @@
         {% endif %}
 
         {% if perms.staff.can_view_bad_acters %}
-        <div class="tab-pane fade" id="v-pills-badacters" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+        <div class="tab-pane fade" id="v-pills-badacter" role="tabpanel" aria-labelledby="v-pills-badacter-tab">
             {% include 'staff/include/bad_acters.html'%}
         </div>
         {% endif %}

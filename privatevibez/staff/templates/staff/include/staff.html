@@ -1,6 +1,5 @@
 {% load static %}
 
-    
 <table class="table table-striped table-responsive">
   <thead>
     <tr>
@@ -144,7 +143,7 @@
             </select>
           </div>
 
-          <button type="submit" class="btn btn-primary my-2">Submit</button>
+          <button onclick="hideEditPermissionModal()" type="submit" class="btn btn-primary my-2">Submit</button>
         </form>
 
       </div>
@@ -251,7 +250,6 @@
 
 
 
-
 <div id="csrf">
     {% csrf_token %}
 </div>
@@ -259,7 +257,15 @@
 
 
   <script type="text/javascript">
-    
+
+
+var editPermissionModal = new bootstrap.Modal(document.getElementById('editPermissionmodal'));
+
+var toast = new bootstrap.Toast(document.querySelector('.toast'));
+var message = document.getElementById('message');
+
+
+
   // Pass single element
   const element = document.getElementById('permissions');
   const choices = new Choices(element, {
@@ -267,7 +273,7 @@
 });
 
   const perms = document.getElementById('existing_permissions');
-
+  let choices_2;
 
 
 {% comment %} GET PERMISSION FOR A STAFF {% endcomment %}
@@ -275,7 +281,6 @@
 function get_staff_permission(user_id)
 {
   let id = user_id
-  let editStaffPermission = document.getElementById('editStaffPermission');
   console.log(id);
   $.ajax({
     method:'GET',
@@ -288,7 +293,10 @@ function get_staff_permission(user_id)
     'dataType': 'json',
     success:function(data){
               // create a new table row
-
+              if (choices_2)
+              {
+                choices_2.destroy();
+              }
 
               for (const item of data.data) {
          
@@ -299,7 +307,8 @@ function get_staff_permission(user_id)
                 perms.append(option);
  
               }
-              const choices_2 = new Choices(perms, {
+
+              choices_2 = new Choices(perms, {
                 removeItemButton: true, 
             });
   
@@ -313,6 +322,8 @@ function get_staff_permission(user_id)
 
 editStaffPermission.onsubmit = (event) => {
     event.preventDefault();
+    $('#editPermissionmodal').modal('hide');
+
     console.log(id);
     const formData = new FormData(editStaffPermission);
     formData.append('staff', id);
@@ -327,6 +338,13 @@ editStaffPermission.onsubmit = (event) => {
       dataType: 'json',
       success: function(data) {
         console.log(data);
+        console.log($('#editPermissionmodal').modal('hide'));
+        
+
+        message.innerHTML = "Success!";
+        toast.show();
+  
+        
       },
       error: function(errors) {
         console.log(errors.responseText);
@@ -337,6 +355,12 @@ editStaffPermission.onsubmit = (event) => {
 };
 
 
+}
+
+function hideEditPermissionModal()
+{
+  
+  editPermissionModal.hide();
 }
 
 function convertDateToISOFormat(dateText) {
@@ -447,6 +471,9 @@ function confirmdelete(user_id){
   
   
 }
+
+
+
 </script>
 
 

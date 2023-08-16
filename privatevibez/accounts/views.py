@@ -20,6 +20,7 @@ from rest_framework.utils.serializer_helpers import ReturnDict
 from .serializers import User_DataSerializer, Room_DataSerializer,UserSerializer
 from django.contrib.auth import update_session_auth_hash
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -47,7 +48,7 @@ def Login(request):
         
         if user is not None:
             login(request, user)
-            messages.success(request, f'Thanks for coming back {username}!')
+            
             
             if user.is_staff == False:
                 try:
@@ -69,7 +70,8 @@ def Login(request):
             
             messages.error(request, f"wrong password or username. Please try again, If you don't have an account, please create one.")
             
-            
+        messages.success(request, f'Thanks for coming back {username}!')
+           
         return redirect('Main_home') 
     return render(request,'accounts/login.html')
 
@@ -156,13 +158,28 @@ def Buy_Vibez(request):
 
 @csrf_exempt
 def Bad_Acters_Add(request):
-    
-    Bad_Acters.objects.create(
-        Reporty  = User.objects.get(username = request.POST.get('reporty')),
-        Reported = User.objects.get(username = request.POST.get('reported')),
-        Message  = request.POST.get('message')
-    )
-    
+        
+    try:
+        reporty_username = request.POST.get('reporty')
+        reported_username = request.POST.get('reported')
+        message = request.POST.get('message')
+
+        reporty_user = User.objects.get(username=reporty_username)
+        reported_user = User.objects.get(username=reported_username)
+
+        try:
+            bad_actor = Bad_Acters.objects.get(Reporty=reporty_user, Reported=reported_user)
+            # Handle the case where the object already exists
+            messages.error(request,"Broadcaster Already Reported!")
+            print("already reported",flush=True)
+        except ObjectDoesNotExist:
+            # Object does not exist, create it
+            bad_actor = Bad_Acters.objects.create(Reporty=reporty_user, Reported=reported_user, Message=message)
+            messages.success(request,"Broadcaster Reported!")
+    except Exception as e:
+        # Handle the exception that occurred during creation
+        print(e,flush=True)
+        
     return JsonResponse('OK', safe=False) 
 
 @csrf_exempt
@@ -178,6 +195,8 @@ def Send_Vibez(request):
         broacaster.save()
         user.Vibez -= vibez
         user.save()
+    else:
+        messages.error(request, "not enough vibez!")
 
     return JsonResponse('OK', safe=False)
 

@@ -195,8 +195,9 @@ def deleteStaff(request):
 def getPermission(request):
         
         staff = request.GET.get('staff')
-        staff = StaffManager.objects.get(staff_id_id=staff)
+        staff = User.objects.get(id=staff)
         staff_permission = staff.user_permissions.values('name','codename')
+        print(staff_permission,flush=True)
  
         return JsonResponse ({'data' : list(staff_permission)}) 
 
@@ -237,11 +238,16 @@ def editStaffPermission(request):
 
                 user = User.objects.get(id=request.POST.get('staff')) 
                 permission_codenames = request.POST.getlist('existing_permissions')
-                
                 content_type = ContentType.objects.get_for_model(StaffManager)
+            
                 permissions = Permission.objects.filter(content_type=content_type, codename__in=permission_codenames)
                 
                 user.user_permissions.set(permissions)
+                user.save()
+                
+                messages.success(request,"Staff permission successfully updated!")
+                print(user.user_permissions.all(),flush=True)
+        
         
                 return JsonResponse('OK', safe=False) 
 

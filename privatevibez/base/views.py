@@ -119,23 +119,29 @@ def room_data_func(request,user_country,user_region):
                                 is_blocked = True  # Set the flag if user's country is blocked
                                 
                                 break 
+                        
                 for blocked_regions in room.Blocked_Regions.all():
                         region = blocked_regions.Region.display_name
                         if region == user_region:
                                 is_blocked = True
                                 
+                if request.user.is_authenticated:
+                        if Bad_Acters.objects.filter(Reporty = request.user.id).exists():
+                                blocked_broadcasters = Bad_Acters.objects.filter(Reporty = request.user.id)
+                                for blocked_broadcaster in blocked_broadcasters:
+                            
+                                        if blocked_broadcaster.Reported.id == room.User_id:
+                                                rooms_list.append(room.User.id)
+                                                
                 if is_blocked or is_blocked_region:
                         rooms_list.append(room.User.id) # Append room if user's country is not blocked
 
-        
+                
         for room in rooms_list:
-            
                 if any(item["user_id"] == room for item in broadcaster_data):
                         broadcaster_data = [item for item in broadcaster_data if item["user_id"] != room]
                 
-                 
-                        
-                        
+                                   
                                 
 
         return broadcaster_data if broadcaster_data else None
@@ -281,10 +287,13 @@ def searchbroadcaster(request):
                                                                 
                                                                 
                                                 if Bad_Acters.objects.filter(Reporty = request.user.id).exists():
+                                                        print(request.user.id,flush=True)
                                                         blocked_broadcasters = Bad_Acters.objects.filter(Reporty = request.user.id)
                                                         for blocked_broadcaster in blocked_broadcasters:
-                                                                if any(item == blocked_broadcaster.Reported.id for item in broadcaster_data):
-                                                                        broadcaster_data = [item for item in room_list if item != blocked_broadcaster.Reported.id]
+                                                                
+                                                                if any(item["user_id"]  == blocked_broadcaster.Reported.id for item in broadcaster_data):
+                                                                        
+                                                                        broadcaster_data = [item for item in broadcaster_data if item["user_id"] != blocked_broadcaster.Reported.id]
                                                                                 
                                         
                                         return render(request, "base/home.html", locals())                                      
