@@ -143,7 +143,7 @@
             </select>
           </div>
 
-          <button onclick="hideEditPermissionModal()" type="submit" class="btn btn-primary my-2">Submit</button>
+          <button type="submit" class="btn btn-primary my-2">Submit</button>
         </form>
 
       </div>
@@ -254,6 +254,8 @@
     {% csrf_token %}
 </div>
 
+<img src="{% static 'images/logo/small_green_logo.png' %}" id="privatevibezlogo" width="30px" height="30px" class="rounded me-2 d-none" alt="...">
+
 
 
   <script type="text/javascript">
@@ -261,10 +263,12 @@
 
 var editPermissionModal = new bootstrap.Modal(document.getElementById('editPermissionmodal'));
 
-var toast = new bootstrap.Toast(document.querySelector('.toast'));
+var logo = document.getElementById('privatevibezlogo');
+
+var toastContainer = document.getElementById('toast-container');
+var toastElement = document.querySelector('.toast');
 var message = document.getElementById('message');
-
-
+var toast = new bootstrap.Toast(toastElement);
 
   // Pass single element
   const element = document.getElementById('permissions');
@@ -274,6 +278,8 @@ var message = document.getElementById('message');
 
   const perms = document.getElementById('existing_permissions');
   let choices_2;
+
+
 
 
 {% comment %} GET PERMISSION FOR A STAFF {% endcomment %}
@@ -322,7 +328,7 @@ function get_staff_permission(user_id)
 
 editStaffPermission.onsubmit = (event) => {
     event.preventDefault();
-    $('#editPermissionmodal').modal('hide');
+
 
     console.log(id);
     const formData = new FormData(editStaffPermission);
@@ -338,16 +344,62 @@ editStaffPermission.onsubmit = (event) => {
       dataType: 'json',
       success: function(data) {
         console.log(data);
-        console.log($('#editPermissionmodal').modal('hide'));
-        
+        hideEditPermissionModal();
+       
+      // Create a new toast element
+      var newToastElement = document.createElement('div');
+      newToastElement.className = 'toast';
+      newToastElement.setAttribute('data-stackable-toast', '');
+      newToastElement.setAttribute('data-delay', '2000');
 
-        message.innerHTML = "Success!";
-        toast.show();
-  
+      // Customize the toast content
+      newToastElement.innerHTML = `
+          <div class="toast-header">
+            <img src=${logo.src} width="30px" height="30px" alt="">
+              Notification
+          </div>
+          <div class="toast-body">
+              ${data}
+          </div>
+      `;
+
+        newToastElement.classList.add('bg-success');
+
+        // Append the new toast element to the container
+        toastContainer.appendChild(newToastElement);
+
+        // Initialize and show the toast
+        var newToast = new bootstrap.Toast(newToastElement);
+        newToast.show();
+    
         
       },
       error: function(errors) {
         console.log(errors.responseText);
+
+        var newToastElement = document.createElement('div');
+        newToastElement.className = 'toast';
+        newToastElement.setAttribute('data-stackable-toast', '');
+        newToastElement.setAttribute('data-delay', '2000');
+  
+        // Customize the toast content
+        newToastElement.innerHTML = `
+            <div class="toast-header">
+                Notification
+            </div>
+            <div class="toast-body">
+                Something went wrong!
+            </div>
+        `;
+  
+          newToastElement.classList.add('bg-danger');
+  
+          // Append the new toast element to the container
+          toastContainer.appendChild(newToastElement);
+  
+          // Initialize and show the toast
+          var newToast = new bootstrap.Toast(newToastElement);
+          newToast.show();
       }
     });
     
@@ -359,7 +411,7 @@ editStaffPermission.onsubmit = (event) => {
 
 function hideEditPermissionModal()
 {
-  
+  console.log('triggered');
   editPermissionModal.hide();
 }
 

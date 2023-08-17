@@ -4,31 +4,30 @@
   <!-- - `.toast-container` for spacing between toasts -->
   <!-- - `.position-absolute`, `top-0` & `end-0` to position the toasts in the upper right corner -->
   <!-- - `.p-3` to prevent the toasts from sticking to the edge of the container  -->
-  <div class="toast-container position-absolute top-0 end-0 p-3">
+  <div id="toast-container" data-bs-animation="" class="toast-container position-absolute top-0 end-0 p-3">
+    {% for message in messages %}
 
-    <!-- Then put toasts within -->
-    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="toast-header">
-        <strong class="me-auto">Notification</strong>
-        <small class="text-muted"></small>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-      <div class="toast-body" id="message">
-        
-      </div>
-    </div>
+    <div class="toast show bg-{{message.tags}}" data-autohide="true" data-delay="2000" role="alert" aria-live="assertive" aria-atomic="true">
+     <div class="toast-header">
+  
+       <strong class="me-auto">Notification</strong>
+       <small class="text-muted">just now</small>
+       <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+     </div>
+     <div class="toast-body">
+       {{ message | safe }}
+     </div>
+   </div>
 
-    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="toast-header">
-        <strong class="me-auto">Bootstrap</strong>
-        <small class="text-muted">2 seconds ago</small>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-      </div>
-      <div class="toast-body">
-      </div>
-    </div>
+{% endfor %}
   </div>
 </div>
+
+
+
+
+
+
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
       <button

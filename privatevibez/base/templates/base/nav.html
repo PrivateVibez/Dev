@@ -62,6 +62,31 @@
 </nav>
 <div class="start" style="color:black;">
 
+
+    <div aria-live="polite" aria-atomic="true" class="position-relative">
+        <!-- Position it: -->
+        <!-- - `.toast-container` for spacing between toasts -->
+        <!-- - `.position-absolute`, `top-0` & `end-0` to position the toasts in the upper right corner -->
+        <!-- - `.p-3` to prevent the toasts from sticking to the edge of the container  -->
+        <div id="toast-container" data-bs-animation="" style="z-index: 2000;" class="toast-container position-absolute top-0 end-0 p-3">
+          {% for message in messages %}
+      
+          <div class="toast show fade bg-{{message.tags}}" role="alert" aria-live="assertive" aria-atomic="true">
+           <div class="toast-header">
+            <img src="{% static 'images/logo/small_green_logo.png' %}" id="privatevibezlogo" width="30px" height="30px" class="rounded me-2 d-none" alt="...">
+             <strong class="me-auto">Notification</strong>
+             <small class="text-muted">just now</small>
+             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+           </div>
+           <div class="toast-body">
+             {{ message | safe }}
+           </div>
+         </div>
+      
+      {% endfor %}
+        </div>
+      </div>
+
     {% if not request.user.is_authenticated %} 
         <a href="#" data-toggle="modal" data-target="#registration_modal" style="color:black;text-decoration:none;">
             <p>
@@ -117,22 +142,6 @@
 </div>
 
 
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-            <center>
-            {{message}}
-            </center>
-        </div>
-    {% endfor %}
-{% endif %}
-
-<div id="alerts" class="">
-
-</div>
-
-
-
 
 {% comment %} MODAL FOR PRIVATE INVITES {% endcomment %}
 
@@ -172,12 +181,12 @@
 <!-- Login Modal-->
 
 <div class="modal fade" id="login_modal" tabindex="-1" role="dialog" aria-labelledby="login_modal_label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
+    <div class="modal-dialog  modal-dialog-centered" role="document">
+      <div class="modal-content" style="background-image: url('{% static 'images/pexels-alexander-krivitskiy-1271374.jpg' %}');  background-size: cover; background-position: center; ">
         <div class="modal-header">
-          <h5 class="modal-title" id="login_modal_label">Login</h5>
+          <h5 class="modal-title display-4 font-weight-bold text-white text-center w-100" id="login_modal_label">Login</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+            <span class="fs-1" style="color:#1db9a7" aria-hidden="true">&times;</span>
           </button>
         </div>
         <form action="/accounts/login/" method="POST">
@@ -185,24 +194,29 @@
 
             {% block user_login_credentials %}
             <div class="modal-body">
+                <div class="col-8 h-50 m-auto">
                 <div class="form-group">
-                    <label for="username">Email address or username</label>
-                    <input type="type" class="form-control" id="username" name="username" aria-describedby="emailHelp" placeholder="Enter email or Username">
+                    <label class="text-white" for="username">Email address or username</label>
+                    <input type="type" style="font-size:1.5rem" class="form-control h-50" id="username" name="username" aria-describedby="emailHelp" >
                 </div>
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                    <label class="text-white" for="password">Password</label>
+                    <input type="password" style="font-size:1.5rem" class="form-control" id="password" name="password" >
+                </div>
                 </div>
                 <div class="small text-center">
-                    <p>New to PriveVibez? <a href='/accounts/signup/' type="button" class="btn btn-link" onclick='change_signUp()'> Sign up now.</a></p>
+                    <p class="text-white" font-size:1.5rem>New to PriveVibez? <a href='/accounts/signup/' type="button" class="btn btn-link" onclick='change_signUp()'> Sign up now.</a></p>
                 </div>
             </div>
             {% endblock user_login_credentials %}
 
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary" id="btn_submit_store">LogIn</button>
+            <div class="modal-footer container-fluid" style="height:100px">
+                <div class="col-2 p-0">
+                </div>
+                <div class="col-2 p-0">
+                    <button type="submit" style="font-size:1.5rem" class="btn btn-primary font-weight-bold w-100" id="btn_submit_store">Login</button>
+                </div>
             </div>
         </form>
       </div>
@@ -212,12 +226,12 @@
   <!-- Registration Modal-->
   {% block registration_modal %}
 <div class="modal fade" id="registration_modal" tabindex="-1" role="dialog" aria-labelledby="registration_modal_label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
+    <div class="modal-dialog"  role="document">
+      <div class="modal-content" style="background-image: url('{% static 'images/pexels-alexander-krivitskiy-1271374.jpg' %}');  background-size: cover; background-position: center; ">
         <div class="modal-header">
           <h5 class="modal-title" id="registration_modal_label">Sign Up</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+            <span class="fs-1" style="color:#1db9a7" aria-hidden="true">&times;</span>
           </button>
         </div>
 
@@ -227,30 +241,32 @@
             
             {% csrf_token %}
             <div class="modal-body">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="type" class="form-control" id="register_username" name="username" aria-describedby="emailHelp" placeholder="Username">
+                <div class="col-8 h-50 m-auto">
+                    <div class="form-group">
+                        <label class="text-white" font-size:1.5rem" for="username">Username</label>
+                        <input type="type" class="form-control" id="register_username" name="username" aria-describedby="emailHelp" placeholder="Username">
+                    </div>
+                    <div class="form-group">
+                        <label class="text-white" font-size:1.5rem" for="email">Email address</label>
+                        <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <label class="text-white" font-size:1.5rem" for="password1">Password</label>
+                        <input type="password" class="form-control" id="password1" name="password1" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <label class="text-white" font-size:1.5rem" for="password2">Re-Password</label>
+                        <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-Password">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="email">Email address</label>
-                    <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Email">
-                </div>
-                <div class="form-group">
-                    <label for="password1">Password</label>
-                    <input type="password" class="form-control" id="password1" name="password1" placeholder="Password">
-                </div>
-                <div class="form-group">
-                    <label for="password2">Re-Password</label>
-                    <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-Password">
-                </div>
+
             </div>
             <div class="small text-center">
-                <p>Not new to PriveVibez? <a href="/accounts/login/" type="button" class="btn btn-link"> Sign in now.</a></p>
+                <p class="text-white" font-size:1.5rem">Not new to PriveVibez? <a href="/accounts/login/" type="button" class="btn btn-link"> Sign in now.</a></p>
             </div>
 
             <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Save changes</button>
+            <button type="submit" style="font-size:1.5rem" class="btn btn-primary">Register</button>
             </div>
         </form>
       </div>
@@ -285,7 +301,7 @@
                     <div class="row">
                         <div class="">
                             {% if user_datas.Image %}
-                            <img src="P{{user_datas.Image}}" alt="profile_picture" class="img-responsive">
+                            <img src="{{user_datas.Image}}" alt="profile_picture" class="img-responsive">
                             {% endif %}
                         </div>
                         <div class="">

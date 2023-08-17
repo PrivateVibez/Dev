@@ -1,3 +1,4 @@
+{% load static %}
 <div class="container-fluid gap-5">
 
   <div class="col">
@@ -115,6 +116,7 @@
 
 </div>
 
+<script src="{% static 'js/user_and_broadcaster.js' %}"></script>
 
 <script>
   let cropper;
@@ -188,25 +190,23 @@
       // Make AJAX request
       $.ajax({
           type: 'POST',
-          url: 'room/submit-bio',  // Replace with your actual URL
+          url: 'room/submit_bio',  // Replace with your actual URL
           data: formData,
           processData: false,  // Prevent jQuery from processing the data
           contentType: false,  // Let the server set the content type
-          success: function(response) {
+          success: function(data) {
               // Handle success
-              console.log('Form submitted successfully');
-              console.log(response);  // Log the server response
+            var message = data.data;
 
-              var message = document.getElementById('messages');
-              var status = document.createElement('span');
-              message.classList.add('alert-success');
-              status.textContent = "successfully saved!"
-              message.appendChild(status);  
+            successToast(message);
           },
           error: function(xhr, textStatus, errorThrown) {
               // Handle error
               console.error('Form submission failed');
               console.error(xhr.responseText);
+
+              var message = "Something went wrong";
+              errorToast(message);
           }
       });
     },  'image/jpeg' );
@@ -240,12 +240,18 @@
       success: function(response) {
           // Handle success
           console.log('Form submitted successfully');
-          console.log(response);  // Log the server response
+          console.log(response.data);  // Log the server response
+
+          var message = response.data;
+
+          successToast(message);
       },
       error: function(xhr, textStatus, errorThrown) {
           // Handle error
           console.error('Form submission failed');
           console.error(xhr.responseText);
+          var message = "Something went wrong";
+          errorToast(message);
       }
   });
   }

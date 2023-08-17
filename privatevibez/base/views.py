@@ -105,6 +105,7 @@ def room_data_func(request,user_country,user_region):
                                                         "user_id": user.id,
                                                         "username": user.username,
                                                         "Image": user_data.Image.url,
+                                                    
                                                         })
 
         rooms = Room_Data.objects.filter(User__Status="Broadcaster")

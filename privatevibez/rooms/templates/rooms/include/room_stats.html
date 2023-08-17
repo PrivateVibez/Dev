@@ -1,3 +1,4 @@
+{% load static %}
 <div class="msg-list-fvm message-list container-fluid" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
 
   <div class="msg-text row gap-3" style="font-family: Tahoma, Arial, Helvetica, sans-serif; box-sizing: border-box; padding: 2px 5px 3px; overflow-wrap: break-word; word-break: break-word;">
@@ -47,8 +48,22 @@
 </div>
 
 
+<script src="{% static 'js/user_and_broadcaster.js' %}"></script>
 
 <script>
+
+  var toastContainer = document.getElementById('toast-container');
+  var logo = document.getElementById('privatevibezlogo');
+  
+  
+  const toastElement = document.querySelector('.toast');
+  
+  if(toastElement){
+      setTimeout(function() {
+          var toast = new bootstrap.Toast(toastElement);
+          toast.hide();
+      }, 2000);
+  }
 
   function save_hashtags(){
 
@@ -61,23 +76,15 @@
          csrfmiddlewaretoken:"{{csrf_token}}",
         },
       success: function(data){
-        var stat = data.data;
+        var message = data.data;
+        
+        successToast(message);
 
-        stat = data.data;
-                
-        var status = document.createElement('span')
-        status.textContent = stat
-        message.classList.add('alert')
-        message.style.textAlign = 'center'
-        message.classList.add('alert-success')
-        message.style.display = 'block';
-        message.appendChild(status)
-        console.log(message)
-        setTimeout(function() {
-            message.remove(); // Clear the message content
-        }, 2000); 
+      },
+      error: function(data){
+        var message = 'Something went wrong.';
 
-
+        errorToast(message);
       }
     });
   }

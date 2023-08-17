@@ -249,7 +249,7 @@ def editStaffPermission(request):
                 print(user.user_permissions.all(),flush=True)
         
         
-                return JsonResponse('OK', safe=False) 
+                return JsonResponse('Updated!', safe=False) 
 
 @csrf_exempt
 def sendStaffInvitation(request):
@@ -464,6 +464,7 @@ def addDeclineMsg(request):
         if request.method == "POST":
                 message = request.POST.get('decline_message_text')
                 Decline_Message.objects.create(Writer=request.user, Message=message)
+                messages.success(request, f'Decline Message Added!')
         else:
                 pass
         return redirect('staff_home')

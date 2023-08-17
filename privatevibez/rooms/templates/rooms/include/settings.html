@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
   <head>
@@ -363,9 +364,12 @@
 
   </body>
   
-  <script>
 
-  
+
+
+  <script src="{% static 'js/user_and_broadcaster.js' %}"></script>
+
+  <script>
 
     const blockCountriesDiv = document.getElementById("block_countries");
     const blockRegionsDiv  = document.getElementById('block_regions');

@@ -219,22 +219,27 @@ def Menu_item(request):
 
 @csrf_exempt
 def Following(request):
+    broadcaster = request.POST.get('broadcaster')
     if Follows.objects.filter(User = request.user).exists():
-        if Follows.objects.filter(Broacaster = User.objects.get(username = request.POST.get('broadcaster'))).exists():
+        if Follows.objects.filter(Broacaster = User.objects.get(username = broadcaster)).exists():
 
-            Del_flow = Follows.objects.get(User = request.user, Broacaster = User.objects.get(username = request.POST.get('broadcaster')) )
+            Del_flow = Follows.objects.get(User = request.user, Broacaster = User.objects.get(username = broadcaster) )
             Del_flow.delete()
+            message = f'You have unfollowed {broadcaster}'
         else:
             Follows.objects.create(
                 User         =  request.user,
-                Broacaster   =   User.objects.get(username = request.POST.get('broadcaster'))
+                Broacaster   =   User.objects.get(username = broadcaster)
             )
+            message = f'You are now following {broadcaster}'
     else:
             Follows.objects.create(
                 User         =  request.user,
-                Broacaster   =   User.objects.get(username = request.POST.get('broadcaster'))
+                Broacaster   =   User.objects.get(username = broadcaster)
             )
-    return JsonResponse('OK', safe=False) 
+            message = f'You are now following {broadcaster}'
+            
+    return JsonResponse({'data':message}, safe=False) 
 
 
 def Thumb(request):
@@ -798,8 +803,9 @@ def submit_bio(request):
                 user_data.save()
         else:
             print(form.errors,flush=True)
+            return JsonResponse({'data':form.errors}, safe=False)
         print(form,flush=True)
-        return JsonResponse({'data':"success"}, safe=False)
+        return JsonResponse({'data':f'bio updated successfully!'}, safe=False)
     
     
     

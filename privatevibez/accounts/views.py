@@ -15,6 +15,7 @@ from staff.models import StaffManager
 from django.utils import timezone
 from cryptography.fernet import Fernet
 import secrets
+import json
 from rest_framework.renderers import JSONRenderer
 from rest_framework.utils.serializer_helpers import ReturnDict
 from .serializers import User_DataSerializer, Room_DataSerializer,UserSerializer
@@ -151,10 +152,12 @@ def Registration_Broadcaster_ID(request):
 def Buy_Vibez(request):
     
         user_data = User_Data.objects.get(User = request.user)
-        user_data.Vibez += int(request.POST.get('Vibez'))
+        vibez = int(request.POST.get('Vibez'))
+        user_data.Vibez += vibez
         user_data.save()
+        messages.success(request, f'You have successfully bought {vibez} vibez!')
         
-        return JsonResponse('OK', safe=False) 
+        return JsonResponse({'data':vibez}, safe=False) 
 
 @csrf_exempt
 def Bad_Acters_Add(request):
@@ -180,7 +183,7 @@ def Bad_Acters_Add(request):
         # Handle the exception that occurred during creation
         print(e,flush=True)
         
-    return JsonResponse('OK', safe=False) 
+    return JsonResponse({'data':f'You have successfully reported {reported_username}'}, safe=False) 
 
 @csrf_exempt
 def Send_Vibez(request):
@@ -195,10 +198,12 @@ def Send_Vibez(request):
         broacaster.save()
         user.Vibez -= vibez
         user.save()
+        
+        message = f"You have successfully sent {vibez} vibez to {broacaster.User.username}"
     else:
         messages.error(request, "not enough vibez!")
 
-    return JsonResponse('OK', safe=False)
+    return JsonResponse({'data':message}, safe=False)
 
 @csrf_exempt
 def Profile_Pic(request):

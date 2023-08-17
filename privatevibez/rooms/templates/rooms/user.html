@@ -1029,11 +1029,8 @@ let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicCh
 {% endif %}
 
 
-
-
+<script src="{% static 'js/user_and_broadcaster.js' %}"></script>
 <script>
-    var message = document.getElementById('alerts')
-
 
     function hideInviteButton(){
         document.getElementById("invite_model_chat").style.display = "none";
@@ -1111,10 +1108,12 @@ let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicCh
                     'csrfmiddlewaretoken':"{{csrf_token}}",
                 },
                 'dataType': 'json',
-                success:function(){
+                success:function(data){
+                    var message = data.data;
                     $("#follow").load(" #follow > *");
                     $("#Followers_box_refesh").load(" #Followers_box_refesh > *");
 
+                    successToast(message);
                 }
                 })
     }
@@ -1132,8 +1131,11 @@ let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicCh
                     'csrfmiddlewaretoken':"{{csrf_token}}",
                 },
                 'dataType': 'json',
-                success:function(){
+                success:function(data){
+                    var message = data.data;
                     location.href="/"
+
+        
                 }
                 })
     }
@@ -1152,9 +1154,13 @@ let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicCh
                     'csrfmiddlewaretoken':"{{csrf_token}}",
                 },
                 'dataType': 'json',
-                success:function(){
+                success:function(data){
+                    var message = data.data;
+
                     $( "#user_vibez_data" ).load(window.location.href + " #user_vibez_data" );
                     document.getElementById("custom_Vibez").value = '';
+
+                    successToast(message);
                 }
                 })
     }
@@ -1213,9 +1219,19 @@ let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicCh
                     'csrfmiddlewaretoken':"{{csrf_token}}",
                 },
                 'dataType': 'json',
-                success:function(){
+                success:function(data){
+                    var Vibez = data.data
                     location.href=""
+                    console.log(data);
+                    var message = "You have successfully bought " + Vibez + " Vibez!";
+                    successToast(message);
+                },
+                errors:function(errors){
+                    console.log(errors.responseText)
+                    var message = "Something went wrong";
+                    errorToast(message)
                 }
+    
                 })
     }
 
@@ -1235,24 +1251,19 @@ function confirm_send(number,btn){
             'dataType': 'json',
             success:function(data){
                 console.log(data)
-                var stat = data.data
-                var status = document.createElement('span')
-                status.textContent = stat
-                message.classList.add('alert')
-                message.style.textAlign = 'center'
-                message.classList.add('alert-success')
-                message.style.display = 'block';
-                message.appendChild(status)
-                setTimeout(function() {
-                    message.remove(); // Clear the message content
-                }, 2000); 
-
+                var message = data.data
+                successToast(message);
+              
             },
             errors:function(errors){
                 console.log(errors.responseText)
+                var message = "Something went wrong";
+                errorToast(message)
             }
 
             })
 }
+
+
 
 </script>
