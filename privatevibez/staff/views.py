@@ -146,7 +146,10 @@ def Id_Status(request):
                 user_status.Decline_Message = request.POST.get('message')
                 user_status.save()
                 
-                return JsonResponse('OK', safe=False) 
+                user_data = User_Data.objects.filter(User__Status="Pending_Broadcaster")
+                serializer = UserStatusSerializer(user_data, many=True)
+                
+                return JsonResponse({'data':serializer.data}, safe=False) 
 
 
 
@@ -468,3 +471,18 @@ def addDeclineMsg(request):
         else:
                 pass
         return redirect('staff_home')
+
+
+def approveBroadcaster(request):
+        
+        if request.method == "POST":
+                
+                user_id = request.POST.get('user_id')
+                user = User.objects.get(id=user_id)
+                user.Status = "Broadcaster"
+                user.save()
+                
+                user_data = User_Data.objects.filter(User__Status="Pending_Broadcaster")
+                serializer = UserStatusSerializer(user_data,many=True)
+                
+                return JsonResponse({'data':serializer.data},safe=False)

@@ -45,4 +45,8 @@ urlpatterns = [
     
     #url for pending broadcasters
     path('getPendingBroadcasters/', views.getPendingBroadcasters, name="getPendingBroadcasters"),
+    
+    
+    # approve a pending broadcaster
+    path('approveBroadcaster/', views.approveBroadcaster, name="approveBroadcaster"),
 ]

@@ -20,6 +20,16 @@ class StaffConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
+        
+        
+    async def showPending_Broadcaster(self,event):
+        data = event['data'];
+        print(data,flush=True)
+        modified_data = {
+        "user_data": data
+            }
+        await self.send(text_data=json.dumps(modified_data))
+        
 
     @sync_to_async
     def get_pending_broadcasters(self,status):

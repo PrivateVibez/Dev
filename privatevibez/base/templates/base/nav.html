@@ -89,7 +89,7 @@
 
     {% if not request.user.is_authenticated %} 
         <a href="#" data-toggle="modal" data-target="#registration_modal" style="color:black;text-decoration:none;">
-            <p>
+            <p class="fs-2 font-weight-bold" style="color:#6cc6ba;">
                 Sign Up To  enjoy Vibrations
                 <span><i class="icofont-sign-in"></i></span>
             </p> 
@@ -100,7 +100,7 @@
         {% if user_status == "User" %}
 
             <a href="/accounts/registration_broadcaster/" style="color:black;text-decoration:none;">
-                <p>
+                <p class="fs-2 font-weight-bold" style="color:#6cc6ba;">
                     BROADCAST YOURSELF - GO NOW 
                     <span><i class="icofont-camera" style="color:#6cc6ba;"></i></span>
                 </p> 
@@ -108,7 +108,7 @@
         {% endif %}
 
         {% if user_status == "Pending_Broadcaster" %}
-                <p>
+                <p class="fs-2 font-weight-bold" style="color:#6cc6ba;">
                     We are still looking through your Information 
                     <span><i class="icofont-look" style="color:#6cc6ba;"></i></span>
                 </p> 
@@ -118,11 +118,11 @@
             <p>
                 <button style="color:black;text-decoration:none;" class="btn btn-transparent rounded-3" data-toggle="modal" data-target="#private_chat_invites_modal">
 
-                    <span class="h3">
+                    <span class="fs-2 font-weight-bold" style="color:#6cc6ba;">
                         (Total : {{private_chat_all.count}} | Pending request : {{private_request_pending.count}})
                     </span>
 
-                <span>
+                <span>  
                     <i class="icofont-ui-message h3" style="color:#6cc6ba;"></i>
                 </span>
                 </button>
@@ -226,7 +226,7 @@
   <!-- Registration Modal-->
   {% block registration_modal %}
 <div class="modal fade" id="registration_modal" tabindex="-1" role="dialog" aria-labelledby="registration_modal_label" aria-hidden="true">
-    <div class="modal-dialog"  role="document">
+    <div class="modal-dialog modal-dialog-centered"  role="document">
       <div class="modal-content" style="background-image: url('{% static 'images/pexels-alexander-krivitskiy-1271374.jpg' %}');  background-size: cover; background-position: center; ">
         <div class="modal-header">
           <h5 class="modal-title" id="registration_modal_label">Sign Up</h5>

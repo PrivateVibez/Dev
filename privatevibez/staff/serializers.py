@@ -24,9 +24,22 @@ class StaffMessagesSerializer(serializers.ModelSerializer):
         fields =['From','To','Message','Timestamp']
         
         
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email']  # Include User fields you need
+
+        
+        
 class UserStatusSerializer(serializers.ModelSerializer):
+    
+    user_id = serializers.IntegerField(source='User.id', read_only=True)
+    username = serializers.CharField(source='User.username', read_only=True)
+    first_name = serializers.CharField(source='User.first_name', read_only=True)
+    last_name = serializers.CharField(source='User.last_name', read_only=True)
+    email = serializers.EmailField(source='User.email', read_only=True)
     
     class Meta:
         
         model = User_Data
-        fields =['User','Timestamp','Real_Name','Image','Id_File','Birth_Date','Age']
+        fields =['user_id','username','first_name','last_name','email','Timestamp','Real_Name','Image','Id_File','Birth_Date','Age']

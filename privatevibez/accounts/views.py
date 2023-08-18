@@ -14,6 +14,8 @@ from django.contrib.auth.decorators import login_required
 from staff.models import StaffManager
 from django.utils import timezone
 from cryptography.fernet import Fernet
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 import secrets
 import json
 from rest_framework.renderers import JSONRenderer
@@ -239,6 +241,22 @@ def bio_info(request):
     
     room_data.save()
     user_data.save()
+    
+    
+            # Get the channel layer
+    channel_layer = get_channel_layer()
+    channel_name = "staff"
+    
+    # Prepare data to send
+    data = {
+            "user": user_data,
+    }
+    
+    # Send the data to the WebSocket consumer
+    async_to_sync(channel_layer.group_send)(
+            channel_name,
+            {"type": "showPending.Broadcaster", "data": data}
+    )
     
     return JsonResponse('OK', safe=False) 
 

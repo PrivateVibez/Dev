@@ -202,3 +202,315 @@ $.ajax({
 
 
             }
+
+
+
+
+//      ID CHECKING CODE 
+
+ let table = document.getElementById("table_body");
+  let total_ID_checks = document.getElementById("id_check_len");
+  $(function() {
+    $('#decline_modal').modal('hide')
+   
+ 
+
+    
+      // Define the click event function
+      function approveBroadcasterClick(event) {
+        var button = event.target;
+        var userId = button.getAttribute('data-user-id');
+        var modal = document.getElementById('info-' + userId);
+        var parentElement = modal.parentNode;
+        parentElement.removeChild(modal);
+  
+        parentElement.closest('tr').remove(); 
+        check_modal();
+        var formData = new FormData();
+        formData.append('Status', 'Broadcaster');
+        formData.append('user_id', userId);
+      
+        // Convert the FormData to a JSON object
+        var jsonData = {};
+        formData.forEach((value, key) => {
+          jsonData[key] = value;
+        });
+      
+        // Convert the JSON object to a string
+        var jsonString = JSON.stringify(jsonData);
+      
+        // Send the data via WebSocket using socket.send
+        socket.send(jsonString);
+       
+      }
+    
+
+
+  function generate_IDs()
+  {
+  $.ajax({
+      method:'GET',
+      url: "/staff/getPendingBroadcasters/",
+          success:function(data){
+
+          
+            var user_details = data.data;
+            let total_ID_checks = document.getElementById("id_check_len");
+            
+            table.innerHTML = "";
+            total_ID_checks.textContent = user_details.length;
+              console.log(user_details.length)
+
+              for(var i=0;i<user_details.length;i++){
+  
+                 
+                      
+  
+                      // create a new table row
+                      let newRow = document.createElement("tr");
+                      // create cells containing data
+                      let firstNameCell = document.createElement("td");
+                      firstNameCell.textContent = user_details[i].Real_Name;
+                      let lastNameCell = document.createElement("td");
+              
+                      let birthDateCell = document.createElement("td");
+                      birthDateCell.textContent = user_details[i].Birth_Date;
+                      // add cells to row
+                      newRow.appendChild(firstNameCell);
+                      newRow.appendChild(lastNameCell);
+                      newRow.appendChild(birthDateCell);
+                      // create the modal
+                      let modalCell = document.createElement("td");
+  
+                      modalCell.innerHTML = `
+                      <button type="button" class="btn btn-primary openmodal" data-toggle="modal" data-target="#info-${user_details[i].User}" style="border:none;outline:none;color:blue">
+                      <span class="text-white">Show</span>
+                        </button>
+                        
+                        <!-- Modal -->
+                        <div class="modal fade" id="info-${user_details[i].User}" tabindex="-1" role="dialog" aria-labelledby="pic-${user_details[i].User}" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">${user_details[i].Real_Name}'s Information</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                  <div class="card" style="width: 18rem;">
+                                      <img class="img-thumbnail" src="${user_details[i].Image}"/>
+                                      <div class="card-body">
+                                          <h5 class="card-title">${user_details[i].User}</h5>
+                                          <p> ${user_details[i].Birth_Date}</p>
+              
+                                      </div> 
+                                  </div>
+              
+                              <div class="modal-footer">
+                                  <button type="button" onclick="Decline_broadcaster(${user_details[i].User})" class="btn btn-danger" data-dismiss="modal">Decline</button>
+                                  <button type="button" data-user-id="${user_details[i].User}" data-dismiss="modal" class="btn btn-success btn_approve_broadcaster">Approve</button>
+                                  
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      `
+                      newRow.appendChild(modalCell);
+                      // add the new row to the table
+                      table.appendChild(newRow);
+  
+                     
+              }
+              let btn_approve_broadcaster = document.querySelectorAll('.btn_approve_broadcaster');
+              btn_approve_broadcaster.forEach(function (button) {
+                // Add the 'click' event handler
+                button.addEventListener('click', approveBroadcasterClick);
+              });
+
+  
+        
+ 
+
+          },
+          error: function(error){
+            console.log(errors.responseText)
+          }
+  });
+}
+
+setInterval(generate_IDs(),2000);
+
+      let protocol = "";
+      if(window.location.protocol == "http:"){
+          protocol = "ws";
+      }else if(window.location.protocol == "https:"){
+          protocol = "wss";
+      }
+
+      const socket = new WebSocket(`${protocol}://${window.location.host}/ws/staff/`);
+
+      socket.onopen = function(event) {
+        console.log('WebSocket connection established');  
+        
+       
+      };
+
+      // Create a map to keep track of existing rows in the table
+const tableRowsMap = {};
+
+// Function to update or add a row to the table
+function updateOrAddRow(user) {
+  let newRow = tableRowsMap[user.id];
+
+  // If the row already exists, update its content
+  if (newRow) {
+    newRow.cells[0].textContent = user.name;
+    newRow.cells[1].textContent = user.Birth_Date;
+    // Update other cells if needed
+  } else {
+    // If the row doesn't exist, create a new row
+    newRow = document.createElement("tr");
+    // create cells containing data
+    let firstNameCell = document.createElement("td");
+    firstNameCell.textContent = user.name;
+    let birthDateCell = document.createElement("td");
+    birthDateCell.textContent = user.Birth_Date;
+    // add cells to row
+    newRow.appendChild(firstNameCell);
+    newRow.appendChild(birthDateCell);
+    // Create other cells if needed
+
+    // Store the new row in the map
+    tableRowsMap[user.id] = newRow;
+  }
+
+  // Add the new row to the table
+  table.appendChild(newRow);
+}
+
+// Function to remove rows from the table for users not present in the new data
+function removeRowsNotInData(data) {
+  for (const userId in tableRowsMap) {
+    if (!data.find(user => user.id === userId)) {
+      // The user is not present in the new data, remove the row from the table
+      const rowToRemove = tableRowsMap[userId];
+      rowToRemove.remove();
+      // Delete the row entry from the map
+      delete tableRowsMap[userId];
+    }
+  }
+}
+
+
+socket.onmessage = function(event) {
+  let data = JSON.parse(event.data);
+ 
+
+  if (data && data.length > 0) {
+    total_ID_checks.textContent = data.length;
+
+    // Update or add rows for each user in the new data
+    data.forEach(user => {
+      updateOrAddRow(user);
+    });
+
+    // Remove rows for users not present in the new data
+    removeRowsNotInData(data);
+  } else {
+    total_ID_checks.textContent = 0;
+  }
+};
+   
+
+
+
+      socket.onerror = function(event) {
+        console.error('WebSocket error:', event);
+      };
+
+      socket.onclose = function(event) {
+        
+        console.log('WebSocket connection closed');
+      };
+
+
+    });
+  </script>
+
+
+<script type="text/javascript">
+
+    function Decline_broadcaster(id){
+
+      $('#decline_modal').modal('show')
+
+      let userid = document.getElementById('user_id');
+     userid.value = id;
+
+
+
+    }
+    
+function dismiss_decline_modal(){
+  $('#decline_modal').modal('hide');
+}
+
+    function send_decline_message() {
+      let decline_message = document.getElementById('decline_message');
+      $('#decline_modal').modal('hide')
+      var modal = document.getElementById('info-' + document.getElementById('user_id').value);
+      var parentElement = modal.parentNode;
+      parentElement.removeChild(modal);
+      parentElement.closest('tr').remove(); 
+      let rowCount = table.querySelectorAll('tr').length;
+      total_ID_checks.textContent = rowCount;
+      check_modal();
+
+      $.ajax({
+          method:'POST',
+          url: "/staff/idStatus/",
+          mimeType:"multipart/form-data",
+          data:{  
+                  'Status' : 'Decline',
+                  'User_id' : document.getElementById('user_id').value,
+                  'message': decline_message.value,
+                  'csrfmiddlewaretoken':"{{csrf_token}}",
+              },
+              'dataType': 'json',
+              success:function(){
+                }
+      })
+    }
+    
+    {% comment %} Approve broadcaster {% endcomment %}
+    
+
+      
+
+
+function check_modal()
+{
+    var modal = $('.modal');
+        // Now you can use the firstModal variable as needed
+
+        if (modal)
+        {
+        setTimeout(function(){
+          var firstModal = $('#table_body');
+          var modalsInsideTableBody = firstModal.find('.openmodal').first();
+
+          if (firstModal.find('.openmodal').length > 0) {
+            // Modals exist inside the table_body
+            // You can perform actions here if needed 
+            modalsInsideTableBody.click();
+          } else {
+            // There are no modals inside the table_body
+            // You can handle this case if needed
+          }
+        }, 1000);
+      }
+    
+}
+
+    
