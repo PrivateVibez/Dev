@@ -46,17 +46,17 @@ class Room_Data(models.Model):
     Strength_OH_button    = models.CharField(null=True,blank=True, max_length=100)
     Strength_OHYes_button = models.CharField(null=True,blank=True, max_length=100)
     
-    Feature_OHYes_button = models.CharField(max_length=1,null=True,blank=True)
-    Feature_OH_button = models.CharField(max_length=1,null=True,blank=True)
-    Feature_MMM_button = models.CharField(max_length=1,null=True,blank=True)
+    Feature_OHYes_button  = models.CharField(max_length=1,null=True,blank=True)
+    Feature_OH_button     = models.CharField(max_length=1,null=True,blank=True)
+    Feature_MMM_button    = models.CharField(max_length=1,null=True,blank=True)
     Visitors              = models.ManyToManyField(Room_Visitors, null=True, blank=True)
     Is_Active             = models.BooleanField(default=False)
-    Blocked_Countries       = models.ManyToManyField(Blocked_Countries, related_name='block_countries', blank=True)
+    Blocked_Countries     = models.ManyToManyField(Blocked_Countries, related_name='block_countries', blank=True)
     Blocked_Regions       = models.ManyToManyField(Blocked_Regions, related_name='block_regions', blank=True)
     hashtags              = models.TextField(null=True,blank=True)
     Room_Rules            = models.TextField(null=True,blank=True)
-    Revenue               =models.IntegerField(null=True, blank=True)
-    Total_Viewers         =models.IntegerField(null=True, blank=True)
+    Revenue               = models.IntegerField(null=True, blank=True)
+    Total_Viewers         = models.IntegerField(null=True, blank=True)
     Timestamp             = models.DateTimeField(auto_now_add=True)     
     
     def __str__(self):
@@ -103,7 +103,7 @@ class Slot_Machine_limit(models.Model):
     Number_of_Two_of_a_kind_winners       = models.IntegerField(null=True, blank=True)
     Number_of_Three_of_a_kind_losers      = models.IntegerField(null=True, blank=True)
     Number_of_Two_of_a_kind_losers        = models.IntegerField(null=True, blank=True)
-    Timestamp                   = models.DateTimeField(auto_now_add=True)
+    Timestamp                             = models.DateTimeField(auto_now_add=True)
     
     def __str__(self):
         return str(self.Three_of_a_kind_winners)
@@ -127,19 +127,19 @@ class Slot_Machine(models.Model):
     
 
 class Follows(models.Model):
-    User        = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    Broacaster  = models.ForeignKey(settings.AUTH_USER_MODEL,null=True,blank=True, on_delete=models.CASCADE, related_name = 'Broacaster')
-    Timestamp   = models.DateTimeField(auto_now_add=True)     
+    User         = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    Broadcaster  = models.ForeignKey(settings.AUTH_USER_MODEL,null=True,blank=True, on_delete=models.CASCADE, related_name = 'Broadcaster')
+    Timestamp    = models.DateTimeField(auto_now_add=True)     
     def __str__(self):
         return str(self.User)
 
 
 
 class Thumbs(models.Model):
-    User        = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    Broacaster  = models.ForeignKey(settings.AUTH_USER_MODEL,null=True,blank=True, on_delete=models.CASCADE, related_name = 'Thumb_Broacaster')
-    Thumb       = models.CharField(max_length=200,null=True,blank=True)
-    Timestamp   = models.DateTimeField(auto_now_add=True)     
+    User         = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    Broadcaster  = models.ForeignKey(settings.AUTH_USER_MODEL,null=True,blank=True, on_delete=models.CASCADE, related_name = 'Thumb_Broadcaster')
+    Thumb        = models.CharField(max_length=200,null=True,blank=True)
+    Timestamp    = models.DateTimeField(auto_now_add=True)     
     def __str__(self):
         return str(self.User)
 

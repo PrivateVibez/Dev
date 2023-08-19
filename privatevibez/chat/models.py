@@ -22,12 +22,20 @@ class Private(SoftDeleteModel):
     def __str__(self):
         return str(self.From)
     
-class Private_Chat_Invitee(SoftDeleteModel):
-    broadcaster     = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    Invitee         = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, symmetrical=False, related_name="invitee")
+class InviteeRelationship(models.Model):
+    User = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="invitee_relationships")
+    Invitee = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    Is_Accepted = models.BooleanField(default=False,null=True)
 
     def __str__(self):
-        return str(self.broadcaster.username)  
+        return f"{self.user} invites {self.invitee}"
+    
+class Private_Chat_Invitee(models.Model):
+    Broadcaster = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    Invitee_relationships = models.ManyToManyField(InviteeRelationship, blank=True)
+
+    def __str__(self):
+        return f"Invitations for {self.broadcaster}"
     
 class Staff(SoftDeleteModel):
     From       = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name = 'Staff_From_Message')

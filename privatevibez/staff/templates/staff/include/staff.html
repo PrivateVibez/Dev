@@ -171,14 +171,11 @@
           {% comment %} <div class=" image d-flex flex-column justify-content-center align-items-center"> <button class="btn btn-secondary"> 
             <img src="{% static 'profile_pic/FB_IMG_1663714514952_uJj6BOH.jpg' %}" id="staff_profile_pic" height="100" width="100" /></button>  </div> {% endcomment %}
 
-          <div class="form-group">
-            <label for="id_photo">ID</label>
-            <input type="file" class="form-control" name="id_photo" id="id_photo" placeholder="id_photo">
-          </div>
         
           <div class="form-group">
-            <label for="profile_pic">Profile picture</label>
-            <input type="file" class="form-control" name="profile_pic" id="profile_pic" placeholder="profile_pic">
+            <div class="d-flex justify-content-center align-items-center flex-column gap-2 my-2">
+            <img id="staff_profile_pic" class="rounded-circle border-5 m-auto" width="200px" height="200px" src="">
+            </div>
           </div>
 
 
@@ -466,16 +463,23 @@ function editStaff(user_id){
     success:function(data){
            
               // create a new table row
-              address.value = data.data.address;
-              email.value = data.data.email;
-              fname.value = data.data.fname;
-              lname.value = data.data.lname;
-              birthday.value = data.staff_bday; 
-              console.log(data.data)
-              console.log(data.staff_id)
-              console.log(data.staff_profile_pic)
-              console.log(data.staff_bday)
+              var staff_data = data.data;
+              
+              
 
+              for (const key in staff_data) {
+                if (staff_data.hasOwnProperty(key)) {
+                  const value = staff_data[key];
+                  console.log(`${key}: ${value}`);
+                  (key) == 'email' ? email.value = value : null;
+                  (key) == 'fname' ? fname.value = value : null;
+                  (key) == 'lname' ? lname.value = value : null;
+                  (key) == 'address' ? address.value = value : null;
+                  (key) == 'profile_pic' ? profile_pic.src = value : null;
+                  (key) == 'birthday' ? birthday.value = value : null;
+          
+                }
+              }
 
   
 
@@ -498,7 +502,7 @@ function deleteStaff(user_id)
     mimeType:"multipart/form-data",
     data:{  
         'staff_id'  : user_id,
-        csrfmiddlewaretoken: document.getElementById('csrf').querySelector('input').value,
+        'csrfmiddlewaretoken' : "{{ csrf_token }}",
     },
     'dataType': 'json',
     success:function(data){

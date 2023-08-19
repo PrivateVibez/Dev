@@ -75,52 +75,41 @@ def Room(request, Broadcaster):
 
                 
             public_chat          = Public.objects.filter(Room = User.objects.get(username=Broadcaster)).all
-            follows              = Follows.objects.filter(User = request.user).all()
+            follows              = Follows.objects.filter(Broadcaster__username = Broadcaster).all()
+            print(follows,flush=True)
             
-            
-            thumbs_up_count      = Thumbs.objects.filter(Broacaster = User.objects.get(username = Broadcaster), Thumb = "Up").count
-            thumbs_down_count    = Thumbs.objects.filter(Broacaster = User.objects.get(username = Broadcaster), Thumb = "Down").count
-            if Thumbs.objects.filter(User = request.user,Broacaster = User.objects.get(username = Broadcaster),Thumb = "Up").exists():
+            thumbs_up_count      = Thumbs.objects.filter(Broadcaster = User.objects.get(username = Broadcaster), Thumb = "Up").count
+            thumbs_down_count    = Thumbs.objects.filter(Broadcaster = User.objects.get(username = Broadcaster), Thumb = "Down").count
+            if Thumbs.objects.filter(User = request.user,Broadcaster = User.objects.get(username = Broadcaster),Thumb = "Up").exists():
                 thumbs_up_color  = True
             else:
                 thumbs_up_color  = False
-            if Thumbs.objects.filter(User = request.user,Broacaster = User.objects.get(username = Broadcaster),Thumb = "Down").exists():
+            if Thumbs.objects.filter(User = request.user,Broadcaster = User.objects.get(username = Broadcaster),Thumb = "Down").exists():
                 thumbs_Down_color  = True
             else:
                 thumbs_Down_color  = False
 
-            if Follows.objects.filter(User = request.user, Broacaster=broadcaster_user.id).exists():
+            if Follows.objects.filter(User = request.user, Broadcaster=broadcaster_user.id).exists():
                 follow_button = True
             else:
                 follow_button = False
                 
                 
-                try:
-            
-                        private_invitee_list = Private_Chat_Invitee.objects.get(broadcaster = broadcaster_user)
-                        private_invitee_list = private_invitee_list.Invitee.all()
-                        invitee_list = []
-            
-                        for user_data in private_invitee_list:
-                            if user_data.Is_Accepted_Invite == True:
-                                invitee_list.append({
-                                    'user_id': user_data.id,
-                                    'name': user_data.username,
-                                })
-                                
-                            if user_data.id == request.user.id and user_data.Is_Accepted_Invite == True:
-                                invite_accepted = True
-                                
-                            if user_data.id == request.user.id and user_data.Is_Accepted_Invite == False and user_data.Is_Sent_Invite == True:
-                                invite_sent = True
-                                
-                except Private_Chat_Invitee.DoesNotExist:
-                        invitee_list = []
                 
             try:
                 user =User_Status.objects.get(User = request.user.id)
                 
                 if user.Status == "User":
+                    
+                    try:
+            
+                        private_chat_invite = Private_Chat_Invitee.objects.get(Broadcaster = broadcaster_user,Invitee_relationships__User__id=request.user.id)
+            
+                                
+                    except Private_Chat_Invitee.DoesNotExist:
+                        pass
+                        
+                        
                     if Slot_Machine.objects.filter(User=broadcaster_user.id).exists():
                         slot_machine_data = Slot_Machine.objects.filter(User=broadcaster_user.id).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
                         
@@ -221,21 +210,21 @@ def Menu_item(request):
 def Following(request):
     broadcaster = request.POST.get('broadcaster')
     if Follows.objects.filter(User = request.user).exists():
-        if Follows.objects.filter(Broacaster = User.objects.get(username = broadcaster)).exists():
+        if Follows.objects.filter(Broadcaster = User.objects.get(username = broadcaster)).exists():
 
-            Del_flow = Follows.objects.get(User = request.user, Broacaster = User.objects.get(username = broadcaster) )
+            Del_flow = Follows.objects.get(User = request.user, Broadcaster = User.objects.get(username = broadcaster) )
             Del_flow.delete()
             message = f'You have unfollowed {broadcaster}'
         else:
             Follows.objects.create(
                 User         =  request.user,
-                Broacaster   =   User.objects.get(username = broadcaster)
+                Broadcaster   =   User.objects.get(username = broadcaster)
             )
             message = f'You are now following {broadcaster}'
     else:
             Follows.objects.create(
                 User         =  request.user,
-                Broacaster   =   User.objects.get(username = broadcaster)
+                Broadcaster   =   User.objects.get(username = broadcaster)
             )
             message = f'You are now following {broadcaster}'
             
@@ -244,39 +233,39 @@ def Following(request):
 
 def Thumb(request):
     if Thumbs.objects.filter(User = request.user).exists():
-        if Thumbs.objects.filter(Broacaster = User.objects.get(username = request.POST.get('broadcaster'))).exists():
+        if Thumbs.objects.filter(Broadcaster = User.objects.get(username = request.POST.get('broadcaster'))).exists():
             if request.POST.get('Thumb') == "Down":
-                thumb = Thumbs.objects.get(User = request.user, Broacaster = User.objects.get(username = request.POST.get('broadcaster')) )
+                thumb = Thumbs.objects.get(User = request.user, Broadcaster = User.objects.get(username = request.POST.get('broadcaster')) )
                 thumb.Thumb = "Down"
                 thumb.save()
             else:
-                thumb = Thumbs.objects.get(User = request.user, Broacaster = User.objects.get(username = request.POST.get('broadcaster')) )
+                thumb = Thumbs.objects.get(User = request.user, Broadcaster = User.objects.get(username = request.POST.get('broadcaster')) )
                 thumb.Thumb = "Up"
                 thumb.save()
         else:
             if request.POST.get('Thumb') is "Down":
                 Thumbs.objects.create(
                     User         =  request.user,
-                    Broacaster   =   User.objects.get(username = request.POST.get('broadcaster')),
+                    Broadcaster   =   User.objects.get(username = request.POST.get('broadcaster')),
                     Thumb        =   "Down"
                 )
             else:
                 Thumbs.objects.create(
                     User         =  request.user,
-                    Broacaster   =   User.objects.get(username = request.POST.get('broadcaster')),
+                    Broadcaster   =   User.objects.get(username = request.POST.get('broadcaster')),
                     Thumb        =   "Up"
                 )
     else:
         if request.POST.get('Thumb') is "Down":
             Thumbs.objects.create(
                 User         =  request.user,
-                Broacaster   =   User.objects.get(username = request.POST.get('broadcaster')),
+                Broadcaster   =   User.objects.get(username = request.POST.get('broadcaster')),
                 Thumb        =   "Down"
             )
         else:
             Thumbs.objects.create(
                 User         =  request.user,
-                Broacaster   =   User.objects.get(username = request.POST.get('broadcaster')),
+                Broadcaster   =   User.objects.get(username = request.POST.get('broadcaster')),
                 Thumb        =   "Up"
             )
     return JsonResponse('OK', safe=False) 
@@ -500,27 +489,31 @@ def invite_private_chat(request):
         user.Is_Sent_Invite = True
         user.save()
         
-        if Private_Chat_Invitee.objects.filter(broadcaster = broadcaster).exists():
-            broadcaster = Private_Chat_Invitee.objects.get(broadcaster = broadcaster)
-            broadcaster_invitee_list = broadcaster.Invitee.all()
-            
+        if Private_Chat_Invitee.objects.filter(Broadcaster = broadcaster).exists():
+            broadcaster = Private_Chat_Invitee.objects.get(Broadcaster = broadcaster)
+            invitee_relationship, _ = InviteeRelationship.objects.get_or_create(User=broadcaster.Broadcaster, Invitee=user)
+            broadcaster_invitee_list = broadcaster.Invitee_relationships.all()
+            print("executed",flush=True)
+
 
             if user not in broadcaster_invitee_list:
-                broadcaster.Invitee.add(user)
+                broadcaster.Invitee_relationships.add(invitee_relationship)
+            return JsonResponse({'data':"Invite sent!"},safe=False)
 
          
 
                     
         else:
             broadcaster = Private_Chat_Invitee.objects.create(broadcaster=broadcaster)
-            broadcaster.Invitee.add(user)
-
+            invitee_relationship, _ = InviteeRelationship.objects.get_or_create(User=broadcaster.Broadcaster, Invitee=user)
+            broadcaster.Invitee_relationships.add(invitee_relationship)
+            return JsonResponse({'data':"Invite sent!"},safe=False)
 
         
         
         
     
-    return JsonResponse('OK', safe=False)
+ 
 
 
 def trigger_toy(broadcaster_id,price,user_id,feature,strength,timesec):

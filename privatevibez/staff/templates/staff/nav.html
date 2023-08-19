@@ -9,7 +9,8 @@
 
     <div class="toast show bg-{{message.tags}}" data-autohide="true" data-delay="2000" role="alert" aria-live="assertive" aria-atomic="true">
      <div class="toast-header">
-  
+      <img src="{% static 'images/logo/small_green_logo.png' %}" id="privatevibezlogo" width="30px" height="30px" class="rounded me-2 d-none" alt="...">
+
        <strong class="me-auto">Notification</strong>
        <small class="text-muted">just now</small>
        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -45,6 +46,9 @@
         ><img src="{% static 'images/logo/Private_Vibez_Logo_WHT.png' %}" alt="Private Vibez Logo" width="150" class="d-inline-block align-text-top">
         </a
       >
+
+
+      {% if request.user.is_authenticated %}
       <button
         class="navbar-toggler"type="button"data-bs-toggle="collapse"data-bs-target="#topNavBar"aria-controls="topNavBar"aria-expanded="false"aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -69,6 +73,10 @@
         </ul>
 
       </div>
+
+      {% endif %}
+
+
     </div>
   </nav>
   <!-- top navigation bar -->

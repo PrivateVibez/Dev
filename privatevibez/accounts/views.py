@@ -207,14 +207,26 @@ def Send_Vibez(request):
 
     return JsonResponse({'data':message}, safe=False)
 
+
 @csrf_exempt
 def Profile_Pic(request):
     
     user_data         = User_Data.objects.get(User = request.user)
-    user_data.Image   = request.FILES['file']
-    user_data.save()
+    image             = request.FILES['file']
     
-    return JsonResponse('OK', safe=False) 
+    if image:
+        max_file_size = 5 * 1024 * 1024  # 5 MB
+        if image.size > max_file_size:
+            messages.error(request, "Image too large. Size should not exceed 5 MB.")
+            return JsonResponse('OK', safe=False) 
+        else:
+            user_data.Image = image
+            user_data.save()
+            messages.success(request, "Profile picture successfully changed!")
+            return JsonResponse('OK', safe=False) 
+
+    
+    
 
 @csrf_exempt
 def bio_info(request):

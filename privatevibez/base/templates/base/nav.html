@@ -90,7 +90,7 @@
     {% if not request.user.is_authenticated %} 
         <a href="#" data-toggle="modal" data-target="#registration_modal" style="color:black;text-decoration:none;">
             <p class="fs-2 font-weight-bold" style="color:#6cc6ba;">
-                Sign Up To  enjoy Vibrations
+                Sign Up to  enjoy Vibrations
                 <span><i class="icofont-sign-in"></i></span>
             </p> 
         </a>    
@@ -99,10 +99,10 @@
     {% if request.user.is_authenticated %} 
         {% if user_status == "User" %}
 
-            <a href="/accounts/registration_broadcaster/" style="color:black;text-decoration:none;">
+            <a href="/accounts/registration_broadcaster/" class="mt-0" style="color:black;text-decoration:none;">
                 <p class="fs-2 font-weight-bold" style="color:#6cc6ba;">
                     BROADCAST YOURSELF - GO NOW 
-                    <span><i class="icofont-camera" style="color:#6cc6ba;"></i></span>
+                    <span><i class="icofont-camera fs-1" style="color:#6cc6ba;"></i></span>
                 </p> 
             </a>
         {% endif %}

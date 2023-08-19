@@ -15,7 +15,7 @@ class Profile_Image(forms.ModelForm):
 
 
 class UserRegisterForm(UserCreationForm):
-
+    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}),label='Password')
     class Meta:
         model = User
         fields = ['username', 'email', 'is_staff', 'password1', 'password2']
@@ -24,6 +24,8 @@ class UserRegisterForm(UserCreationForm):
 class AddStaffPermission(forms.Form):
 
     email = forms.EmailField()
+    id_photo = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control', 'placeholder': 'ID Photo'}),label='ID Photo',required=True)
+    profile_pic = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control', 'placeholder': 'Profile Photo'}),label='Profile Photo',required=True)
     permissions = forms.MultipleChoiceField(
         choices=[('can_add_staff', 'Can add staff'), ('can_edit_staff', 'Can edit staff'), ('can_delete_staff', 'Can delete staff'),
         ("can_view_staff", "Can view a staff"),

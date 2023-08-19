@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from staff.models import StaffRoomManager
+from staff.models import StaffRoomManager, StaffManager
 from chat.models import Staff
 from accounts.models import User_Data
 from django.contrib.auth import get_user_model
@@ -43,3 +43,13 @@ class UserStatusSerializer(serializers.ModelSerializer):
         
         model = User_Data
         fields =['user_id','username','first_name','last_name','email','Timestamp','Real_Name','Image','Id_File','Birth_Date','Age']
+        
+        
+        
+
+class StaffSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        
+        model = StaffManager
+        fields = ['email','fname','lname','address','profile_pic','birthday']

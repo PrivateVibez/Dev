@@ -24,12 +24,13 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse as httpresponse
 from django.forms.models import model_to_dict
 from django.core import serializers
+from rest_framework.renderers import JSONRenderer
 import datetime
 from django.db.models.fields.files import ImageFieldFile
 import json
 from django.shortcuts import get_object_or_404
 from django.views import View
-from .serializers import StaffMessagesSerializer, UserStatusSerializer
+from .serializers import StaffMessagesSerializer, UserStatusSerializer, StaffSerializer
 from staff.models import Memos
 from django.db.models import Q
 from django.contrib.auth import get_user_model
@@ -39,100 +40,107 @@ User = get_user_model()
 # Create your views here.
 
 def home(request):
-        bad_acters_list = []
         
-        pending = User.objects.filter(Status='Pending_Broadcaster')
-        pending_user_id = list(pending.values_list('id',flat=True))
+        
+        if request.user.is_authenticated and StaffManager.objects.filter(User=request.user).exists():
+                bad_acters_list = []
+                
+                pending = User.objects.filter(Status='Pending_Broadcaster')
+                pending_user_id = list(pending.values_list('id',flat=True))
 
-        decline_messages = Decline_Message.objects.all()
-        
-        user_data = User_Data.objects.filter(User__id__in=pending_user_id)
-        
-        users_status = User_Status.objects.all()
-        users_data = User_Data.objects.all()
-        
-        bad_acters = Bad_Acters.objects.all()
-        total_bad_acters_count = bad_acters.count()
-        
-        for bad_acter in bad_acters:
-                bad_acters_list.append({
-                                        
-                                        'reporty': None if bad_acter.Reporty is None else bad_acter.Reporty,
-                                        'reported': None if bad_acter.Reported is None else bad_acter.Reported,
-                                        'message': None if bad_acter.Message is None else bad_acter.Message,
-                                        'status': None if User_Status.objects.get(User=bad_acter.Reporty) is None else User_Status.objects.get(User=bad_acter.Reporty).Status,
-                                        'total_reports': Bad_Acters.objects.filter(Reporty = bad_acter.Reporty).count(),})
-        
-        to_do_projects_dev = ToDoProject_Dev.objects.all()
-        to_do_lists_Dev = ToDolist_Dev.objects.all()
-        to_do_lists_Dev_count = to_do_lists_Dev.count
-        
-        # staff chat
-        try:
-                broc_manager = StaffRoomManager.objects.get(Staff=request.user)
-                room_name    = User.objects.get(username=request.user.username)
-                print(room_name)
-                broc_staff_list = StaffRoomManager.objects.all()
-        except StaffRoomManager.DoesNotExist:
-                broc_manager = None
-                room_name    = None
-                broc_staff_list = None
-        
-        sessions_info = []
-        staff_ids = []
-        
-        active_sessions = Session.objects.filter(expire_date__gte=timezone.now())
-
-        # Filter sessions based on the is_staff field of the related User model
-        staff_sessions = [s for s in active_sessions if s.get_decoded() and User.objects.filter(pk=s.get_decoded().get('_auth_user_id'), is_staff=True).exists()]
-
-        staff_list = StaffManager.objects.all()
-        
-        # Query all existing Staff
-        for staff in staff_list:
-
+                decline_messages = Decline_Message.objects.all()
+                
+                user_data = User_Data.objects.filter(User__id__in=pending_user_id)
+                
+                users_status = User_Status.objects.all()
+                users_data = User_Data.objects.all()
+                
+                bad_acters = Bad_Acters.objects.all()
+                total_bad_acters_count = bad_acters.count()
+                
+                for bad_acter in bad_acters:
+                        bad_acters_list.append({
+                                                
+                                                'reporty': None if bad_acter.Reporty is None else bad_acter.Reporty,
+                                                'reported': None if bad_acter.Reported is None else bad_acter.Reported,
+                                                'message': None if bad_acter.Message is None else bad_acter.Message,
+                                                'status': None if User_Status.objects.get(User=bad_acter.Reporty) is None else User_Status.objects.get(User=bad_acter.Reporty).Status,
+                                                'total_reports': Bad_Acters.objects.filter(Reporty = bad_acter.Reporty).count(),})
+                
+                to_do_projects_dev = ToDoProject_Dev.objects.all()
+                to_do_lists_Dev = ToDolist_Dev.objects.all()
+                to_do_lists_Dev_count = to_do_lists_Dev.count
+                
+                # staff chat
                 try:
-                        
-                        current_staff = User.objects.get(email=staff.email)
-                        login_time = current_staff.last_login
+                        broc_manager = StaffRoomManager.objects.get(Staff=request.user)
+                        room_name    = User.objects.get(username=request.user.username)
+                        print(room_name)
+                        broc_staff_list = StaffRoomManager.objects.all()
+                except StaffRoomManager.DoesNotExist:
+                        broc_manager = None
+                        room_name    = None
+                        broc_staff_list = None
                 
-                except User.DoesNotExist:
-                        login_time = None
-                        
-                        
-                sessions_info.append({
-                'user_id': None if staff.staff_id_id is None else staff.staff_id_id,
-                'username': staff.email if staff.fname is None else staff.fname,
-                'login_time': login_time,
-                'logout_time': None if staff.logout_time is None else staff.logout_time.strftime("%Y-%m-%d %H:%M:%S"),    
-                'is_session_active': False if current_staff else 'Pending',
-                   
-                })
+                sessions_info = []
+                staff_ids = []
                 
-                for session in staff_sessions:
-   
-                        session_data = session.get_decoded()
-                        user_id = session_data.get('_auth_user_id')
-                        
+                active_sessions = Session.objects.filter(expire_date__gte=timezone.now())
+
+                # Filter sessions based on the is_staff field of the related User model
+                staff_sessions = [s for s in active_sessions if s.get_decoded() and User.objects.filter(pk=s.get_decoded().get('_auth_user_id'), is_staff=True).exists()]
+
+                staff_list = StaffManager.objects.all()
+                
+                # Query all existing Staff
+                for staff in staff_list:
+
                         try:
                                 
-                                user = User.objects.get(pk=user_id)
-                        except User.DoesNotExist:
-                                user = None
+                                current_staff = User.objects.get(email=staff.email)
+                                login_time = current_staff.last_login
                         
-                        if user is not None:
-                                if staff.staff_id_id == user.id:
-                                        for session_info in sessions_info:
-                                                if session_info['user_id'] == user.id:
-                                                        session_info['login_time'] = user.last_login
-                                                        session_info['logout_time'] = staff.logout_time
-                                                        session_info['is_session_active'] = True
-                                                        break
-
+                        except User.DoesNotExist:
+                                login_time = None
+                                
+                                
+                        sessions_info.append({
+                        'user_id': None if staff.staff_id_id is None else staff.staff_id_id,
+                        'username': staff.email if staff.fname is None else staff.fname,
+                        'login_time': login_time,
+                        'logout_time': None if staff.logout_time is None else staff.logout_time.strftime("%Y-%m-%d %H:%M:%S"),    
+                        'is_session_active': False if current_staff else 'Pending',
+                        
+                        })
+                        
+                        for session in staff_sessions:
+        
+                                session_data = session.get_decoded()
+                                user_id = session_data.get('_auth_user_id')
+                                
+                                try:
                                         
-                   
+                                        user = User.objects.get(pk=user_id)
+                                except User.DoesNotExist:
+                                        user = None
+                                
+                                if user is not None:
+                                        if staff.staff_id_id == user.id:
+                                                for session_info in sessions_info:
+                                                        if session_info['user_id'] == user.id:
+                                                                session_info['login_time'] = user.last_login
+                                                                session_info['logout_time'] = staff.logout_time
+                                                                session_info['is_session_active'] = True
+                                                                break
 
-        return render(request, "staff/home.html", locals())
+                                                
+                        
+
+                return render(request, "staff/home.html", locals())
+        
+        else:
+                messages.info(request,"Please login")
+                return redirect("login")
         
 @csrf_exempt
 def Id_Status(request):
@@ -225,14 +233,13 @@ def encode_datetime(obj):
 def getStaffInformation(request):
         
         staff_id = request.GET.get('staff')
-        staff = StaffManager.objects.values('email','fname','lname','address').get(staff_id_id=staff_id)
+        staff = StaffManager.objects.get(staff_id_id=staff_id)
         
-        staff_id_and_profile_pic_and_bday = StaffManager.objects.values('profile_pic','birthday').get(staff_id_id=staff_id)
+        staff_serializer = StaffSerializer(staff)
+
+        print(staff_serializer.data,flush=True)
         
-        staff_profile_pic = staff_id_and_profile_pic_and_bday['profile_pic']
-        staff_bday = encode_datetime(staff_id_and_profile_pic_and_bday['birthday'])
-        
-        return JsonResponse ({'data' : staff, 'staff_id' : staff_id, 'staff_profile_pic' : staff_profile_pic, 'staff_bday' : staff_bday}) 
+        return JsonResponse ({'data' : staff_serializer.data}) 
 
 @csrf_exempt
 def editStaffPermission(request):
@@ -305,7 +312,14 @@ def staffRegistration(request):
                         
                         # CHECK IF THE EMAIL IS PRESENT IN THE DATABASE
                         try:
-                               
+                                max_file_size = 5 * 1024 * 1024
+                                
+                                if personalinfo_form.cleaned_data['id_photo'] and ersonalinfo_form.cleaned_data['profile_pic']:
+                                        if personalinfo_form.cleaned_data['id_photo'] > max_file_size or personalinfo_form.cleaned_data['profile_pic'] > max_file_size:
+                                                messages.error(request, "The file is too big. File size should not exceed 5MB.")
+                                                return redirect(request.META.get('HTTP_REFERER'))
+                                        
+                                
                                 staff = StaffManager.objects.get(email=user_form.cleaned_data['email'])
                                 
                                 if User.objects.filter(email=user_form.cleaned_data['email']).exists():
@@ -331,17 +345,14 @@ def staffRegistration(request):
                                 staff.profile_pic = personalinfo_form.cleaned_data['profile_pic']
                                 
                                 staff.save()
-                                
+                                messages.success(request, f'Account Created!')
+                                return redirect("staff_home")
+                        
                         except StaffManager.DoesNotExist:
                                 messages.error(request, "Use the email you were invited with")
-                                
+                                return redirect(request.META.get('HTTP_REFERER'))
+                        
 
-                        
-                        print(user_form)
-                        print(personalinfo_form)
-                        
-                        messages.success(request, f'Account Created!')
-                        return redirect("staff_home")
                 else:
                         print(user_form.errors)
                         print(personalinfo_form.errors)

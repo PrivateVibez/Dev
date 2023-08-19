@@ -29,4 +29,3 @@ class Private_Chat_InviteeAdmin(admin.ModelAdmin):
 admin.site.register(Staff, StaffAdmin)
 admin.site.register(Private, PrivateAdmin)
 admin.site.register(PrivateRoomManager)
-admin.site.register(Private_Chat_Invitee,Private_Chat_InviteeAdmin)
