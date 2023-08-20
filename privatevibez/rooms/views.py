@@ -76,7 +76,6 @@ def Room(request, Broadcaster):
                 
             public_chat          = Public.objects.filter(Room = User.objects.get(username=Broadcaster)).all
             follows              = Follows.objects.filter(Broadcaster__username = Broadcaster).all()
-            print(follows,flush=True)
             
             thumbs_up_count      = Thumbs.objects.filter(Broadcaster = User.objects.get(username = Broadcaster), Thumb = "Up").count
             thumbs_down_count    = Thumbs.objects.filter(Broadcaster = User.objects.get(username = Broadcaster), Thumb = "Down").count
@@ -97,15 +96,19 @@ def Room(request, Broadcaster):
                 
                 
             try:
-                user =User_Status.objects.get(User = request.user.id)
-                
+                user = request.user
+            
                 if user.Status == "User":
-                    
+
                     try:
             
-                        private_chat_invite = Private_Chat_Invitee.objects.get(Broadcaster = broadcaster_user,Invitee_relationships__User__id=request.user.id)
-            
-                                
+                        private_chat_invite = Private_Chat_Invitee.objects.get(Broadcaster=broadcaster_user, Invitee_relationships__Invitee=user)   
+                        invitees = private_chat_invite.Invitee_relationships.all()
+                        
+                        for invitee in invitees:
+                            if invitee.Invitee == user:
+                                    invite_accepted = True if invitee.Is_Accepted == True else False
+                        print(invite_accepted,flush=True)
                     except Private_Chat_Invitee.DoesNotExist:
                         pass
                         
@@ -113,11 +116,16 @@ def Room(request, Broadcaster):
                     if Slot_Machine.objects.filter(User=broadcaster_user.id).exists():
                         slot_machine_data = Slot_Machine.objects.filter(User=broadcaster_user.id).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
                         
-                                
+               
+     
                 elif user.Status == "Broadcaster":
                     
                     availed_items = Item_Availed.objects.filter(Room = room_data).all()
-                    print(availed_items,flush=True)
+                    
+                    private_chat_invite = Private_Chat_Invitee.objects.get(Broadcaster=request.user)
+                    pending_private_chat_invitees = private_chat_invite.Invitee_relationships.filter(Is_Accepted=False).count()
+                    all_private_chat_invitees = private_chat_invite.Invitee_relationships.all()
+                    
                     countries = Country.objects.all()
                     room_data_blocked_countries = room_data.Blocked_Countries.all()
 
@@ -126,7 +134,6 @@ def Room(request, Broadcaster):
 
                     # Filter countries based on blocked country IDs
                     filtered_countries = countries.exclude(id__in=blocked_country_ids)
-
                     regions = Region.objects.all()
                     room_data_blocked_regions = room_data.Blocked_Regions.all()
     
@@ -137,8 +144,8 @@ def Room(request, Broadcaster):
                     change_password(request)
                     # change_email(request)
                     
-                    if Slot_Machine.objects.filter(User=request.user).exists():
-                        slot_machine_data = Slot_Machine.objects.filter(User=request.user).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
+                    if Slot_Machine.objects.filter(User=user).exists():
+                        slot_machine_data = Slot_Machine.objects.filter(User=user).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
                 
                 
             except User_Status.DoesNotExist:
@@ -273,6 +280,12 @@ def Thumb(request):
 def PrivateChatCheckBox(request):
     room_data = Room_Data.objects.get(User = request.user)
     room_data.Private_Chat = request.POST.get('Checked')
+    room_data.save()
+    return JsonResponse('OK', safe=False) 
+
+def PublicChatCheckBox(request):
+    room_data = Room_Data.objects.get(User = request.user)
+    room_data.Public_Chat = request.POST.get('Checked')
     room_data.save()
     return JsonResponse('OK', safe=False) 
 
@@ -485,26 +498,38 @@ def invite_private_chat(request):
         broadcaster_id = request.POST.get('room_id')
         
         broadcaster = User.objects.get(id = broadcaster_id)
-        user = User.objects.get(id = user_id)
-        user.Is_Sent_Invite = True
-        user.save()
+        room_data = Room_Data.objects.get(User=broadcaster)
+        broadcaster_private_chat = Room_Data.objects.get(User__id=broadcaster_id)
+        broadcaster_private_chat_price = broadcaster_private_chat.Private_Chat_Price
+        
+        user = User_Data.objects.get(User=user_id)
         
         if Private_Chat_Invitee.objects.filter(Broadcaster = broadcaster).exists():
             broadcaster = Private_Chat_Invitee.objects.get(Broadcaster = broadcaster)
-            invitee_relationship, _ = InviteeRelationship.objects.get_or_create(User=broadcaster.Broadcaster, Invitee=user)
+            invitee_relationship, _ = InviteeRelationship.objects.get_or_create(User=broadcaster.Broadcaster, Invitee=user.User)
             broadcaster_invitee_list = broadcaster.Invitee_relationships.all()
-            print("executed",flush=True)
+            
 
 
             if user not in broadcaster_invitee_list:
-                broadcaster.Invitee_relationships.add(invitee_relationship)
+                
+                
+                if user.Vibez > broadcaster_private_chat_price:
+                    user.Vibez -= broadcaster_private_chat_price
+                    user.save()
+                    room_data.Revenue += broadcaster_private_chat_price
+                    room_data.save()
+                    broadcaster.Invitee_relationships.add(invitee_relationship)
+                else:
+                    messages.error(request, "Not enough vibez!")
+                
             return JsonResponse({'data':"Invite sent!"},safe=False)
 
          
 
                     
         else:
-            broadcaster = Private_Chat_Invitee.objects.create(broadcaster=broadcaster)
+            broadcaster = Private_Chat_Invitee.objects.create(Broadcaster=broadcaster)
             invitee_relationship, _ = InviteeRelationship.objects.get_or_create(User=broadcaster.Broadcaster, Invitee=user)
             broadcaster.Invitee_relationships.add(invitee_relationship)
             return JsonResponse({'data':"Invite sent!"},safe=False)
@@ -647,34 +672,37 @@ def fav_btn_trigger_toy(request):
 
 def get_invitees(request):
     
-   if Private_Chat_Invitee.objects.filter(broadcaster=request.user).exists():
-        broadcaster = Private_Chat_Invitee.objects.get(broadcaster=request.user)
-        invitee_list = broadcaster.Invitee.all()
+    if Private_Chat_Invitee.objects.filter(Broadcaster=request.user).exists():
+        broadcaster = Private_Chat_Invitee.objects.get(Broadcaster=request.user)
+        invitee_list = broadcaster.Invitee_relationships.all()
         
         invitees = []
         for invitee in invitee_list:
             
-            if invitee.Is_Accepted_Invite == False:
+            if invitee.Is_Accepted == False:
                     invitees.append({
-                        'user_id': invitee.id,
-                        'name'  : invitee.username,
+                        'user_id': invitee.Invitee.id,
+                        'name'  : invitee.Invitee.username,
                     })
             
         
         return JsonResponse({"data":invitees}, safe=False)
+    else:
+        return JsonResponse({"data":"None"}, safe=False)
     
     
 def accept_privatechat(request):
     
     if request.method == "POST":
         user_id = User.objects.get(id = request.POST.get('user_id'))
-        
-        broadcaster = Private_Chat_Invitee.objects.get(broadcaster=request.user)
-        for invitee in broadcaster.Invitee.all():
-            if invitee == user_id:
-                invitee.Is_Accepted_Invite = True
+    
+        broadcaster = Private_Chat_Invitee.objects.get(Broadcaster=request.user, Invitee_relationships__Invitee=user_id)
+        for invitee in broadcaster.Invitee_relationships.all():
+            if invitee.Invitee == user_id:
+                invitee.Is_Accepted = True
                 invitee.save()
-  
+                print(invitee.Is_Accepted,flush=True)
+     
         
         return JsonResponse({'data':"success"}, safe=False)
     

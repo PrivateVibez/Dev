@@ -28,14 +28,14 @@ class InviteeRelationship(models.Model):
     Is_Accepted = models.BooleanField(default=False,null=True)
 
     def __str__(self):
-        return f"{self.user} invites {self.invitee}"
+        return f"{self.Invitee} invites {self.User}"
     
 class Private_Chat_Invitee(models.Model):
     Broadcaster = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     Invitee_relationships = models.ManyToManyField(InviteeRelationship, blank=True)
 
     def __str__(self):
-        return f"Invitations for {self.broadcaster}"
+        return f"Invitations for {self.Broadcaster}"
     
 class Staff(SoftDeleteModel):
     From       = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name = 'Staff_From_Message')

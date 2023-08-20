@@ -10,9 +10,9 @@
       <div class="form-check">
 
       {% if room_data.Public_Chat is True %}
-          <input type="checkbox" class="form-check-input" id="PublicChat" aria-describedby="PublicChatHelp" checked>
+          <input type="checkbox" class="form-check-input" onclick="PublicChat_CheckBox()"  id="PublicChat" aria-describedby="PublicChatHelp" checked>
       {% else %}
-          <input type="checkbox" class="form-check-input" id="PublicChat" aria-describedby="PublicChatHelp">
+          <input type="checkbox" class="form-check-input" onclick="PublicChat_CheckBox()"  id="PublicChat" aria-describedby="PublicChatHelp">
       {% endif %}
 
       <label class="form-check-label" for="PublicChat"> Public Chat</label>
@@ -43,7 +43,7 @@
           <label for="PrivateChatPrice">Private Chat Price</label>
           <input type="text" class="form-control" id="PrivateChatPrice" aria-describedby="PrivateChatPriceHelp" value="">
           <small id="PrivateChatPriceHelp" class="form-text text-muted">You can put a pice pre Vibe.</small>
-          <button type="button" onclick="Save_RoomPatterns()" class="btn btn-primary">Save changes</button>
+          <button type="button" onclick="Save_Chat()" class="btn btn-primary">Set</button>
       {% endif %}
     </div>  
   </div>
@@ -110,3 +110,42 @@
     </div>
   </div>
 </div>
+
+
+<script>
+
+  function PublicChat_CheckBox(){
+    if(document.getElementById('PublicChat').checked){
+        $.ajax({
+            method:'POST',
+            url: "/room/PublicChatCheckBox/",
+            mimeType:"multipart/form-data",
+            data:{  
+                    'Checked' : "True",
+                    'csrfmiddlewaretoken':"{{csrf_token}}",
+            },
+            'dataType': 'json',
+            success:function(){
+                $("#PublicChat").load(" #PublicChat > *");
+            }
+        })
+    
+    }
+    else{
+        $.ajax({
+            method:'POST',
+            url: "/room/PublicChatCheckBox/",
+            mimeType:"multipart/form-data",
+            data:{  
+                    'Checked' : "False",
+                    'csrfmiddlewaretoken':"{{csrf_token}}",
+            },
+            'dataType': 'json',
+            success:function(){
+                $("#PublicChat").load(" #PublicChat > *");
+            }
+        })
+    }
+}
+
+</script>

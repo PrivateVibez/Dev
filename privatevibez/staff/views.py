@@ -42,7 +42,7 @@ User = get_user_model()
 def home(request):
         
         
-        if request.user.is_authenticated and StaffManager.objects.filter(User=request.user).exists():
+        if request.user.is_authenticated and StaffManager.objects.filter(staff_id=request.user).exists():
                 bad_acters_list = []
                 
                 pending = User.objects.filter(Status='Pending_Broadcaster')

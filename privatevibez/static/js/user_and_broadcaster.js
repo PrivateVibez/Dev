@@ -5,8 +5,13 @@ function successToast(message){
       // Create a new toast element
       var newToastElement = document.createElement('div');
       newToastElement.className = 'toast';
+      newToastElement.classList.add('position-fixed');
+      newToastElement.classList.add('top-25');
+      newToastElement.classList.add('end-0');
+      newToastElement.classList.add('mr-5');
+      console.log("successToast");
       newToastElement.setAttribute('data-stackable-toast', '');
-      newToastElement.setAttribute('data-delay', '2000');
+      newToastElement.setAttribute('data-delay', '5000');
 
       // Customize the toast content
       newToastElement.innerHTML = `
@@ -33,6 +38,7 @@ function errorToast(message){
       // Create a new toast element
       var newToastElement = document.createElement('div');
       newToastElement.className = 'toast';
+      newToastElement.classList.add = 'fixed-top';
       newToastElement.setAttribute('data-stackable-toast', '');
       newToastElement.setAttribute('data-delay', '2000');
 

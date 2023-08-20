@@ -16,7 +16,8 @@ urlpatterns = [
     path('visitor/', views.Visitor, name="visitor"),
     
     # urls for enabling private chat and public chat
-    path('PrivateChatCheckBox/', views.PrivateChatCheckBox, name="PrivateChatCheckBox"),
+    path('PrivateChatCheckBox/', views.PrivateChatCheckBox, name="PrivateChatCheckBox"), 
+    path('PublicChatCheckBox/', views.PublicChatCheckBox, name="PublicChatCheckBox"), 
     path('Chat/', views.Chat, name="Chat"),
     
     # url for editing favorite button patterns

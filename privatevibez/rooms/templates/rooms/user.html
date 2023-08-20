@@ -230,9 +230,9 @@
 
                             <button class="tab nav-link" id="nav-private-chat-tab" data-bs-toggle="tab" data-bs-target="#nav-private-chat" type="button" role="tab" aria-controls="nav-private-chat" style="font-weight:bold;" aria-selected="false">Private Chat</button>
 
-
+<!--
                             <button class="tab nav-link" id="nav-connect-my-toy-tab" data-bs-toggle="tab" data-bs-target="#nav-connect-my-toy" type="button" role="tab" style="font-weight:bold;" aria-controls="nav-connect-toy" aria-selected="false">Connect My Toy</button>
-
+-->
                             {% endif %}
                         </div>
                     </div>
@@ -346,7 +346,7 @@
 
                             <div class="tab-pane fade" id="nav-private-chat" role="tabpanel" aria-labelledby="nav-private-chat-tab">
 
-                                {% if private_chat_invite %}
+                                {% if invite_accepted == True %}
 
                                 <div id="private_chat_room_messages" style="min-width: 462px; max-height: 404px; overflow: auto; padding-bottom: 25px; padding-right: 8px;">
                                     {% for msg in private_chat %}
@@ -365,7 +365,7 @@
                                     {% endfor %}
                                     
                                     {% comment %} Message box {% endcomment %}
-                                    <div class="input-group mb-3" style="bottom: 0px; left: 0px; position: absolute;">
+                                    <div class="input-group mb-3" style="bottom: 0px; top: 360px;  left: 0px; position: absolute;">
                                         <form id="private_chat_room_form" class="d-flex w-100">
                                             <input type="text" class="form-control" name="private_chat_room_message_field" required>
                                             <div class="input-group-append">
@@ -379,25 +379,26 @@
                                 
                                 {% else %}
 
-                                    
-                                {% if invite_sent %}
-
+                          
+                                {% if private_chat_invite and invite_accepted == False %}
+                                
                                 <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
                                     <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;"></div>
                                     <div class="msg-list-fvm message-list" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
                                         <h2>Please wait for {{room_data.User}} to accept your request</h2>
                                     </div>
                                 </div>
-
+  
                                 {% else %}
 
-                                <div class="col d-flex justify-content-center align-items-center" style="height:50%;">
-
-                                  
-                                <button class="btn btn-primary display-3" onclick="invite_model_chat({{room_data.User.id}})" id="invite_model_chat" style="width:150px; font-size:1rem; height:50px; left: 0px;">
-                                    Invite model to a private chat
+                                <div class="row d-flex justify-content-center align-items-center" style="height:50%;">
+                                
+                                
+                                <span class="fs-2 font-weight-bold m-auto text-center my-3">Private Chat Price: {{room_data.Private_Chat_Price}}</span>
+                                <button class="btn btn-warning font-weight-bold display-3" onclick="invite_model_chat({{room_data.User.id}})" id="invite_model_chat" style="width:150px; font-size:1rem; height:50px; left: 0px;">
+                                    <span class="fs-3">Invite</span>
                                 </button>
-                            </div>
+                                </div>
 
                                  {% endif %}
 
@@ -1052,7 +1053,8 @@ let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicCh
                   console.log(data)
                   hideInviteButton();
 
-                // $("#Thumb_button").load(" #Thumb_button > *");
+                  $("#nav-private-chat").load(" #nav-private-chat > *");
+
 
                   successToast(data.data);
                 },
