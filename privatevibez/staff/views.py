@@ -18,7 +18,7 @@ from django.utils import timezone
 from django.contrib.auth import authenticate, login, logout
 from django.core.mail import BadHeaderError, send_mail
 from django.shortcuts import redirect
-from .forms import UserRegisterForm
+from .forms import UserRegisterForm, UpdateStaffInfoForm
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse as httpresponse
@@ -103,15 +103,15 @@ def home(request):
                         except User.DoesNotExist:
                                 login_time = None
                                 
+                        if staff.staff_id_id is not None:   
+                                sessions_info.append({
+                                'user_id': None if staff.staff_id_id is None else staff.staff_id_id,
+                                'username': staff.fname if staff.fname else None,
+                                'login_time': login_time,
+                                'logout_time': None if staff.logout_time is None else staff.logout_time.strftime("%Y-%m-%d %H:%M:%S"),    
+                                'is_session_active': False if current_staff else 'Pending',
                                 
-                        sessions_info.append({
-                        'user_id': None if staff.staff_id_id is None else staff.staff_id_id,
-                        'username': staff.email if staff.fname is None else staff.fname,
-                        'login_time': login_time,
-                        'logout_time': None if staff.logout_time is None else staff.logout_time.strftime("%Y-%m-%d %H:%M:%S"),    
-                        'is_session_active': False if current_staff else 'Pending',
-                        
-                        })
+                                })
                         
                         for session in staff_sessions:
         
@@ -124,7 +124,7 @@ def home(request):
                                 except User.DoesNotExist:
                                         user = None
                                 
-                                if user is not None:
+                                if user is not None and StaffManager.objects.filter(staff_id=user).exists():
                                         if staff.staff_id_id == user.id:
                                                 for session_info in sessions_info:
                                                         if session_info['user_id'] == user.id:
@@ -236,8 +236,6 @@ def getStaffInformation(request):
         staff = StaffManager.objects.get(staff_id_id=staff_id)
         
         staff_serializer = StaffSerializer(staff)
-
-        print(staff_serializer.data,flush=True)
         
         return JsonResponse ({'data' : staff_serializer.data}) 
 
@@ -275,7 +273,7 @@ def sendStaffInvitation(request):
 
                         # set permission for the staff
                         content_type = ContentType.objects.get_for_model(StaffManager)
-                        staff = StaffManager.objects.create(email=email)
+                        staff, _ = StaffManager.objects.get_or_create(email=email)
                         
                         permission_codenames = request.POST.getlist('permissions')
             
@@ -290,7 +288,7 @@ def sendStaffInvitation(request):
                         send_mail('Staff Invitation!', message, settings.EMAIL_HOST, [email])
 
                         messages.success(request, f'Invitation Sent!')
-                        return JsonResponse('OK', safe=False) 
+                        return redirect(request.META.get('HTTP_REFERER')) 
                 
                 else:
                         print(form.errors)
@@ -313,12 +311,15 @@ def staffRegistration(request):
                         # CHECK IF THE EMAIL IS PRESENT IN THE DATABASE
                         try:
                                 max_file_size = 5 * 1024 * 1024
-                                
-                                if personalinfo_form.cleaned_data['id_photo'] and ersonalinfo_form.cleaned_data['profile_pic']:
-                                        if personalinfo_form.cleaned_data['id_photo'] > max_file_size or personalinfo_form.cleaned_data['profile_pic'] > max_file_size:
+
+                                if personalinfo_form.cleaned_data['id_photo'] and personalinfo_form.cleaned_data['profile_pic']:
+                                        id_photo_size = personalinfo_form.cleaned_data['id_photo'].size
+                                        profile_pic_size = personalinfo_form.cleaned_data['profile_pic'].size
+
+                                        if id_photo_size > max_file_size or profile_pic_size > max_file_size:
                                                 messages.error(request, "The file is too big. File size should not exceed 5MB.")
                                                 return redirect(request.META.get('HTTP_REFERER'))
-                                        
+
                                 
                                 staff = StaffManager.objects.get(email=user_form.cleaned_data['email'])
                                 
@@ -497,3 +498,27 @@ def approveBroadcaster(request):
                 serializer = UserStatusSerializer(user_data,many=True)
                 
                 return JsonResponse({'data':serializer.data},safe=False)
+        
+        
+        
+def updateStaffData(request):
+        
+        if request.method == "POST":
+                
+                user = get_object_or_404(User, id=request.POST.get('staff_id'))
+                
+                staff = get_object_or_404(StaffManager, staff_id=user.id)
+                print(staff,flush=True)
+                form = UpdateStaffInfoForm(request.POST, instance=staff)
+                
+                if form.is_valid():
+                        
+                        form.save()
+                        print(form,flush=True)
+                        messages.success(request, f'Staff info successfully updated!')
+                        return redirect(request.META.get('HTTP_REFERER'))
+                
+                else:
+                        messages.error(request,form.errors)
+                        
+                        return redirect(request.META.get('HTTP_REFERER'))

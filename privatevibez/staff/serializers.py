@@ -52,4 +52,4 @@ class StaffSerializer(serializers.ModelSerializer):
     class Meta:
         
         model = StaffManager
-        fields = ['email','fname','lname','address','profile_pic','birthday']
+        fields = ['staff_id','email','fname','lname','address','profile_pic','birthday']

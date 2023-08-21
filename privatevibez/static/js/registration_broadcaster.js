@@ -47,14 +47,22 @@ function Stumiting_id_words(){
         data: id_card_file,
         processData: false,
         contentType: false,
-        success:function(){
-            document.getElementById('Registration_words').style.display='none'
-            document.getElementById('id_card_box').style.display='none'
-            document.getElementById('Not_Shown_questions').style.display='none'
-            document.getElementById('Stumiting_id_words').style.display='block'
-            hideLoadingScreen();
+        success:function(data){
+            var message = data;
+              
+              document.getElementById('Registration_words').style.display='none'
+              document.getElementById('id_card_box').style.display='none'
+              document.getElementById('Not_Shown_questions').style.display='none'
+              document.getElementById('Stumiting_id_words').style.display='block'
+              
+              hideLoadingScreen();
+            
+
             },
         error: function(error) {
+
+          hideLoadingScreen();
+          errorToast(error.responseText);
           console.log(error.responseText);
         }
     })

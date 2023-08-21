@@ -1,5 +1,8 @@
 
 
+var logo = document.getElementById('privatevibezlogo');
+console.log(logo.src);
+var toastContainer = document.getElementById('toast-container');
 
 function successToast(message){
       // Create a new toast element
@@ -38,7 +41,10 @@ function errorToast(message){
       // Create a new toast element
       var newToastElement = document.createElement('div');
       newToastElement.className = 'toast';
-      newToastElement.classList.add = 'fixed-top';
+      newToastElement.classList.add('position-fixed');
+      newToastElement.classList.add('top-25');
+      newToastElement.classList.add('end-0');
+      newToastElement.classList.add('mr-5');
       newToastElement.setAttribute('data-stackable-toast', '');
       newToastElement.setAttribute('data-delay', '2000');
 

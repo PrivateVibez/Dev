@@ -1,6 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.http import QueryDict
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import JsonResponse
@@ -24,6 +25,7 @@ from .serializers import User_DataSerializer, Room_DataSerializer,UserSerializer
 from django.contrib.auth import update_session_auth_hash
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
+from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -99,7 +101,7 @@ def Registration(request):
                 User_Data.objects.create(User = user,Vibez = "0")
                 
             User_Status.objects.create(User = user,Status= "User")
-            messages.success(request, f'Account Created for {username}!')
+            messages.success(request, f'You have created an account {username}! enjoy vibing!')
             
             return redirect("Main_home")
         
@@ -136,19 +138,33 @@ def Registration_Broadcaster_info(request):
 
 @csrf_exempt
 def Registration_Broadcaster_ID(request):
-    
-        user_data               = User_Data.objects.get(User = request.user)
-        user_data.Id_File       = request.FILES['file']
-        user_status             = User.objects.get(id=request.user.id)
-        user_status.Status      = "Pending_Broadcaster"
         
-        user_data.save()
-        user_status.save()
+        max_size = 5 * 1024 * 1024
         
-        if not Room_Data.objects.filter(User = request.user).exists():
-            Room_Data.objects.create(User = request.user)
+        try:
+            Id_File = request.FILES['file']
+            # Your code to process the uploaded file
+        except MultiValueDictKeyError:
+            # Handle the case where 'file' key is not present
+            return JsonResponse("please upload your ID", status=500, safe=False) 
+        
+        
+        if Id_File is not None:
+            if  request.FILES['file'].size > max_size:
+                return JsonResponse(f'please upload a file that is less than 5mb', status=500, safe=False)
+            else:
+                user_data               = User_Data.objects.get(User = request.user)
+                user_data.Id_File       = request.FILES['file']
+                user_status             = User.objects.get(id=request.user.id)
+                user_status.Status      = "Pending_Broadcaster"
+                
+                user_data.save()
+                user_status.save()
             
-        return JsonResponse('OK', safe=False) 
+                if not Room_Data.objects.filter(User = request.user).exists():
+                    Room_Data.objects.create(User = request.user)
+                    
+                return JsonResponse('successfully saved', safe=False)
 
 @csrf_exempt
 def Buy_Vibez(request):
@@ -192,20 +208,23 @@ def Send_Vibez(request):
     
     broacaster = User_Data.objects.get(User = request.POST.get("room"))
     user       = User_Data.objects.get(User =  request.POST.get("user"))
-    vibez      = int(request.POST.get('Vibez'))
-    real_vibez = user.Vibez - vibez
+    vibez      = int(request.POST.get('Vibez')) if request.POST.get('Vibez') else None
     
-    if real_vibez >= 0:
-        broacaster.Vibez += vibez
-        broacaster.save()
-        user.Vibez -= vibez
-        user.save()
-        
-        message = f"You have successfully sent {vibez} vibez to {broacaster.User.username}"
-    else:
-        messages.error(request, "not enough vibez!")
+    if vibez is not None:
+        if user.Vibez > vibez:
+            real_vibez = user.Vibez - vibez
+            
 
-    return JsonResponse({'data':message}, safe=False)
+            broacaster.Vibez += vibez
+            broacaster.save()
+            user.Vibez -= vibez
+            user.save()
+            
+            return JsonResponse({'data':"sent {vibez} vibez to {broacaster.User}"}, safe=False)
+        else:
+            return JsonResponse(f'not enough vibez',status=500,safe=False)
+    else:
+        return JsonResponse(f'enter a valid amount',status=500,safe=False)
 
 
 @csrf_exempt
@@ -222,7 +241,6 @@ def Profile_Pic(request):
         else:
             user_data.Image = image
             user_data.save()
-            messages.success(request, "Profile picture successfully changed!")
             return JsonResponse('OK', safe=False) 
 
     

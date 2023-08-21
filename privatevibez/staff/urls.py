@@ -49,4 +49,7 @@ urlpatterns = [
     
     # approve a pending broadcaster
     path('approveBroadcaster/', views.approveBroadcaster, name="approveBroadcaster"),
+    
+    # update staff data
+    path('updateStaffData/', views.updateStaffData, name="updateStaffData"),
 ]

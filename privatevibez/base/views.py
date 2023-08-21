@@ -235,8 +235,12 @@ def searchbroadcaster(request):
                 search = request.GET.get('search')
                 if search is not None:
                         
-                        broadcasters = Room_Data.objects.filter(Q(hashtags__icontains=search) | Q(User__username__icontains=search))
+                        broadcasters = Room_Data.objects.filter(
+                        Q(hashtags__icontains=search) |
+                        Q(User__username__icontains=search)
+                        ).filter(User__Status="Broadcaster")
                         
+                        print(broadcasters,flush=True)
                         if broadcasters.exists():
                                 
                                 if request.user.is_authenticated:

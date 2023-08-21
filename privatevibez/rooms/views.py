@@ -13,7 +13,7 @@ import json
 from .forms import Slot_MachineForm, Fav_vibezForm, BioForm
 from django.http import HttpResponse as httpresponse
 import requests
-from .decorators import check_user_blocked_ip
+from .decorators import check_user_blocked_ip,check_user_status
 from accounts.forms import CustomPasswordChangeForm
 from cryptography.fernet import Fernet
 from django.conf import settings
@@ -48,7 +48,8 @@ def user_blocked(request):
 
 
 #check if user's region or country is not blocked by the room
-@check_user_blocked_ip(redirect_url="/room/blocked/404/")
+# @check_user_blocked_ip(redirect_url="/room/blocked/404/")
+@check_user_status(redirect_url="/")
 def Room(request, Broadcaster):
 
     if request.user.is_authenticated:
@@ -56,6 +57,7 @@ def Room(request, Broadcaster):
             user_datas        = User_Data.objects.get(User =  request.user)
             user_status_data = User.objects.get(id = request.user.id)
             user_status      = user_status_data.Status
+            print(user_status,flush=True)
             broadcaster_user     = User.objects.get(username = Broadcaster)
             room_name_json       = mark_safe(json.dumps(broadcaster_user.username))
             room_name            = broadcaster_user.username
@@ -520,10 +522,12 @@ def invite_private_chat(request):
                     room_data.Revenue += broadcaster_private_chat_price
                     room_data.save()
                     broadcaster.Invitee_relationships.add(invitee_relationship)
+                    return JsonResponse({'data':"Invite sent!"},safe=False)
                 else:
-                    messages.error(request, "Not enough vibez!")
+                    return JsonResponse(f'not enough vibez!',status=500,safe=False)
                 
-            return JsonResponse({'data':"Invite sent!"},safe=False)
+                
+            
 
          
 
@@ -619,10 +623,13 @@ def fav_btn_trigger_toy(request):
     if request.method == "POST":
         room_data = Room_Data.objects.get(User=request.POST.get('room_id'))
         user_id = User.objects.get(id = request.POST.get('user_id'))
-        
+        user_data = User_Data.objects.get(User=user_id)
         button_type = request.POST.get('button_type')
         
         if str(button_type) == "mmm":
+            
+            if user_data.Vibez < room_data.Price_MMM_button:
+                return JsonResponse(f'Not enough Vibez please buy.',status=500, safe=False)
             
             availed_item(user_id,room_data.User_id,"MMM",room_data.Price_MMM_button)
             
@@ -639,6 +646,10 @@ def fav_btn_trigger_toy(request):
              
         if str(button_type) == "oh":
             
+            if user_data.Vibez < room_data.Price_OH_button:
+                return JsonResponse(f'Not enough Vibez please buy.',status=500, safe=False)
+            
+            
             availed_item(user_id,room_data.User_id,"OH",room_data.Price_OH_button)
             
             broadcaster_id = room_data.User_id
@@ -653,7 +664,10 @@ def fav_btn_trigger_toy(request):
             
         if str(button_type) == "ohyes":
             
+            if user_data.Vibez < room_data.Price_OHYes_button:
+                return JsonResponse(f'Not enough Vibez please buy.',status=500, safe=False)
             
+                    
             availed_item(user_id,room_data.User_id,"OHYes",room_data.Price_OHYes_button)
             
             broadcaster_id = room_data.User_id
@@ -666,7 +680,7 @@ def fav_btn_trigger_toy(request):
             # Call the trigger_toy() function with the extracted attributes
             trigger_toy(broadcaster_id,price, user_id, feature, strength, timesec)
         
-        return JsonResponse({'data': "success"},safe=False)
+        return JsonResponse({'data': button_type + f' availed!'},safe=False)
     
 
 

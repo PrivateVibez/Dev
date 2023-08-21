@@ -327,7 +327,7 @@
 
                                     </div>
 
-                                    <div class="input-group mb-3" style="top: 360px; left: 0px; position: absolute;">
+                                    <div class="input-group mb-3" style="top: 415px; left: 0px; position: absolute;">
                                         <form id="public_chat_room_form" class="d-flex w-100">
                                             <input type="text" class="form-control" name="public_chat_room_message_field" required>
                                             <div class="input-group-append">
@@ -1058,8 +1058,10 @@ let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicCh
 
                   successToast(data.data);
                 },
-                errors:function(errors){
+                error:function(errors){
                     console.log(errors.responseText)
+
+                    errorToast(errors.responseText)
 
                 }
                 
@@ -1169,7 +1171,10 @@ let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicCh
                     document.getElementById("custom_Vibez").value = '';
 
                     successToast(message);
-                }
+                },
+                error:function(errors){
+                    errorToast(errors.responseText);
+                },
                 })
     }
 
@@ -1263,10 +1268,10 @@ function confirm_send(number,btn){
                 successToast(message);
               
             },
-            errors:function(errors){
+            error:function(errors){
                 console.log(errors.responseText)
                 var message = "Something went wrong";
-                errorToast(message)
+                errorToast(errors.responseText)
             }
 
             })

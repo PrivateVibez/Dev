@@ -24,8 +24,7 @@ class UserRegisterForm(UserCreationForm):
 class AddStaffPermission(forms.Form):
 
     email = forms.EmailField()
-    id_photo = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control', 'placeholder': 'ID Photo'}),label='ID Photo',required=True)
-    profile_pic = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control', 'placeholder': 'Profile Photo'}),label='Profile Photo',required=True)
+ 
     permissions = forms.MultipleChoiceField(
         choices=[('can_add_staff', 'Can add staff'), ('can_edit_staff', 'Can edit staff'), ('can_delete_staff', 'Can delete staff'),
         ("can_view_staff", "Can view a staff"),
@@ -43,6 +42,13 @@ class AddStaff(forms.ModelForm):
         
         model = StaffManager
         fields = ['fname', 'lname', 'birthday', 'address', 'id_photo', 'profile_pic']
+        
+        
+class UpdateStaffInfoForm(forms.ModelForm):
+    class Meta:
+        staff_id = forms.IntegerField(widget=forms.HiddenInput())
+        model = StaffManager
+        fields = ['staff_id','email','fname', 'lname', 'birthday', 'address']
         
 
 

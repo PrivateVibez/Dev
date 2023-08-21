@@ -18,7 +18,7 @@
         </button></th>
     </tr>
   </thead>
-  <tbody>
+  <tbody id="staff_table_body">
 
     {% if sessions_info %}
     {% for session in sessions_info %}
@@ -54,6 +54,7 @@
 
       {% comment %} <td><button type="button" class="btn btn-secondary">Details</button></td> {% endcomment %}
     </tr>
+    
     {% endfor %}
     {% endif %}
 
@@ -107,7 +108,94 @@
   </div>
 </div>
 
+{% comment %} MODAL FOR EDITING STAFF DETAILS {% endcomment %}
+<div class="modal fade" id="editStaffmodal" tabindex="-1" role="dialog" aria-labelledby="editStaffmodal" aria-hidden="true">
 
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Staff</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <form method="POST" action="{% url 'updateStaffData' %}" class="d-flex flex-column gap-4" enctype="multipart/form-data">
+            {% csrf_token %}
+          {% comment %} <div class=" image d-flex flex-column justify-content-center align-items-center"> <button class="btn btn-secondary"> 
+            <img src="{% static 'profile_pic/FB_IMG_1663714514952_uJj6BOH.jpg' %}" id="staff_profile_pic" height="100" width="100" /></button>  </div> {% endcomment %}
+
+            <div class="form-group d-none">
+              <div class="d-flex justify-content-center align-items-center flex-column gap-2 my-2">
+                <input type="text" class="form-control" id="staff" name="staff_id" aria-describedby="">
+              </div>
+            </div>
+
+
+          <div class="form-group">
+            <div class="d-flex justify-content-center align-items-center flex-column gap-2 my-2">
+            <img id="staff_profile_pic" class="rounded-circle border-5 m-auto" width="200px" height="200px" src="">
+            </div>
+          </div>
+
+
+          <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email">
+          </div>
+      
+      
+          {% comment %} <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" aria-describedby="emailHelp" placeholder="Enter username">
+          </div> {% endcomment %}
+        
+        
+          <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" class="form-control" name="password1" id="password" placeholder="Password">
+          </div>
+                
+        
+          <div class="form-group">
+            <label for="password2">Confirm password</label>
+            <input type="password" class="form-control" name="password2" id="password2" placeholder="Confirm Password">
+          </div>
+        
+        
+              {% comment %} Personal Information {% endcomment %}
+        
+          <div class="form-group">
+            <label for="fname">First name</label>
+            <input type="text" class="form-control" name="fname" id="fname" placeholder="First Name">
+          </div>
+        
+          <div class="form-group">
+            <label for="lname">Last Name</label>
+            <input type="text" class="form-control" name="lname" id="lname" placeholder="Last Name">
+          </div>
+        
+          <div class="form-group">
+            <label for="birthday">Birthday</label>
+            <input type="date" class="form-control" name="birthday" id="birthday" placeholder="Birthday">
+          </div>
+        
+          <div class="form-group">
+            <label for="birthday">Address</label>
+            <input type="text" class="form-control" name="address" id="address" placeholder="Address">
+          </div>
+           
+        
+        
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+</div>
 
 {% comment %} MODAL FOR EDITING STAFF PERMISSIONS {% endcomment %}
 
@@ -152,92 +240,6 @@
   </div>
 </div>
 
-
-{% comment %} MODAL FOR EDITING STAFF DETAILS {% endcomment %}
-<div class="modal fade" id="editStaffmodal" tabindex="-1" role="dialog" aria-labelledby="editStaffmodal" aria-hidden="true">
-
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Edit Staff</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        
-        <form method="POST" action="" class="d-flex flex-column gap-4" enctype="multipart/form-data">
-            {% csrf_token %}
-          {% comment %} <div class=" image d-flex flex-column justify-content-center align-items-center"> <button class="btn btn-secondary"> 
-            <img src="{% static 'profile_pic/FB_IMG_1663714514952_uJj6BOH.jpg' %}" id="staff_profile_pic" height="100" width="100" /></button>  </div> {% endcomment %}
-
-        
-          <div class="form-group">
-            <div class="d-flex justify-content-center align-items-center flex-column gap-2 my-2">
-            <img id="staff_profile_pic" class="rounded-circle border-5 m-auto" width="200px" height="200px" src="">
-            </div>
-          </div>
-
-
-          <div class="form-group">
-            <label for="email">Email address</label>
-            <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email">
-          </div>
-      
-      
-          {% comment %} <div class="form-group">
-            <label for="username">Username</label>
-            <input type="text" class="form-control" id="username" name="username" aria-describedby="emailHelp" placeholder="Enter username">
-          </div> {% endcomment %}
-        
-        
-          <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input type="password" class="form-control" name="password1" id="password" placeholder="Password">
-          </div>
-        
-        
-            <input type="text" value="1" class="" style="display: none;" name="is_staff" id="is_staff" placeholder="">
-        
-        
-          <div class="form-group">
-            <label for="password2">Confirm password</label>
-            <input type="password" class="form-control" name="password2" id="password2" placeholder="Confirm Password">
-          </div>
-        
-        
-              {% comment %} Personal Information {% endcomment %}
-        
-          <div class="form-group">
-            <label for="fname">First name</label>
-            <input type="text" class="form-control" name="fname" id="fname" placeholder="First Name">
-          </div>
-        
-          <div class="form-group">
-            <label for="lname">Last Name</label>
-            <input type="text" class="form-control" name="lname" id="lname" placeholder="Last Name">
-          </div>
-        
-          <div class="form-group">
-            <label for="birthday">Birthday</label>
-            <input type="date" class="form-control" name="birthday" id="birthday" placeholder="Birthday">
-          </div>
-        
-          <div class="form-group">
-            <label for="birthday">Address</label>
-            <input type="text" class="form-control" name="address" id="address" placeholder="Address">
-          </div>
-           
-        
-        
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-
-      </div>
-
-    </div>
-  </div>
-</div>
 
 
 
@@ -444,6 +446,7 @@ function editStaff(user_id){
   var url = window.location.href;
   var profile_pic = document.getElementById('staff_profile_pic');
   var id = document.getElementById('id_photo');
+  var staff_id = document.getElementById('staff');
   var fname = document.getElementById('fname');
   var lname = document.getElementById('lname');
   var address = document.getElementById('address');
@@ -451,6 +454,13 @@ function editStaff(user_id){
   var email = document.getElementById('email');
   var username = document.getElementById('username');
 
+  email.value = "";
+  fname.value = "";
+  lname.value = "";
+  address.value = "";
+  profile_pic.value = "";
+  birthday.value = "";
+  staff_id.value = "";
 
   $.ajax({
     method:'GET',
@@ -461,12 +471,13 @@ function editStaff(user_id){
     },
     'dataType': 'json',
     success:function(data){
-           
+
+
               // create a new table row
               var staff_data = data.data;
               
               
-
+              console.log(staff_data);
               for (const key in staff_data) {
                 if (staff_data.hasOwnProperty(key)) {
                   const value = staff_data[key];
@@ -477,9 +488,12 @@ function editStaff(user_id){
                   (key) == 'address' ? address.value = value : null;
                   (key) == 'profile_pic' ? profile_pic.src = value : null;
                   (key) == 'birthday' ? birthday.value = value : null;
+                  (key) == 'staff_id' ? staff_id.value = value : null;
           
                 }
               }
+
+              console.log(staff_id.value)
 
   
 
@@ -523,6 +537,7 @@ function confirmdelete(user_id){
 
     if(confirm){
       deleteStaff(user_id);
+      $("#staff_table_body").load(" #staff_table_body > *");
     }
   
   

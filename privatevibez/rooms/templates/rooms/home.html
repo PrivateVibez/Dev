@@ -91,11 +91,6 @@
 
 
 
-                {% elif user_status == "Pending_Broadcaster" %}
-               
-                <div class="display-1 w-50 m-auto d-flex text-center">Please wait as we check your information. we will send you an email once approved.</div>
-
-
                 {% elif user_status == "Decline_Broadcaster" %}
 
                 <div class="w-50 m-auto d-flex text-center">
@@ -104,7 +99,7 @@
                     </span>
                 </div>
 
-                {% elif user_status == "User" or user_status is None %}
+                {% elif user_status == "User" or user_status is None or user_status == "Pending_Broadcaster" %}
                   
                 {% include "rooms/user.html" %}   
 
