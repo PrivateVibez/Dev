@@ -50,11 +50,11 @@ def Login(request):
 
         
         user = authenticate(request, username=username, password=password)
-        
+        print(user,flush=True)
         if user is not None:
             login(request, user)
             
-            
+            messages.success(request, f'Thanks for coming back {username}!')
             if user.is_staff == False:
                 try:
                     status = User_Status.objects.get(User = request.user).Status
@@ -75,7 +75,7 @@ def Login(request):
             
             messages.error(request, f"wrong password or username. Please try again, If you don't have an account, please create one.")
             
-        messages.success(request, f'Thanks for coming back {username}!')
+        
            
         return redirect('Main_home') 
     return render(request,'accounts/login.html')

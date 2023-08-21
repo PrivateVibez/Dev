@@ -41,7 +41,7 @@ User = get_user_model()
 
 def home(request):
         
-        
+        print(request.user,flush=True)
         if request.user.is_authenticated and StaffManager.objects.filter(staff_id=request.user).exists():
                 bad_acters_list = []
                 
