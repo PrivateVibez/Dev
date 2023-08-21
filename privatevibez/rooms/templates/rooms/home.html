@@ -82,24 +82,13 @@
     <div class="body container-fluid" style="">
         <div class="row" style="">
             <div class="col-12">
-                {% if user_status == "Broadcaster" %}
+                {% if user_status == "Broadcaster" and room_data == request.user %}
  
      
                 {% include "rooms/broadcaster.html" %}               
 
 
-
-
-
-                {% elif user_status == "Decline_Broadcaster" %}
-
-                <div class="w-50 m-auto d-flex text-center">
-                    <span class="m-auto display-1 text-danger">
-                    {{user_status_data.Decline_Message}}
-                    </span>
-                </div>
-
-                {% elif user_status == "User" or user_status is None or user_status == "Pending_Broadcaster" %}
+                {% elif user_status == "User" or user_status is None or user_status == "Pending_Broadcaster" or room_data != request.user %}
                   
                 {% include "rooms/user.html" %}   
 

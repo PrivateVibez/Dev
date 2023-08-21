@@ -123,11 +123,11 @@ def Room(request, Broadcaster):
                 elif user.Status == "Broadcaster":
                     
                     availed_items = Item_Availed.objects.filter(Room = room_data).all()
-                    
-                    private_chat_invite = Private_Chat_Invitee.objects.get(Broadcaster=request.user)
-                    pending_private_chat_invitees = private_chat_invite.Invitee_relationships.filter(Is_Accepted=False).count()
-                    all_private_chat_invitees = private_chat_invite.Invitee_relationships.all()
-                    
+                    if Private_Chat_Invitee.objects.filter(Broadcaster=request.user).exists():
+                        private_chat_invite = Private_Chat_Invitee.objects.get(Broadcaster=request.user)
+                        pending_private_chat_invitees = private_chat_invite.Invitee_relationships.filter(Is_Accepted=False).count()
+                        all_private_chat_invitees = private_chat_invite.Invitee_relationships.all()
+                        
                     countries = Country.objects.all()
                     room_data_blocked_countries = room_data.Blocked_Countries.all()
 
