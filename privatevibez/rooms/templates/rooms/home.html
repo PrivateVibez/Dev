@@ -82,13 +82,21 @@
     <div class="body container-fluid" style="">
         <div class="row" style="">
             <div class="col-12">
-                {% if user_status == "Broadcaster" and room_data == request.user %}
+                {% if room_data.User == request.user %}
  
-     
-                {% include "rooms/broadcaster.html" %}               
+                {% if user_status != "Decline_Broadcaster" %}
+                
+                {% include "rooms/broadcaster.html" %}   
+
+                {% else %}
+
+                <div class="d-flex justify-content-center fs-1 font-weight-bold">We are still checking you credentials</div>
+                
+                {% endif %}            
 
 
-                {% elif user_status == "User" or user_status is None or user_status == "Pending_Broadcaster" or room_data != request.user %}
+
+                {% else %}
                   
                 {% include "rooms/user.html" %}   
 
