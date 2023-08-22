@@ -206,21 +206,27 @@ def Bad_Acters_Add(request):
 @csrf_exempt
 def Send_Vibez(request):
     
-    broacaster = User_Data.objects.get(User = request.POST.get("room"))
+    broadcaster = User_Data.objects.get(User = request.POST.get("room"))
+    room_id     = Room_Data.objects.get(User = broadcaster.User)
     user       = User_Data.objects.get(User =  request.POST.get("user"))
+    note       = request.POST.get('note')
     vibez      = int(request.POST.get('Vibez')) if request.POST.get('Vibez') else None
     
     if vibez is not None:
-        if user.Vibez > vibez:
+        if user.Vibez >= vibez:
             real_vibez = user.Vibez - vibez
             
 
-            broacaster.Vibez += vibez
-            broacaster.save()
+            broadcaster.Vibez += vibez
+            broadcaster.save()
             user.Vibez -= vibez
             user.save()
             
-            return JsonResponse({'data':"sent {vibez} vibez to {broacaster.User}"}, safe=False)
+            
+            Item_Availed.objects.create(Room=room_id,User=user.User,Item="Sent Vibez",Cost=vibez,Note=note)
+   
+            
+            return JsonResponse({'data':'sent vibez!'}, safe=False)
         else:
             return JsonResponse(f'not enough vibez',status=500,safe=False)
     else:

@@ -110,17 +110,23 @@ def room_data_func(request,user_country,user_region):
 
         rooms = Room_Data.objects.filter(User__Status="Broadcaster")
         rooms_list = []
-
+       
         for room in rooms:
+                
                 is_blocked = False  # Initialize a flag to indicate if user's country is 
                 is_blocked_region = False #
+        
+        
+
                 for blocked_country in room.Blocked_Countries.all():
-                        country = blocked_country.Country.code2
-                        if country == user_country:
-                                is_blocked = True  # Set the flag if user's country is blocked
+                        if blocked_country is not None:
+                                print(blocked_country,flush=True)
+                                country = blocked_country.Country.code2
+                                if country == user_country:
+                                        is_blocked = True  # Set the flag if user's country is blocked
+                                        
+                                        break 
                                 
-                                break 
-                        
                 for blocked_regions in room.Blocked_Regions.all():
                         region = blocked_regions.Region.display_name
                         if region == user_region:

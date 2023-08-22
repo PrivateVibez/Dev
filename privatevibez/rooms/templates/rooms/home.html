@@ -82,26 +82,56 @@
     <div class="body container-fluid" style="">
         <div class="row" style="">
             <div class="col-12">
-                {% if room_data.User == request.user %}
  
-                {% if user_status != "Decline_Broadcaster" %}
+
+      
+
+                {% if user_status == "Broadcaster" and request.user.username == room_data.User.username %}
+
+                {% include "rooms/broadcaster.html" %}  
+
+                {% endif %}
+
+
+                {% if user_status == "Broadcaster" and request.user.username != room_data.User.username %}
+
+                {% include "rooms/user.html" %} 
+
+                {% endif %}
+
+
+                {% if user_status == "Pending_Broadcaster" %}
                 
-                {% include "rooms/broadcaster.html" %}   
+                     <div class="d-flex justify-content-center display-1 font-weight-bold m-5 p-5">We will email you once your application is approved.</div>
+                {% endif %}
 
-                {% else %}
 
+                {% if user_status == "Declined_Broadcaster" %}
+                
                 <div class="d-flex justify-content-center display-1 font-weight-bold m-5 p-5">Sorry your application has been declined due to {{request.user.Decline_Message}}</div>
 
-                {% endif %}            
+                {% endif %}
 
 
+                {% if user_status == "User" and request.user.username != Broadcaster %}
+                {{user.username}}
+                {% include "rooms/user.html" %} 
 
-                {% else %}
-                  
-                {% include "rooms/user.html" %}   
+                {% elif user_status == "User" and request.user.username == Broadcaster %}
+
+                
+                <div class="d-flex justify-content-center display-1 font-weight-bold m-5 p-5">Wanna become a broadcaster? join now!</div>
+                {% endif %}
+
+
+                {% if request.user.is_anonymous %}
+                {% include "rooms/user.html" %} 
+                {% endif %}
+
 
               
-                {% endif %}
+
+        
             </div>
         </div>
     </div>

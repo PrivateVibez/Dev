@@ -48,115 +48,126 @@ def user_blocked(request):
 
 
 #check if user's region or country is not blocked by the room
-# @check_user_blocked_ip(redirect_url="/room/blocked/404/")
-@check_user_status(redirect_url="/")
+@check_user_blocked_ip(redirect_url="/room/blocked/404/")
+# @check_user_status(redirect_url="/")
 def Room(request, Broadcaster):
 
     if request.user.is_authenticated:
-             
-            user_datas        = User_Data.objects.get(User =  request.user)
-            user_status_data = User.objects.get(id = request.user.id)
-            user_status      = user_status_data.Status
-            print(user_status,flush=True)
-            broadcaster_user     = User.objects.get(username = Broadcaster)
-            room_name_json       = mark_safe(json.dumps(broadcaster_user.username))
-            room_name            = broadcaster_user.username
-            username             = mark_safe(json.dumps(request.user.username))
-            rooms                = Room_Data.objects.all()
-            room_users_data      = User_Data.objects.all()    
-            broadcaster_status   = User_Status.objects.get(User = User.objects.get(username = Broadcaster))
-            room_data            = Room_Data.objects.get(User = User.objects.get(username = Broadcaster))
-            # room_sesson          = Room_Sesson.objects.get(User = User.objects.get(username = Broadcaster))
-            broadcaster_data     = User_Data.objects.get(User = User.objects.get(username = Broadcaster))
-
-    
-        
-            private_chat = Private.objects.filter(
-                Q(From=request.user, To=broadcaster_user) | Q(To=request.user, From=broadcaster_user)
-            ).order_by('Timestamp')
-
-                
-            public_chat          = Public.objects.filter(Room = User.objects.get(username=Broadcaster)).all
-            follows              = Follows.objects.filter(Broadcaster__username = Broadcaster).all()
             
-            thumbs_up_count      = Thumbs.objects.filter(Broadcaster = User.objects.get(username = Broadcaster), Thumb = "Up").count
-            thumbs_down_count    = Thumbs.objects.filter(Broadcaster = User.objects.get(username = Broadcaster), Thumb = "Down").count
-            if Thumbs.objects.filter(User = request.user,Broadcaster = User.objects.get(username = Broadcaster),Thumb = "Up").exists():
-                thumbs_up_color  = True
-            else:
-                thumbs_up_color  = False
-            if Thumbs.objects.filter(User = request.user,Broadcaster = User.objects.get(username = Broadcaster),Thumb = "Down").exists():
-                thumbs_Down_color  = True
-            else:
-                thumbs_Down_color  = False
+            if User.objects.filter(username =  Broadcaster, Status = "Broadcaster").exists():
+                    user_datas        = User_Data.objects.get(User =  request.user)
+                    user_status_data = User.objects.get(id = request.user.id)
+                    user_status      = user_status_data.Status
+                    print("yo",flush=True)
+                    broadcaster_user     = User.objects.get(username = Broadcaster)
+                    room_name_json       = mark_safe(json.dumps(broadcaster_user.username))
+                    room_name            = broadcaster_user.username
+                    username             = mark_safe(json.dumps(request.user.username))
+                    rooms                = Room_Data.objects.all()
+                    room_users_data      = User_Data.objects.all()    
+                    broadcaster_status   = User_Status.objects.get(User = User.objects.get(username = Broadcaster))
+                    room_data            = Room_Data.objects.get(User = User.objects.get(username = Broadcaster))
+                    # room_sesson          = Room_Sesson.objects.get(User = User.objects.get(username = Broadcaster))
+                    broadcaster_data     = User_Data.objects.get(User = User.objects.get(username = Broadcaster))
 
-            if Follows.objects.filter(User = request.user, Broadcaster=broadcaster_user.id).exists():
-                follow_button = True
-            else:
-                follow_button = False
-                
-                
-                
-            try:
-                user = request.user
             
-                if user.Status == "User":
+                
+                    private_chat = Private.objects.filter(
+                        Q(From=request.user, To=broadcaster_user) | Q(To=request.user, From=broadcaster_user)
+                    ).order_by('Timestamp')
 
+                        
+                    public_chat          = Public.objects.filter(Room = User.objects.get(username=Broadcaster)).all
+                    follows              = Follows.objects.filter(User__username = Broadcaster).all()
+                    print(follows,flush=True)
+                    
+                    thumbs_up_count      = Thumbs.objects.filter(Broadcaster = User.objects.get(username = Broadcaster), Thumb = "Up").count
+                    thumbs_down_count    = Thumbs.objects.filter(Broadcaster = User.objects.get(username = Broadcaster), Thumb = "Down").count
+                    if Thumbs.objects.filter(User = request.user,Broadcaster = User.objects.get(username = Broadcaster),Thumb = "Up").exists():
+                        thumbs_up_color  = True
+                    else:
+                        thumbs_up_color  = False
+                    if Thumbs.objects.filter(User = request.user,Broadcaster = User.objects.get(username = Broadcaster),Thumb = "Down").exists():
+                        thumbs_Down_color  = True
+                    else:
+                        thumbs_Down_color  = False
+
+                    if Follows.objects.filter(User = request.user, Broadcaster=broadcaster_user.id).exists():
+                        follow_button = True
+                    else:
+                        follow_button = False
+                        
+                        
+                        
                     try:
+                        user = request.user
+                    
+                        if user.Status == "User":
+
+                            try:
+                    
+                                private_chat_invite = Private_Chat_Invitee.objects.get(Broadcaster=broadcaster_user, Invitee_relationships__Invitee=user)   
+                                invitees = private_chat_invite.Invitee_relationships.all()
+                                
+                                for invitee in invitees:
+                                    if invitee.Invitee == user:
+                                            invite_accepted = True if invitee.Is_Accepted == True else False
+                                print(invite_accepted,flush=True)
+                            except Private_Chat_Invitee.DoesNotExist:
+                                pass
+                                
+                                
+                            if Slot_Machine.objects.filter(User=broadcaster_user.id).exists():
+                                slot_machine_data = Slot_Machine.objects.filter(User=broadcaster_user.id).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
+                                
+                    
             
-                        private_chat_invite = Private_Chat_Invitee.objects.get(Broadcaster=broadcaster_user, Invitee_relationships__Invitee=user)   
-                        invitees = private_chat_invite.Invitee_relationships.all()
-                        
-                        for invitee in invitees:
-                            if invitee.Invitee == user:
-                                    invite_accepted = True if invitee.Is_Accepted == True else False
-                        print(invite_accepted,flush=True)
-                    except Private_Chat_Invitee.DoesNotExist:
-                        pass
-                        
-                        
-                    if Slot_Machine.objects.filter(User=broadcaster_user.id).exists():
-                        slot_machine_data = Slot_Machine.objects.filter(User=broadcaster_user.id).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
-                        
-               
-     
-                elif user.Status == "Broadcaster":
-                    
-                    availed_items = Item_Availed.objects.filter(Room = room_data).all()
-                    if Private_Chat_Invitee.objects.filter(Broadcaster=request.user).exists():
-                        private_chat_invite = Private_Chat_Invitee.objects.get(Broadcaster=request.user)
-                        pending_private_chat_invitees = private_chat_invite.Invitee_relationships.filter(Is_Accepted=False).count()
-                        all_private_chat_invitees = private_chat_invite.Invitee_relationships.all()
-                        
-                    countries = Country.objects.all()
-                    room_data_blocked_countries = room_data.Blocked_Countries.all()
+                        elif user.Status == "Broadcaster":
+                            
+                            availed_items = Item_Availed.objects.filter(Room = room_data).all()
+                            print(availed_items,flush=True)
+                            if Private_Chat_Invitee.objects.filter(Broadcaster=request.user).exists():
+                                private_chat_invite = Private_Chat_Invitee.objects.get(Broadcaster=request.user)
+                                pending_private_chat_invitees = private_chat_invite.Invitee_relationships.filter(Is_Accepted=False).count()
+                                all_private_chat_invitees = private_chat_invite.Invitee_relationships.all()
+                                
+                            countries = Country.objects.all()
+                            room_data_blocked_countries = room_data.Blocked_Countries.all()
 
-                    # Extract a list of blocked country IDs
-                    blocked_country_ids = room_data_blocked_countries.values_list('Country_id', flat=True)
+                            # Extract a list of blocked country IDs
+                            blocked_country_ids = room_data_blocked_countries.values_list('Country_id', flat=True)
 
-                    # Filter countries based on blocked country IDs
-                    filtered_countries = countries.exclude(id__in=blocked_country_ids)
-                    regions = Region.objects.all()
-                    room_data_blocked_regions = room_data.Blocked_Regions.all()
-    
-                    
-                    blocked_region_ids = room_data_blocked_regions.values_list('Region_id', flat=True)
-                    filtered_regions = regions.exclude(id__in=blocked_region_ids)
+                            # Filter countries based on blocked country IDs
+                            filtered_countries = countries.exclude(id__in=blocked_country_ids)
+                            regions = Region.objects.all()
+                            room_data_blocked_regions = room_data.Blocked_Regions.all()
+            
+                            
+                            blocked_region_ids = room_data_blocked_regions.values_list('Region_id', flat=True)
+                            filtered_regions = regions.exclude(id__in=blocked_region_ids)
 
-                    change_password(request)
-                    # change_email(request)
-                    
-                    if Slot_Machine.objects.filter(User=user).exists():
-                        slot_machine_data = Slot_Machine.objects.filter(User=user).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
-                
-                
-            except User_Status.DoesNotExist:
-                messages.error(request, 'User does not exist')
-    
+                            change_password(request)
+                            # change_email(request)
+                            
+                            if Slot_Machine.objects.filter(User=user).exists():
+                                slot_machine_data = Slot_Machine.objects.filter(User=user).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
+                        
+                        return render(request, "rooms/home.html", locals()) 
+                    except User_Status.DoesNotExist:
+                        messages.error(request, 'User does not exist')
+            
+            else:
+                if User.objects.filter(username =  Broadcaster).exists():
+                    user = User.objects.get(username = Broadcaster)
+                    user_status = user.Status
+                    print(user_status,flush=True)
+                    return render(request, "rooms/home.html", locals())
+                else:
+                    print("user does not exist",flush=True)
+                    return render(request,'rooms/userdoesnotexist.html')
     else:
         room_data = Room_Data.objects.get(User = User.objects.get(username = Broadcaster))
-
-    return render(request, "rooms/home.html", locals())
+        return render(request, "rooms/home.html", locals())
 
 
 @csrf_exempt
@@ -241,18 +252,30 @@ def Following(request):
 
 
 def Thumb(request):
+    
     if Thumbs.objects.filter(User = request.user).exists():
         if Thumbs.objects.filter(Broadcaster = User.objects.get(username = request.POST.get('broadcaster'))).exists():
-            if request.POST.get('Thumb') == "Down":
+            
                 thumb = Thumbs.objects.get(User = request.user, Broadcaster = User.objects.get(username = request.POST.get('broadcaster')) )
-                thumb.Thumb = "Down"
-                thumb.save()
-            else:
-                thumb = Thumbs.objects.get(User = request.user, Broadcaster = User.objects.get(username = request.POST.get('broadcaster')) )
-                thumb.Thumb = "Up"
-                thumb.save()
+                
+                print(thumb.Thumb,flush=True)
+                print(request.POST.get('Thumb'),flush=True)
+                
+                if thumb.Thumb == "Down" and request.POST.get('Thumb') == "Down" or thumb.Thumb == "Up" and request.POST.get('Thumb') == "Up":
+                    thumb.delete()
+                    
+                else:
+                    if request.POST.get('Thumb') == "Down":
+                        thumb.Thumb = "Down"
+                        thumb.save()
+                    else:
+                        thumb.Thumb = "Up"
+                        thumb.save()
+
+                    
+     
         else:
-            if request.POST.get('Thumb') is "Down":
+            if request.POST.get('Thumb') == "Down":
                 Thumbs.objects.create(
                     User         =  request.user,
                     Broadcaster   =   User.objects.get(username = request.POST.get('broadcaster')),
@@ -265,7 +288,7 @@ def Thumb(request):
                     Thumb        =   "Up"
                 )
     else:
-        if request.POST.get('Thumb') is "Down":
+        if request.POST.get('Thumb') == "Down":
             Thumbs.objects.create(
                 User         =  request.user,
                 Broadcaster   =   User.objects.get(username = request.POST.get('broadcaster')),
@@ -534,7 +557,7 @@ def invite_private_chat(request):
                     
         else:
             broadcaster = Private_Chat_Invitee.objects.create(Broadcaster=broadcaster)
-            invitee_relationship, _ = InviteeRelationship.objects.get_or_create(User=broadcaster.Broadcaster, Invitee=user)
+            invitee_relationship, _ = InviteeRelationship.objects.get_or_create(User=broadcaster.Broadcaster, Invitee=request.user)
             broadcaster.Invitee_relationships.add(invitee_relationship)
             return JsonResponse({'data':"Invite sent!"},safe=False)
 

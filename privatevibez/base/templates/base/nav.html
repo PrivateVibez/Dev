@@ -96,12 +96,12 @@
     {% if request.user.is_authenticated %} 
         {% if user_status == "User" %}
 
-            <a href="/accounts/registration_broadcaster/" class="mt-0" style="color:black;text-decoration:none;">
+            <button class="border-0 bg-transparent w-100" onclick="window.location.href='{% url 'registration_broadcaster' %}'"  class="mt-0" style="color:black;text-decoration:none; text-shadow:black !important;">
                 <p class="fs-2 font-weight-bold" style="color:#6cc6ba;">
                     BROADCAST YOURSELF - GO NOW 
                     <span><i class="icofont-camera fs-1" style="color:#6cc6ba;"></i></span>
                 </p> 
-            </a>
+            </button>
         {% endif %}
 
         {% if user_status == "Pending_Broadcaster" %}
@@ -374,6 +374,7 @@
 
         <div class="d-flex flex-row">
 
+            
             <div class="col-3">
                 Mikey
             </div>

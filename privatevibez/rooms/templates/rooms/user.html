@@ -97,9 +97,9 @@
 
                                         <div style="cursor:pointer;{% if user_data == None or user_data.Vibes < 1 %}cursor:not-allowed {% endif %}">
 
-                                            <div onclick="custom_change()" class="btn btn-dark" style="position: absolute;font-size: 15px;font-weight: bold;left: 80px;width: 110px;bottom: 1px;">
+                                            <button data-bs-toggle="modal" data-bs-target="#sendingVibezModal" class="btn btn-dark" style="position: absolute;font-size: 15px;font-weight: bold;left: 80px;width: 110px;bottom: 1px;">
                                                 Send Vibez
-                                            </div>
+                                            </button>
                                         </div>
 
                                         <div id="Buy_Vibez_div_2">
@@ -215,7 +215,7 @@
             </div>
 
 
-                <div ts="x_" class="col-4" id="ChatTabContainer" style="height: 445px; position: absolute; -webkit-tap-highlight-color: transparent; display: inline-block; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; border-radius: 6px;  box-sizing: border-box;border:2px solid black;background-color:#6cc6ba;color:#black;margin-left:20px;">
+                <div ts="x_" class="col-4" id="ChatTabContainer" style="padding:0px; height: 445px; position: absolute; -webkit-tap-highlight-color: transparent; display: inline-block; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; border-radius: 6px;  box-sizing: border-box;border:2px solid black;background-color:#6cc6ba;color:#black;margin-left:20px;">
 
                     <div ts="DD"  id="tab-row" data-paction="Chat" style="position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; width: 100%; box-sizing: border-box;">
 
@@ -239,7 +239,7 @@
 
                     <div ts="wZ" style="height: 100%; width: 100%; position: relative; -webkit-tap-highlight-color: transparent; display: inline;">
 
-                        <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-content" style="height:100%;"  id="nav-tabContent">
                             <!-- interact -->
 
                             {% if request.user.is_authenticated %}
@@ -345,7 +345,7 @@
                                 {% endif %}
                             </div>
 
-                            <div class="tab-pane fade" id="nav-private-chat" role="tabpanel" aria-labelledby="nav-private-chat-tab">
+                            <div class="tab-pane fade" id="nav-private-chat" style="height:100%;"  role="tabpanel" aria-labelledby="nav-private-chat-tab">
 
                                 {% if invite_accepted == True %}
 
@@ -366,7 +366,7 @@
                                     {% endfor %}
                                     
                                     {% comment %} Message box {% endcomment %}
-                                    <div class="input-group mb-3" style="bottom: 0px; top: 360px;  left: 0px; position: absolute;">
+                                    <div class="input-group mb-3" style="bottom: 0px; top: 380px; height:40px;  left: 0px; position: absolute;">
                                         <form id="private_chat_room_form" class="d-flex w-100">
                                             <input type="text" class="form-control" name="private_chat_room_message_field" required>
                                             <div class="input-group-append">
@@ -392,7 +392,7 @@
   
                                 {% else %}
 
-                                <div class="row d-flex justify-content-center align-items-center" style="height:50%;">
+                                <div class="row justify-content-center align-content-center h-75">
                                 
                                 
                                 <span class="fs-2 font-weight-bold m-auto text-center my-3">Private Chat Price: {{room_data.Private_Chat_Price}}</span>
@@ -607,12 +607,12 @@
 
                         <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;"></div>
 
-                        <h1>{{room_data.User}} Followers:</h1>
+                        <h1>{{room_data.User}} Following:</h1>
                         <div id="Followers_box_refesh"class="msg-list-fvm message-list d-flex justify-content-center" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
 
                             {% for follower in follows %}
                                 <div class="row">
-                                    {{follower.User.username}}
+                                    {{follower.Broadcaster.username}}
                                 </div>
                             {% endfor %}
 
@@ -839,6 +839,28 @@
     </div>
   </div>
 
+
+
+  <!-- Modal for sending vibez -->
+<div class="modal fade" id="sendingVibezModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-dark fs-2" id="exampleModalLabel"></h5>
+          <button type="button" class="btn-close fs-2" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <label for="amount_of_vibez_to_be_sent" class="fs-2 text-dark">Enter amount</label>
+            <input class="form-control" id="amount_of_vibez_to_be_sent" class="my-4" type="number">
+            <label for="send_vibez_note" class="fs-2 text-dark mt-4">Add note</label>
+          <textarea id="send_vibez_note" class="form-control mt-2 fs-2"> </textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" onclick="custom_button()" class="btn btn-dark fs-2 rounded-2">Send Vibez</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <input id="users_id" type='number' style="display:none;" value="{{request.user.id}}"></input>
 <input id="broadcasters_id" style="display:none;" value="{{room_data.User.id}}"></input>
@@ -1158,8 +1180,9 @@ let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicCh
             mimeType:"multipart/form-data",
             data:{  
 
-                    'Vibez' : document.getElementById('custom_Vibez').value,
+                    'Vibez' : document.getElementById('amount_of_vibez_to_be_sent').value,
                     'user'  : document.getElementById('users_id').value,
+                    'note'  : document.getElementById('send_vibez_note').value,
                     'room'  : document.getElementById('broadcasters_id').value,
     
                     'csrfmiddlewaretoken':"{{csrf_token}}",

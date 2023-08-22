@@ -4,7 +4,7 @@
             <div id="visitor_list" class="col">
             {% for items in availed_items %}
                 <span style="color:purple; display:block; width:max-content; border:transparent; background:transparent;">
-                    {{items.User}} {{items.Item}} {{items.Cost}} vibez
+                    {{items.User}} {{items.Item}} {{items.Cost}} vibez {% if items.Note %}{{items.Note}}{% endif %}
                 </span>
             
                 {% endfor %}
