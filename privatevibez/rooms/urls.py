@@ -5,7 +5,10 @@ urlpatterns = [
     path('<str:Broadcaster>', views.Room, name="room"),
     
     # url for broadcaster games
-    path('Menu_item/', views.Menu_item, name="Menu_item"),
+    path('save_menu_data/', views.save_menu_data, name="save_menu_data"),
+    path('update_menu_data/', views.update_menu_data, name="update_menu_data"),
+    path('remove_menu_data/', views.remove_menu_data, name="remove_menu_data"),
+    path('avail_menu_item/', views.avail_menu_item, name="avail_menu_item"),
     path('Dice_items/', views.Dice_items, name="Dice_items"),
     
     # url for folowing and liking of broadcaster

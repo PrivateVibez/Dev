@@ -43,5 +43,9 @@ class BioForm(forms.Form):
     
     
 
-    
+class MenuDataForm(forms.Form):
+  
+    menu_item = forms.CharField(label='Item=',required=True)
+    menu_item_price = forms.IntegerField(label='Price=',required=True)
+    menu_item_duration = forms.IntegerField(label='Duration=',required=True)
     

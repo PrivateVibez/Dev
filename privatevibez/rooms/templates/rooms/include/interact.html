@@ -1,0 +1,118 @@
+<div class="msg-list-wrapper-split justify-content-center" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
+
+  <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;"></div>
+
+
+  <div class="col w-100 justify-content-center">
+      
+      <div class="d-flex flex-row">
+
+          <ul class="nav nav-pills m-auto gap-2" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+
+          <li class="nav-item">
+          <button class="nav-link" id="v-pills-menu-tab" data-bs-toggle="pill" data-bs-target="#v-pills-menu" type="button" role="tab" aria-controls="v-pills-menu" aria-selected="true">Menu</button>
+          </li>
+
+          <li class="nav-item">
+          <button class="nav-link" id="v-pills-dice-tab" data-bs-toggle="pill" data-bs-target="#v-pills-dice" type="button" role="tab" aria-controls="v-pills-dice" aria-selected="false">Dice</button>
+          </li>
+
+          <li class="nav-item">
+          <button class="nav-link" id="v-pills-Slots-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Slots" type="button" role="tab" aria-controls="v-pills-Slots" aria-selected="false">Slots</button>
+          </li>
+
+          </ul>
+
+      </div>
+
+      <div class="d-flex flex-row">
+
+      <div class="tab-content w-100" id="v-pills-tabContent">
+        <div class="tab-pane fade" id="v-pills-menu" role="tabpanel" aria-labelledby="v-pills-menu-tab" tabindex="0">
+          <div class="col-12">
+            <table class="table" style="border:none">
+              <thead>
+                <tr>
+                  <th style="border:none" scope="col">Item</th>
+                  <th style="border:none" scope="col">Price</th>
+                  <th style="border:none" scope="col">Duration</th>
+                </tr>
+              </thead>
+              <tbody style="border:none" id="menu-items-table">
+      
+                {% for item in menu_data %}
+                <tr>
+                  <th style="border:none">{{item.Menu_Name}}</th>
+                  <td style="border:none">{{item.Vibez_Cost}}</td>
+                  <td style="border:none">{{item.Menu_Time}} seconds</td>
+                  <td style="border:none" class="d-flex justify-content-center gap-2">
+                    <button type="button" class="btn btn-dark fs-3" onclick="avail_menu_item({{item.id}})">
+                      <span class="fs-2">avail</span>
+                    </button>
+
+            
+                </td>
+      
+                
+      
+      
+                </tr>
+      
+      
+                {% endfor %}
+      
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="v-pills-dice" role="tabpanel" aria-labelledby="v-pills-dice-tab" tabindex="0">dice</div>
+
+        <div class="tab-pane fade" style="overflow:hidden;" id="v-pills-Slots" role="tabpanel" aria-labelledby="v-pills-Slots-tab" tabindex="0">
+          <div id="slot" class="ps-0 ml-0">
+          {% if request.user.is_authenticated %}
+
+          {% include "rooms/include/slot_machine.html" %}
+
+          {% else %}
+
+          <h3 style='color:crimson; margin:10px 0 0 10px;'>
+              Please Login to play
+          </h3>
+
+          {% endif %}
+
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+</div>
+
+
+<script>
+
+  function avail_menu_item(menu_item_id){
+    $.ajax({
+      method:'POST',
+      url: "avail_menu_item/",
+      data: {
+          'menu_item_id':menu_item_id,
+          'broadcaster_id':{{room_data.User.id}},
+          'csrfmiddlewaretoken':"{{csrf_token}}",
+      },
+      success:function(data)
+      {
+          console.log(data.data)
+          successToast(data.data)
+
+      },
+      error:function(errors){
+          console.log(errors.responseText)
+          errorToast(errors.responseJSON.data)
+      }
+  })
+  }
+
+</script>

@@ -40,7 +40,7 @@
         background: linear-gradient(top, rgba(238,238,238,1) 0%,rgba(204,204,204,1) 100%);
         filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#cccccc',GradientType=0 );
         
-          width: 540px;
+          width: 520px;
           margin: 10px auto 20px;
           padding: 20px;
           border-radius: 50px;
@@ -152,8 +152,8 @@
     <h1>Slot Machine</h1>
     <h3 class="row justify-content-center">Cost per spin {{slot_machine_data.Slot_cost_per_spin}}</h3>
 
-    {% if user_data.Vibez > slot_machine_data.Slot_cost_per_spin %}
-<div id="sm">
+    {% if user_datas.Vibez >= slot_machine_data.Slot_cost_per_spin %}
+<div id="sm" class="">
   <div class="group lever">
     <button id="start">Start</button>
   </div>

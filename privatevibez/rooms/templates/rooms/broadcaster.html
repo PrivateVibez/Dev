@@ -63,7 +63,7 @@
 
                 <div class="tab-pane fade show active h-100" id="nav-stats" role="tabpanel" aria-labelledby="nav-stats-tab">
 
-                    <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 100%; overflow-y:hidden; line-height: 16pt;">
+                    <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 100%; line-height: 16pt;">
 
                         <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;">
 
@@ -99,7 +99,7 @@
 
 
                   
-                          <div class="tab-content h-100" id="pills-tabContent">
+                          <div class="tab-content" id="pills-tabContent">
                             <div class="tab-pane fade h-100" id="pills-public-chat" role="tabpanel" aria-labelledby="pills-chat-tab">
                                 {% include "rooms/include/public_chat.html" %}     
                             </div>
@@ -144,7 +144,7 @@
 
                 <div class="tab-pane fade show active h-100 w-100" id="nav-stats" role="tabpanel" aria-labelledby="nav-stats-tab">
 
-                    <div class="msg-list-wrapper-split container-fluid" data-listener-count-scroll="1" style="box-sizing: border-box; overflow-x:hidden; margin: 0px auto 5px; padding: 5px; height: 100%; line-height: 16pt;">
+                    <div class="msg-list-wrapper-split container-fluid" data-listener-count-scroll="1" style="box-sizing: border-box; margin: 0px auto 5px; padding: 5px; height: 100%; line-height: 16pt;">
 
                         <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;">
 
@@ -153,6 +153,10 @@
                         <ul class="nav nav-pills mb-3 d-flex flex-row gap-2 position-absolute mb-5" id="pills-tab" style="z-index: 1;" role="tablist"> 
                             <li class="nav-item">
                               <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Room Stats</a>
+                            </li>
+
+                            <li class="nav-item">
+                              <a class="nav-link" id="pills-menu-items-tab" data-toggle="pill" href="#pills-menu-items" role="tab" aria-controls="pills-menu-items" aria-selected="true">Menu Items</a>
                             </li>
 
                             <li class="nav-item">
@@ -182,6 +186,11 @@
 
                             <div class="tab-pane  show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
                                 {% include 'rooms/include/room_stats.html' %}
+                            </div>
+
+
+                            <div class="tab-pane fade" id="pills-menu-items" role="tabpanel" aria-labelledby="pills-menu-itemsa-tab">
+                                {% include 'rooms/include/menu_items.html' %}
                             </div>
 
                             <div class="tab-pane fade" id="pills-lovense-toy" role="tabpanel" aria-labelledby="pills-lovense-toy">

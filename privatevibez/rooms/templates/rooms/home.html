@@ -99,11 +99,18 @@
 
                 {% endif %}
 
-
-                {% if user_status == "Pending_Broadcaster" %}
+                {% if user_status == "Pending_Broadcaster" and request.user.username == room_data.User.username %}
                 
-                     <div class="d-flex justify-content-center display-1 font-weight-bold m-5 p-5">We will email you once your application is approved.</div>
+                <div class="d-flex justify-content-center display-1 font-weight-bold m-5 p-5">We will email you once your application is approved.</div>
                 {% endif %}
+
+                {% if user_status == "Pending_Broadcaster" and request.user.username != room_data.User.username %}
+          
+                {{room_data}}
+                {% include "rooms/user.html" %} 
+
+                {% endif %}
+
 
 
                 {% if user_status == "Declined_Broadcaster" %}
@@ -114,7 +121,7 @@
 
 
                 {% if user_status == "User" and request.user.username != Broadcaster %}
-                {{user.username}}
+          
                 {% include "rooms/user.html" %} 
 
                 {% elif user_status == "User" and request.user.username == Broadcaster %}

@@ -1,0 +1,206 @@
+<div class="container-fluid">
+  <label for="menu-item-1" data-item="1" class="control-label fs-2">Menu Item</label>
+
+  <div class="row">
+    <div class="col-3">
+      <table style="border:none" class="table">
+        <thead>
+          <tr>
+            <th style="border:none" scope="col">Item</th>
+            <th style="border:none" scope="col">Price</th>
+            <th style="border:none" scope="col">Duration in seconds</th>
+          </tr>
+        </thead>
+        <tbody id="menu-items-table">
+
+          {% for item in menu_data %}
+          <tr>
+            <th scope="row">{{item.Menu_Name}}</th>
+            <td>{{item.Vibez_Cost}}</td>
+            <td>{{item.Menu_Time}}</td>
+            <td class="d-flex justify-content-center gap-2">
+              <button type="button" class="btn btn-dark fs-3" data-bs-toggle="modal" data-bs-target="#modalUpdateMenuItems-{{item.id}}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                </svg>
+            </button>
+       
+              <button type="button" class="btn btn-danger fs-" onclick="remove_menu_data({{item.id}})">
+                <span class="fs-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                  <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                </svg></span>
+            </button>
+      
+          </td>
+
+          
+
+
+          </tr>
+
+          <!-- Modal for editing menu items -->
+<div class="modal fade" id="modalUpdateMenuItems-{{item.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fs-2" id="exampleModalLabel">Edit menu items</h5>
+        <button type="button" class="btn-close fs-2" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body container-fluid">
+        <div class="row">
+          <div class="col-3">
+                <input type="text" id="update-menu-item-{{item.id}}" value="{{item.Menu_Name}}" placeholder="{{item.Menu_Name}}" class="">
+          </div>
+          <div class="col-3">
+                <input type="text" id="update-menu-item-price-{{item.id}}" value="{{item.Vibez_Cost}}" placeholder="{{item.Vibez_Cost}}" class="">
+          </div>
+          <div class="col-3">
+                <input type="text" id="update-menu-item-duration-{{item.id}}" value="{{item.Menu_Time}}" placeholder="{{item.id}}" class="">
+          </div>
+          <div class="col-3 d-flex justify-content-center">
+                <button onclick="update_menu_items({{item.id}})" class="btn btn-dark fs-2 text-center w-100">Update</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+
+      </div>
+    </div>
+  </div>
+</div>
+
+          {% endfor %}
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-1">
+          <input type="text" id="menu-item" placeholder="item" class="">
+    </div>
+    <div class="col-1">
+          <input type="text" id="menu-item-price" placeholder="price" class="">
+    </div>
+    <div class="col-1">
+          <input type="text" id="menu-item-duration" placeholder="duration in seconds" class="">
+    </div>
+    <div class="col-1 d-flex justify-content-center">
+          <button onclick="save_menu_items()" class="btn btn-dark fs-2 text-center w-100">Add</button>
+    </div>
+  </div>
+
+
+
+
+</div>
+
+
+
+
+
+<script>
+
+  function save_menu_items()
+  {
+    $.ajax({
+      method:'POST',
+      url: "/room/save_menu_data/",
+      mimeType:"multipart/form-data",
+      data:{  
+            'menu_item':$("#menu-item").val(),
+            'menu_item_price':$("#menu-item-price").val(),
+            'menu_item_duration':$("#menu-item-duration").val(),
+            'csrfmiddlewaretoken':"{{csrf_token}}",
+          },
+          'dataType': 'json',
+          success:function(data){
+            console.log(data)
+
+            $("#menu-items-table").load(" #menu-items-table > *");
+
+
+            successToast(data.data);
+          },
+          error:function(errors){
+              console.log(errors.responseJSON.data)
+
+              errorToast(errors.responseJSON.data)
+
+          }
+          
+      });
+  }
+
+
+function update_menu_items(item_id)
+{
+
+  console.log($("#update-menu-item-" + item_id).val());
+  console.log($("#update-menu-item-price-" + item_id).val());
+  console.log($("#update-menu-item-duration-" + item_id).val());
+  $.ajax({
+    method:'POST',
+    url: "/room/update_menu_data/",
+    mimeType:"multipart/form-data",
+    data:{  
+          'menu_item':$("#update-menu-item-" + item_id).val(),
+          'item_id':item_id,
+          'menu_item_price':$("#update-menu-item-price-" + item_id).val(),
+          'menu_item_duration':$("#update-menu-item-duration-" + item_id).val(),
+          'csrfmiddlewaretoken':"{{csrf_token}}",
+        },
+        'dataType': 'json',
+        success:function(data){
+          console.log(data)
+
+          $("#menu-items-table").load(" #menu-items-table > *");
+
+
+          successToast(data.data);
+        },
+        error:function(errors){
+            console.log(errors.responseText)
+
+            errorToast(errors.responseText)
+
+        }
+        
+    });
+
+}
+
+
+
+function remove_menu_data(item_id)
+{
+  $.ajax({
+    method:'POST',
+    url: "/room/remove_menu_data/",
+    mimeType:"multipart/form-data",
+    data:{  
+          'item_id':item_id,
+          'csrfmiddlewaretoken':"{{csrf_token}}",
+        },
+        'dataType': 'json',
+        success:function(data){
+          console.log(data)
+
+          $("#menu-items-table").load(" #menu-items-table > *");
+
+
+          successToast(data.data);
+        },
+        error:function(errors){
+            console.log(errors.responseText)
+
+            errorToast(errors.responseText)
+
+        }
+        
+    });
+}
+
+</script>

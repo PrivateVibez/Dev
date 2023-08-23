@@ -10,7 +10,7 @@ from django.contrib import messages
 from .models import *
 from django.utils.safestring import mark_safe
 import json
-from .forms import Slot_MachineForm, Fav_vibezForm, BioForm
+from .forms import Slot_MachineForm, Fav_vibezForm, BioForm, MenuDataForm
 from django.http import HttpResponse as httpresponse
 import requests
 from .decorators import check_user_blocked_ip,check_user_status
@@ -65,6 +65,7 @@ def Room(request, Broadcaster):
                     username             = mark_safe(json.dumps(request.user.username))
                     rooms                = Room_Data.objects.all()
                     room_users_data      = User_Data.objects.all()    
+                    menu_data            = Menu_Data.objects.filter(User = broadcaster_user)
                     broadcaster_status   = User_Status.objects.get(User = User.objects.get(username = Broadcaster))
                     room_data            = Room_Data.objects.get(User = User.objects.get(username = Broadcaster))
                     # room_sesson          = Room_Sesson.objects.get(User = User.objects.get(username = Broadcaster))
@@ -78,7 +79,7 @@ def Room(request, Broadcaster):
 
                         
                     public_chat          = Public.objects.filter(Room = User.objects.get(username=Broadcaster)).all
-                    follows              = Follows.objects.filter(User__username = Broadcaster).all()
+                    follows              = Follows.objects.filter(User__username = request.user.username).all()
                     print(follows,flush=True)
                     
                     thumbs_up_count      = Thumbs.objects.filter(Broadcaster = User.objects.get(username = Broadcaster), Thumb = "Up").count
@@ -160,6 +161,7 @@ def Room(request, Broadcaster):
                 if User.objects.filter(username =  Broadcaster).exists():
                     user = User.objects.get(username = Broadcaster)
                     user_status = user.Status
+                    room_data = Room_Data.objects.get(User = User.objects.get(username = Broadcaster))
                     print(user_status,flush=True)
                     return render(request, "rooms/home.html", locals())
                 else:
@@ -171,14 +173,82 @@ def Room(request, Broadcaster):
 
 
 @csrf_exempt
-def Menu_item(request):
-    Menu_Data.objects.create(
-        User       = request.user,
-        Vibez_Cost  =  request.POST.get('Vibez'),
-        Menu_Name   = request.POST.get('Menu_Name'),
-        Menu_Time   =  request.POST.get('Menu_Time')
-    )
-    return JsonResponse('OK', safe=False) 
+def save_menu_data(request):
+    
+    if request.method == "POST":
+        form = MenuDataForm(request.POST)
+        
+        if form.is_valid():
+            
+            Menu_Data.objects.create(
+                User       = request.user,
+                Vibez_Cost  =  form.cleaned_data['menu_item_price'],
+                Menu_Name   = form.cleaned_data['menu_item'],
+                Menu_Time   =  form.cleaned_data['menu_item_duration']
+            )
+            return JsonResponse({"data":f'menu item added!'}, safe=False) 
+        else:
+            print(form.errors,flush=True)
+            return JsonResponse({"data":"please input valid data"},status=500, safe=False) 
+    
+    
+
+@csrf_exempt
+def avail_menu_item(request):
+    
+    if request.method == "POST":
+        
+        menu_item_id = request.POST.get('menu_item_id')
+        broadcaster_id = request.POST.get('broadcaster_id')
+        
+        if menu_item_id is not None and broadcaster_id is not None:
+            menu_item = Menu_Data.objects.get(id=menu_item_id)
+            broadcaster_room = Room_Data.objects.get(User__id = broadcaster_id)
+            Item_Availed.objects.create(Room = broadcaster_room,User=request.user, Item = menu_item.Menu_Name, Cost = menu_item.Vibez_Cost)
+            
+            user = User_Data.objects.get(User = request.user)
+            if user.Vibez >= menu_item.Vibez_Cost:
+                user.Vibez = user.Vibez - menu_item.Vibez_Cost
+                broadcaster_room.Revenue = menu_item.Vibez_Cost
+                user.save()
+                broadcaster_room.save()
+                return JsonResponse({"data":f'you bought {menu_item.Menu_Name} lets keep vibing!'}, safe=False)
+            else:
+                return JsonResponse({"data":f'not enough vibez'}, status=500, safe=False)
+            
+            
+
+@csrf_exempt
+def update_menu_data(request):
+    
+    if request.method == "POST":
+        form = MenuDataForm(request.POST)
+        
+        if form.is_valid():
+            
+            menu_data = Menu_Data.objects.get(id = request.POST.get('item_id'))
+            
+            menu_data.Vibez_Cost  =  form.cleaned_data['menu_item_price']
+            menu_data.Menu_Name   = form.cleaned_data['menu_item']
+            menu_data.Menu_Time   =  form.cleaned_data['menu_item_duration']
+            
+            menu_data.save()
+            return JsonResponse({"data":f'menu item updated!'}, safe=False) 
+        else:
+            print(form.errors,flush=True)
+            return JsonResponse({"data":form.errors}, status=500, safe=False) 
+        
+        
+@csrf_exempt
+def remove_menu_data(request):
+    
+    if request.method == "POST":
+
+        Menu_Data.objects.get(id = request.POST.get('item_id')).delete()
+        
+        return JsonResponse({"data":"menu item deleted!"}, safe=False) 
+    
+    
 
 @csrf_exempt
 def Dice_items(request):
@@ -216,20 +286,11 @@ def Dice_items(request):
             )
         return JsonResponse('OK', safe=False) 
 
-@csrf_exempt
-def Menu_item(request):
-    Menu_Data.objects.create(
-        User        = request.user,
-        Vibez_Cost  = request.POST.get('Vibez'),
-        Menu_Name   = request.POST.get('Menu_Name'),
-        Menu_Time   = request.POST.get('Menu_Time')
-    )
-    return JsonResponse('OK', safe=False) 
 
 @csrf_exempt
 def Following(request):
     broadcaster = request.POST.get('broadcaster')
-    if Follows.objects.filter(User = request.user).exists():
+    if Follows.objects.filter(User = request.user,Broadcaster__username=broadcaster).exists():
         if Follows.objects.filter(Broadcaster = User.objects.get(username = broadcaster)).exists():
 
             Del_flow = Follows.objects.get(User = request.user, Broadcaster = User.objects.get(username = broadcaster) )
