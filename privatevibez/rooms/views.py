@@ -58,7 +58,6 @@ def Room(request, Broadcaster):
                     user_datas        = User_Data.objects.get(User =  request.user)
                     user_status_data = User.objects.get(id = request.user.id)
                     user_status      = user_status_data.Status
-                    print("yo",flush=True)
                     broadcaster_user     = User.objects.get(username = Broadcaster)
                     room_name_json       = mark_safe(json.dumps(broadcaster_user.username))
                     room_name            = broadcaster_user.username
@@ -80,7 +79,6 @@ def Room(request, Broadcaster):
                         
                     public_chat          = Public.objects.filter(Room = User.objects.get(username=Broadcaster)).all
                     follows              = Follows.objects.filter(User__username = request.user.username).all()
-                    print(follows,flush=True)
                     
                     thumbs_up_count      = Thumbs.objects.filter(Broadcaster = User.objects.get(username = Broadcaster), Thumb = "Up").count
                     thumbs_down_count    = Thumbs.objects.filter(Broadcaster = User.objects.get(username = Broadcaster), Thumb = "Down").count
@@ -99,7 +97,8 @@ def Room(request, Broadcaster):
                         follow_button = False
                         
                         
-                        
+                    if Slot_Machine.objects.filter(User=broadcaster_user).exists():
+                            slot_machine_data = Slot_Machine.objects.filter(User=broadcaster_user.id).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
                     try:
                         user = request.user
                     
@@ -113,15 +112,10 @@ def Room(request, Broadcaster):
                                 for invitee in invitees:
                                     if invitee.Invitee == user:
                                             invite_accepted = True if invitee.Is_Accepted == True else False
-                                print(invite_accepted,flush=True)
                             except Private_Chat_Invitee.DoesNotExist:
                                 pass
-                                
-                                
-                            if Slot_Machine.objects.filter(User=broadcaster_user.id).exists():
-                                slot_machine_data = Slot_Machine.objects.filter(User=broadcaster_user.id).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
-                                
-                    
+                            
+                                           
             
                         elif user.Status == "Broadcaster":
                             
@@ -454,8 +448,7 @@ def set_slot_machine(request):
                 
                 print("existing", flush=True)
                 existing_instance.Slot_cost_per_spin = form.cleaned_data['Slot_cost_per_spin']
-                existing_instance.Win_3_of_a_kind_prize = form.cleaned_data['Win_3_of_a_kind_prize']
-                existing_instance.Win_2_of_a_kind_prize = form.cleaned_data['Win_2_of_a_kind_prize']
+
                 existing_instance.save()
                 messages.success(request, "Slot Machine saved successfully")
                 # A duplicate instance already exists
@@ -489,52 +482,63 @@ def deduct_vibez(request,vibez):
 def get_prize(request):
     
     if request.method == 'POST':
-  
-        url = "https://api.lovense-api.com/api/lan/v2/command"
-        d_token = settings.LOVENSE_DEV_KEY
         
-        utoken = User_Data.objects.get(User = request.user)
-        data = {
-            "token":d_token,
-            "uid": request.user.id,
-            "command": "Function",
-            "action": request.POST.get('prize_won'),
-            "timeSec": float(request.POST.get('duration')),
-            "apiVer": 1,
-                }
-        
-        headers = {
-            "Content-Type": "application/json"
-        }
-        
-        try:
-            # Make the POST request using the requests library
-            response = requests.post(url, json=data, headers=headers)
-
-            # Check the response status code for success (e.g., 200)
-            if response.status_code == 200:
-                # Handle the successful response data
-                response_data = response.json()
+            try:
+                winner = User_Data.objects.get(User__id=request.POST.get('winner'))
+                broadcaster = request.POST.get('broadcaster')
+                prize = request.POST.get('prize_won')
+                cost_per_spin = int(request.POST.get('cost_per_spin'))
+                print(broadcaster, flush=True)
+                room_data = get_object_or_404(Room_Data, User_id=broadcaster)     
                 
-        
-                owner = Slot_Machine.objects.get(User = request.POST.get('broadcaster'))
-                winner = User.objects.get(User = request.POST.get('winner'))
-                owner.Winner = winner
-                owner.Prize = request.POST.get('prize_won')
-                owner.save()
-        
- 
+            except User_Data.DoesNotExist as e:
+                return JsonResponse({'data':f'Broadcaster does not exist'},status=500, safe=False)
+           
+           
+            if winner.Vibez >= cost_per_spin:
+                if prize == "OH":
+                    feature = room_data.Feature_OH_button
+                    strength = room_data.Strength_OH_button
+                    timesec = room_data.Duration_OH_button
+                    price = room_data.Price_OH_button
+            
+            
+                    availed_item(winner.User.id,room_data,"OH",price)
+            
+                    trigger_toy(room_data.User.id,price,winner.User.id,feature,strength,timesec)
+                    
+                    
+                if prize == "OHYes":
+                    feature = room_data.Feature_OHYes_button
+                    strength = room_data.Strength_OHYes_button
+                    timesec = room_data.Duration_OHYes_button
+                    price = room_data.Price_OHYes_button
+            
+                    availed_item(winner.User.id,room_data,"OH",price)
+                    
+                    trigger_toy(room_data.User.id,price,winner.User.id,feature,strength,timesec)
                 
-                return JsonResponse(response_data)
-
-            # Handle other status codes if needed
+                if prize == "Loss":
+                  
+                    winner.Vibez -= cost_per_spin
+                    winner.save()
+                    
+                    room_data.Revenue += cost_per_spin
+                    room_data.save()
+                    return JsonResponse({"data": f'You lose some and you win some! keep vibing!'}, status=500,safe=False) 
+            
+            
+                return JsonResponse({"data": f'You won! {prize} pattern keep vibing!'}, status=200, safe=False)
+            
+            
             else:
-                return JsonResponse({"error": "Failed to make the POST request."}, status=response.status_code)
+                return JsonResponse({"data": f'Oops! not enough vibez!'}, status=500,safe=False) 
+                
+                # Handle other status codes if needed
 
-        except requests.exceptions.RequestException as e:  
-            return JsonResponse({"error": str(e)}, status=500) 
-    
-    
+    else:
+        return JsonResponse({"error": "Failed to make the POST request."}, status=response.status_code)
+
     
     
 @csrf_exempt
@@ -655,7 +659,7 @@ def trigger_toy(broadcaster_id,price,user_id,feature,strength,timesec):
             # Handle the successful response data
             response_data = response.json()
             
-            player = User_Data.objects.get(User=user_id)
+            player = User_Data.objects.get(User__id=user_id)
             player.Vibez = player.Vibez - price
             player.save()
             
@@ -670,43 +674,48 @@ def trigger_toy(broadcaster_id,price,user_id,feature,strength,timesec):
     return JsonResponse({"data": str(response.status_code)}, status=500) 
 
 
-def availed_item(user,room_id,item,price):
-    user_data = User_Data.objects.get(User=user)
-    room = Room_Data.objects.get(User_id=room_id)
-    item = Item_Availed.objects.create(Room=room,User=user,Item=item, Cost=price)
-    user_data.Availed.add(item)
+def availed_item(user,room,item,price):
+    user_data = User_Data.objects.get(User__id=user)
     
-    # add revenues
-    if room.Revenue is not None:
-        room.Revenue = room.Revenue + int(price)
+    if user_data.Vibez >= price:
+        item = Item_Availed.objects.create(Room=room,User=user_data.User,Item=item, Cost=price)
+        user_data.Availed.add(item)
+        
+        # add revenues
+        if room.Revenue is not None:
+            room.Revenue = room.Revenue + int(price)
+        else:
+            room.Revenue = int(price)
+        room.save()
+        
+        # Get the channel layer
+        channel_layer = get_channel_layer()
+        channel_name = "broadcaster_visitor_" + str(room.User.id)
+        print(channel_name,flush=True)
+        
+        # Prepare data to send
+        data = {
+            "user": user_data.User.username,
+            "item": item.Item,
+            "price": item.Cost  # Changed "Cost" to "Price"
+        }
+        
+        # Send the data to the WebSocket consumer
+        async_to_sync(channel_layer.group_send)(
+            channel_name,
+            {"type": "show.itemAvailed", "data": data}
+        )
     else:
-        room.Revenue = int(price)
-    room.save()
-    
-    # Get the channel layer
-    channel_layer = get_channel_layer()
-    channel_name = "broadcaster_visitor_" + str(room_id)
-    print(channel_name,flush=True)
-    
-    # Prepare data to send
-    data = {
-        "user": user.username,
-        "item": item.Item,
-        "price": item.Cost  # Changed "Cost" to "Price"
-    }
-    
-    # Send the data to the WebSocket consumer
-    async_to_sync(channel_layer.group_send)(
-        channel_name,
-        {"type": "show.itemAvailed", "data": data}
-    )
+        return JsonResponse({"data":f'Not enough vibez!'},status=500,safe=False)
+        
+
     
 
 def fav_btn_trigger_toy(request):
     
     if request.method == "POST":
         room_data = Room_Data.objects.get(User=request.POST.get('room_id'))
-        user_id = User.objects.get(id = request.POST.get('user_id'))
+        user_id = request.POST.get('user_id')
         user_data = User_Data.objects.get(User=user_id)
         button_type = request.POST.get('button_type')
         
@@ -715,12 +724,12 @@ def fav_btn_trigger_toy(request):
             if user_data.Vibez < room_data.Price_MMM_button:
                 return JsonResponse(f'Not enough Vibez please buy.',status=500, safe=False)
             
-            availed_item(user_id,room_data.User_id,"MMM",room_data.Price_MMM_button)
+            availed_item(user_id,room_data,"MMM",room_data.Price_MMM_button)
             
             
             broadcaster_id = room_data.User_id
             price = room_data.Price_MMM_button
-            user_id = user_id.id
+        
             feature = room_data.Feature_MMM_button
             strength = room_data.Strength_MMM_button
             timesec = room_data.Duration_MMM_button
@@ -734,11 +743,11 @@ def fav_btn_trigger_toy(request):
                 return JsonResponse(f'Not enough Vibez please buy.',status=500, safe=False)
             
             
-            availed_item(user_id,room_data.User_id,"OH",room_data.Price_OH_button)
+            availed_item(user_id,room_data,"OH",room_data.Price_OH_button)
             
             broadcaster_id = room_data.User_id
             price = room_data.Price_OH_button
-            user_id = user_id.id
+       
             feature = room_data.Feature_OH_button
             strength = room_data.Strength_OH_button
             timesec = room_data.Duration_OH_button
@@ -752,11 +761,11 @@ def fav_btn_trigger_toy(request):
                 return JsonResponse(f'Not enough Vibez please buy.',status=500, safe=False)
             
                     
-            availed_item(user_id,room_data.User_id,"OHYes",room_data.Price_OHYes_button)
+            availed_item(user_id,room_data,"OHYes",room_data.Price_OHYes_button)
             
             broadcaster_id = room_data.User_id
             price = room_data.Price_OHYes_button
-            user_id = user_id.id
+   
             feature = room_data.Feature_OHYes_button
             strength = room_data.Strength_OHYes_button
             timesec = room_data.Duration_OHYes_button

@@ -29,6 +29,10 @@
         h1, a {
           text-shadow: 0 1px 0 rgba(255,255,255,.8);
         }
+
+        #reel-wrapper p {
+          font-size: 40px;
+        }
         
         #sm {
         background: rgb(238,238,238);
@@ -147,22 +151,23 @@
         }
     </style>
   </head>
-  <body>
+  <body id="slot_machine_wrapper">
 
     <h1>Slot Machine</h1>
-    <h3 class="row justify-content-center">Cost per spin {{slot_machine_data.Slot_cost_per_spin}}</h3>
+    <h3 class="row justify-content-center">Cost per spin <span id="cost_per_spin" class="text-center fs-2">{{slot_machine_data.Slot_cost_per_spin}}</span> Vibez</h3>
+
 
     {% if user_datas.Vibez >= slot_machine_data.Slot_cost_per_spin %}
 <div id="sm" class="">
   <div class="group lever">
-    <button id="start">Start</button>
+    <button id="start">Play</button>
   </div>
-  <div class="group">
-    <div class="reel"></div>
-    <div class="reel"></div>
-    <div class="reel"></div>
+  <div id = "reel-wrapper" class="group">
+    <div class="reel fs-2"></div>
+    <div class="reel fs-2"></div>
+    <div class="reel fs-2"></div>
   </div>
-  <p class="msg">Press Start</p>
+  <p class="msg">Press Play</p>
 </div>
 
 {% else %}
@@ -173,10 +178,164 @@
 
 </div>
 
-{% if slot_machine_data %}
+
     <script>
 
+      function give_prize(prize){
 
+        $.ajax({
+          url: '/room/get_prize/',
+          type: 'POST',
+          data:{
+              winner: {{request.user.id}},
+              broadcaster: {{broadcaster_user.id}},
+              cost_per_spin: document.getElementById('cost_per_spin').innerHTML,
+              prize_won: prize,
+              'csrfmiddlewaretoken':"{{csrf_token}}",
+          
+          },
+          success: function (data) {
+              // Display the fetched data (example: update the DOM)
+              console.log(data);
+
+              successToast(data.data);            
+      
+              
+          },
+          error: function (xhr, textStatus, errorThrown) {
+              console.error('Error fetching data:', xhr.responseText);
+
+              errorToast(xhr.responseJSON.data);
+              // Handle any errors that occurred during the fetch process
+          },
+      });
+      
+      }
+
+/*
+	requestAnimationFrame polyfill
+*/
+(function(w){
+	var lastTime = 0,
+		vendors = ['webkit', /*'moz',*/ 'o', 'ms'];
+	for (var i = 0; i < vendors.length && !w.requestAnimationFrame; ++i){
+		w.requestAnimationFrame = w[vendors[i] + 'RequestAnimationFrame'];
+		w.cancelAnimationFrame = w[vendors[i] + 'CancelAnimationFrame']
+			|| w[vendors[i] + 'CancelRequestAnimationFrame'];
+	}
+
+	if (!w.requestAnimationFrame)
+		w.requestAnimationFrame = function(callback, element){
+			var currTime = +new Date(),
+				timeToCall = Math.max(0, 16 - (currTime - lastTime)),
+				id = w.setTimeout(function(){ callback(currTime + timeToCall) }, timeToCall);
+			lastTime = currTime + timeToCall;
+			return id;
+		};
+
+	if (!w.cancelAnimationFrame)
+		w.cancelAnimationFrame = function(id){
+		clearTimeout(id);
+	};
+})(this);
+
+/*
+	Slot Machine
+*/
+
+
+var sm = (function(undefined){
+
+	var tMax = 3000, // animation time, ms
+		height = 210,
+		speeds = [],
+		r = [],
+		reels = [
+    ['🍉',   '🍒','🍋'],
+    ['🍉',  '🍒', '🍋'],
+    ['🍉', '🍒',  '🍋']
+		],
+		$reels, $msg,
+		start;
+
+	function init(){
+		$reels = $('.reel').each(function(i, el){
+			el.innerHTML = '<div><p>' + reels[i].join('</p><p>') + '</p></div><div><p>' + reels[i].join('</p><p>') + '</p></div>'
+		});
+
+		$msg = $('.msg');
+
+		$('#start').click(action);
+	}
+
+	function action(){
+		if (start !== undefined) return;
+
+		for (var i = 0; i < 3; ++i) {
+			speeds[i] = Math.random() + .5;	
+			r[i] = (Math.random() * 3 | 0) * height / 3;
+		}
+
+		$msg.html('Spinning...');
+		animate();
+	}
+
+	function animate(now){
+		if (!start) start = now;
+		var t = now - start || 0;
+
+		for (var i = 0; i < 3; ++i)
+			$reels[i].scrollTop = (speeds[i] / tMax / 2 * (tMax - t) * (tMax - t) + r[i]) % height | 0;
+
+		if (t < tMax)
+			requestAnimationFrame(animate);
+		else {
+			start = undefined;
+			check();
+		}
+	}
+
+  function check(){ 
+    
+    let prize = document.getElementById("prize");
+
+    if (r[0] === r[1] && r[1] === r[2]) {
+        // Won 3 of a Kind
+        $msg.html('You won! 3 of a kind! Enjoy!');
+
+        console.log("3 of a kind");
+
+        give_prize("OHYes");
+    } 
+    else if (r[0] === r[1] || r[1] === r[2] || r[0] === r[2]) {
+        // Won 2 of a Kind
+        $msg.html('You won! 2 of a kind! Enjoy!');
+    
+
+        give_prize("OH");
+     
+        console.log("2 of a kind");
+    } 
+    else {
+        $msg.html('Oh no! Try again');
+        give_prize("Loss");
+    }
+}
+
+	return {init: init}
+
+})();
+
+$(sm.init);
+
+
+    </script>
+
+
+
+
+<!--
+    <script>
 const csrfToken = '{{ csrf_token }}';
 
 // Function to fetch data using AJAX POST
@@ -205,25 +364,24 @@ function fetchData(vibez) {
 
 }
 
-function give_prize(prize,time){
+function give_prize(prize){
 
   $.ajax({
     url: '/room/get_prize/',
     type: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': csrfToken,
-    },
-    data: JSON.stringify({
+    data:{
         winner: {{request.user.id}},
         broadcaster: {{broadcaster_user.id}},
         prize_won: prize,
-        duration:time,
+        'csrfmiddlewaretoken':"{{csrf_token}}",
     
-    }),
+    },
     success: function (data) {
         // Display the fetched data (example: update the DOM)
         console.log(data);
+
+
+        
     },
     error: function (xhr, textStatus, errorThrown) {
         console.error('Error fetching data:', xhr.responseText);
@@ -233,6 +391,7 @@ function give_prize(prize,time){
 
 }
 
+var winProcessed = false; 
 /*
 	Slot Machine
 */
@@ -244,10 +403,10 @@ var sm = (function(undefined){
 		speeds = [],
 		r = [],
 		reels = [
-			['An',   'Bj','bob'],
-			['an',  'Bj', 'bob'],
-			['an', 'Bj',  'bob']
-		],
+			['🍉',   '🍒','🍋'],
+			['🍉',  '🍒', '🍋'],
+			['🍉', '🍒',  '🍋']
+		],  
 		$reels, $msg,
 		start;
 
@@ -258,13 +417,32 @@ var sm = (function(undefined){
 
 		$msg = $('.msg');
 
-		$('#start').click(action);
+    $('#start').click(function () {
+      if (!winProcessed) { // Check if a win has already been processed
+        if (start !== undefined) return; // If animation is already running, do nothing
+  
+     
+  
+        for (var i = 0; i < 3; ++i) {
+          speeds[i] = Math.random() + .5;
+          r[i] = (Math.random() * 3 | 0) * height / 3;
+        }
+  
+        $msg.html('Spinning...');
+        action();
+      }
+
+      else{
+        $(sm.init);
+        action();
+      }
+    });
 	}
 
 
 function action(){
 
-  fetchData();
+
 
 		if (start !== undefined) return;
 
@@ -289,6 +467,7 @@ function action(){
 		else {
 			start = undefined;
 			check();
+      $('#start').prop('disabled', false); 
 		}
 	}
 
@@ -301,18 +480,25 @@ function action(){
       $msg.html('You won! 3 of a kind! Enjoy ' + ' Vibez');
 
       prize.innerHTML = "{{slot_machine_data.Win_3_of_a_kind_prize}}"
-
-      give_prize(prize.innerHTML,20);
+      console.log("3 of a kind")
+      if (!winProcessed) {
+        give_prize("OH");
+        winProcessed = true; // Set the flag to true
+      }
 
       
 
     } else if (r[0] === r[1] || r[1] === r[2] || r[0] === r[2]) {
       //Won 2 of a Kind
       $msg.html('You won! 2 of a kind! Enjoy ' + ' Vibez');
-
+      console.log("2 of a kind")
       prize.innerHTML = "{{slot_machine_data.Win_2_of_a_kind_prize}}"
       
-        give_prize(prize.innerHTML,5);
+      console.log(winProcessed)
+      if (!winProcessed) {
+        give_prize("OHYes");
+        winProcessed = true; // Set the flag to true
+      }
 
 
     } else {
@@ -327,8 +513,8 @@ function action(){
 $(sm.init);
 });
     </script>
+-->
 
-{% endif %}
 
   </body>
 </html>

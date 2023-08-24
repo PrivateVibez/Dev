@@ -12,13 +12,6 @@
 
           <input type="number" class=" d-none" id="" value="{% if slot_machine_data %}{{room_data.User.id}}{% endif %}" name="User">
           
-          <label class="fs-2 my-3" for="set_3_of_a_kind_prize">Set prize for 3 of a kind win</label>
-          <input type="text" value="{% if slot_machine_data %}{{slot_machine_data.Win_3_of_a_kind_prize}}{% endif %}" class="" id="set_3_of_a_kind_prize" name="Win_3_of_a_kind_prize">
-          
-          <label class="fs-2 my-3" for="set_2_of_a_kind_prize">Set prize for 2 of a kind win</label>
-          <input type="text" value="{% if slot_machine_data %}{{slot_machine_data.Win_2_of_a_kind_prize}}{% endif %}" class="" id="set_2_of_a_kind_prize" name="Win_2_of_a_kind_prize">
-
-
 
           <button type="submit" class="btn h-4 btn-dark w-50 rounded-3 mx-auto my-3 p-3"><span class="fs-2 font-weight-bold">Set</span></button>
       

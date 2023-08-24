@@ -27,30 +27,30 @@
                 <ul class="collapse navbar-collapse" style="margin-right: 50px;" id="navbarsid" >
                     <li class="nav-item dropdown" style="list-style-type:none;">
                         <li class="nav-item dropdown" style="list-style-type:none; ">
-                            <a class="nav-link dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="icofont-user-alt-2 text-lg" style="color:#6cc6ba;"> {{request.user.username}}</i>
-                                <br><i class="icofont-sound-wave text-lg" style="color:#6cc6ba;">
+                            <button class="nav-link dropdown bg-transparent border-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="icofont-user-alt-2 fs-2 text-lg" style="color:#6cc6ba;"> {{request.user.username}}</i>
+                                <br><i id="user_vibez" class="icofont-sound-wave fs-2 text-lg" style="color:#6cc6ba;">
                                     {% if user_datas == None %}
                                         0
                                     {% else %}
                                         {{user_datas.Vibez}}
                                     {% endif %}
                                 </i></br>
-                            </a>
+                            </button>
 
-                            <ul class="dropdown-menu" style="background-color:#6cc6ba; border:none; color:black; padding:5px;" id="dropdown">
-                                <li><a data-toggle="modal" data-target="#Profile" ><i class="icofont-page"></i> Profile</a></li>
+                            <ul class="dropdown-menu" style="background-color:#6cc6ba; border:none; color:black; padding:5px; width:150px" id="dropdown">
+                                <li><button class="border-0 bg-transparent fs-2" data-toggle="modal" data-target="#Profile" ><i class="icofont-page fs-2"></i> Profile</button></li>
 
-                                <li><a data-toggle="modal" data-target="#Messages" ><i class="icofont-ui-message"></i>
-                                    Messages</a></li>
+                                <li><button class="border-0 bg-transparent fs-2"  data-toggle="modal" data-target="#Messages" ><i class="icofont-ui-message fs-2"></i>
+                                    Messages</button></li>
 
                                 {% if user_status == "Broadcaster" or user_status == "Decline_Broadcaster" %} 
-                                <li><a data-toggle="modal" data-target="#Settings" ><i class="icofont-gear"></i> Settings</a></li>
+                                <li><button data-toggle="modal" data-target="#Settings" ><i class="icofont-gear"></i> Settings</button></li>
 
-                                <li><a href="/room/{{request.user}}" ><i class="icofont-ui-video-chat"></i> My Room</a></li>
+                                <li><button href="/room/{{request.user}}" ><i class="icofont-ui-video-chat"></i> My Room</button></li>
 
-                                {% endif%}
+                                {% endif %}
 
-                                <li><a href="/accounts/logout"><i class="icofont-sign-out"></i> Sign Out</a></li>
+                                <li><button class="border-0 bg-transparent fs-2"  href="/accounts/logout"><i class="icofont-sign-out fs-2"></i> Sign Out</button></li>
                             </ul>
 
                         </li>
