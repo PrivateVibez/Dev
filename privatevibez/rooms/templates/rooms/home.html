@@ -83,55 +83,43 @@
         <div class="row" style="">
             <div class="col-12">
  
+             {{is_broadcaster_room}}
 
-      
+             {% if is_broadcaster_room and is_declined_broadcaster %}
+                
+             <div class="d-flex justify-content-center display-1 font-weight-bold m-5 p-5">Sorry your application has been declined due to {{request.user.Decline_Message}}</div>
 
-                {% if user_status == "Broadcaster" and request.user.username == room_data.User.username %}
+   
+
+
+                {% elif not is_broadcaster_room and is_pending_broadcaster or is_declined_broadcaster %}
+
+                
+                {% include "rooms/user.html" %}
+
+
+                {% endif %}
+            
+
+                {% if is_broadcaster_room and is_broadcaster %}
 
                 {% include "rooms/broadcaster.html" %}  
 
                 {% endif %}
 
 
-                {% if user_status == "Broadcaster" and request.user.username != room_data.User.username %}
-
-                {% include "rooms/user.html" %} 
-
-                {% endif %}
-
-                {% if user_status == "Pending_Broadcaster" and request.user.username == room_data.User.username %}
+                {% if is_pending_broadcaster %}
                 
                 <div class="d-flex justify-content-center display-1 font-weight-bold m-5 p-5">We will email you once your application is approved.</div>
                 {% endif %}
 
-                {% if user_status == "Pending_Broadcaster" and request.user.username != room_data.User.username %}
-          
-                {{room_data}}
-                {% include "rooms/user.html" %} 
-
-                {% endif %}
-
-
-
-                {% if user_status == "Declined_Broadcaster" %}
-                
-                <div class="d-flex justify-content-center display-1 font-weight-bold m-5 p-5">Sorry your application has been declined due to {{request.user.Decline_Message}}</div>
-
-                {% endif %}
-
-
-                {% if user_status == "User" and request.user.username != Broadcaster %}
-          
-                {% include "rooms/user.html" %} 
-
-                {% elif user_status == "User" and request.user.username == Broadcaster %}
-
-                
-                <div class="d-flex justify-content-center display-1 font-weight-bold m-5 p-5">Wanna become a broadcaster? join now!</div>
-                {% endif %}
 
 
                 {% if request.user.is_anonymous %}
+                {% include "rooms/user.html" %} 
+                {% endif %}
+
+                {% if request.user.is_authenticated and not is_broadcaster_room %}
                 {% include "rooms/user.html" %} 
                 {% endif %}
 

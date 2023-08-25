@@ -1,10 +1,10 @@
 {% load static %}
-<div class="">
+<div class="w-100">
 
  
   <div class="col">
 
-    <div class="col-2">
+    <div class="col-2 m-auto">
         <div id="profile_wrapper" class="d-flex my-2">
           {% if broadcaster_data.Image %}
           <img src="{{broadcaster_data.Image.url}}" style="height:220px; width: 250px" alt="Profile Picture" class="img-fluid rounded-circle">
@@ -19,7 +19,7 @@
 
   <!-- set goal vibez-->
 
-    <div class="col-2">
+    <div class="col-2 m-auto">
       <span class="h-3">
         Goal vibez:
       </span>
@@ -30,7 +30,7 @@
 
   <!-- change username -->
 
-    <div class="col-2">
+    <div class="col-2 m-auto">
       <span class="h-5">
         Username
       </span>
@@ -39,7 +39,7 @@
  
   <!-- change real name -->
 
-    <div class="col-2">
+    <div class="col-2 m-auto">
       <span class="h-5">
         Real Name
       </span>
@@ -49,7 +49,7 @@
 
   <!-- change I am -->
 
-    <div class="col-2 d-flex gap-3 my-2">
+    <div class="col-2 d-flex gap-3 my-2 m-auto">
       <label for="I_am">I am</label>
       <select name="I_am" class="h-5">
         <option class="" {% if room_data.Tab == "WOMEN"  %}selected {% else %}{% endif %} value="WOMEN">Woman</option>
@@ -61,7 +61,7 @@
     </div>
   <!-- change Interested in -->
 
-    <div class="col-2">
+    <div class="col-2 m-auto">
       <label for="interested_in">Interested in</label>
       <select name="Interested_In" class="h-5">
         <option class="" {% if broadcaster_data.Interested_In == "WOMEN"  %}selected {% else %}{% endif %} value="WOMEN">Woman</option>
@@ -75,7 +75,7 @@
 
   <!-- change Location -->
 
-    <div class="col-2">
+    <div class="col-2 m-auto">
       <span class="h-5">
         Location
       </span>
@@ -85,7 +85,7 @@
  
   <!-- change Language -->
 
-    <div class="col-2">
+    <div class="col-2 m-auto">
       <span class="h-5">
         Language
       </span>
@@ -94,7 +94,7 @@
     </div>
   <!-- change Body type -->
 
-    <div class="col-2">
+    <div class="col-2 m-auto">
       <span class="h-5">
         Body Type
       </span>
@@ -107,8 +107,8 @@
 
 
 
-    <div class="col">
-      <div class="col-2 align-content-center">
+    <div class="col m-auto">
+      <div class="col-2 m-auto">
         <button type="button" id="submit_bio_form" class="btn h-2 btn-dark w-50 mx-auto my-2 p-3"><span class="fs-2 font-weight-bold">set</span></button>
       </div>
     </div>

@@ -160,7 +160,7 @@
                             </li>
 
                             <li class="nav-item">
-                              <a class="nav-link" id="pills-room-rules-tab" data-toggle="pill" href="#pills-room-rules" role="tab" aria-controls="pills-room-rules" aria-selected="true">Room Rules</a>
+                              <a class="nav-link" style="   " id="pills-room-rules-tab" data-toggle="pill" href="#pills-room-rules" role="tab" aria-controls="pills-room-rules" aria-selected="true">Room Rules</a>
                             </li>
 
                             <li class="nav-item">
@@ -254,6 +254,7 @@
 <script>
     var message = document.getElementById('alerts')
     const room_id = {{room_data.User.id}} // Get the room ID from somewhere
+
 
     const roomVisitorsSocket = new WebSocket(
         'ws://' + window.location.host + `/ws/user_visitors/${room_id}/`

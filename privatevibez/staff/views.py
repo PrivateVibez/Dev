@@ -150,7 +150,7 @@ def Id_Status(request):
        
         if request.POST.get('Status') == 'Decline':
                 
-                user_status.Status = "Decline_Broadcaster"
+                user_status.Status = "Declined_Broadcaster"
                 user_status.Decline_Message = request.POST.get('message')
                 user_status.save()
                 
@@ -158,6 +158,9 @@ def Id_Status(request):
                 serializer = UserStatusSerializer(user_data, many=True)
                 
                 return JsonResponse({'data':serializer.data}, safe=False) 
+        
+        else:
+                return JsonResponse({'data':f'someting went wrong'}, safe=False) 
 
 
 
@@ -259,10 +262,10 @@ def editStaffPermission(request):
         
                 return JsonResponse('Updated!', safe=False) 
 
+
 @csrf_exempt
 def sendStaffInvitation(request):
         
- 
         if request.method == "POST":
                 
                 form = AddStaffPermission(request.POST)
@@ -371,11 +374,13 @@ def staffRegistration(request):
 
 @csrf_exempt
 def Add_Dev_Project(request):
+        
         ToDoProject_Dev.objects.create(
                 Name    = request.POST.get('Project_Name'),
                 Coder   =  User.objects.get(username = request.POST.get('Coder')),
                 Staff   = request.user
                 )
+        
         return JsonResponse('OK', safe=False) 
 
 @csrf_exempt

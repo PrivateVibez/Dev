@@ -1,8 +1,11 @@
 {% extends 'base/base.html' %}
+{% load static %}
 
 {% block content %}
-<div style="height:500px" class="display-5 d-flex justify-content-center">
-  404 not found.
+<div style="background-image: url('{% static 'images/pexels-alexander-krivitskiy-1271374.jpg' %}');  background-size: cover; background-position: center; height:500px;" class="display-5 d-flex justify-content-center align-content-center">
+ 
+  <span class="display-1 font-weight-bold my-auto text-white">BROADCASTER NOT FOUND</span>
+
 </div>
 
 {% endblock content %}

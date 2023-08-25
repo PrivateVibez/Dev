@@ -63,7 +63,7 @@ urlpatterns = [
      path('search_regions/', views.search_regions, name="search_regions"),
      
      #blocked users
-     path('blocked/404/', views.user_blocked, name="user_blocked"),
+     path('notfound/404/', views.user_blocked, name="user_blocked"),
      
      #updating bio
      path('submit_bio/', views.submit_bio, name="submit_bio"),

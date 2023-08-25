@@ -288,13 +288,16 @@
                                     </div>
 
                                     {% if request.user.is_authenticated %}
-                                    <div class="input-group mb-3" style="top: 370px; left: 0px; position: absolute;">
-                                        <form id="public_chat_room_form" class="d-flex w-100">
-                                            <input type="text" class="form-control" name="public_chat_room_message_field" required>
-                                            <div class="input-group-append">
-                                                <button type="submit" class="btn btn-primary">Send</button>
-                                            </div>
-                                        </form>
+
+                                    <div class="container-fluid position-relative">
+                                        <div class="input-group mb-3" style="top: 340px; left: 0px; position: absolute;">
+                                            <form id="public_chat_room_form" class="d-flex w-100">
+                                                <input type="text" class="form-control" name="public_chat_room_message_field" required>
+                                                <div class="input-group-append">
+                                                    <button type="submit" class="btn btn-primary">Send</button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                     {% endif %}
                                 {% else %}
@@ -326,13 +329,16 @@
                                     {% endfor %}
                                     
                                     {% comment %} Message box {% endcomment %}
-                                    <div class="input-group mb-3" style="bottom: 0px; top: 380px; height:40px;  left: 0px; position: absolute;">
-                                        <form id="private_chat_room_form" class="d-flex w-100">
-                                            <input type="text" class="form-control" name="private_chat_room_message_field" required>
-                                            <div class="input-group-append">
-                                                <button type="submit" class="btn btn-primary">Send</button>
-                                            </div>
-                                        </form>
+
+                                    <div class="container-fluid">
+                                        <div class="input-group mb-3" style="bottom: 0px; top: 365px; height:40px;  left: 0px; position: absolute;">
+                                            <form id="private_chat_room_form" class="d-flex w-100">
+                                                <input type="text" class="form-control" name="private_chat_room_message_field" required>
+                                                <div class="input-group-append">
+                                                    <button type="submit" class="btn btn-primary">Send</button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
 
 
@@ -657,9 +663,9 @@
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title" style="color:black;" id="Report_Room_Modal_Label">Report Room</h5>
+                <h5 class="modal-title fs-2 font-weight-bold" style="color:black;" id="Report_Room_Modal_Label">Report Room</h5>
                 <button type="button" id="close_button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <span class="fs-1" aria-hidden="true">&times;</span>
                 </button>
             </div>
 
@@ -672,8 +678,8 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" onclick="report_button()" class="btn btn-primary">Report</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="fs-2">Cancel</span></button>
+                <button type="button" onclick="report_button()" class="btn btn-danger"><span class="fs-2">Report</span></button>
             </div>
         </div>
     </div>
@@ -687,75 +693,76 @@
         <div class="modal-content">
             <div class="modal-header">
 
-                <h5 class="modal-title" id="exampleModalLabel">Buy Some Vibez</h5>
+                <h5 class="modal-title fs-2 font-weight-bold text-center" id="exampleModalLabel">Buy Some Vibez</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                    <span class="fs-1" aria-hidden="true">&times;</span>
                 </button>
             </div>
 
-            <p>Credit/Debit Card Options (the more Vibez you buy, the less they cost!)</p>
+            <p class="fs-2 text-center m-2">Credit/Debit Card Options </p>
+            <p class="fs-2 text-center m-2">(the more Vibez you buy, the less they cost!) </p>
 
-            <div class="modal-body">
+            <div class="modal-body ml-5">
 
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="VibezRadios" id="option1" value="100">
-                    <label class="form-check-label" for="exampleRadios1">
+                    <input class="form-check-input my-3" type="radio" name="VibezRadios" id="option1" value="100">
+                    <label class="form-check-label fs-2 my-3" for="exampleRadios1">
                         100 Vibez for $10.99
                     </label>
                 </div>
 
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="VibezRadios" id="option2" value="200">
-                    <label class="form-check-label" for="exampleRadios2">
+                    <input class="form-check-input my-3" type="radio" name="VibezRadios" id="option2" value="200">
+                    <label class="form-check-label fs-2 my-3" for="exampleRadios2">
                         200 Vibez for $20.99 (5% Bonus)
                     </label>
                 </div>
 
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="VibezRadios" id="option3" value="400">
-                    <label class="form-check-label" for="exampleRadios1">
+                    <input class="form-check-input my-3" type="radio" name="VibezRadios" id="option3" value="400">
+                    <label class="form-check-label fs-2 my-3" for="exampleRadios1">
                         400 Vibez for $39.99 (10% Bonus)
                     </label>
                 </div>
 
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="VibezRadios" id="option4" value="550">
-                    <label class="form-check-label" for="exampleRadios2">
+                    <input class="form-check-input my-3" type="radio" name="VibezRadios" id="option4" value="550"> 
+                    <label class="form-check-label fs-2 my-3" for="exampleRadios2">
                         550 Vibez for $49.99 (21% Bonus)
                     </label>
                 </div>
 
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="VibezRadios" id="option5" value="750">
-                    <label class="form-check-label" for="exampleRadios1">
+                    <input class="form-check-input my-3" type="radio" name="VibezRadios" id="option5" value="750">
+                    <label class="form-check-label fs-2 my-3" for="exampleRadios1">
                         750 Vibez for $62.99 (32% Bonus)
                     </label>
                 </div>
 
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="VibezRadios" id="option6" value="1000">
-                    <label class="form-check-label" for="exampleRadios2">
+                    <input class="form-check-input my-3" type="radio" name="VibezRadios" id="option6" value="1000">
+                    <label class="form-check-label fs-2 my-3" for="exampleRadios2">
                         1000 Vibez for $79.99 (37% Bonus)
                     </label>
                 </div>
 
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="VibezRadios" id="option7" value="1255">
-                    <label class="form-check-label" for="exampleRadios1">
+                    <input class="form-check-input my-3" type="radio" name="VibezRadios" id="option7" value="1255">
+                    <label class="form-check-label fs-2 my-3" for="exampleRadios1">
                         1255 Vibez for $99.99 (38% Bonus)
                     </label>
                 </div>
 
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="VibezRadios" id="option8" value="2025">
-                    <label class="form-check-label" for="exampleRadios2">
+                    <input class="form-check-input my-3" type="radio" name="VibezRadios" id="option8" value="2025">
+                    <label class="form-check-label fs-2 my-3" for="exampleRadios2">
                         2025 Vibez for $159.99 (39% Bonus)
                     </label>
                 </div>
 
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" name="VibezRadios" id="option9" value="4050">
-                    <label class="form-check-label" for="exampleRadios2">
+                    <input class="form-check-input my-3" type="radio" name="VibezRadios" id="option9" value="4050">
+                    <label class="form-check-label fs-2 my-3" for="exampleRadios2">
                         4050 Vibez for $319.98 (39% Bonus)
                     </label>
                 </div>
@@ -766,7 +773,7 @@
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Small Plan</h5>
+                            <h5 class="card-title fs-3">Small Plan</h5>
                             <p class="card-text">
                                 <ul type="circle">
                                     <li> 10 Free Slots </li>
@@ -776,14 +783,14 @@
                             </p>
                             <p>This is a mouthly Plan</p>
                             <p>a $500 value yours for $450</p>
-                            <a href="#" class="btn btn-primary">Get</a>
+                            <a href="#" class="btn btn-warning fs-2">Get</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Big Plan</h5>
+                            <h5 class="card-title fs-3">Big Plan</h5>
                             <p class="card-text">
                                 <ul type="circle">
                                     <li> Item 1 </li>
@@ -791,15 +798,15 @@
                                     <li> Item 3 </li>
                                 </ul>
                             </p>
-                            <a href="#" class="btn btn-primary">Get</a>
+                            <a href="#" class="btn btn-warning fs-2">Get</a>
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" onclick="Buy_Vibez()" class="btn btn-primary">Buy</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><span class="fs-2">Close</span></button>
+                <button type="button" onclick="Buy_Vibez()" class="btn btn-warning w-25"><span class="fs-2 ">Buy</span></button>
             </div>
 
         </div>
@@ -861,6 +868,21 @@
 <script>
     var logo = document.getElementById('privatevibezlogo');
     var toastContainer = document.getElementById('toast-container');
+
+
+    var toastContainer = document.getElementById('toast-container');
+    var logo = document.getElementById('privatevibezlogo');
+    
+    
+    const toastElement = document.querySelector('.toast');
+    
+    if(toastElement){
+        setTimeout(function() {
+            var toast = new bootstrap.Toast(toastElement);
+            toast.hide();
+        }, 2000);
+    }
+
 
     document.addEventListener('DOMContentLoaded', function() {
         // Send visitor ID

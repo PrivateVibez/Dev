@@ -44,13 +44,15 @@
                                     Messages</button></li>
 
                                 {% if user_status == "Broadcaster" or user_status == "Decline_Broadcaster" %} 
-                                <li><button data-toggle="modal" data-target="#Settings" ><i class="icofont-gear"></i> Settings</button></li>
+                                <li><button class="border-0 bg-transparent fs-2"  data-toggle="modal"  data-target="#Settings" ><i class="icofont-gear fs-2"></i> Settings</button></li>
 
-                                <li><button href="/room/{{request.user}}" ><i class="icofont-ui-video-chat"></i> My Room</button></li>
+                                <li><button class="border-0 bg-transparent fs-2" onclick="window.location.href='/room/{{request.user}}'"><i class="icofont-ui-video-chat fs-2"></i> My Room</button></li>
 
                                 {% endif %}
 
-                                <li><button class="border-0 bg-transparent fs-2"  href="/accounts/logout"><i class="icofont-sign-out fs-2"></i> Sign Out</button></li>
+                                <li><button class="border-0 bg-transparent fs-2" 
+                                    onclick="window.location.href='/accounts/logout'"
+                                    href="/accounts/logout"><i class="icofont-sign-out fs-2"></i> Sign Out</button></li>
                             </ul>
 
                         </li>

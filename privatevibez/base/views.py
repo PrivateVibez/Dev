@@ -9,6 +9,7 @@ from django.contrib import messages
 from staff.models import StaffManager
 from django.shortcuts import redirect
 import requests
+from django.db import transaction, IntegrityError
 from django.contrib.sessions.models import Session
 from accounts.serializers import User_DataSerializer, Room_DataSerializer,UserSerializer
 from rest_framework.renderers import JSONRenderer
@@ -60,7 +61,8 @@ def get_Location(user_status_data,ip_address):
                                                 user_status_data.longitude = value
                                                 user_status_data.save()
                 
-        else:
+        else:   
+                
                 print("Request failed with status code:", response.status_code)
 
 
@@ -87,6 +89,9 @@ def get_guest_location(request,ip_address):
                                         if key == "region":
                                                 region = value
                                                 request.session['guest_region'] = region
+                                                
+        else:
+                print("Request failed with status code:", response.status_code)
           
 
 
@@ -220,6 +225,8 @@ def home(request):
 
         return render(request, "base/home.html", locals())
 
+
+
 def paginate_list(page_number, user_data_list, items_per_page):
     
     paginator = Paginator(user_data_list, items_per_page)
@@ -232,6 +239,9 @@ def paginate_list(page_number, user_data_list, items_per_page):
         page = paginator.page(paginator.num_pages)
     
     return page
+
+
+
 
 def searchbroadcaster(request):
         items_per_page = 4  # Number of items per page
@@ -310,7 +320,6 @@ def searchbroadcaster(request):
                                         return render(request, "base/home.html", locals())                                      
                                 else:
                                         
-                                        broadcaster_data = []
                                         guest_country = request.session.get('guest_country')
                                         guest_region = request.session.get('guest_region')
                                         
@@ -318,6 +327,7 @@ def searchbroadcaster(request):
                                         users = User.objects.filter(id__in=user_ids)    
                                                                                     
                                         broadcaster_data = []
+                                        
                                         for user in users:
                                                 user_data_list = User_Data.objects.filter(User=user)
                                                 room_data_list = Room_Data.objects.filter(User=user)
@@ -362,10 +372,6 @@ def searchbroadcaster(request):
                                                    
                                         broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
                 
-
-                                
-                                
-                                print(broadcaster_data,flush=True)
                                 return render(request, "base/home.html", locals())  
 
                         else:
