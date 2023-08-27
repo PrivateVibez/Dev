@@ -10,7 +10,7 @@
 <div class="loading-wrapper" id="loading" style="position: absolute;
 top: 50%;
 left: 50%;
-z-index: 1;
+z-index: 2000;
 display:none;">
   {% include "accounts/components/loading.html" %}
   </div>
@@ -20,7 +20,7 @@ display:none;">
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col col-xl-10">
         <div class="card" style="border-radius: 1rem;">
-          <div class="row g-0">
+          <div class="row g-0" style="z-index:1000">
 
             <div class="col-md-6 col-lg-5 d-none d-md-block">
               <img src="{% static 'images/registration_boadcaster.jpg' %}" alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
@@ -34,28 +34,28 @@ display:none;">
                   <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;">  
                     <img src="{% static './images/logo/small_logo.png' %}" alt="Private Vibez Logo" width="50" class="d-inline-block align-text-top">
                   </i>
-                  <span class="h1 fw-bold mb-0">Interactive Pleasures</span>
+                  <span class="h1 fw-bold display-3 mb-0">Interactive Pleasures</span>
                 </div>
 
                 <h5 class="fw-normal mb-3 pb-3" id="Dice_words" style="letter-spacing: 1px;display:none;">Rool That Dice</h5>
 
 
                 <h5 class="fw-normal mb-3 pb-3" id="Menu_words" style="letter-spacing: 1px;display:none;">Menu</h5>
-                <h5 class="fw-normal mb-3 pb-3" id="bio_words" style="letter-spacing: 1px;display:none;">
+                <h5 class="fw-normal mb-3 pb-3 fs-2" id="bio_words" style="letter-spacing: 1px;display:none;">
                   Bio information</h5>
 
 
-                <h5 class="fw-normal mb-3 pb-3" id="Profile_pic_words" style="letter-spacing: 1px;display:none;">Profile Image</h5>
+                <h5 class="fw-normal mb-3 pb-3 fs-2" id="Profile_pic_words" style="letter-spacing: 1px;display:none;">Profile Image</h5>
 
-                <h5 class="fw-normal mb-3 pb-3" id="Registration_words" style="letter-spacing: 1px;">
+                <h5 class="fw-normal mb-3 pb-3" id="Registration_words" style="letter-spacing: 1px; font-size:3rem">
                   Registration to broadcast</h5>
 
 
-                <p class="fw-normal mb-3 pb-3" id="Not_Shown_questions" style="letter-spacing: 1px;">
+                <p class="fw-normal mb-3 pb-3 fs-4" id="Not_Shown_questions" style="letter-spacing: 1px;">
                   The next couple of questions will not be shared with anyone</p>
 
 
-                <p class="fw-normal mb-3 pb-3" id="Shown_questions" style="letter-spacing: 1px;display:none;">These questions will be shown on your profile</p>
+                <p class="fw-normal mb-3 pb-3 fs-2" id="Shown_questions" style="letter-spacing: 1px;display:none;">These questions will be shown on your profile</p>
 
 
                 <p class="fw-normal mb-3 pb-3" id="Menu_small_words" style="letter-spacing: 1px;display:none;">
@@ -65,26 +65,26 @@ display:none;">
 
                 <div id="info_box" style='display:block;'>
 
-                  <div class="form-outline mb-4">
+                  <div class="form-outline mb-4 row gap-2 fs-2">
 
-                    <div class="form-outline mb-4">
-                      <input type="text" class="form-control" value="{{user.first_name}}" id="firstName" aria-label="first_name">  
-                      <label class="form-label" for="first_name">First Name</label>
+                    <div class="form-outline mb-4 ">
+                      <input type="text" class="form-control fs-2" value="{{user.first_name}}" id="firstName" aria-label="first_name">  
+                      <label class="form-label fs-2 my-2" for="first_name">First Name</label>
                     </div>
 
                     <div class="form-outline mb-4">
-                      <input type="text" class="form-control" value="{{user.last_name}}" id="lastName" aria-label="last_name" >  
-                      <label class="form-label" for="last_name">Last Name</label>
+                      <input type="text" class="form-control fs-2" value="{{user.last_name}}" id="lastName" aria-label="last_name" >  
+                      <label class="form-label my-2" for="last_name">Last Name</label>
                     </div>
 
                     <div class="form-outline mb-4">
-                      <input type="date" class="form-control" value="{{user_data.Birth_Date}}" id="BirthDate" aria-label="BirthDate" >  
-                      <label class="form-label" for="Birth_Date">BirthDate</label>
+                      <input type="date" class="form-control fs-2" value="{{user_data.Birth_Date}}" id="BirthDate" aria-label="BirthDate" >  
+                      <label class="form-label my-2" for="Birth_Date">Birth date</label>
                     </div>
 
                   </div>
                   <div class="pt-1 mb-4">
-                    <button type="button" onclick ="ID_Next()" class="btn btn-dark btn-lg btn-block">Next</button>
+                    <button type="button" onclick ="ID_Next()" class="btn btn-dark btn-lg btn-block"><span class="fs-2">Next</span></button>
                   </div>
                 </div>
 
@@ -92,12 +92,12 @@ display:none;">
                 <div id="id_card_box" style='display:none;'>
 
                   <div class="form-outline mb-4">
-                    <input type="file" value="{{user_data.Id_File}}" class="form-control" id="Id_Card_File" aria-label="id_card">
-                    <label class="form-label" for="id_card">ID Card</label>
+                    <input type="file" value="{{user_data.Id_File}}" class="form-control" style="font-size: 2rem;" id="Id_Card_File" aria-label="id_card">
+                    <label class="form-label fs-2 my-2" for="id_card">ID Card</label>
                   </div>
 
                   <div class="pt-1 mb-4">
-                    <button type="button" onclick ="Stumiting_id_words()"  class="btn btn-dark btn-lg btn-block">Next</button>
+                    <button type="button" onclick ="Stumiting_id_words()"  class="btn btn-dark btn-lg btn-block"><span class="fs-2">Next</span></button>
                   </div>
                 </div>
 
@@ -105,15 +105,15 @@ display:none;">
                 <div id="Stumiting_id_words" style='display:none;'>
 
                   <div class="form-outline mb-4">
-                    <h1 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Thank You</h1>
+                    <h1 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px; font-size:2rem">Thank You</h1>
 
-                    <p class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;"> The last questions will not be shared with anyone outside the staff of PrivateVibez</p>
+                    <p class="fw-normal mb-3 fs-4 pb-3" style="letter-spacing: 1px;"> The last questions will not be shared with anyone outside the staff of PrivateVibez</p>
 
-                    <p class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;"> While we are going through the information you have summit you can fill the rest of your bio out to get your room ready</p>
+                    <p class="fw-normal mb-3 fs-4 pb-3" style="letter-spacing: 1px;"> While we are going through the information you have summit you can fill the rest of your bio out to get your room ready</p>
 
                   </div>
                   <div class="pt-1 mb-4">
-                      <button  type="button" onclick ="Next_Profile_Image()" class="btn btn-dark btn-lg btn-block" type="button">Next</button>
+                      <button  type="button" onclick ="Next_Profile_Image()" class="btn btn-dark btn-lg btn-block" type="button"><span class="fs-2">Next</span></button>
                   </div>
                 </div>
 
@@ -135,89 +135,89 @@ display:none;">
                       {% endif %}
 
                     </div>
-                      <input type="file" id="Profile_Pic" name="Profile_Pic" class="form-control form-control-lg" required />
-                      <label class="form-label" for="Profile_Pic">Profile Pic</label>
+                      <input type="file" id="Profile_Pic" style="font-size:2rem;" name="Profile_Pic" class="form-control form-control-lg" required />
+                      <label class="form-label my-2" style="font-size:2rem"  for="Profile_Pic">Profile Pic</label>
                   </div>
                   <div class="pt-1 mb-4">
-                      <button  type="button" onclick ="Next_bio()" class="btn btn-dark btn-lg btn-block" type="button">Next bio</button>
+                      <button  type="button" onclick ="Next_bio()" class="btn btn-dark btn-lg btn-block" type="button"><span class="fs-2">Next</span></button>
                   </div>
                 </div>
 
 
 
-                <div id="bio_box" style='display:none;'>
+                <div id="bio_box" class="row gap-2" style='display:none;'>
                   <div class="form-outline mb-4">
 
                     <div class="form-outline mb-4">
-                      <input type="text" value="{{user_data.Real_Name}}" class="form-control" id="Real_Name" aria-label="Real_Name">  
-                      <label class="form-label" for="Real_Name">Real Name</label>
+                      <input type="text" value="{{user_data.Real_Name}}" class="form-control fs-2" id="Real_Name" aria-label="Real_Name">  
+                      <label class="form-label my-2 fs-2" for="Real_Name">Real Name</label>
                     </div>
 
                     <div class="form-outline mb-4">
-                      <input type="number" value="{{user_data.Age}}" class="form-control" id="Age" aria-label="Age" >  
-                      <label class="form-label" for="Age">Age</label>
+                      <input type="number" value="{{user_data.Age}}" class="form-control fs-2" id="Age" aria-label="Age" >  
+                      <label class="form-label my-2 fs-2" for="Age">Age</label>
                     </div>
 
                     <div class="form-outline mb-4">
-                      <input type="text" value="{{user_data.I_Am}}" class="form-control" id="I_Am" aria-label="I_Am">  
-                      <label class="form-label" for="Interested_In">You are</label>
+                      <input type="text" value="{{user_data.I_Am}}" class="form-control fs-2" id="I_Am" aria-label="I_Am">  
+                      <label class="form-label my-2 fs-2" for="Interested_In">You are</label>
                     </div>
 
                     <div class="form-outline mb-4">
 
-                      <select class="form-control" id="tab">
+                      <select class="w-100 fs-2" id="tab">
                         <option>WOMEN</option>
                         <option>MEN</option>
                         <option>COUPLES</option>
                         <option>TRANS</option>
                       </select>
 
-                      <label class="form-label" for="tab">What tab do you want to associate with</label>
+                      <label class="form-label my-2 fs-2" for="tab">What tab do you want to associate with</label>
 
                     </div>
 
                     <div class="form-outline mb-4">
-                      <input type="text" value="{{user_data.Interested_In}}" class="form-control" id="Interested_In" aria-label="Interested_In">  
-                      <label class="form-label" for="Interested_In">Interested In</label>
+                      <input type="text" value="{{user_data.Interested_In}}" class="form-control fs-2" id="Interested_In" aria-label="Interested_In">  
+                      <label class="form-label my-2 fs-2" for="Interested_In">Interested In</label>
                     </div>
 
                     <div class="form-outline mb-4">
-                      <input type="text" value="{{user_data.Location}}" class="form-control" id="Location" aria-label="Location" >  
-                      <label class="form-label" for="Location">Location</label>
+                      <input type="text" value="{{user_data.Location}}" class="form-control fs-2" id="Location" aria-label="Location" >  
+                      <label class="form-label my-2 fs-2" for="Location">Location</label>
                     </div>
 
                     <div class="form-outline mb-4">
-                      <input type="text" value="{{user_data.Language}}" class="form-control" id="Language" aria-label="Language" >  
-                      <label class="form-label" for="Language">Language</label>
+                      <input type="text" value="{{user_data.Language}}" class="form-control fs-2" id="Language" aria-label="Language" >  
+                      <label class="form-label my-2 fs-2" for="Language">Language</label>
                     </div>
                     
                     <div class="form-outline mb-4">
-                      <input type="text" value="{{user_data.Body_Type}}" class="form-control" id="Body_Type" aria-label="Body_Type" >  
-                      <label class="form-label" for="Body_Type">Body Type</label>
+                      <input type="text" value="{{user_data.Body_Type}}" class="form-control fs-2" id="Body_Type" aria-label="Body_Type" >  
+                      <label class="form-label my-2 fs-2" for="Body_Type">Body Type</label>
                     </div>
                   </div>
 
 {% comment %} insert next btn {% endcomment %}
                     <div class="pt-1 mb-4">
-                      <button  type="button" onclick ="done()" class="btn btn-dark btn-lg btn-block" type="button">Done</button>
+                      <button  type="button" onclick ="done()" class="btn btn-dark btn-lg btn-block" type="button"><span class="fs-2">Done</span></button>
                     </div>
                 </div>
 
 
                 <div id="Done_box" style='display:none;'>
                   <div class="form-outline mb-4">
-                    <h5 class="form-label" for="user_id">Thank You</h5>
-                    <p class="form-label" for="user_id">We are all done with your registration</p>
+                    <h5 class="form-label fs-2" for="user_id">Thank You</h5>
+                    <p class="form-label fs-2" for="user_id">We are all done with your registration</p>
                   </div>
                   <div class="pt-1 mb-4">            
-                    <a href="/room/{{user}}" type="button" class="btn btn-primary btn-lg btn-block" type="button">Go to Your Room</a>
-                    <a href="/" type="button" class="btn btn-dark btn-lg btn-block" type="button">See Other Rooms</a>
+                    <a href="/room/{{user}}" type="button" class="btn btn-primary btn-lg btn-block" type="button"><span class="fs-2">Go to Your Room</span></a>
+                    <a href="/" type="button" class="btn btn-dark btn-lg btn-block" type="button"><span class="fs-2">See other Rooms</span></a>
                   </div>
                 </div>
 
 
 
-                <a class="small text-muted" data-toggle="modal" data-target="#learn_more" href="#!">Learn More</a>
+                <a class="small text-muted fs-2" data-toggle="modal" data-target="#learn_more" href="#!"><span class="fs-2"></span></a>
 
 
               </div>

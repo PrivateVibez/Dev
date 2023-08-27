@@ -105,13 +105,16 @@ def room_data_func(request,user_country,user_region):
                 room_data_list = Room_Data.objects.filter(User=user)
                 
                 for user_data in user_data_list:
-                        
-                        broadcaster_data.append({
-                                                        "user_id": user.id,
-                                                        "username": user.username,
-                                                        "Image": user_data.Image.url,
-                                                    
-                                                        })
+                        for room_data in room_data_list:
+                                broadcaster_data.append({
+                                        "user_id": user.id,
+                                        "username": user.username,
+                                        "image": user_data.Image.url,
+                                        "description": room_data.Room_Description  # Accessing the description from room_data
+                                })
+                                
+
+        print(broadcaster_data,flush=True)
 
         rooms = Room_Data.objects.filter(User__Status="Broadcaster")
         rooms_list = []
@@ -269,17 +272,17 @@ def searchbroadcaster(request):
                                                                                     
                                         broadcaster_data = []
                                         for user in users:
-                                                
                                                 user_data_list = User_Data.objects.filter(User=user)
                                                 room_data_list = Room_Data.objects.filter(User=user)
                                                 
                                                 for user_data in user_data_list:
-                                                        
-                                                        broadcaster_data.append({
-                                                                                        "user_id": user.id,
-                                                                                        "username": user.username,
-                                                                                        "Image": user_data.Image.url,
-                                                                                        })
+                                                        for room_data in room_data_list:
+                                                                broadcaster_data.append({
+                                                                        "user_id": user.id,
+                                                                        "username": user.username,
+                                                                        "image": user_data.Image.url,
+                                                                        "description": room_data.Room_Description  # Accessing the description from room_data
+                                                                })
 
                                         
                                         rooms_list = []

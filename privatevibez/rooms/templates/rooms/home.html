@@ -82,46 +82,43 @@
     <div class="body container-fluid" style="">
         <div class="row" style="">
             <div class="col-12">
+  
+             {% if is_broadcaster_room and is_pending_broadcaster %}
+                
+             <div class="d-flex justify-content-center display-1 font-weight-bold m-5 p-5">We will email you once your application is approved.</div>
  
-             {{is_broadcaster_room}}
 
-             {% if is_broadcaster_room and is_declined_broadcaster %}
+
+             {% elif is_broadcaster_room and is_declined_broadcaster %}
                 
              <div class="d-flex justify-content-center display-1 font-weight-bold m-5 p-5">Sorry your application has been declined due to {{request.user.Decline_Message}}</div>
 
    
 
 
-                {% elif not is_broadcaster_room and is_pending_broadcaster or is_declined_broadcaster %}
+                {% elif not is_broadcaster_room and is_pending_broadcaster or is_declined_broadcaster or not is_broadcaster_room %}
 
                 
                 {% include "rooms/user.html" %}
 
+                {% elif is_broadcaster_room and is_broadcaster %}
 
+                {% include "rooms/broadcaster.html" %}  
+                
+
+                {% else %}
+
+                {% include "rooms/user.html" %}
                 {% endif %}
             
 
-                {% if is_broadcaster_room and is_broadcaster %}
-
-                {% include "rooms/broadcaster.html" %}  
-
-                {% endif %}
-
-
-                {% if is_pending_broadcaster %}
-                
-                <div class="d-flex justify-content-center display-1 font-weight-bold m-5 p-5">We will email you once your application is approved.</div>
-                {% endif %}
+    
 
 
 
-                {% if request.user.is_anonymous %}
-                {% include "rooms/user.html" %} 
-                {% endif %}
 
-                {% if request.user.is_authenticated and not is_broadcaster_room %}
-                {% include "rooms/user.html" %} 
-                {% endif %}
+
+
 
 
               

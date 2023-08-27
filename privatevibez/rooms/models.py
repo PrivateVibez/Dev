@@ -55,6 +55,7 @@ class Room_Data(models.Model):
     Blocked_Regions       = models.ManyToManyField(Blocked_Regions, related_name='block_regions', blank=True)
     hashtags              = models.TextField(null=True,blank=True)
     Room_Rules            = models.TextField(null=True,blank=True)
+    Room_Description      = models.TextField(null=True,blank=True)
     Revenue               = models.IntegerField(null=True, blank=True)
     Total_Viewers         = models.IntegerField(null=True, blank=True)
     Timestamp             = models.DateTimeField(auto_now_add=True)     

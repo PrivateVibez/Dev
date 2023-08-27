@@ -82,14 +82,14 @@
 
     <!--Search Bar-->
 
-    <div class="d-flex justify-content-center p-2">
-        <div class="col-3">
+    <div class="d-flex justify-content-center gap-2 p-2">
+        <div class="col-6 col-lg-4">
             <form method="GET" action="{% url 'searchbroadcaster' %}" class="form-inline my-2 my-lg-0 d-flex flex-col justify-content-center">
-                <input class="form-control w-100 mr-sm-2" style="height:40px" name="search" value="{% if search %}{{search}}{% endif %}" type="search" placeholder="Search" aria-label="Search">
+                <input class="form-control w-100 mr-sm-2 fs-2" style="height:45px" name="search" value="{% if search %}{{search}}{% endif %}" type="search" placeholder="Search" aria-label="Search">
 
         </div>
-        <div class="col-1">
-            <button class="btn my-2 my-sm-0 w-100 btn-outline-dark font-weight-bold" style="height:40px; color:#6cc6ba" type="submit"><p class="h4 font-weight-bold">Search</p></button>
+        <div class="col-2 col-lg-1 align-content-center">
+            <button class="btn my-auto my-sm-0 w-100 btn-outline-dark font-weight-bold" style="height:45px; color:#6cc6ba" type="submit"><p class="h4 font-weight-bold">Search</p></button>
         </form>
         </div>
     </div>

@@ -65,12 +65,10 @@
 
                     <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 100%; line-height: 16pt;">
 
-                        <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;">
-
-                        </div>
-
                     
                             {% comment %} Chat {% endcomment %}
+                    
+                    <div class="row top-25 position-absolute" style="z-index:1000">
                             <ul class="nav nav-pills mb-3 col gap-2" id="pills-tab" role="tablist">
 
 
@@ -96,20 +94,21 @@
 
                               </ul>
                               
+                            </div>
 
 
                   
-                          <div class="tab-content" id="pills-tabContent">
-                            <div class="tab-pane fade h-100" id="pills-public-chat" role="tabpanel" aria-labelledby="pills-chat-tab">
+                        <div class="tab-content mt-5" id="pills-tabContent">
+                            <div class="tab-pane fade h-100 pt-2" id="pills-public-chat" role="tabpanel" aria-labelledby="pills-chat-tab">
                                 {% include "rooms/include/public_chat.html" %}     
                             </div>
                             <div class="tab-pane fade" id="pills-private-chat" role="tabpanel" aria-labelledby="pills-private-chat-tab">
                                 {% include "rooms/include/private_chat.html" %}     
                             </div>
-                            <div class="tab-pane fade" id="pills-users" role="tabpanel" aria-labelledby="pills-users-tab">
+                            <div class="tab-pane fade position-relative" id="pills-users" role="tabpanel" aria-labelledby="pills-users-tab">
                                 {% include "rooms/include/users.html" %}     
                             </div>
-                            <div class="tab-pane fade" id="pills-chat-settings" role="tabpanel" aria-labelledby="pills-chat-settings-tab">
+                            <div class="tab-pane fade pt-2" id="pills-chat-settings" role="tabpanel" aria-labelledby="pills-chat-settings-tab">
                                 {% include "rooms/include/chat_settings.html" %}     
                             </div>
                         </div>
@@ -146,9 +145,6 @@
 
                     <div class="msg-list-wrapper-split container-fluid" data-listener-count-scroll="1" style="box-sizing: border-box; margin: 0px auto 5px; padding: 5px; height: 100%; line-height: 16pt;">
 
-                        <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;">
-
-                        </div>
 
                         <ul class="nav nav-pills mb-3 d-flex flex-row gap-2 position-absolute mb-5" id="pills-tab" style="z-index: 1;" role="tablist"> 
                             <li class="nav-item">
@@ -181,6 +177,9 @@
                               </li>
          
                           </ul>
+
+
+
                           <div class="tab-content" style="margin-top:50px" id="pills-tabContent">
 
 
@@ -214,6 +213,17 @@
                                         </div>
                                         <div class="col-12">
                                             <button class="btn btn-dark" onclick="update_room_rules()"><span class="fs-2 font-weight-bold">save</span></button>
+                                        </div>
+                                    </div>
+                                    <div class="row gap-3 mt-5">
+                                        <div class="col-12">
+                                            <h3 class="fs-1 font-weight-bold">Room Description</h3>
+                                        </div>
+                                        <div class="col-5">
+                                            <textarea class="form-control fs-2" id="room_description" rows="10" style="resize:none;">{{room_data.Room_Description}}</textarea>
+                                        </div>
+                                        <div class="col-12">
+                                            <button class="btn btn-dark" onclick="update_room_description()"><span class="fs-2 font-weight-bold">save</span></button>
                                         </div>
                                     </div>
                                 </div>
@@ -254,6 +264,7 @@
 <script>
     var message = document.getElementById('alerts')
     const room_id = {{room_data.User.id}} // Get the room ID from somewhere
+
 
 
     const roomVisitorsSocket = new WebSocket(
@@ -311,10 +322,12 @@
                 let item_list_item = document.createElement('span')
                 let user = document.createElement('span');
                 let price = document.createElement('span');
+                let note = document.createElement('span');
                 wrapper.classList.add('row');
                 user.classList.add('list-group-item')
                 item_list_item.classList.add('list-group-item');
                 price.classList.add('list-group-item');
+                note.classList.add('list-group-item');
             
                 if (key === "user") {
 
@@ -341,12 +354,22 @@
                     price.style.background = "transparent";
                     wrapper.appendChild(price);
                 }
+                else if (key === "note") {
+                    note.textContent = value;
+                    note.style.color = "purple";
+                    note.style.width = "max-content";
+                    note.style.border = "transparent";
+                    note.style.background = "transparent";
+                    wrapper.appendChild(note);
+                }
             });
             visitors_list.appendChild(wrapper);
+           
+
 
             }
 
-
+            document.querySelector('.msg-list-wrapper-split').scrollTop = document.querySelector('.msg-list-wrapper-split').scrollHeight;
     };
 
 
@@ -381,6 +404,36 @@
             data: {
     
                 'room_rules':document.getElementById('room_rules').value,
+                'csrfmiddlewaretoken':"{{csrf_token}}",
+            },
+            success:function(data)
+            {
+                var message = data.data;
+
+                successToast(message);
+
+            },
+            errors:function(errors){
+                console.log(errors.responseText)
+
+                var message = "Something went wrong."
+
+                errorToast(message);
+            }
+        })
+    }
+
+
+
+    function update_room_description()
+    {
+        
+        $.ajax({
+            method: 'POST',
+            url: "update_room_description/",
+            data: {
+    
+                'room_description':document.getElementById('room_description').value,
                 'csrfmiddlewaretoken':"{{csrf_token}}",
             },
             success:function(data)

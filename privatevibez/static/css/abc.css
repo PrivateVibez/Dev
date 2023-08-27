@@ -338,7 +338,7 @@ footer h4{
         font-size: 8px;
     }
     .navbar ul li {
-        display: none;
+        display: block;
     }
     .nav-icon {
         display:block;

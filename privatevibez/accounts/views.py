@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from .forms import *
 from .models import *
+from rooms.views import display_user_availed_item_in_broadcaster_room
 from base.views import paginate_list
 from django.core.paginator import Paginator
 from chat.models import Private, Public
@@ -223,8 +224,9 @@ def Send_Vibez(request):
             user.save()
             
             
-            Item_Availed.objects.create(Room=room_id,User=user.User,Item="Sent Vibez",Cost=vibez,Note=note)
-   
+            item = Item_Availed.objects.create(Room=room_id,User=user.User,Item="Sent Vibez",Cost=vibez,Note=note)
+            
+            display_user_availed_item_in_broadcaster_room(user,item,room_id)
             
             return JsonResponse({'data':'sent vibez!'}, safe=False)
         else:

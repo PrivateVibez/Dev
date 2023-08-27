@@ -71,6 +71,7 @@ urlpatterns = [
      
     #  updating room rules
      path('update_room_rules/', views.update_room_rules, name="update_room_rules"),
+     path('update_room_description/', views.update_room_description, name="update_room_description"),
      
      
     #Room Stats

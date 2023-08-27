@@ -15,6 +15,7 @@ class Profile_Image(forms.ModelForm):
 
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
+    username = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
 
     class Meta:
         model = User

@@ -230,14 +230,18 @@ def avail_menu_item(request):
                 
                 menu_item = Menu_Data.objects.get(id=menu_item_id)
                 broadcaster_room = Room_Data.objects.get(User__id = broadcaster_id)
-                Item_Availed.objects.create(Room = broadcaster_room,User=request.user, Item = menu_item.Menu_Name, Cost = menu_item.Vibez_Cost)
+                item = Item_Availed.objects.create(Room = broadcaster_room,User=request.user, Item = menu_item.Menu_Name, Cost = menu_item.Vibez_Cost)
                 
                 user = User_Data.objects.get(User = request.user)
                 if user.Vibez >= menu_item.Vibez_Cost:
                     user.Vibez = user.Vibez - menu_item.Vibez_Cost
                     broadcaster_room.Revenue = menu_item.Vibez_Cost
+                    
                     user.save()
                     broadcaster_room.save()
+                    display_user_availed_item_in_broadcaster_room(user,item,broadcaster_room)
+                    
+                    
                     return JsonResponse({"data":f'you bought {menu_item.Menu_Name} lets keep vibing!'}, safe=False)
                 else:
                     return JsonResponse({"data":f'not enough vibez'}, status=500, safe=False)
@@ -604,10 +608,10 @@ def get_prize(request):
                     strength = room_data.Strength_OH_button
                     timesec = room_data.Duration_OH_button
                     price = cost_per_spin
+                    note = f'{winner.User.username} Won Two of a kind!'
             
-            
-                    availed_item(winner.User.id,room_data,"OH",price)
-            
+                    availed_item(winner.User.id,room_data,"OH",price,note)
+                    
                     trigger_toy(room_data.User.id,price,winner.User.id,feature,strength,timesec)
                     
                     
@@ -616,8 +620,9 @@ def get_prize(request):
                     strength = room_data.Strength_OHYes_button
                     timesec = room_data.Duration_OHYes_button
                     price = cost_per_spin
+                    note = f'{winner.User.username} Won Three of a kind!'
             
-                    availed_item(winner.User.id,room_data,"OH",price)
+                    availed_item(winner.User.id,room_data,"OHYes",price,note)
                     
                     trigger_toy(room_data.User.id,price,winner.User.id,feature,strength,timesec)
                 
@@ -795,7 +800,28 @@ def trigger_toy(broadcaster_id,price,user_id,feature,strength,timesec):
     return JsonResponse({"data": str(response.status_code)}, status=500) 
 
 
-def availed_item(user,room,item,price):
+def display_user_availed_item_in_broadcaster_room(user_data,item,room):
+    # Get the channel layer
+    channel_layer = get_channel_layer()
+    channel_name = "broadcaster_visitor_" + str(room.User.id)
+    print(channel_name,flush=True)
+    
+    # Prepare data to send
+    data = {
+        "user": user_data.User.username,
+        "item": item.Item,
+        "price": item.Cost,  # Changed "Cost" to "Price"
+        "note": item.Note
+    }
+    
+    # Send the data to the WebSocket consumer
+    async_to_sync(channel_layer.group_send)(
+        channel_name,
+        {"type": "show.itemAvailed", "data": data}
+    )
+
+
+def availed_item(user,room,item,price,note=None):
     
     try:
         
@@ -803,9 +829,11 @@ def availed_item(user,room,item,price):
             user_data = User_Data.objects.get(User__id=user)
             
             if user_data.Vibez >= price:
-                item = Item_Availed.objects.create(Room=room,User=user_data.User,Item=item, Cost=price)
+                item = Item_Availed.objects.create(Room=room,User=user_data.User,Item=item, Cost=price, Note=note)
                 user_data.Availed.add(item)
                 
+                display_user_availed_item_in_broadcaster_room(user_data,item,room)
+
                 # add revenues
                 if room.Revenue is not None:
                     room.Revenue = room.Revenue + int(price)
@@ -813,23 +841,8 @@ def availed_item(user,room,item,price):
                     room.Revenue = int(price)
                 room.save()
                 
-                # Get the channel layer
-                channel_layer = get_channel_layer()
-                channel_name = "broadcaster_visitor_" + str(room.User.id)
-                print(channel_name,flush=True)
+               
                 
-                # Prepare data to send
-                data = {
-                    "user": user_data.User.username,
-                    "item": item.Item,
-                    "price": item.Cost  # Changed "Cost" to "Price"
-                }
-                
-                # Send the data to the WebSocket consumer
-                async_to_sync(channel_layer.group_send)(
-                    channel_name,
-                    {"type": "show.itemAvailed", "data": data}
-                )
             else:
                 return JsonResponse({"data":f'Not enough vibez!'},status=500,safe=False)
         
@@ -1047,6 +1060,32 @@ def update_room_rules(request):
                 else:
                 
                     return JsonResponse({"data":"Room rules is empty"}, safe=False)
+        
+        except IntegrityError as e:
+            
+            print(e,flush=True)
+            
+ 
+@csrf_exempt   
+def update_room_description(request):
+    
+    
+    if request.method == 'POST':
+        
+        try:
+            
+            with transaction.atomic():
+                room_id = request.user
+                room_instance = Room_Data.objects.get(User=room_id)
+                description = request.POST.get('room_description')
+                if description is not None:
+                    room_instance.Room_Description = request.POST.get('room_description')
+                    room_instance.save()
+            
+                    return JsonResponse({"data":"Room description updated"},safe=False)
+                else:
+                
+                    return JsonResponse({"data":"Room description is empty"}, safe=False)
         
         except IntegrityError as e:
             
