@@ -75,6 +75,54 @@
         background-color: transparent;
         color: black;
     }
+
+    @media screen and (min-width: 700px) {
+
+        .user-chat-wrapper{
+            position: relative;
+        }
+
+        
+        }
+
+        @media (max-width: 1000px) {
+            .broadcaster-chat-wrapper {
+                   position: relative !important;
+                   display: block !important;
+                   margin-top:20px !important;
+                   width: 80% !important;
+           
+               
+               }
+
+               .topSectionWrapper {
+                display: flex !important;
+                justify-content: center !important;
+               }
+            }
+
+        .vjs-big-play-button {
+            position: absolute;
+            top: 35% !important;
+            left: 60% !important;
+            transform: translate(-50%, -50%);
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio (9 / 16 * 100%) */
+            height: 0;
+            overflow: hidden;
+        }
+        
+        .video-js {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
 </style>
 <img src="{% static 'images/logo/small_green_logo.png' %}" id="privatevibezlogo" width="30px" height="30px" class="rounded me-2 d-none" alt="...">
 

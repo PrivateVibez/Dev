@@ -18,6 +18,17 @@
 .BaseTabsContainer {
     width: 50%;
 }
+
+@media (max-width: 991px) {
+ .user-chat-wrapper {
+        position: relative !important;
+        display: block !important;
+        margin-top:20px !important;
+        width: 80% !important;
+
+    
+    }
+}
 </style>
 
 
@@ -36,7 +47,8 @@
     <div class="chat_room container-fluid" style="font: 1em UbuntuRegular, Arial, Helvetica, sans-serif;">
 
         <div class="topSectionWrapper row" style="width: 100%; height: auto; display: block;">
-            <div ts="n4" id="" class="col-7" style="height: auto; position: relative; overflow: visible; -webkit-tap-highlight-color: transparent; display:inline-block; border-radius: 6px; box-sizing: border-box; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; font-size: 11px;background-color:#6cc6ba;border:2px solid black;padding:2px;">
+            <div ts="n4" id="" class="col-lg-7 user-chat" style="height: auto; position: relative; overflow: visible; 
+       -webkit-tap-highlight-color: transparent; display:inline-block; border-radius: 6px; box-sizing: border-box; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; font-size: 11px;background-color:#6cc6ba;border:2px solid black;padding:2px;">
 
                 <div style="display: block;">
 
@@ -85,19 +97,19 @@
                     <div class="container">
 
                         <div class="row">
-                            <div class="col" id="left_buttons_vibez">
+                            <div class="col justify-content-center" style="" id="left_buttons_vibez">
                                 <div ts="UU" style="background-color:;">
-                                    <div style="position: absolute; height: 90px; width: 280px; background-color:black; padding:6px;border-radius:6px;border:2px solid black; top:8px;" id="text_goal_target2">
+                                    <div style=" height: 90px; width: 130px; background-color:black; padding:6px;border-radius:6px;border:2px solid black; top:8px;" id="text_goal_target2">
 
                                         <div id="Buy_Vibez_div_1">
-                                            <button type="button" data-toggle="modal" data-target="#Buy_Vibez_Modal" class="btn btn-warning" style="position: absolute;font-size: 15px;font-weight: bold;left: 80px;width: 110px;bottom: 35px;color:black;">
+                                            <button type="button" data-toggle="modal" data-target="#Buy_Vibez_Modal" class="btn btn-warning" style="font-size: 15px;font-weight: bold;left: 10px;width: 110px;bottom: 35px;color:black;">
                                                 Buy Vibez
                                             </button>
                                         </div>
 
                                         <div style="cursor:pointer;{% if user_data == None or user_data.Vibes < 1 %}cursor:not-allowed {% endif %}">
 
-                                            <button data-bs-toggle="modal" data-bs-target="#sendingVibezModal" class="btn btn-dark" style="position: absolute;font-size: 15px;font-weight: bold;left: 80px;width: 110px;bottom: 1px;">
+                                            <button data-bs-toggle="modal" data-bs-target="#sendingVibezModal" class="btn btn-dark" style="font-size: 15px;font-weight: bold;left: 10px;width: 110px;bottom: 1px;">
                                                 Send Vibez
                                             </button>
                                         </div>
@@ -114,7 +126,7 @@
                             <div class="col" id="left_buttons_Custom" style="display:none;">
                                 <div ts="UU">
 
-                                    <div style="position: absolute; height: 90px; width: 280px; background-color:black;color:#6cc6ba;border-radius:6px; padding:5px;top:8px;" id="text_goal_target2">
+                                    <div class="" style=" height: 90px; width: 280px; background-color:black;color:#6cc6ba;border-radius:6px; padding:5px;top:8px;" id="text_goal_target2">
 
                                         <input placeholder="Enter how many Vibez" type="number" id="custom_Vibez" class="form-control" ></input>
 
@@ -214,8 +226,8 @@
                 </div>
             </div>
 
-
-                <div ts="x_" class="col-4" id="ChatTabContainer" style="padding:0px; height: 445px; position: absolute; -webkit-tap-highlight-color: transparent; display: inline-block; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; border-radius: 6px;  box-sizing: border-box;border:2px solid black;background-color:#6cc6ba;color:#black;margin-left:20px;">
+                
+                <div ts="x_" class="col-4 position-absolute d-inline-block user-chat-wrapper user-chat" id="ChatTabContainer" style="padding:0px; height: 445px;  -webkit-tap-highlight-color: transparent; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; border-radius: 6px;  box-sizing: border-box;border:2px solid black;background-color:#6cc6ba;color:#black;margin-left:20px;">
 
                     <div ts="DD"  id="tab-row" data-paction="Chat" style="position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; width: 100%; box-sizing: border-box;">
 

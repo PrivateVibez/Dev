@@ -83,13 +83,13 @@
     <!--Search Bar-->
 
     <div class="d-flex justify-content-center gap-2 p-2">
-        <div class="col-6 col-lg-4">
+        <div class="col-8 col-lg-4 col-sm-5  col-md-7">
             <form method="GET" action="{% url 'searchbroadcaster' %}" class="form-inline my-2 my-lg-0 d-flex flex-col justify-content-center">
                 <input class="form-control w-100 mr-sm-2 fs-2" style="height:45px" name="search" value="{% if search %}{{search}}{% endif %}" type="search" placeholder="Search" aria-label="Search">
 
         </div>
-        <div class="col-2 col-lg-1 align-content-center">
-            <button class="btn my-auto my-sm-0 w-100 btn-outline-dark font-weight-bold" style="height:45px; color:#6cc6ba" type="submit"><p class="h4 font-weight-bold">Search</p></button>
+        <div class="col-3 col-lg-1 align-content-center pt-2">
+            <button class="btn my-auto my-sm-0 w-100 btn-outline-dark font-weight-bold align-self-center" style="height:45px; color:#6cc6ba" type="submit"><p class="h4 font-weight-bold">Search</p></button>
         </form>
         </div>
     </div>
@@ -98,18 +98,22 @@
         <div class="body mx-5 row justify-content-center" style="">
 
             {% if not request.user.is_authenticated %}
-            <!--ADS-->
+
+            <!--
+       
+
             <div class="ads" style="width:max-content;">
-                <!-- JuicyAds v3.0 -->
+     
                <script type="text/javascript" data-cfasync="false" async src="https://poweredby.jads.co/js/jads.js"></script>
                <ins id="1031047" data-width="160" data-height="612"></ins>
                <script type="text/javascript" data-cfasync="false" async>(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1031047});</script>
-               <!--JuicyAds END-->
+          
             </div>
+            
             {% endif %}
+            -->
 
-
-            <div class="col-9" style="border:2px solid black;border-radius: 6px; padding:0px">
+            <div class="col-11" style="border:2px solid black;border-radius: 6px; padding:0px">
                 <ul class="nav nav-tabs" id="myTab" role="tablist" style="width:100%;background-color:black;border-radius: 6px 6px 0px 0px;">
                     <li class="nav-item" role="presentation">
 
@@ -147,7 +151,7 @@
                 </ul>
                 </br>
                 </br>
-                <div class="tab- container" id="myTabContent">
+                <div class="tab-container mb-5" id="myTabContent">
                     <div class="tab-pane fade show active row justify-content-center" id="tab-pane" role="tabpanel" aria-labelledby="streamer-tab" tabindex="0">
                         {% for room in broadcaster_data %}
                        
@@ -168,7 +172,7 @@
 
                 </div>
 
-                <div class="container-fluid mb-5">
+                <div class="container-fluid mt-5 mb-5" style="">
                    <!----> 
                    <div class="col">
                     <div aria-label="" class="my-5" style=" position:absolute; bottom:0px">
@@ -205,15 +209,17 @@
                   
             </div>
             {% if not request.user.is_authenticated %}
-            <!--ADS-->
+
+            <!--
             <div class="ads" style="width:max-content;">
-                         <!-- JuicyAds v3.0 -->
+                   
                         <script type="text/javascript" data-cfasync="false" async src="https://poweredby.jads.co/js/jads.js"></script>
                         <ins id="1031047" data-width="160" data-height="612"></ins>
                         <script type="text/javascript" data-cfasync="false" async>(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1031047});</script>
-                        <!--JuicyAds END-->
+             
             </div>
             {% endif %}
+            -->
 
         </div>
         

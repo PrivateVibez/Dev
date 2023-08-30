@@ -4,7 +4,7 @@
   <div class="msg-text row gap-3" style="font-family: Tahoma, Arial, Helvetica, sans-serif; box-sizing: border-box; padding: 2px 5px 3px; overflow-wrap: break-word; word-break: break-word;">
 
     <h3 class="fs-1 font-weight-bold" style=' margin:10px 0 0 10px;'>Room Stats</h3>
-      <div class="my-2 col-6">
+      <div class="my-2 col-lg-6 col-sm-12">
 
           <table class="table table-borderless">
             <thead>
@@ -33,15 +33,15 @@
   <div class="row gap-3">
     <span class="font-weight-bold fs-2">Hashtags:</span>
 
-      <div class="col-3">
+      <div class="col-lg-3 col-sm-12">
         <textarea class="form-control fs-2" id="hashtags" rows="5" style="resize:none;">{% if room_data.hashtags %}{{room_data.hashtags}}{% endif %}</textarea>   
         
       </div>
   </div>
 
 <div class="row my-2">
-  <div class="col-1">
-    <button class="btn btn-dark w-50" style="font-size:1.7rem" onclick="save_hashtags()"><span class="fs-2 font-weight-bold">save</span></button>
+  <div class="col-2 col-lg-1">
+    <button class="btn btn-dark w-100" style="font-size:1.7rem" onclick="save_hashtags()"><span class="fs-2 font-weight-bold">save</span></button>
   </div>
 </div>
 

@@ -1,6 +1,9 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
+
+<div class="container-fluid" style="padding:0px; min-width:540px">
+
 <nav class="navbar navbar-expand-lg" id="navbar" style="background-color:black;color:#6cc6ba;">
 
     <div class="container-fluid">
@@ -9,7 +12,6 @@
             <img src="{% static 'images/logo/private-vibez-logo.png' %}" alt="Private Vibez Logo" width="190" class="d-inline-block align-text-top">
         </a>
 
-        <div class="">
             {% if not request.user.is_authenticated %}
                 <li class="item dropdown" style="list-style-type:none ;">
                     <li class="item dropdown" style="list-style-type:none ;">
@@ -24,7 +26,7 @@
             {% endif %}
 
             {% if request.user.is_authenticated %}
-                <ul class="collapse navbar-collapse" style="margin-right: 50px;" id="navbarsid" >
+                <ul class=" navbar-collapse justify-content-end" style="margin-right: 50px;" id="navbarsid" >
                     <li class="nav-item dropdown" style="list-style-type:none;">
                         <li class="nav-item dropdown" style="list-style-type:none; ">
                             <button class="nav-link dropdown bg-transparent border-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="icofont-user-alt-2 fs-2 text-lg" style="color:#6cc6ba;"> {{request.user.username}}</i>
@@ -59,10 +61,13 @@
                     </li>
                 </ul>
             {% endif %}
-        </div>
+
     </div>
 </nav>
-<div class="start" style="color:black;">
+
+
+
+<div class="start container-fluid" style="color:black; padding:0px;">
 
 
     <div aria-live="polite" aria-atomic="true" class="position-relative">
@@ -636,6 +641,8 @@
       </div>
     </div>
   </div>
+
+</div>
 
   <script type="text/javascript" >
 
