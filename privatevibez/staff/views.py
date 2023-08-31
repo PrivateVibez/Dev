@@ -32,7 +32,7 @@ from django.shortcuts import get_object_or_404
 from django.views import View
 from .serializers import StaffMessagesSerializer, UserStatusSerializer, StaffSerializer
 from staff.models import Memos
-from django.db.models import Q
+from django.db.models import Q, Sum
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -43,6 +43,10 @@ def home(request):
         
         print(request.user,flush=True)
         if request.user.is_authenticated and StaffManager.objects.filter(staff_id=request.user).exists():
+                total_revenue = PrivatevibezRevenue.objects.aggregate(Sum('Total_Vibez'))
+                slot_machine  = Slot_Machine_Data.objects.first()
+                
+                
                 bad_acters_list = []
                 
                 pending = User.objects.filter(Status='Pending_Broadcaster')

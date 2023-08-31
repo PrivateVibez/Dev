@@ -118,10 +118,20 @@ class Slot_Machine(models.Model):
     Win_2_of_a_kind_prize     = models.CharField(max_length=200,null=True,blank=True)
     Prize                     = models.CharField(max_length=200,null=True,blank=True)
     Winner                    = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,null=True,blank=True, related_name = 'Winner')
+    pot                       = models.IntegerField(null=True,blank=True)
+    pot_increase              = models.IntegerField(null=True,blank=True)
     timestamp                 = models.DateTimeField(null=True)
     
     def __str__(self):
         return str(self.User)
+    
+    
+class Slot_Machine_Data(models.Model):
+    
+        Slot_Machine_Spin_Cost     = models.IntegerField(null=True,blank=True)
+        
+        def __str__(self):
+            return str(self.Slot_Machine_Spin_Cost)
     
     
     
@@ -143,5 +153,9 @@ class Thumbs(models.Model):
     Timestamp    = models.DateTimeField(auto_now_add=True)     
     def __str__(self):
         return str(self.User)
+    
+    
+
+
 
 

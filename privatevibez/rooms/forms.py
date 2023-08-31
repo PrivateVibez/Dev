@@ -8,7 +8,7 @@ class Slot_MachineForm(ModelForm):
     
     model = Slot_Machine
     exclude = ('User',)
-    fields = ['User','Slot_cost_per_spin']
+    fields = ['User','pot']
     
     
 class Fav_vibezForm(ModelForm):

@@ -8,5 +8,6 @@ admin.site.register(StaffManager)
 admin.site.register(StaffRoomManager)
 admin.site.register(Memos)
 admin.site.register(Decline_Message)
+admin.site.register(PrivatevibezRevenue)
 
 

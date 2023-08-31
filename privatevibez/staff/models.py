@@ -95,3 +95,17 @@ class StaffManager(models.Model):
             
         def __str__(self):
             return self.email
+        
+        
+        
+        
+class PrivatevibezRevenue(models.Model):
+    
+    Slot_Machine_Revenue       = models.IntegerField(null=True,blank=True)
+    Total_Vibez                = models.IntegerField(null=True,blank=True)
+    Total_Cash                 = models.IntegerField(null=True,blank=True)
+    Chargeback                 = models.IntegerField(null=True,blank=True)
+    timestamp                  = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    
+    def __str__(self):
+        return str(self.timestamp)

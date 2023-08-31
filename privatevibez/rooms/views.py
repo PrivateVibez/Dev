@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.contrib import messages
 from .models import *
+from staff.models import PrivatevibezRevenue
 from django.utils.safestring import mark_safe
 import json
 from .forms import Slot_MachineForm, Fav_vibezForm, BioForm, MenuDataForm
@@ -18,12 +19,12 @@ from accounts.forms import CustomPasswordChangeForm
 from cryptography.fernet import Fernet
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
-from .serializers import Private_Chat_InviteeSerializer, CountrySerializer, RegionSerializer
+from .serializers import Private_Chat_InviteeSerializer, CountrySerializer, RegionSerializer, SlotMachineSerializer
 from django.conf import settings
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from django.db import transaction, IntegrityError
-from django.db.models import Q
+from django.db.models import Q, F
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -124,7 +125,8 @@ def Room(request, Broadcaster):
                                 
                                 
                             if Slot_Machine.objects.filter(User=broadcaster_user).exists():
-                                    slot_machine_data = Slot_Machine.objects.filter(User=broadcaster_user.id).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
+                                    slot_machine_cost_per_spin = Slot_Machine_Data.objects.values('Slot_Machine_Spin_Cost').get()
+                                    slot_machine_data = Slot_Machine.objects.filter(User=broadcaster_user.id).values('pot', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
                             try:
                                 user = request.user
                             
@@ -171,7 +173,8 @@ def Room(request, Broadcaster):
                                     # change_email(request)
                                     
                                     if Slot_Machine.objects.filter(User=user).exists():
-                                        slot_machine_data = Slot_Machine.objects.filter(User=user).values('Slot_cost_per_spin', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
+                        
+                                        slot_machine_data = Slot_Machine.objects.filter(User=user).values('pot', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
                                 
                                 return render(request, "rooms/home.html", locals()) 
                             except User_Status.DoesNotExist:
@@ -239,6 +242,7 @@ def avail_menu_item(request):
                     
                     user.save()
                     broadcaster_room.save()
+                    
                     display_user_availed_item_in_broadcaster_room(user,item,broadcaster_room)
                     
                     
@@ -543,7 +547,7 @@ def set_slot_machine(request):
                 )
                 
                 print("existing", flush=True)
-                existing_instance.Slot_cost_per_spin = form.cleaned_data['Slot_cost_per_spin']
+                existing_instance.pot = form.cleaned_data['pot']
 
                 existing_instance.save()
                 messages.success(request, "Slot Machine saved successfully")
@@ -576,7 +580,18 @@ def deduct_vibez(request,vibez):
         
         return JsonResponse({"data":f'something went wrong'},status=500, safe=False)
 
-    
+ 
+@csrf_exempt
+def charge_user(cost):
+    private_vibez = PrivatevibezRevenue.objects.order_by('timestamp').first()
+
+    if private_vibez:
+        # charge user per spin
+        remaining_price = cost - private_vibez.Chargeback
+        private_vibez.Total_Vibez = private_vibez.Total_Vibez + private_vibez.Chargeback
+        private_vibez.save()   
+        
+        return remaining_price
 
 @csrf_exempt
 def get_prize(request):
@@ -591,7 +606,7 @@ def get_prize(request):
                         broadcaster = request.POST.get('broadcaster')
                         prize = request.POST.get('prize_won')
                         cost_per_spin = int(request.POST.get('cost_per_spin'))
-                        print(broadcaster, flush=True)
+                 
                         room_data = get_object_or_404(Room_Data, User_id=broadcaster)     
                 
                 except IntegrityError as e:
@@ -603,7 +618,7 @@ def get_prize(request):
            
            
             if winner.Vibez >= cost_per_spin:
-                if prize == "OH":
+                if prize == "2OAK":
                     feature = room_data.Feature_OH_button
                     strength = room_data.Strength_OH_button
                     timesec = room_data.Duration_OH_button
@@ -615,32 +630,46 @@ def get_prize(request):
                     trigger_toy(room_data.User.id,price,winner.User.id,feature,strength,timesec)
                     
                     
-                if prize == "OHYes":
+                if prize == "3OAK":
                     feature = room_data.Feature_OHYes_button
                     strength = room_data.Strength_OHYes_button
                     timesec = room_data.Duration_OHYes_button
                     price = cost_per_spin
                     note = f'{winner.User.username} Won Three of a kind!'
             
-                    availed_item(winner.User.id,room_data,"OHYes",price,note)
+                    availed_item(winner.User.id,room_data,"3OAK",price,note)
                     
-                    trigger_toy(room_data.User.id,price,winner.User.id,feature,strength,timesec)
+                    is_Jackpot = True
+                    trigger_toy(room_data.User.id,price,winner.User.id,feature,strength,timesec,room_data,is_Jackpot)
+                    
+                    
                 
                 if prize == "Loss":
-            
-
+                                
+                    remaining_price = charge_user(cost_per_spin)
+                    
                     winner.Vibez -= cost_per_spin
                     winner.save()
                     
-                    room_data.Revenue += cost_per_spin
+                    room_data.Revenue += remaining_price
                     room_data.save()
-
+                    
+                    
+                    slot_machine_pot = Slot_Machine.objects.filter(User=room_data.User)
+                    
+                    for machine in slot_machine_pot:
+                        machine.pot += remaining_price
+                        machine.save()
+                        
+                    serializer = SlotMachineSerializer(slot_machine_pot,many=True)
                 
                         
-                    return JsonResponse({"data": f'You lose some and you win some! keep vibing!'}, status=500,safe=False) 
+                    return JsonResponse({"data": f'You lose some and you win some! keep vibing!',"pot":serializer.data}, status=500,safe=False) 
             
-            
-                return JsonResponse({"data": f'You won! {prize} pattern keep vibing!'}, status=200, safe=False)
+                slot_machine_pot = Slot_Machine.objects.filter(User=room_data.User)
+                serializer = SlotMachineSerializer(slot_machine_pot,many=True)
+                
+                return JsonResponse({"data": f'You won! {prize} pattern keep vibing!',"pot":serializer.data}, status=200, safe=False)
             
             
             else:
@@ -754,54 +783,128 @@ def invite_private_chat(request):
         
 
 
-def trigger_toy(broadcaster_id,price,user_id,feature,strength,timesec):
+def trigger_toy(broadcaster_id,price,user_id,feature,strength,timesec,room_data=None,is_Jackpot=False):
     
-    url = "https://api.lovense-api.com/api/lan/v2/command"
-    d_token = settings.LOVENSE_DEV_KEY
-
-    data = {
-        "token":d_token,
-        "uid": broadcaster_id,
-        "command":"Pattern",
-        "rule":"V:1,F:" + str(feature) + ";" + "S:1000#",
-        "strength": str(strength),
-        "timeSec": timesec * 60,
-        "apiVer": 2,
-            }     
-    headers = {
-        "Content-Type": "application/json"
-    }
-    
-    try:
-        response = requests.post(url, json=data, headers=headers)
+    if is_Jackpot == False:
         
-        if response.status_code == 200:
-   
-            # Handle the successful response data
-            response_data = response.json()
-            try:
-                with transaction.atomic():
-                    player = User_Data.objects.get(User__id=user_id)
-                    player.Vibez = player.Vibez - price
-                    player.save()
-            
-            except IntegrityError as e:
-                
-                print(e,flush=True)
-            
-            return JsonResponse({'data': response_data},safe=False)
-        else:
+        url = "https://api.lovense-api.com/api/lan/v2/command"
+        d_token = settings.LOVENSE_DEV_KEY
 
-            return JsonResponse({"error": "Failed to make the POST request."}, status=response.status_code)
-
-    except requests.exceptions.RequestException as e:  
-        return JsonResponse({"error": str(e)}, status=500) 
+        data = {
+            "token":d_token,
+            "uid": broadcaster_id,
+            "command":"Pattern",
+            "rule":"V:1,F:" + str(feature) + ";" + "S:1000#",
+            "strength": str(strength),
+            "timeSec": timesec * 60,
+            "apiVer": 2,
+                }     
+        headers = {
+            "Content-Type": "application/json"
+        }
+        
+        try:
+            response = requests.post(url, json=data, headers=headers)
+            
+            if response.status_code == 200:
     
-    return JsonResponse({"data": str(response.status_code)}, status=500) 
+                # Handle the successful response data
+                response_data = response.json()
+                try:
+                    with transaction.atomic():
+                        player = User_Data.objects.get(User__id=user_id)
+                        player.Vibez = player.Vibez - price
+                        player.save()
+                
+                except IntegrityError as e:
+                    
+                    print(e,flush=True)
+                
+                return JsonResponse({'data': response_data},safe=False)
+            else:
+
+                return JsonResponse({"error": "Failed to make the POST request."}, status=response.status_code)
+
+        except requests.exceptions.RequestException as e:  
+            return JsonResponse({"error": str(e)}, status=500) 
+    
+    else:
+        
+        
+        url = "https://api.lovense-api.com/api/lan/v2/command"
+        d_token = settings.LOVENSE_DEV_KEY
+
+        data = {
+            "token":d_token,
+            "uid": broadcaster_id,
+            "command":"Pattern",
+            "rule":"V:1,F:" + str(room_data.Feature_MMM_button)  + ";"  + str(room_data.Feature_OH_button) + ";"  + str(room_data.Feature_OHYes_button) + ";" + "S:1000#",
+            "strength": str(room_data.Strength_MMM_button)  + ";"  + str(room_data.Strength_OH_button) + ";"  + str(room_data.Strength_OHYes_button),
+            "timeSec": 120,
+            "apiVer": 2,
+                }     
+        headers = {
+            "Content-Type": "application/json"
+        }
+        
+        try:
+            response = requests.post(url, json=data, headers=headers)
+            
+            if response.status_code == 200:
+    
+                # Handle the successful response data
+                response_data = response.json()
+                try:
+                    with transaction.atomic():
+                        player = User_Data.objects.get(User__id=user_id)
+                        player.Vibez = player.Vibez - price
+                        player.save()
+                
+                except IntegrityError as e:
+                    
+                    print(e,flush=True)
+                
+                return JsonResponse({'data': response_data},safe=False)
+            else:
+
+                return JsonResponse({"error": "Failed to make the POST request."}, status=response.status_code)
+
+        except requests.exceptions.RequestException as e:  
+            return JsonResponse({"error": str(e)}, status=500) 
+        
+  
 
 
-def display_user_availed_item_in_broadcaster_room(user_data,item,room):
+def display_user_availed_item_in_broadcaster_room(user_data,item,room,price=None):
     # Get the channel layer
+  
+    if item.Item == "3OAK":
+        print(item,flush=True)
+        slot_machine = Slot_Machine.objects.filter(User=room.User)
+        if slot_machine:
+            # Retrieve values from the Slot_Machine object
+            
+            for machine in slot_machine:
+                
+                pot = machine.pot
+                pot_increase = price
+                
+                # Calculate the new revenue value
+                new_revenue = room.Revenue + pot - pot_increase
+                
+                # Update the room's revenue
+                if room.Revenue is not None:
+                    room.Revenue += new_revenue
+                else:
+                    room.Revenue = new_revenue
+                room.save()  # Make sure to save the room object
+
+                # Update the Slot_Machine object's pot_increase
+                machine.pot = pot_increase
+                machine.save()
+        
+    
+    
     channel_layer = get_channel_layer()
     channel_name = "broadcaster_visitor_" + str(room.User.id)
     print(channel_name,flush=True)
@@ -829,16 +932,33 @@ def availed_item(user,room,item,price,note=None):
             user_data = User_Data.objects.get(User__id=user)
             
             if user_data.Vibez >= price:
-                item = Item_Availed.objects.create(Room=room,User=user_data.User,Item=item, Cost=price, Note=note)
-                user_data.Availed.add(item)
                 
-                display_user_availed_item_in_broadcaster_room(user_data,item,room)
+                private_vibez = PrivatevibezRevenue.objects.order_by('timestamp').first()
+                
+                if private_vibez:
+                    # charge user per spin
+                    remaining_price = price - private_vibez.Chargeback
+                    print(remaining_price,flush=True)
+                    if private_vibez.Total_Vibez is None:
+                        private_vibez.Total_Vibez = private_vibez.Chargeback
+                    else:
+                        private_vibez.Total_Vibez = private_vibez.Total_Vibez + private_vibez.Chargeback
+                    private_vibez.save()
+                
+                
+                item = Item_Availed.objects.create(Room=room,User=user_data.User,Item=item, Cost=remaining_price, Note=note)
+                user_data.Availed.add(item)
+                    
+
+                    
+                
+                display_user_availed_item_in_broadcaster_room(user_data,item,room,remaining_price)
 
                 # add revenues
                 if room.Revenue is not None:
-                    room.Revenue = room.Revenue + int(price)
+                    room.Revenue = room.Revenue + remaining_price
                 else:
-                    room.Revenue = int(price)
+                    room.Revenue = remaining_price
                 room.save()
                 
                

@@ -7,8 +7,8 @@
           {% csrf_token %}
 
          
-          <label class="fs-2 my-3" for="set_vibez_per_spin">Set vibez per spin</label>
-          <input type="number" value="{% if slot_machine_data %}{{slot_machine_data.Slot_cost_per_spin}}{% endif %}" class="" id="set_vibez_per_spin" name="Slot_cost_per_spin">
+          <label class="fs-2 my-3" for="set_vibez_per_spin">Set pot amount</label>
+          <input type="number" value="{% if slot_machine_data %}{{slot_machine_data.pot}}{% endif %}" class="" id="set_pot" name="pot">
 
           <input type="number" class=" d-none" id="" value="{% if slot_machine_data %}{{room_data.User.id}}{% endif %}" name="User">
           
