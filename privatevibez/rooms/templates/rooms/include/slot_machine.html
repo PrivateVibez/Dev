@@ -154,7 +154,7 @@
     <h3 class="row justify-content-center">Cost per spin <span id="cost_per_spin" class="text-center fs-2">{{slot_machine_cost_per_spin.Slot_Machine_Spin_Cost}}</span> Vibez</h3>
 
   
-    {% if user_datas.Vibez >= slot_machine_cost_per_spin.Slot_Machine_Spin_Cost %}
+    {% if user_datas.Vibez >= slot_machine_cost_per_spin.Slot_Machine_Spin_Cost or user_datas.Free_spins != 0 %}
 <div id="sm" class="">
   <div class="group lever">
     <button id="start">Play</button>
@@ -165,7 +165,7 @@
     <div class="reel fs-2"></div>
   </div>
   <p class="msg">Press Play</p>
-  <p class="fs-1 mt-3" id="pot">POT: {{slot_machine_data.pot}}</p>
+  <p class="fs-1 mt-3" id="">POT: <span class="fs-1" id="pot">{{slot_machine_data.pot}}</span></p>
 </div>
 
 {% else %}
@@ -178,7 +178,8 @@
 
 
     <script>
-
+      let is_pot_empty;
+      
       function give_prize(prize){
 
         $.ajax({
@@ -197,9 +198,13 @@
           success: function (data) {
               // Display the fetched data (example: update the DOM)
               console.log(data.pot[0].pot);
+              const spins = data.spins;
+              const uservibez = data.vibez;
               const pot = data.pot[0].pot
               successToast(data.data);  
-              document.getElementById('pot').innerHTML = "POT: " + pot;    
+              document.getElementById('pot').innerHTML = pot;    
+              document.getElementById('free_spins').innerHTML = spins;    
+              document.getElementById('user_vibez').innerHTML = uservibez;    
               
 
          
@@ -208,10 +213,22 @@
           },
           error: function (xhr, textStatus, errorThrown) {
               const response = JSON.parse(xhr.responseText);
-              const pot = response.pot[0].pot
+              console.log(response)
 
-              console.log(pot);
-              document.getElementById('pot').innerHTML = "POT: " + pot;
+              if (response.error) {
+                  errorToast(response);
+              }
+              else{
+                const pot = response.pot[0].pot
+                const spins = response.spins;
+                const uservibez = response.vibez;
+  
+                console.log(pot);
+                document.getElementById('pot').innerHTML = pot;
+                document.getElementById('free_spins').innerHTML = spins; 
+                document.getElementById('user_vibez').innerHTML = uservibez;    
+              }
+
 
               errorToast(xhr.responseJSON.data);
 
@@ -275,17 +292,35 @@ var sm = (function(undefined){
 		});
 
 		$msg = $('.msg');
-
+      
 		$('#start').click(action);
 	}
 
+  function checkpot(){
+    const pot = document.getElementById('pot').innerHTML;
+    is_pot_empty = (pot !== "0") ? false : true;
+    return is_pot_empty;
+
+  }
 	function action(){
 		if (start !== undefined) return;
 
-		for (var i = 0; i < 3; ++i) {
-			speeds[i] = Math.random() + .5;	
-			r[i] = (Math.random() * 3 | 0) * height / 3;
-		}
+    console.log(checkpot())
+
+    if (checkpot())
+    {
+      for (var i = 0; i < 2; ++i) {
+        speeds[i] = Math.random() + .5;	
+        r[i] = (Math.random() * 3 | 0) * height / 3;
+      }
+  }
+    else
+    {
+      for (var i = 0; i < 3; ++i) {
+        speeds[i] = Math.random() + .5;	
+        r[i] = (Math.random() * 3 | 0) * height / 3;
+      }
+    }
 
 		$msg.html('Spinning...');
 		animate();
@@ -312,7 +347,7 @@ var sm = (function(undefined){
 
     if (r[0] === r[1] && r[1] === r[2]) {
         // Won 3 of a Kind
-        $msg.html('You won! 3 of a kind! Enjoy!');
+        $msg.html('JACKPOT!!');
 
         console.log("3 of a kind");
 

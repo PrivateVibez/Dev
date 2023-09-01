@@ -617,7 +617,7 @@ def get_prize(request):
                 return JsonResponse({'data':f'Broadcaster does not exist'},status=500, safe=False)
            
            
-            if winner.Vibez >= cost_per_spin:
+            if winner.Vibez >= cost_per_spin or winner.Free_spins != 0:
                 if prize == "2OAK":
                     feature = room_data.Feature_OH_button
                     strength = room_data.Strength_OH_button
@@ -645,15 +645,17 @@ def get_prize(request):
                     
                 
                 if prize == "Loss":
-                                
-                    remaining_price = charge_user(cost_per_spin)
+                    feature = room_data.Feature_OH_button
+                    strength = room_data.Strength_OH_button
+                    timesec = 1    
+                      
+                    if winner.Free_spins != 0:
+                        remaining_price = cost_per_spin
+                    else:
+                        remaining_price = charge_user(cost_per_spin)
                     
-                    winner.Vibez -= cost_per_spin
-                    winner.save()
                     
-                    room_data.Revenue += remaining_price
-                    room_data.save()
-                    
+                    trigger_toy(room_data.User.id,cost_per_spin,winner.User.id,feature,strength,timesec)
                     
                     slot_machine_pot = Slot_Machine.objects.filter(User=room_data.User)
                     
@@ -664,16 +666,16 @@ def get_prize(request):
                     serializer = SlotMachineSerializer(slot_machine_pot,many=True)
                 
                         
-                    return JsonResponse({"data": f'You lose some and you win some! keep vibing!',"pot":serializer.data}, status=500,safe=False) 
+                    return JsonResponse({"data": f'You lose some and you win some! keep vibing!',"pot":serializer.data,"spins":winner.Free_spins,"vibez":winner.Vibez}, status=500,safe=False) 
             
                 slot_machine_pot = Slot_Machine.objects.filter(User=room_data.User)
                 serializer = SlotMachineSerializer(slot_machine_pot,many=True)
                 
-                return JsonResponse({"data": f'You won! {prize} pattern keep vibing!',"pot":serializer.data}, status=200, safe=False)
+                return JsonResponse({"data": f'You won! {prize} pattern keep vibing!',"pot":serializer.data,"spins":winner.Free_spins,"vibez":winner.Vibez}, status=200, safe=False)
             
             
             else:
-                return JsonResponse({"data": f'Oops! not enough vibez!'}, status=500,safe=False) 
+                return JsonResponse({"error": f'Oops! not enough vibez!'}, status=500,safe=False) 
                 
                 # Handle other status codes if needed
 
@@ -813,8 +815,15 @@ def trigger_toy(broadcaster_id,price,user_id,feature,strength,timesec,room_data=
                 try:
                     with transaction.atomic():
                         player = User_Data.objects.get(User__id=user_id)
-                        player.Vibez = player.Vibez - price
-                        player.save()
+                        
+                        if player.Free_spins != 0:
+                            player.Free_spins -= 1
+                            player.save()
+                            
+                        else:
+                            
+                            player.Vibez = player.Vibez - price
+                            player.save()
                 
                 except IntegrityError as e:
                     
@@ -857,8 +866,15 @@ def trigger_toy(broadcaster_id,price,user_id,feature,strength,timesec,room_data=
                 try:
                     with transaction.atomic():
                         player = User_Data.objects.get(User__id=user_id)
-                        player.Vibez = player.Vibez - price
-                        player.save()
+                        
+                        if player.Free_spins != 0:
+                            player.Free_spins -= 1
+                            player.save()
+                            
+                        else:
+                            
+                            player.Vibez = player.Vibez - price
+                            player.save()
                 
                 except IntegrityError as e:
                     
@@ -875,34 +891,36 @@ def trigger_toy(broadcaster_id,price,user_id,feature,strength,timesec,room_data=
   
 
 
-def display_user_availed_item_in_broadcaster_room(user_data,item,room,price=None):
+def display_user_availed_item_in_broadcaster_room(user_data,item,room,remaining_price=None):
     # Get the channel layer
   
     if item.Item == "3OAK":
         print(item,flush=True)
-        slot_machine = Slot_Machine.objects.filter(User=room.User)
+        slot_machine = Slot_Machine.objects.filter(User=room.User).first()
         if slot_machine:
             # Retrieve values from the Slot_Machine object
             
-            for machine in slot_machine:
-                
-                pot = machine.pot
-                pot_increase = price
-                
-                # Calculate the new revenue value
-                new_revenue = room.Revenue + pot - pot_increase
-                
-                # Update the room's revenue
-                if room.Revenue is not None:
-                    room.Revenue += new_revenue
-                else:
-                    room.Revenue = new_revenue
-                room.save()  # Make sure to save the room object
 
-                # Update the Slot_Machine object's pot_increase
-                machine.pot = pot_increase
-                machine.save()
-        
+            pot = slot_machine.pot
+                
+            # Calculate the new revenue value
+            new_revenue = room.Revenue + pot 
+                
+            # Update the room's revenue
+            if room.Revenue is not None:
+                room.Revenue = new_revenue - remaining_price
+                room.save()
+            else:
+                print('room error',flush=True)
+            
+                
+                
+             # Make sure to save the room object
+
+            # Update the Slot_Machine object's pot_increase
+            slot_machine.pot = remaining_price
+            slot_machine.save()
+    
     
     
     channel_layer = get_channel_layer()
@@ -931,6 +949,16 @@ def availed_item(user,room,item,price,note=None):
         with transaction.atomic():
             user_data = User_Data.objects.get(User__id=user)
             
+            if user_data.Free_spins != 0:
+                item = Item_Availed.objects.create(Room=room,User=user_data.User,Item=item, Cost=0, Note="free spin")
+                user_data.Availed.add(item)  
+                
+                display_user_availed_item_in_broadcaster_room(user_data,item,room,remaining_price=price)
+                
+                
+                return None
+                
+                
             if user_data.Vibez >= price:
                 
                 private_vibez = PrivatevibezRevenue.objects.order_by('timestamp').first()
@@ -955,6 +983,7 @@ def availed_item(user,room,item,price,note=None):
                 display_user_availed_item_in_broadcaster_room(user_data,item,room,remaining_price)
 
                 # add revenues
+           
                 if room.Revenue is not None:
                     room.Revenue = room.Revenue + remaining_price
                 else:

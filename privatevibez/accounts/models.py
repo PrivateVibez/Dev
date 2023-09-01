@@ -28,6 +28,15 @@ class User_Status(models.Model):
     def __str__(self):
         return str(self.User)
 
+class Subscription(models.Model):
+    Name       = models.CharField(max_length=200, null=True, blank=True)
+    Cost       = models.CharField(max_length=200, null=True, blank=True)
+    Vibez      = models.IntegerField(null=True,blank=True,default=0)
+    Slots      = models.IntegerField(null=True,blank=True,default=0)
+    Badge      = models.ImageField(upload_to='subscription_badge',null=True,blank=True)
+    Timestamp  = models.DateTimeField(auto_now_add=True, null=True, blank=True)     
+    def __str__(self):
+        return str(self.Name)
 
 class User_Data(models.Model):
     User           = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -44,6 +53,8 @@ class User_Data(models.Model):
     Image          = models.ImageField(upload_to='profile_pic',null=True,blank=True)
     Id_File        = models.ImageField(upload_to='ID',null=True,blank=True)
     Availed        = models.ManyToManyField('Item_Availed',related_name='Item_Avail',blank=True)
+    Subscription_Type =  models.ForeignKey(Subscription, on_delete=models.CASCADE,null=True, blank=True)
+    Free_spins     = models.IntegerField(null=True,blank=True,default=0)
     Timestamp      = models.DateTimeField(auto_now_add=True)     
     def __str__(self):
         return str(self.User)
@@ -76,5 +87,8 @@ class Item_Availed(models.Model):
     Timestamp  = models.DateTimeField(auto_now_add=True)     
     def __str__(self):
         return str(self.Item)
+    
+    
+
 
 

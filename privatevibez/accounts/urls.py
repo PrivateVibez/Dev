@@ -18,6 +18,11 @@ urlpatterns = [
     path('Send_Vibez/', views.Send_Vibez, name="Send_Vibez"),
     path('Buy_Vibez/', views.Buy_Vibez, name="Buy_Vibez"),
     
+    # url for availing subscriptions
+    path('avail_subscription/', views.avail_subscription, name="avail_subscription"),
+    # unsubscribe subscription
+    path('unsubscribe/', views.unsubscribe, name="unsubscribe"),
+    
     # url for saving broadcaster profile picture and personal information
     path('Profile_Pic/', views.Profile_Pic, name="Profile_Pic"),
     path('bio_info/', views.bio_info, name="bio_info"),

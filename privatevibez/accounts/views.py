@@ -581,3 +581,45 @@ def change_email(request):
             messages.error(request,"Something went wrong")
             
         return redirect(request.META.get('HTTP_REFERER'))
+    
+    
+    
+def avail_subscription(request):
+    
+    if request.method == "POST":
+        
+        subscription = request.POST.get('subscription_type')
+        
+        if subscription is not None:
+            user = request.user
+            user_data = User_Data.objects.get(User = user)
+            
+            subscription = Subscription.objects.get(Name = subscription)
+            
+            if user_data.Subscription_Type is None:
+                user_data.Subscription_Type = subscription
+                user_data.Vibez += subscription.Vibez
+                user_data.Free_spins += subscription.Slots
+                user_data.save()
+                return JsonResponse({"data":f'you have successfully subscribed to {user_data.Subscription_Type} plan. Enjoy vibing!'}, safe=False)
+            else:
+                
+                return JsonResponse({"data":f'you are already subscribed to {user_data.Subscription_Type} a plan.'}, safe=False)
+            
+
+        
+        return JsonResponse(request.POST, safe=False)
+    
+    
+def unsubscribe(request):
+    
+    if request.method == "POST":
+        
+        user = request.user
+        
+        user_data = User_Data.objects.get(User = user)
+        subscription = user_data.Subscription_Type
+        user_data.Subscription_Type = None
+        user_data.save()
+        
+        return JsonResponse({"data":f'you have successfully unsubscribed from {subscription}'}, safe=False)

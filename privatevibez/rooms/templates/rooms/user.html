@@ -782,35 +782,58 @@
             </div>
 
             <div class="row">
+
+                <!--STANDARD PLAN-->
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title fs-3">Small Plan</h5>
+                            <h5 class="card-title fs-3">Standard Plan</h5>
                             <p class="card-text">
                                 <ul type="circle">
-                                    <li> 10 Free Slots </li>
-                                    <li> 30 Mins of Toy fun </li>
-                                    <li> 5000 Vibez </li>
+                                    <li> 10 Free slot machine spins </li>
+                                    <li> 200 Vibez </li>
                                 </ul>
                             </p>
-                            <p>This is a mouthly Plan</p>
-                            <p>a $500 value yours for $450</p>
-                            <a href="#" class="btn btn-warning fs-2">Get</a>
+                            <p>This is a monthly Plan</p>
+                            <p>$5</p>
+                            <button data-subscription-type="Standard" class="btn subscription btn-warning fs-2">Get</button>
                         </div>
                     </div>
                 </div>
+
+
+                <!--Premium Plan-->
                 <div class="col-sm-6">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title fs-3">Big Plan</h5>
+                            <h5 class="card-title fs-3">Premium Plan</h5>
                             <p class="card-text">
                                 <ul type="circle">
-                                    <li> Item 1 </li>
-                                    <li> Item 2 </li>
-                                    <li> Item 3 </li>
+                                    <li> 20 Free slot machine spins </li>
+                                    <li> 800 Vibez </li>
                                 </ul>
                             </p>
-                            <a href="#" class="btn btn-warning fs-2">Get</a>
+                            <p>This is a monthly Plan</p>
+                            <p>$50</p>
+                            <button data-subscription-type="Premium" class="btn subscription btn-warning fs-2">Get</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title fs-3">Platinum Plan</h5>
+                            <p class="card-text">
+                                <ul type="circle">
+                                    <li> 30 Free slot machine spins </li>
+                                    <li> 1000 Vibez </li>
+                                </ul>
+                            </p>
+                            <p>This is a monthly Plan</p>
+                            <p>$100</p>
+                            <button data-subscription-type="Platinum" class="btn subscription btn-warning fs-2">Get</button>
                         </div>
                     </div>
                 </div>
@@ -1324,5 +1347,45 @@ function confirm_send(number,btn){
 }
 
 
+
+const subscriptionButtons = document.querySelectorAll('.subscription');
+
+// Add a click event listener to each button
+subscriptionButtons.forEach(function(button) {
+  button.addEventListener('click', function() {
+    // Use 'this' to refer to the clicked button
+    const subscriptionType = this.getAttribute('data-subscription-type');
+    
+    // Log the value to the console
+    console.log(subscriptionType);
+
+
+    $.ajax({
+        method:'POST',
+        url: "/accounts/avail_subscription/",
+        mimeType:"multipart/form-data",
+        data:{  
+               
+                'subscription_type'  : subscriptionType,
+                'csrfmiddlewaretoken':"{{csrf_token}}",
+            },
+            'dataType': 'json',
+            success:function(data){
+                console.log(data)
+                var message = data.data
+                successToast(message);
+                location.reload();
+              
+            },
+            error:function(errors){
+                console.log(errors.responseText)
+                var message = "Something went wrong";
+                errorToast(errors.responseText)
+            }
+
+            })
+
+  });
+});
 
 </script>

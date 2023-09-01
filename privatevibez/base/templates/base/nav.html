@@ -29,32 +29,42 @@
                 <ul class=" navbar-collapse justify-content-end" style="margin-right: 50px;" id="navbarsid" >
                     <li class="nav-item dropdown" style="list-style-type:none;">
                         <li class="nav-item dropdown" style="list-style-type:none; ">
-                            <button class="nav-link dropdown bg-transparent border-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="icofont-user-alt-2 fs-2 text-lg" style="color:#6cc6ba;"> {{request.user.username}}</i>
+                            <button class="nav-link dropdown bg-transparent border-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="icofont-user-alt-2 fs-2 text-lg" style="color:#6cc6ba;"> {{request.user.username}}
+                                <span class="bg-transparent"><img class="img-thumbnail bg-transparent border-0" width="30px" src="{{user_datas.Subscription_Type.Badge.url}}"></span>
+                            </i> 
                                 <br><i id="user_vibez" class="icofont-sound-wave fs-2 text-lg" style="color:#6cc6ba;">
                                     {% if user_datas == None %}
                                         0
                                     {% else %}
                                         {{user_datas.Vibez}}
                                     {% endif %}
-                                </i></br>
+                                </i>
+                                <br>
+                                    <span style="color:#6cc6ba;"> free spin <span id="free_spins">{{user_datas.Free_spins}}</span> </span>
+                                        
+                                </br>
                             </button>
 
                             <ul class="dropdown-menu" style="background-color:#6cc6ba; border:none; color:black; padding:5px; width:150px; z-index:1000;" id="dropdown">
-                                <li><button class="border-0 bg-transparent fs-2" data-toggle="modal" data-target="#Profile" ><i class="icofont-page fs-2"></i> Profile</button></li>
+                                <li><button class="border-0 bg-transparent fs-2 my-2" data-toggle="modal" data-target="#Profile" ><i class="icofont-page fs-2"></i> Profile</button></li>
 
-                                <li><button class="border-0 bg-transparent fs-2"  data-toggle="modal" data-target="#Messages" ><i class="icofont-ui-message fs-2"></i>
+                                <li><button class="border-0 bg-transparent fs-2 my-2"  data-toggle="modal" data-target="#Messages" ><i class="icofont-ui-message fs-2"></i>
                                     Messages</button></li>
 
-                                {% if user_status == "Broadcaster" or user_status == "Decline_Broadcaster" %} 
-                                <li><button class="border-0 bg-transparent fs-2"  data-toggle="modal"  data-target="#Settings" ><i class="icofont-gear fs-2"></i> Settings</button></li>
+                                {% if user_datas.Subscription_Type %}
+                                <li><button class="border-0 bg-transparent fs-2 my-2"  data-toggle="modal" data-target="#Subscription" >Subscription</button></li>
+                                {% endif %}
 
-                                <li><button class="border-0 bg-transparent fs-2" onclick="window.location.href='/room/{{request.user}}'"><i class="icofont-ui-video-chat fs-2"></i> My Room</button></li>
+                                {% if user_status == "Broadcaster" or user_status == "Decline_Broadcaster" %} 
+                                <li><button class="border-0 bg-transparent fs-2 my-2"  data-toggle="modal"  data-target="#Settings" ><i class="icofont-gear fs-2"></i> Settings</button></li>
+
+                                <li><button class="border-0 bg-transparent fs-2 my-2" onclick="window.location.href='/room/{{request.user}}'"><i class="icofont-ui-video-chat fs-2"></i> My Room</button></li>
 
                                 {% endif %}
 
                                 <li><button class="border-0 bg-transparent fs-2" 
                                     onclick="window.location.href='/accounts/logout'"
-                                    href="/accounts/logout"><i class="icofont-sign-out fs-2"></i> Sign Out</button></li>
+                                    href="/accounts/logout"><i class="icofont-sign-out fs-2 my-2"></i> Sign Out</button></li>
                             </ul>
 
                         </li>
@@ -390,6 +400,45 @@
                 yo
             </div>
         
+        </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+    <!-- Modal for Subscription -->
+<div class="modal fade" id="Subscription" tabindex="-1" role="dialog" aria-labelledby="Profile_Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fs-1" id="Profile_Label">My Subscription</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span class="fs-1" aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+         
+
+        <div class="d-flex flex-row justify-content-center">
+
+            <div class="col fs-1">
+                {{user_datas.Subscription_Type.Name}}
+            </div>
+
+
+            <div class="col justify-content-center">
+                <span class="bg-transparent"><img class="img-thumbnail bg-transparent border-0" width="100px" src="{{user_datas.Subscription_Type.Badge.url}}"></span>
+            </div>
+ 
+        
+        </div>
+
+        <div class="">
+            <button class="btn btn-primary fs-2" onclick="unsubscribe()">Unsubscribe</button>
         </div>
 
 
@@ -862,4 +911,32 @@ function removeAlerts() {
 
 // Call the removeAlerts() function after 3 seconds (3000 milliseconds)
 setTimeout(removeAlerts, 3000);
+
+
+
+function unsubscribe() {
+
+    $.ajax({
+        method:'POST',
+        url: "/accounts/unsubscribe/",
+        mimeType:"multipart/form-data",
+        data:{  
+                'csrfmiddlewaretoken':"{{csrf_token}}",
+            },
+            'dataType': 'json',
+            success:function(data){
+                console.log(data)
+                var message = data.data
+                successToast(message);
+                location.reload();
+            },
+            error:function(errors){
+                console.log(errors.responseText)
+                var message = "Something went wrong";
+                errorToast(errors.responseText)
+            }
+
+            })
+
+}
 </script>
