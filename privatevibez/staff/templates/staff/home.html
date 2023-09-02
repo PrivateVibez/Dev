@@ -53,6 +53,12 @@
                     </button>
 
 
+                    <button class="nav-link d-flex justify-content-between" id="v-pills-promotions-tab" data-bs-toggle="pill" data-bs-target="#v-pills-promotions" type="button" role="tab" aria-controls="v-pills-promotions" aria-selected="true">
+                        <span class="text-white">Promotions</span>
+                        <span class=""><i class="bi text-white bi-card-checklist"></i></span>
+                    </button>
+
+
                     {% if perms.staff.can_view_id_check %}
 
                     
@@ -129,6 +135,11 @@
              {% include 'staff/include/inbox.html'%} 
         </div>
         {% endif %}
+
+        <!--PROMOTIONS-->
+        <div class="tab-pane fade w-100 m-lg-5" id="v-pills-promotions" role="tabpanel" aria-labelledby="v-pills-promotions-tab">
+            {% include 'staff/include/promotions.html'%} 
+       </div>
 
         {% comment %} create staff {% endcomment %}
         {% if perms.staff.can_view_staff %}

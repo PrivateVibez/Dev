@@ -11,8 +11,20 @@
           <div class="col">
             <div class="card" style="width: 18rem;">
               <div class="card-body text-center">
-                <span class="fs-4">Total Vibez</span>
-                <span class="fs-3 d-block">{{total_revenue.Total_Vibez__sum}}</span>
+                <span class="fs-4">Total Slot Machine Vibez Earning</span>
+                <span class="fs-3 d-block" id="total_slot_vibez">{{total_slot_vibez.Slot_Machine_Revenue__sum}}</span>
+                  
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="card" style="width: 18rem;">
+              <div class="card-body text-center">
+                <span class="fs-4">Total User Vibez</span>
+                <span class="fs-3 d-block" id="total_user_vibez">{{total_user_vibez.Vibez__sum}}</span>
+                <span class="fs-4">Total Broadcaster Revenue Vibez</span>
+                <span class="fs-3 d-block" id="total_broadcaster_vibez">{{total_broadcaster_vibez.Revenue__sum}}</span>
                   
               </div>
             </div>
@@ -29,6 +41,16 @@
             </div>
           </div>
 
+          <div class="col">
+            <div class="card" style="width: 18rem;">
+              <div class="card-body text-center">
+                <span class="fs-4">Total Cash</span>
+                <span class="fs-3 d-block" id="total_cash">{{total_cash.Total_Cash__sum}}</span>
+                  
+              </div>
+            </div>
+          </div>
+
         </div>
           <div class="row">
 
@@ -38,11 +60,29 @@
 
       <div id="map" style="height: 100%;"></div>
 
-      <!-- 
-        The `defer` attribute causes the callback to execute after the full HTML
-        document has been parsed. For non-blocking uses, avoiding race conditions,
-        and consistent behavior across browsers, consider loading using Promises.
-        See https://developers.google.com/maps/documentation/javascript/load-maps-js-api
-        for more information.
-        -->
-   
+<script>
+
+          
+let protocol = "";
+if(window.location.protocol == "http:"){
+    protocol = "ws";
+}else if(window.location.protocol == "https:"){
+    protocol = "wss";
+}
+let privatevibezrevenue_socket = new WebSocket(protocol + '://' + window.location.host + '/ws/private_vibez_revenue/');
+
+privatevibezrevenue_socket.onmessage = function(e) {
+  var data = JSON.parse(e.data);
+
+  console.log(data);
+
+  document.getElementById('total_cash').innerHTML = data.total_cash
+  document.getElementById('total_slot_vibez').innerHTML = data.total_slot_vibez
+}
+privatevibezrevenue_socket.onopen = function(e) {
+
+
+  console.log("revenue socket open");
+}
+
+</script>

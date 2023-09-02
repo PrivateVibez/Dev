@@ -1,0 +1,63 @@
+<div class="container-fluid">
+
+  <div class="row justify-content-center">
+
+<!-- Button trigger modal -->
+
+
+
+    <div class="">
+      <h1 class="text-center">Send Promotions</h1>
+      
+      <div class="d-flex justify-content-end mb-2">
+        <button type="button" class="btn btn-primary fs-4" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          Add promotion
+        </button>
+      </div>
+
+      <div class="col-3 m-auto">
+      <form class="d-flex flex-column justify-content-center gap-2" method="POST">
+        <label for="email" class="fs-4">Email</label>
+        <input class="fs-4" id="email">
+        <label for="email" class="fs-4">Promotion</label>
+        <select name="promotion">
+          <option value="1">promotion 1</option>
+        </select>
+        <button class="btn btn-primary fs-4" type="submit">Send</button>
+      </form>
+      </div>
+
+    </div>
+
+  </div>
+
+
+</div>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Promotion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body row">
+        <label for="promotion_earning">Amount:</label>
+        <input type="number" id="promotion_earning" placeholder="Earning">
+        <label for="promotion_description">Description:</label>
+        <input type="text" id="promotion_description" placeholder="description">
+        <label for="promotion_description">Duration:</label>
+        <input type="date" id="promotion_duration" placeholder="duration">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

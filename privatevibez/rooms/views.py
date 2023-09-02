@@ -588,10 +588,30 @@ def charge_user(cost):
     if private_vibez:
         # charge user per spin
         remaining_price = cost - private_vibez.Chargeback
-        private_vibez.Total_Vibez = private_vibez.Total_Vibez + private_vibez.Chargeback
+        private_vibez.Slot_Machine_Revenue = private_vibez.Slot_Machine_Revenue + private_vibez.Chargeback
         private_vibez.save()   
         
         return remaining_price
+
+
+
+def player_remaining_spins_or_vibez(winner,msg,pot,serializer=None):
+
+    if winner.Free_spins != 0:
+        spins = {"spins": winner.Free_spins}
+        vibez = None
+    else:
+        vibez = {"vibez": winner.Vibez}
+        spins = None
+
+    data = {
+        "msg": msg,
+        "vibez": vibez if vibez is not None else None,
+        "spins": spins if spins is not None else None,
+        "pot": pot if pot is not None else None
+    }
+    
+    return data
 
 @csrf_exempt
 def get_prize(request):
@@ -625,10 +645,13 @@ def get_prize(request):
                     price = cost_per_spin
                     note = f'{winner.User.username} Won Two of a kind!'
             
-                    availed_item(winner.User.id,room_data,"OH",price,note)
+                    pot = availed_item(winner.User.id,room_data,"OH",price,note)
                     
-                    trigger_toy(room_data.User.id,price,winner.User.id,feature,strength,timesec)
+                    winner = trigger_toy(room_data.User.id,price,winner.User.id,feature,strength,timesec)
                     
+                    msg = f'Two of a kind!!'
+                    data = player_remaining_spins_or_vibez(winner,msg,pot)
+                    print(data,flush=True)
                     
                 if prize == "3OAK":
                     feature = room_data.Feature_OHYes_button
@@ -637,12 +660,13 @@ def get_prize(request):
                     price = cost_per_spin
                     note = f'{winner.User.username} Won Three of a kind!'
             
-                    availed_item(winner.User.id,room_data,"3OAK",price,note)
+                    pot = availed_item(winner.User.id,room_data,"3OAK",price,note)
                     
                     is_Jackpot = True
-                    trigger_toy(room_data.User.id,price,winner.User.id,feature,strength,timesec,room_data,is_Jackpot)
+                    winner = trigger_toy(room_data.User.id,price,winner.User.id,feature,strength,timesec,room_data,is_Jackpot)
                     
-                    
+                    msg = f'JACPOT!!!!!'
+                    data = player_remaining_spins_or_vibez(winner,msg,pot)
                 
                 if prize == "Loss":
                     feature = room_data.Feature_OH_button
@@ -655,23 +679,26 @@ def get_prize(request):
                         remaining_price = charge_user(cost_per_spin)
                     
                     
-                    trigger_toy(room_data.User.id,cost_per_spin,winner.User.id,feature,strength,timesec)
+                    winner = trigger_toy(room_data.User.id,cost_per_spin,winner.User.id,feature,strength,timesec)
                     
                     slot_machine_pot = Slot_Machine.objects.filter(User=room_data.User)
                     
                     for machine in slot_machine_pot:
                         machine.pot += remaining_price
                         machine.save()
+                        pot = machine.pot
+                     
                         
                     serializer = SlotMachineSerializer(slot_machine_pot,many=True)
-                
-                        
-                    return JsonResponse({"data": f'You lose some and you win some! keep vibing!',"pot":serializer.data,"spins":winner.Free_spins,"vibez":winner.Vibez}, status=500,safe=False) 
+                    msg = f'You lose some, you win some. Keep vibing!'
+                   
+                    data = player_remaining_spins_or_vibez(winner,msg,pot)
+
+                    return JsonResponse(data, status=500, safe=False)
             
-                slot_machine_pot = Slot_Machine.objects.filter(User=room_data.User)
-                serializer = SlotMachineSerializer(slot_machine_pot,many=True)
+
                 
-                return JsonResponse({"data": f'You won! {prize} pattern keep vibing!',"pot":serializer.data,"spins":winner.Free_spins,"vibez":winner.Vibez}, status=200, safe=False)
+                return JsonResponse({"data":data}, status=200, safe=False)
             
             
             else:
@@ -820,10 +847,12 @@ def trigger_toy(broadcaster_id,price,user_id,feature,strength,timesec,room_data=
                             player.Free_spins -= 1
                             player.save()
                             
+                            return player
                         else:
                             
                             player.Vibez = player.Vibez - price
                             player.save()
+                            return player
                 
                 except IntegrityError as e:
                     
@@ -871,10 +900,12 @@ def trigger_toy(broadcaster_id,price,user_id,feature,strength,timesec,room_data=
                             player.Free_spins -= 1
                             player.save()
                             
+                            return player
                         else:
                             
                             player.Vibez = player.Vibez - price
                             player.save()
+                            return player
                 
                 except IntegrityError as e:
                     
@@ -900,8 +931,9 @@ def display_user_availed_item_in_broadcaster_room(user_data,item,room,remaining_
         if slot_machine:
             # Retrieve values from the Slot_Machine object
             
-
+            
             pot = slot_machine.pot
+            
                 
             # Calculate the new revenue value
             new_revenue = room.Revenue + pot 
@@ -920,6 +952,11 @@ def display_user_availed_item_in_broadcaster_room(user_data,item,room,remaining_
             # Update the Slot_Machine object's pot_increase
             slot_machine.pot = remaining_price
             slot_machine.save()
+            
+            slot_machine_instance = slot_machine.pot
+            
+    else:
+        slot_machine_instance = None
     
     
     
@@ -941,6 +978,7 @@ def display_user_availed_item_in_broadcaster_room(user_data,item,room,remaining_
         {"type": "show.itemAvailed", "data": data}
     )
 
+    return slot_machine_instance
 
 def availed_item(user,room,item,price,note=None):
     
@@ -953,10 +991,10 @@ def availed_item(user,room,item,price,note=None):
                 item = Item_Availed.objects.create(Room=room,User=user_data.User,Item=item, Cost=0, Note="free spin")
                 user_data.Availed.add(item)  
                 
-                display_user_availed_item_in_broadcaster_room(user_data,item,room,remaining_price=price)
+                slot_instance = display_user_availed_item_in_broadcaster_room(user_data,item,room,remaining_price=price)
                 
                 
-                return None
+                return slot_instance
                 
                 
             if user_data.Vibez >= price:
@@ -967,10 +1005,10 @@ def availed_item(user,room,item,price,note=None):
                     # charge user per spin
                     remaining_price = price - private_vibez.Chargeback
                     print(remaining_price,flush=True)
-                    if private_vibez.Total_Vibez is None:
-                        private_vibez.Total_Vibez = private_vibez.Chargeback
+                    if private_vibez.Slot_Machine_Revenue is None:
+                        private_vibez.Slot_Machine_Revenue = private_vibez.Chargeback
                     else:
-                        private_vibez.Total_Vibez = private_vibez.Total_Vibez + private_vibez.Chargeback
+                        private_vibez.Slot_Machine_Revenue = private_vibez.Slot_Machine_Revenue + private_vibez.Chargeback
                     private_vibez.save()
                 
                 
@@ -980,7 +1018,7 @@ def availed_item(user,room,item,price,note=None):
 
                     
                 
-                display_user_availed_item_in_broadcaster_room(user_data,item,room,remaining_price)
+                slot_instance = display_user_availed_item_in_broadcaster_room(user_data,item,room,remaining_price)
 
                 # add revenues
            
@@ -990,7 +1028,7 @@ def availed_item(user,room,item,price,note=None):
                     room.Revenue = remaining_price
                 room.save()
                 
-               
+                return slot_instance
                 
             else:
                 return JsonResponse({"data":f'Not enough vibez!'},status=500,safe=False)

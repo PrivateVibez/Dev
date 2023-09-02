@@ -197,14 +197,30 @@
           },
           success: function (data) {
               // Display the fetched data (example: update the DOM)
-              console.log(data.pot[0].pot);
-              const spins = data.spins;
-              const uservibez = data.vibez;
-              const pot = data.pot[0].pot
-              successToast(data.data);  
-              document.getElementById('pot').innerHTML = pot;    
-              document.getElementById('free_spins').innerHTML = spins;    
-              document.getElementById('user_vibez').innerHTML = uservibez;    
+              const msg = data.data;
+              console.log(msg);
+              const spins = msg.spins;
+              const pot = msg.pot
+ 
+              successToast(msg.msg);  
+
+              if (pot !== null) {
+                document.getElementById('pot').innerHTML = msg.pot;
+            }
+              if (spins !== null) {
+                document.getElementById('free_spins').innerHTML = msg.spins.spins;    
+              }
+              else {
+                
+                  document.getElementById('free_spins').innerHTML = 0;
+                }
+              if (msg.vibez !== null) {
+                document.getElementById('user_vibez').innerHTML = msg.vibez.vibez;    
+              }
+              else {
+                document.getElementById('user_vibez').innerHTML = 0;
+              }
+                 
               
 
          
@@ -219,18 +235,34 @@
                   errorToast(response);
               }
               else{
-                const pot = response.pot[0].pot
+                const pot = response.pot
                 const spins = response.spins;
                 const uservibez = response.vibez;
   
                 console.log(pot);
-                document.getElementById('pot').innerHTML = pot;
-                document.getElementById('free_spins').innerHTML = spins; 
-                document.getElementById('user_vibez').innerHTML = uservibez;    
+                console.log(spins);
+                console.log(uservibez);
+            
+
+                if (uservibez !== null) {
+                document.getElementById('user_vibez').innerHTML = uservibez.vibez;    
+                }
+                else {
+                  document.getElementById('user_vibez').innerHTML = 0;
+                }
+                if (spins !== null) {
+                  document.getElementById('free_spins').innerHTML = spins.spins;   
+                }
+                else {
+                  document.getElementById('free_spins').innerHTML = 0;
+                }
+                if (pot !== null) {
+                  document.getElementById('pot').innerHTML = pot;   
+                }
               }
 
 
-              errorToast(xhr.responseJSON.data);
+              errorToast(response.msg);
 
        
          

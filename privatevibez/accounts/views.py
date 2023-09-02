@@ -13,7 +13,7 @@ from django.core.paginator import Paginator
 from chat.models import Private, Public
 from rooms.models import *
 from django.contrib.auth.decorators import login_required
-from staff.models import StaffManager
+from staff.models import StaffManager, PrivatevibezRevenue
 from django.utils import timezone
 from cryptography.fernet import Fernet
 from channels.layers import get_channel_layer
@@ -172,8 +172,40 @@ def Buy_Vibez(request):
     
         user_data = User_Data.objects.get(User = request.user)
         vibez = int(request.POST.get('Vibez'))
+        
         user_data.Vibez += vibez
         user_data.save()
+        
+        privatevibez = PrivatevibezRevenue.objects.first()
+        
+        if privatevibez:
+            cash = privatevibez.Vibe_Cost * float(vibez)
+            
+            if privatevibez.Total_Cash is not None:
+                privatevibez.Total_Cash += cash
+            else:
+                privatevibez.Total_Cash = cash
+            
+            privatevibez.save()
+            total_cash = privatevibez.Total_Cash
+            total_slot_vibez = privatevibez.Slot_Machine_Revenue
+            
+        channel_layer = get_channel_layer()
+        channel_name = "privatevibezrevenue"
+        print(channel_name,flush=True)
+        
+        # Prepare data to send
+        data = {
+            "total_cash": total_cash,
+            "total_slot_vibez": total_slot_vibez,
+        }
+        
+        # Send the data to the WebSocket consumer
+        async_to_sync(channel_layer.group_send)(
+            channel_name,
+            {"type": "show.updatedRevenue", "data": data}
+        )
+            
         messages.success(request, f'You have successfully bought {vibez} vibez!')
         
         return JsonResponse({'data':vibez}, safe=False) 
@@ -604,7 +636,7 @@ def avail_subscription(request):
                 return JsonResponse({"data":f'you have successfully subscribed to {user_data.Subscription_Type} plan. Enjoy vibing!'}, safe=False)
             else:
                 
-                return JsonResponse({"data":f'you are already subscribed to {user_data.Subscription_Type} a plan.'}, safe=False)
+                return JsonResponse({"data":f'you are already subscribed to {user_data.Subscription_Type} a plan.'},status=500, safe=False)
             
 
         

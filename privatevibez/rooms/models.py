@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from cities_light.models import Country, Region
+from staff.models import Promotion
 # Create your models here.
 
 class Blocked_Countries(models.Model):
@@ -57,6 +58,7 @@ class Room_Data(models.Model):
     Room_Rules            = models.TextField(null=True,blank=True)
     Room_Description      = models.TextField(null=True,blank=True)
     Revenue               = models.IntegerField(null=True, blank=True)
+    Room_promotion        = models.ForeignKey(Promotion, null=True, blank=True, on_delete=models.CASCADE)
     Total_Viewers         = models.IntegerField(null=True, blank=True)
     Timestamp             = models.DateTimeField(auto_now_add=True)     
     

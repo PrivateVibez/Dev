@@ -950,7 +950,7 @@ if(window.location.protocol == "http:"){
 }else if(window.location.protocol == "https:"){
     protocol = "wss";
 }
-let public_socket = new WebSocket('ws://' + window.location.host + '/ws/publicChat/{{ room_name }}/');
+let public_socket = new WebSocket(protocol + '://' + window.location.host + '/ws/publicChat/{{ room_name }}/');
     public_socket.onmessage = function(e) {
         var data = JSON.parse(e.data);
         var message = data.message;
@@ -1379,8 +1379,9 @@ subscriptionButtons.forEach(function(button) {
             },
             error:function(errors){
                 console.log(errors.responseText)
+                var msg = JSON.parse(errors.responseText)
                 var message = "Something went wrong";
-                errorToast(errors.responseText)
+                errorToast(msg.data)
             }
 
             })
