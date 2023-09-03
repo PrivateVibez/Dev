@@ -10,7 +10,7 @@
       <h1 class="text-center">Send Promotions</h1>
       
       <div class="d-flex justify-content-end mb-2">
-        <button type="button" class="btn btn-primary fs-4" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button type="button" class="btn btn-primary fs-4" data-bs-toggle="modal" data-bs-target="#addPromotionModal">
           Add promotion
         </button>
       </div>
@@ -18,16 +18,120 @@
       <div class="col-3 m-auto">
       <form class="d-flex flex-column justify-content-center gap-2" method="POST">
         <label for="email" class="fs-4">Email</label>
-        <input class="fs-4" id="email">
-        <label for="email" class="fs-4">Promotion</label>
+        <input class="fs-4" id="promotion_email">
+        <label for="email" class="fs-4">Promotion code</label>
         <select name="promotion">
-          <option value="1">promotion 1</option>
+          {% for promotion in promotions %}
+          <option value="{{promotion.id}}">{{promotion.Promotion_Code}}</option>
+            {% endfor %}
         </select>
-        <button class="btn btn-primary fs-4" type="submit">Send</button>
+      
+        </select>
+        <button class="btn btn-primary fs-4" onclick="send_promotion()" type="submit">Send</button>
       </form>
       </div>
 
     </div>
+
+
+
+    <div class="mt-5">
+
+      <table class="table">
+        <thead>
+          <tr>
+
+            <th scope="col">Promotion Earning</th>
+            <th scope="col">Promotion Code</th>
+            <th scope="col">Promotion Duration</th>
+            <th scope="col">Promotion Registration Limit</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for promotion in promotions %}
+          <tr>
+            <td>{{promotion.Promotion_Earning}}</td>
+            <td>{{promotion.Promotion_Code}}</td>
+            <td>{{ promotion.Duration|date:"Y-m-d H:i:s" }}</td>
+            <td>{{promotion.Promotion_Registration_Limit}}</td>
+            <td>
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUpdatePromotion-{{promotion.id}}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                  <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                </svg>
+              </button>
+          </td>
+            <td>
+              <button type="button" class="btn btn-danger" onclick="delete_promotion({{promotion.id}})">
+                <span class="fs-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                  <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                </svg></span>
+              </button>
+          </td>
+          </tr>
+
+        <!-- Modal for updating promotions -->
+<div class="modal fade" id="modalUpdatePromotion-{{promotion.id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Update promotion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body row">
+
+        <label for="promotion_earning">Amount:</label>
+        <input type="number" id="update_promotion_earning" value="{{promotion.Promotion_Earning}}" placeholder="{{promotion.Promotion_Earning}}">
+
+        <label for="promotion_description">Duration:</label>
+        <input type="date" id="update_promotion_duration" value="{{ promotion.Duration|date:"Y-m-d" }}" placeholder="{{ promotion.Duration|date:"Y-m-d" }}">
+
+        <label for="promotion_registration_limit">Promotion limit</label>
+        <input type="number" value="{{promotion.Promotion_Registration_Limit}}" id="update_promotion_registration_limit" placeholder="{{promotion.Promotion_Registration_Limit}}">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" onclick="update_Promotion({{promotion.id}})" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+          
+            {% endfor %}
+
+        </tbody>
+      </table>
+
+
+    </div>
+
+
+  <div class="mt-5">
+    <h1 class="text-center">Broadcaster with promotion codes</h1>
+    <table class="table">
+      <thead>
+        <tr>
+
+          <th scope="col">Broadcaster</th>
+          <th scope="col">Promotion Code</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for broadacaster_promotion in broadcaster_promotions %}
+        <tr>
+          <td>{{broadacaster_promotion.User.username}}</td>
+          <td>{{broadacaster_promotion.Room_promotion.Promotion_Code}}</td>
+        </tr>
+
+        
+          {% endfor %}
+
+      </tbody>
+    </table>
+
+  </div>
 
   </div>
 
@@ -38,7 +142,7 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="addPromotionModal" tabindex="-1" aria-labelledby="addPromotionModallabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -48,16 +152,124 @@
       <div class="modal-body row">
         <label for="promotion_earning">Amount:</label>
         <input type="number" id="promotion_earning" placeholder="Earning">
-        <label for="promotion_description">Description:</label>
-        <input type="text" id="promotion_description" placeholder="description">
         <label for="promotion_description">Duration:</label>
         <input type="date" id="promotion_duration" placeholder="duration">
+        <label for="promotion_registration_limit">Promotion limit</label>
+        <input type="number" id="promotion_registration_limit" placeholder="promotion registration limit">
 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" onclick="save_Promotion()" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>
 </div>
+
+<div id="csrfTokenElement" data-csrf-token="{{ csrf_token }}"></div>
+
+
+<script>
+
+function save_Promotion() {
+  let promotion_earning = document.getElementById('promotion_earning').value;
+  let promotion_duration = document.getElementById('promotion_duration').value;
+  let promotion_registration_limit = document.getElementById('promotion_registration_limit').value;
+  let data = {
+    "promotion_earning": promotion_earning,
+    "promotion_duration": promotion_duration,
+    "promotion_registration_limit": promotion_registration_limit,
+    'csrfmiddlewaretoken':"{{csrf_token}}",
+  }
+  $.ajax({
+    type: "POST",
+    url: "/staff/save_Promotion/",
+    data: data,
+    success: function(data) {
+      console.log(data);
+      successToast(data.data);
+      location.reload();
+    },
+    error: function(data) {
+      console.log(data);
+      alert("Something went wrong");
+    }
+  });
+}
+
+
+function update_Promotion(id) {
+  let promotion_earning = document.getElementById('update_promotion_earning').value;
+  let promotion_duration = document.getElementById('update_promotion_duration').value;
+  let promotion_registration_limit = document.getElementById('update_promotion_registration_limit').value;
+  let data = {
+    "promotion_earning": promotion_earning,
+    "promotion_duration": promotion_duration,
+    "promotion_registration_limit": promotion_registration_limit,
+    "promotion_id": id,
+    'csrfmiddlewaretoken':"{{csrf_token}}",
+  }
+  $.ajax({
+    type: "POST",
+    url: "/staff/update_Promotion/",
+    data: data,
+    success: function(data) {
+      console.log(data);
+      successToast(data.data);
+      location.reload();
+    },
+    error: function(data) {
+      console.log(data);
+      alert("Something went wrong");
+    }
+  });
+}
+
+function delete_promotion(id) {
+  var csrfToken = document.getElementById('csrfTokenElement').getAttribute('data-csrf-token');
+  $.ajax({
+    type: "DELETE",
+    url: `/staff/delete_Promotion/${id}`, 
+    headers: {
+      "X-CSRFToken": csrfToken,  // Add the CSRF token to the headers
+    },
+    success: function(data) {
+      console.log(data);
+      successToast(data.data);
+      location.reload();
+    },
+    error: function(data) {
+      console.log(data);
+      alert("Something went wrong");
+    }
+  });
+}
+
+
+function send_promotion(){
+  let promotion_email = document.getElementById('promotion_email').value;
+  let promotion_id = document.querySelector('select[name="promotion"]').value;
+  let data = {
+    "promotion_email": promotion_email,
+    "promotion_id": promotion_id,
+    'csrfmiddlewaretoken':"{{csrf_token}}",
+  }
+  $.ajax({
+    type: "POST",
+    url: "/staff/send_Promotion/",
+    data: data,
+    success: function(data) {
+      console.log(data);
+      successToast(data.data);
+      location.reload();
+    },
+    error: function(data) {
+      console.log(data);
+      alert("Something went wrong");
+    }
+  });
+}
+
+
+
+</script>

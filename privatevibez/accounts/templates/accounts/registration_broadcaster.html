@@ -123,16 +123,10 @@ display:none;">
                   <div class="form-outline mb-4">
                     <div id="profile_image_box">
 
-                      {% if user_data.Image %}
-                      <div class="d-flex">
-                        <img src={{user_data.Image.url}} id="profile_image" width="400px">
-                      </div>
-
-                      {% else %}
                       <div id="profile_wrapper" class="d-flex">
                       </div>
 
-                      {% endif %}
+               
 
                     </div>
                       <input type="file" id="Profile_Pic" style="font-size:2rem;" name="Profile_Pic" class="form-control form-control-lg" required />
@@ -156,6 +150,11 @@ display:none;">
                     <div class="form-outline mb-4">
                       <input type="number" value="{{user_data.Age}}" class="form-control fs-2" id="Age" aria-label="Age" >  
                       <label class="form-label my-2 fs-2" for="Age">Age</label>
+                    </div>
+
+                    <div class="form-outline mb-4">
+                      <input type="text" value="" class="form-control fs-2" id="promotion_code" aria-label="promotion_code" >  
+                      <label class="form-label my-2 fs-2" for="promotion_code">Promotion Code</label>
                     </div>
 
                     <div class="form-outline mb-4">

@@ -155,6 +155,7 @@ function done(){
         // Append other form data fields to the FormData object
         formData.append('Real_Name', document.getElementById('firstName').value);
         formData.append('Age', document.getElementById('Age').value);
+        formData.append('promotion_code', document.getElementById('promotion_code').value);
         formData.append('I_Am', document.getElementById('I_Am').value);
         formData.append('Tab', document.getElementById('tab').value);
         formData.append('Interested_In', document.getElementById('Interested_In').value);

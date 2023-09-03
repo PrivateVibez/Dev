@@ -125,7 +125,7 @@ def Room(request, Broadcaster):
                                 
                                 
                             if Slot_Machine.objects.filter(User=broadcaster_user).exists():
-                                    slot_machine_cost_per_spin = Slot_Machine_Data.objects.values('Slot_Machine_Spin_Cost').get()
+                                    slot_machine_cost_per_spin = Slot_Machine_Data.objects.order_by('-timestamp').values('Slot_Machine_Spin_Cost').first()
                                     slot_machine_data = Slot_Machine.objects.filter(User=broadcaster_user.id).values('pot', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
                             try:
                                 user = request.user

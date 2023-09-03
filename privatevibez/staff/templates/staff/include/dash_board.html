@@ -1,8 +1,8 @@
     
-    <div class="container-fluid">
+    <div class="container-fluid my-5">
         <div class="row">
-          <div class="col-md-12">
-            <h4>Dashboard</h4>
+          <div class="col-md-12 mb-5">
+            <h4 class="display-5">Dashboard</h4>
           </div>
         </div>
 
@@ -11,7 +11,7 @@
           <div class="col">
             <div class="card" style="width: 18rem;">
               <div class="card-body text-center">
-                <span class="fs-4">Total Slot Machine Vibez Earning</span>
+                <span class="fs-4">Slot Machine Vibez Earning</span>
                 <span class="fs-3 d-block" id="total_slot_vibez">{{total_slot_vibez.Slot_Machine_Revenue__sum}}</span>
                   
               </div>
@@ -21,8 +21,6 @@
           <div class="col">
             <div class="card" style="width: 18rem;">
               <div class="card-body text-center">
-                <span class="fs-4">Total User Vibez</span>
-                <span class="fs-3 d-block" id="total_user_vibez">{{total_user_vibez.Vibez__sum}}</span>
                 <span class="fs-4">Total Broadcaster Revenue Vibez</span>
                 <span class="fs-3 d-block" id="total_broadcaster_vibez">{{total_broadcaster_vibez.Revenue__sum}}</span>
                   
@@ -34,14 +32,25 @@
           <div class="col">
             <div class="card" style="width: 18rem;">
               <div class="card-body text-center">
-                <span class="fs-4">Slot cost per spin</span>
-                <span class="fs-3 d-block">{{slot_machine}}</span>
+                <span class="fs-4">Total User Vibez</span>
+                <span class="fs-3 d-block" id="total_user_vibez">{{total_user_vibez.Vibez__sum}}</span>
                   
               </div>
             </div>
           </div>
 
+
           <div class="col">
+            <div class="card" style="width: 18rem;">
+              <div class="card-body text-center">
+                <span class="fs-4">Slot cost per spin</span>
+                <span class="fs-3 d-block">{{slot_machine.Slot_Machine_Spin_Cost}}</span>
+                  
+              </div>
+            </div>
+          </div>
+
+          <div class="col my-2">
             <div class="card" style="width: 18rem;">
               <div class="card-body text-center">
                 <span class="fs-4">Total Cash</span>
@@ -51,14 +60,45 @@
             </div>
           </div>
 
-        </div>
-          <div class="row">
 
+
+
+        </div>
+
+
+          <div class="row mt-5">
+            <div class="col-2">
+              <h3 class="">Slot Machine</h3>
+                  <button class="btn btn-primary fs-5" data-bs-toggle="modal" data-bs-target="#modal-for-slot-machine-cost-per-spin"> Update slot machine</button>
+  
+            </div>
           </div>
       </div>
 
 
       <div id="map" style="height: 100%;"></div>
+
+
+
+      <!-- Modal for updating slot machine cost per spin -->
+<div class="modal fade" id="modal-for-slot-machine-cost-per-spin" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update Slot machine cost per spin</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <label for="slot-machine-cost" class="d-block">Slot machine cost per spin</label>
+        <input class="" name="slot-machine-cost" id="slot-machine-cost" placeholder="{{slot_machine.Slot_Machine_Spin_Cost}}">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" onclick="update_Slot_Machine_Cost_Per_Spin()" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 
@@ -78,11 +118,35 @@ privatevibezrevenue_socket.onmessage = function(e) {
 
   document.getElementById('total_cash').innerHTML = data.total_cash
   document.getElementById('total_slot_vibez').innerHTML = data.total_slot_vibez
+  document.getElementById('total_user_vibez').innerHTML = data.total_user_vibez.Vibez__sum
 }
 privatevibezrevenue_socket.onopen = function(e) {
 
 
   console.log("revenue socket open");
+}
+
+
+
+function update_Slot_Machine_Cost_Per_Spin() {
+  let slot_machine_cost = document.getElementById('slot-machine-cost').value;
+  let data = {
+    "slot_machine_cost": slot_machine_cost,
+    'csrfmiddlewaretoken':"{{csrf_token}}",
+  }
+  $.ajax({
+    type: "POST",
+    url: "/staff/update_slot_machine_cost_per_spin/",
+    data: data,
+    success: function(data) {
+      console.log(data);
+      successToast(data.data);
+    },
+    error: function(data) {
+      console.log(data);
+      alert("Something went wrong");
+    }
+  });
 }
 
 </script>

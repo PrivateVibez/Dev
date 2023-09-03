@@ -52,4 +52,20 @@ urlpatterns = [
     
     # update staff data
     path('updateStaffData/', views.updateStaffData, name="updateStaffData"),
+    
+    
+    # update slot machine cost per spin
+    path('update_slot_machine_cost_per_spin/', views.update_slot_machine_cost_per_spin, name="update_slot_machine_cost_per_spin"),
+    
+    # add promotion
+    path('save_Promotion/', views.save_Promotion, name="save_Promotion"),
+    
+    # update promotion
+    path('update_Promotion/', views.update_Promotion, name="update_Promotion"),
+    
+    # delete promotion
+    path('delete_Promotion/<int:id>/', views.delete_Promotion, name="delete_Promotion"),
+    
+    # send promotion
+    path('send_Promotion/', views.send_Promotion, name="send_Promotion")
 ]

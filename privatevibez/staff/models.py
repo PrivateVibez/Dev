@@ -118,6 +118,6 @@ class Promotion(models.Model):
     Promotion_Earning                     = models.FloatField(null=True,blank=True)
     Promotion_Registration_Limit          = models.IntegerField(null=True,blank=True)
     Duration                              = models.DateTimeField(null=True,blank=True)
-    
+    timestamp                             = models.DateTimeField(auto_now_add=True,null=True,blank=True)
     def __str__(self):
-        return str(self.Promotion_Name)
+        return str(self.Promotion_Code)

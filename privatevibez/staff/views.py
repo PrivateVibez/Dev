@@ -4,6 +4,8 @@ from accounts.models import *
 from rooms.models import *
 from .models import *
 import os
+import secrets
+import string
 from django.conf import settings
 from chat.models import Staff
 from django.conf import settings
@@ -41,12 +43,20 @@ User = get_user_model()
 
 def home(request):
         
+        current_datetime = timezone.now()
+        
         print(request.user,flush=True)
         if request.user.is_authenticated and StaffManager.objects.filter(staff_id=request.user).exists():
                 total_slot_vibez = PrivatevibezRevenue.objects.aggregate(Sum('Slot_Machine_Revenue'))
                 total_user_vibez = User_Data.objects.aggregate(Sum('Vibez'))
                 total_broadcaster_vibez = Room_Data.objects.aggregate(Sum('Revenue'))
-                slot_machine  = Slot_Machine_Data.objects.first()
+                slot_machine  = Slot_Machine_Data.objects.order_by('-timestamp').values('Slot_Machine_Spin_Cost').first()
+                promotions    = Promotion.objects.filter(
+                Q(timestamp__gte=current_datetime) | Q(Promotion_Registration_Limit__gt=0)
+                )
+                broadcaster_promotions = Room_Data.objects.filter(Room_promotion__isnull=False)
+
+
                 total_cash = PrivatevibezRevenue.objects.aggregate(Sum('Total_Cash'))
                 
                 bad_acters_list = []
@@ -533,3 +543,115 @@ def updateStaffData(request):
                         messages.error(request,form.errors)
                         
                         return redirect(request.META.get('HTTP_REFERER'))
+                
+                
+                
+                
+def update_slot_machine_cost_per_spin(request):
+        
+        if request.method == "POST":
+                
+                if request.POST.get('slot_machine_cost') is not None:
+                        slot_machine = Slot_Machine_Data.objects.create(
+                        Slot_Machine_Spin_Cost = request.POST.get('slot_machine_cost'))
+                        
+                        return JsonResponse({"data":f'Successfully updated slot machine cost per spin to {slot_machine.Slot_Machine_Spin_Cost}'},status=200, safe=False)
+                else:
+                        return JsonResponse({"data":f'Invalid input!'},status=500, safe=False)
+                        
+                
+        
+
+
+        else:
+                return JsonResponse({"data":f'Something went wrong'},status=400, safe=False)
+        
+ 
+def generate_random_code(length=8):
+    characters = string.ascii_letters + string.digits
+    code = ''.join(secrets.choice(characters) for _ in range(length))
+    return code
+
+
+
+def save_Promotion(request):
+        
+        if request.method == "POST":
+                
+                promotion_earning = request.POST.get('promotion_earning')
+                promotion_duration = request.POST.get('promotion_duration')
+                promotion_registration_limit = request.POST.get('promotion_registration_limit')
+                random_code = generate_random_code()
+                
+                
+                if promotion_earning is not None and promotion_registration_limit is not None:
+                        promotion = Promotion.objects.create(
+                        Promotion_Code = random_code,
+                        Promotion_Earning = promotion_earning,
+                        Duration = promotion_duration,
+                        Promotion_Registration_Limit = promotion_registration_limit,
+                        
+                        )
+                        
+                        return JsonResponse({"data":f'Successfully added promotion'},status=200, safe=False)
+                else:
+                        return JsonResponse({"data":f'Invalid input!'},status=500, safe=False)
+                        
+                        
+
+def update_Promotion(request):
+        
+        if request.method == "POST":
+                promotion_id = request.POST.get('promotion_id')
+                promotion_earning = request.POST.get('promotion_earning')
+                promotion_duration = request.POST.get('promotion_duration')
+                promotion_registration_limit = request.POST.get('promotion_registration_limit')
+                
+                
+                promotion = Promotion.objects.get(id=promotion_id)
+                
+                if promotion_earning is not None and promotion_registration_limit is not None:
+                        
+                        promotion.Promotion_Earning = promotion_earning
+                        promotion.Duration = promotion_duration
+                        promotion.Promotion_Registration_Limit = promotion_registration_limit
+                        promotion.save()
+                        
+                        return JsonResponse({"data":f'Successfully updated promotion'},status=200, safe=False)
+                
+                else:
+                        return JsonResponse({"data":f'Invalid input!'},status=500, safe=False)
+                
+                
+                
+                
+def delete_Promotion(request,id):
+        
+
+                
+        promotion = Promotion.objects.get(id=id)
+        promotion.delete()
+        
+        return JsonResponse({"data":f'Successfully deleted promotion'},status=200, safe=False)
+
+
+def send_Promotion(request):
+        
+        if request.method == "POST":
+                
+                promotion_email = request.POST.get('promotion_email')
+                promotion_id = request.POST.get('promotion_id')
+                promotion_id = get_object_or_404(Promotion, id=promotion_id)
+                
+                if promotion_id is not None and promotion_email is not None:
+                        
+                        message = f"Your promotion code is {promotion_id.Promotion_Code} click the link and fill in the form:\n\nhttp://127.0.0.1:8000/accounts/registration_broadcaster/"
+                        
+                        send_mail('Promotion Code', message, settings.EMAIL_HOST, [promotion_email])
+                        
+                        return JsonResponse({"data":f'Successfully sent promotion'},status=200, safe=False)
+                
+                else:
+                        return JsonResponse({"data":f'Invalid input!'},status=500, safe=False)
+
+        

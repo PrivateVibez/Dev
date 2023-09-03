@@ -20,6 +20,7 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 import secrets
 import json
+from django.db.models import Q, Sum
 from rest_framework.renderers import JSONRenderer
 from rest_framework.utils.serializer_helpers import ReturnDict
 from .serializers import User_DataSerializer, Room_DataSerializer,UserSerializer
@@ -197,6 +198,7 @@ def Buy_Vibez(request):
         # Prepare data to send
         data = {
             "total_cash": total_cash,
+            "total_user_vibez": User_Data.objects.aggregate(Sum('Vibez')),
             "total_slot_vibez": total_slot_vibez,
         }
         
@@ -292,6 +294,7 @@ def bio_info(request):
     user_data               = User_Data.objects.get(User = request.user)
     room_data               = Room_Data.objects.get(User = request.user)
     
+    promotion_code          = request.POST.get('promotion_code')
     user_data.Real_Name     = request.POST.get('Real_Name')
     user_data.Age           = request.POST.get('Age')
     user_data.I_Am          = request.POST.get('I_Am')
@@ -308,6 +311,22 @@ def bio_info(request):
     user_data.U_token      = U_token
     
     room_data.Tab           = request.POST.get('Tab')
+    
+    if promotion_code is not None:
+        if Promotion.objects.filter(Promotion_Code = promotion_code).exists():
+            promotion = Promotion.objects.get(Promotion_Code = promotion_code)
+            
+            if promotion.Promotion_Registration_Limit > 0:
+                
+                promotion.Promotion_Registration_Limit -= 1
+                promotion.save()
+                room_data.Room_promotion = promotion
+                
+            else:
+                return JsonResponse('Promotion Code Limit Reached', safe=False)
+        else:
+            return JsonResponse('Invalid Promotion Code', safe=False)
+        
     
     room_data.save()
     user_data.save()
