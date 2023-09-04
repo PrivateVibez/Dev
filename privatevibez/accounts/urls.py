@@ -6,6 +6,9 @@ urlpatterns = [
     path('login/', views.Login, name="login"),
     path('signup/', views.Registration, name="Registration"),
     
+    
+    path('signupwithpromotion/', views.RegistrationWithPromotionCode, name="RegistrationWithPromotionCode"),
+    
     # registration for broadcasters
     path('registration_broadcaster/', views.Registration_Broadcaster, name="registration_broadcaster"),
     path('saveBroacasterInfo/', views.Registration_Broadcaster_info, name="save_broacaster_info"),
@@ -41,5 +44,9 @@ urlpatterns = [
      
          #  updating email
      path('change_email/', views.change_email, name="change_email"),
+     
+     
+         # registration with promotion code
+    path('BroadcasterRegistration/<str:code>/', views.BroadcasterRegistration, name="BroadcasterRegistration"),
 
 ]

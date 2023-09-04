@@ -607,6 +607,10 @@ def update_Promotion(request):
                 promotion_duration = request.POST.get('promotion_duration')
                 promotion_registration_limit = request.POST.get('promotion_registration_limit')
                 
+                print(promotion_id,flush=True)
+                print(promotion_earning,flush=True)
+                print(promotion_duration,flush=True)
+                print(promotion_registration_limit,flush=True)
                 
                 promotion = Promotion.objects.get(id=promotion_id)
                 
@@ -641,11 +645,11 @@ def send_Promotion(request):
                 
                 promotion_email = request.POST.get('promotion_email')
                 promotion_id = request.POST.get('promotion_id')
-                promotion_id = get_object_or_404(Promotion, id=promotion_id)
+                promotion = get_object_or_404(Promotion, id=promotion_id)
                 
-                if promotion_id is not None and promotion_email is not None:
+                if promotion is not None and promotion_email is not None:
                         
-                        message = f"Your promotion code is {promotion_id.Promotion_Code} click the link and fill in the form:\n\nhttp://127.0.0.1:8000/accounts/registration_broadcaster/"
+                        message = f"click the link and fill in the form, earn {promotion.Promotion_Earning} dollar per vibe if you register now! \n\nhttp://127.0.0.1:8000/accounts/BroadcasterRegistration/{promotion.Promotion_Code}"
                         
                         send_mail('Promotion Code', message, settings.EMAIL_HOST, [promotion_email])
                         
@@ -654,4 +658,6 @@ def send_Promotion(request):
                 else:
                         return JsonResponse({"data":f'Invalid input!'},status=500, safe=False)
 
-        
+
+
+

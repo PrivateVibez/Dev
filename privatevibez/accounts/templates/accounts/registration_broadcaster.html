@@ -16,10 +16,50 @@ display:none;">
   </div>
 
   <div class="container py-5 h-100">
+
+  {% if code %}
+    <div class="row mb-2 gap-3">
+
+      <div class="card d-flex m-auto col-lg-8">
+        <div class="card-body">
+          <h3 class="display-4 font-weight-bold">Promotion ends in:</h3>
+          <div id="countdown" class="d-flex gap-5 display-5">
+            <p>Time Remaining:</p>
+            <p><span id="days"></span> days</p>
+            <p><span id="hours"></span>  hours</p>
+            <p><span id="minutes"></span> minutes</p>
+            <p><span id="seconds"></span> seconds</p> 
+        </div>
+        </div>
+      </div>
+      
+
+      <div class="card m-auto col-6">
+        <div class="card-body">
+            
+            <div id="" class="col justify-content-center display-5">
+   
+              <span class="d-block text-center"><strong>Register now!</strong></p> <p class="d-inline"><strong>{{code.Promotion_Registration_Limit}}</strong></p> slots left!</span>
+
+              <span class="d-block text-center">Earn<p class="font-weight-bold">{{code.Promotion_Earning}}</p>dollar per vibe!</span>
+           
+            </div>
+
+        </div>
+      </div>
+
+
+    </div>
+
+  {% endif %}
+
+
     
     <div class="row d-flex justify-content-center align-items-center h-100">
       <div class="col col-xl-10">
-        <div class="card" style="border-radius: 1rem;">
+
+        {% if request.user.is_authenticated %}
+        <div class="card" id="first_name" style="border-radius: 1rem;">
           <div class="row g-0" style="z-index:1000">
 
             <div class="col-md-6 col-lg-5 d-none d-md-block">
@@ -153,7 +193,7 @@ display:none;">
                     </div>
 
                     <div class="form-outline mb-4">
-                      <input type="text" value="" class="form-control fs-2" id="promotion_code" aria-label="promotion_code" >  
+                      <input type="text" value="{{code.Promotion_Code}}" class="form-control fs-2" id="promotion_code" aria-label="promotion_code" >  
                       <label class="form-label my-2 fs-2" for="promotion_code">Promotion Code</label>
                     </div>
 
@@ -223,6 +263,63 @@ display:none;">
             </div>
           </div>
         </div>
+
+        {% else %}
+
+        <div class="card" style="border-radius: 1rem; z-index:1000;">
+          <div class="row g-0">
+            <div class="col-md-6 col-lg-5 d-none d-md-block">
+              <img src="{% static 'images/pexels-alexander-krivitskiy-1271374.jpg' %}"
+                alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
+            </div>
+            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+              <div class="card-body p-4 p-lg-5 text-black">
+
+                  <div class="d-flex align-items-center mb-3 pb-1">
+                    <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;">  
+                          <img src="{% static 'images/logo/small_logo.png' %}" alt="Private Vibez Logo" width="50" class="d-inline-block align-text-top">
+                    </i>
+                    <span class="h1 fw-bold display-4 text-center mb-0">Interactive Pleasures</span>
+                  </div>
+
+                  <h5 class="fw-normal display-4 mb-3 text-center pb-3" style="letter-spacing: 1px;">Sign Up</h5>
+                  <div id="info_box" style='display:block;'>
+                    <div class="form-outline mb-4">
+                      <form action="/accounts/signupwithpromotion/" method="POST">
+                          <div class="form-outline row gap-3 mb-4">                               
+                                  {% csrf_token %}
+                             <label style="font-size:2rem;">username</label>
+                             <input type="text" style="font-size:2rem;" class="border-1" name="username"></input>
+
+                             
+                             <label style="font-size:2rem;">email</label>
+                             <input type="text" style="font-size:2rem;" class="border-1" name="email"></input>
+
+                             
+                             <label style="font-size:2rem;">password</label>
+                             <input type="password" style="font-size:2rem;" class="border-1" name="password1"></input>
+
+                             
+                             <label style="font-size:2rem;">confirm password</label>
+                             <input type="password" style="font-size:2rem;" class="border-1" name="password2"></input>
+
+                             
+
+                                
+                          </div>
+                          <div class="pt-1 mb-4">
+                              <button type="submit" style="font-size:2rem" class="btn btn-dark btn-lg btn-block my-5">Sign Up</button>
+                              <p style="font-size:2rem">Not new to PriveVibez? <a href="/accounts/login/" style="font-size:2rem" type="button" class="btn btn-link"> Sign in now.</a></p>
+                          </div>
+                      </form>
+
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+        {% endif %}
       </div>
     </div>  
   </div>
@@ -264,4 +361,65 @@ display:none;">
   <script type="text/javascript" src="{% static 'js/cropper.min.js' %}"></script> {% endcomment %}
 
  
+  <script>
+
+
+
+
+
+
+
+
+
+    // Get the time remaining from Django template variables
+    let daysRemaining = {{ data.days }};
+    let hoursRemaining = {{ data.hours }};
+    let minutesRemaining = {{ data.minutes }};
+    let secondsRemaining = {{ data.seconds }};
+
+    // Function to update the countdown
+    function updateCountdown() {
+      const daysElement = document.getElementById('days');
+      const hoursElement = document.getElementById('hours');
+      const minutesElement = document.getElementById('minutes');
+      const secondsElement = document.getElementById('seconds');
+
+      // Update countdown elements
+      daysElement.textContent = daysRemaining;
+      hoursElement.textContent = hoursRemaining;
+      minutesElement.textContent = minutesRemaining;
+      secondsElement.textContent = secondsRemaining;
+
+      // Decrease the countdown
+      secondsRemaining--;
+
+      if (secondsRemaining < 0) {
+          secondsRemaining = 59;  // Reset seconds to 59
+          minutesRemaining--;
+
+          if (minutesRemaining < 0) {
+              minutesRemaining = 59;  // Reset minutes to 59
+              hoursRemaining--;
+
+              if (hoursRemaining < 0) {
+                  hoursRemaining = 23;  // Reset hours to 23
+                  daysRemaining--;
+
+                  if (daysRemaining < 0) {
+                      clearInterval(countdownInterval);
+                      document.getElementById('countdown').innerHTML = 'Countdown expired';
+                  }
+              }
+          }
+      }
+  }
+
+  // Initial call to update countdown
+  updateCountdown();
+
+  // Update countdown every second
+  const countdownInterval = setInterval(updateCountdown, 1000);
+
+</script>
+
   {% endblock content %}

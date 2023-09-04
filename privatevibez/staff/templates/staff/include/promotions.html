@@ -82,13 +82,13 @@
       <div class="modal-body row">
 
         <label for="promotion_earning">Amount:</label>
-        <input type="number" id="update_promotion_earning" value="{{promotion.Promotion_Earning}}" placeholder="{{promotion.Promotion_Earning}}">
+        <input type="number" id="update_promotion_earning-{{promotion.id}}" value="{{promotion.Promotion_Earning}}" placeholder="{{promotion.Promotion_Earning}}">
 
         <label for="promotion_description">Duration:</label>
-        <input type="date" id="update_promotion_duration" value="{{ promotion.Duration|date:"Y-m-d" }}" placeholder="{{ promotion.Duration|date:"Y-m-d" }}">
+        <input type="date" id="update_promotion_duration-{{promotion.id}}" value="{{ promotion.Duration|date:"Y-m-d" }}" placeholder="{{ promotion.Duration|date:"Y-m-d" }}">
 
         <label for="promotion_registration_limit">Promotion limit</label>
-        <input type="number" value="{{promotion.Promotion_Registration_Limit}}" id="update_promotion_registration_limit" placeholder="{{promotion.Promotion_Registration_Limit}}">
+        <input type="number" value="{{promotion.Promotion_Registration_Limit}}" id="update_promotion_registration_limit-{{promotion.id}}" placeholder="{{promotion.Promotion_Registration_Limit}}">
 
       </div>
       <div class="modal-footer">
@@ -199,9 +199,9 @@ function save_Promotion() {
 
 
 function update_Promotion(id) {
-  let promotion_earning = document.getElementById('update_promotion_earning').value;
-  let promotion_duration = document.getElementById('update_promotion_duration').value;
-  let promotion_registration_limit = document.getElementById('update_promotion_registration_limit').value;
+  let promotion_earning = document.getElementById('update_promotion_earning-' + id).value;
+  let promotion_duration = document.getElementById('update_promotion_duration-' + id).value;
+  let promotion_registration_limit = document.getElementById('update_promotion_registration_limit-' + id).value;
   let data = {
     "promotion_earning": promotion_earning,
     "promotion_duration": promotion_duration,

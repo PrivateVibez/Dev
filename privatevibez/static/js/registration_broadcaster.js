@@ -12,7 +12,6 @@ function hideLoadingScreen() {
 }
 
 
-
 function ID_Next(){
   showLoadingScreen();
     $.ajax({
@@ -142,6 +141,8 @@ function readImage(input) {
   });
 
 
+
+
 function done(){
       showLoadingScreen();
       const croppedCanvas = cropper.getCroppedCanvas();
@@ -221,10 +222,5 @@ function Next_dice(){
     document.getElementById('Dice_small_words').style.display='block'
 
 }
-
-
-
-
-
 
 

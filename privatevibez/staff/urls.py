@@ -25,6 +25,7 @@ urlpatterns = [
     path('staffRegistration/', views.staffRegistration, name="staffRegistration"),
     
     
+    
     path('AddDevProject/', views.Add_Dev_Project, name="Add_Dev_Project"),
     path('AddDevList/', views.Add_Dev_List, name="Add_Dev_List"),
     

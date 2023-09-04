@@ -19,7 +19,9 @@ from cryptography.fernet import Fernet
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 import secrets
+import datetime
 import json
+from django.shortcuts import get_object_or_404
 from django.db.models import Q, Sum
 from rest_framework.renderers import JSONRenderer
 from rest_framework.utils.serializer_helpers import ReturnDict
@@ -88,6 +90,10 @@ def Login(request):
 
 def Registration(request):
     
+    
+    if request.user.is_authenticated:
+        user_datas        = User_Data.objects.get(User =  request.user)
+        
     if request.method == "POST":
         
         form =UserRegisterForm(request.POST)
@@ -111,7 +117,36 @@ def Registration(request):
             messages.error(request, form.errors)
     else:    
         form =UserRegisterForm()
-    return render(request, "accounts/registration.html", {'registration_form': form})
+    return render(request, "accounts/registration.html", {'registration_form': form,"user_datas":user_datas})
+
+
+
+def RegistrationWithPromotionCode(request):
+        if request.method == "POST":
+        
+            form =UserRegisterForm(request.POST)
+            if form.is_valid():
+                form.save()
+                
+                username = form.cleaned_data.get('username')
+                user     = authenticate(request, username=username, password=form.cleaned_data.get('password1'))
+                
+                login(request, user)
+                
+                if not User_Data.objects.filter(User = user).exists():
+                    User_Data.objects.create(User = user,Vibez = "0")
+                    
+                User_Status.objects.create(User = user,Status= "User")
+                messages.success(request, f'You have created an account {username}! enjoy vibing!')
+                
+                return redirect(request.META.get('HTTP_REFERER'))
+            
+            else:
+                messages.error(request, form.errors)
+        else:    
+            form =UserRegisterForm()
+        
+        return redirect(request.META.get('HTTP_REFERER'))
 
 
 
@@ -312,6 +347,7 @@ def bio_info(request):
     
     room_data.Tab           = request.POST.get('Tab')
     
+    print(promotion_code,flush=True)
     if promotion_code is not None:
         if Promotion.objects.filter(Promotion_Code = promotion_code).exists():
             promotion = Promotion.objects.get(Promotion_Code = promotion_code)
@@ -674,3 +710,59 @@ def unsubscribe(request):
         user_data.save()
         
         return JsonResponse({"data":f'you have successfully unsubscribed from {subscription}'}, safe=False)
+    
+def countdown_timer(code):
+    
+    promotion_earning = code.Promotion_Earning
+    promotion_registration_limit = code.Promotion_Registration_Limit
+    promotion_duration = code.Duration  # This is a datetime.datetime object
+
+    # Calculate the time remaining until the promotion_duration
+    now = datetime.datetime.now()
+    time_remaining = promotion_duration - now
+
+    # Extract days, hours, minutes, and seconds from the timedelta
+    days = time_remaining.days
+    hours, remainder = divmod(time_remaining.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60) 
+    
+    return {
+        'days': days,
+        'hours': hours,
+        'minutes': minutes,
+        'seconds': seconds,
+    }  
+    
+def BroadcasterRegistration(request, code):
+        
+        if code is not None:
+                
+                code = get_object_or_404(Promotion, Promotion_Code=code)
+                data = countdown_timer(code)
+                
+                if request.method == "POST":
+        
+                    registration_form =UserRegisterForm(request.POST)
+                    if registration_form.is_valid():
+                        registration_form.save()
+                        
+                        username = registration_form.cleaned_data.get('username')
+                        user     = authenticate(request, username=username, password=registration_form.cleaned_data.get('password1'))
+                        
+                        login(request, user)
+                        
+                        if not User_Data.objects.filter(User = user).exists():
+                            User_Data.objects.create(User = user,Vibez = "0")
+                            
+                        User_Status.objects.create(User = user,Status= "User")
+                        messages.success(request, f'You have created an account {username}! enjoy vibing!')
+                        
+                        return redirect("Main_home")
+                    
+                    else:
+                        messages.error(request, registration_form.errors)
+                else:    
+                    registration_form =UserRegisterForm()
+                return render(request, "accounts/registration_broadcaster.html", locals())
+                            
+                    
