@@ -96,7 +96,7 @@ def Room(request, Broadcaster):
                             room_data            = Room_Data.objects.get(User = User.objects.get(username = Broadcaster))
                             # room_sesson          = Room_Sesson.objects.get(User = User.objects.get(username = Broadcaster))
                             broadcaster_data     = User_Data.objects.get(User = User.objects.get(username = Broadcaster))
-
+                            availed_items = Item_Availed.objects.filter(Room = room_data).all()
                     
                         
                             private_chat = Private.objects.filter(
@@ -147,7 +147,7 @@ def Room(request, Broadcaster):
                     
                                 elif user.Status == "Broadcaster":
                                     
-                                    availed_items = Item_Availed.objects.filter(Room = room_data).all()
+                                    
                                     print(availed_items,flush=True)
                                     if Private_Chat_Invitee.objects.filter(Broadcaster=request.user).exists():
                                         private_chat_invite = Private_Chat_Invitee.objects.get(Broadcaster=request.user)

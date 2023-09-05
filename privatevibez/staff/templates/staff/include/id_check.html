@@ -65,13 +65,11 @@
 
                                                           <!-- Modal -->
                             <div class="modal fade" id="modal-{{user.User.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                              <div class="modal-dialog modal-dialog-centered" role="document">
+                              <div class="modal-dialog modal-dialog-scrollable" role="document">
                                 <div class="modal-content">
                                   <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                      <span aria-hidden="true">&times;</span>
-                                    </button>
+                                    <h5 class="modal-title" id="exampleModalLongTitle"> ID CHECK</h5>
+
                                   </div>
                                   <div class="modal-body">
                                     <div class="container-fluid">
@@ -79,8 +77,31 @@
                                         <div class="">
                                           <img src="{{user.Id_File.url}}" alt="" class="img-fluid">
                                         </div>
-                                        <div class="col-12">
-                                          <span class="fs-3 text-center">{{user.Real_Name}}</span>
+                                        <div class="row">
+                                          <span>First Name:</span>
+                                          <span class="fs-3 text-center">{{user.User.first_name}}</span>
+
+                                          <span>Last Name:</span>
+                                          <span class="fs-3 text-center">{{user.User.last_name}}</span>
+
+                                          <span>Birth date:</span>
+                                          <span class="fs-3 text-center">{{user.Birth_Date}}</span>
+
+                                          <span>Age:</span>
+                                          <span class="fs-3 text-center">{{user.Age}}</span>
+
+                                          <span>Gender:</span>
+                                          <span class="fs-3 text-center">{{user.I_Am}}</span>
+
+                                          <span>Interested in:</span>
+                                          <span class="fs-3 text-center">{{user.Interested_In}}</span>
+
+                                          <span>Language:</span>
+                                          <span class="fs-3 text-center">{{user.Language}}</span>
+
+                                          <span>Body type:</span>
+                                          <span class="fs-3 text-center">{{user.Body_Type}}</span>
+
                                         </div>
 
                                       </div>
@@ -204,7 +225,8 @@ pending_Broadcaster.onmessage = function(e) {
           
           var pending_broadcasters = data.data; 
           
-
+          console.log(pending_broadcasters[0].first_name);
+          console.log(pending_broadcasters[0].email);
           table_body.innerHTML = "";
 
           if(pending_broadcasters)
@@ -231,9 +253,7 @@ pending_Broadcaster.onmessage = function(e) {
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
+
                   </div>
                   <div class="modal-body">
                     <div class="container-fluid">

@@ -99,7 +99,7 @@
 
             {% if not request.user.is_authenticated %}
 
-            <!--
+           
        
 
             <div class="ads" style="width:max-content;">
@@ -111,7 +111,7 @@
             </div>
             
             {% endif %}
-            -->
+            
 
             <div class="col-11" style="border:2px solid black;border-radius: 6px; padding:0px">
                 <ul class="nav nav-tabs" id="myTab" role="tablist" style="width:100%;background-color:black;border-radius: 6px 6px 0px 0px;">
@@ -172,10 +172,10 @@
 
                 </div>
 
-                <div class="container-fluid mt-5 mb-5" style="">
+                <div class="container-fluid mt-5 mb-5" style="bottom:0px">
                    <!----> 
                    <div class="col">
-                    <div aria-label="" class="my-5" style=" position:absolute; bottom:0px">
+                    <div aria-label="" class="my-5" style=" position:relative; bottom:0px">
                         <ul class="pagination col-2" style="width:min-content;">
                         {% if broadcaster_data.has_previous %}
                             <li class="page-item">
@@ -210,7 +210,7 @@
             </div>
             {% if not request.user.is_authenticated %}
 
-            <!--
+        
             <div class="ads" style="width:max-content;">
                    
                         <script type="text/javascript" data-cfasync="false" async src="https://poweredby.jads.co/js/jads.js"></script>
@@ -219,7 +219,7 @@
              
             </div>
             {% endif %}
-            -->
+      
 
         </div>
         

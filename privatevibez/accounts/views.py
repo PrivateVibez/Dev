@@ -548,7 +548,7 @@ def filter_broadcasters(user,user_country,user_region,broadcaster_gender):
                     combined_fields_list.append({
                                                     "user_id": user.id,
                                                     "username": user.username,
-                                                    "Image": user_data.Image.url,
+                                                    "image": user_data.Image.url,
                                                     })
 
     
@@ -587,6 +587,7 @@ def filter_broadcasters(user,user_country,user_region,broadcaster_gender):
                             if any(item == blocked_broadcaster.Reported.id for item in combined_fields_list):
                                     combined_fields_list = [item for item in room_list if item != blocked_broadcaster.Reported.id]
     
+ 
     return combined_fields_list
 
 
@@ -607,6 +608,7 @@ def get_broadcaster(request):
                 broadcaster_data = filter_broadcasters(user,user_country,user_region,broadcaster_gender) 
                 broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
 
+                print(broadcaster_data,flush=True)
                 return render(request, "base/home.html", locals())          
  
             else:

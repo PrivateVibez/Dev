@@ -32,39 +32,19 @@
       <div class="tab-content w-100" id="v-pills-tabContent">
         <div class="tab-pane fade" id="v-pills-menu" role="tabpanel" aria-labelledby="v-pills-menu-tab" tabindex="0">
           <div class="col-12">
-            <table class="table" style="border:none">
-              <thead>
-                <tr>
-                  <th style="border:none" scope="col">Item</th>
-                  <th style="border:none" scope="col">Price</th>
-                  <th style="border:none" scope="col">Duration</th>
-                </tr>
-              </thead>
-              <tbody style="border:none" id="menu-items-table">
-      
-                {% for item in menu_data %}
-                <tr>
-                  <th style="border:none">{{item.Menu_Name}}</th>
-                  <td style="border:none">{{item.Vibez_Cost}}</td>
-                  <td style="border:none">{{item.Menu_Time}} seconds</td>
-                  <td style="border:none" class="d-flex justify-content-center gap-2">
-                    <button type="button" class="btn btn-dark fs-3" onclick="avail_menu_item({{item.id}})">
-                      <span class="fs-2">avail</span>
-                    </button>
 
-            
-                </td>
-      
+            <div class="d-flex flex-column justify-content-center align-items-center gap-4">
+            {% for item in menu_data %}
+
+           
+                <button type="button" class="btn btn-dark fs-3 w-100 col-3" onclick="avail_menu_item({{item.id}})">
+                  <span class="fs-2">{{item.Menu_Name}}</span>
+                  <small class="d-block">{{item.Vibez_Cost}} vibez</small>
+                </button>
+  
                 
-      
-      
-                </tr>
-      
-      
                 {% endfor %}
-      
-              </tbody>
-            </table>
+              </div>
           </div>
         </div>
 

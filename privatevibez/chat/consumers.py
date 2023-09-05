@@ -42,7 +42,9 @@ class PublicChatConsumer(AsyncWebsocketConsumer):
                 'username': username
             }
         )
-
+        
+        
+    # show 
 
     # Receive message from room group
     async def chat_message(self, event):

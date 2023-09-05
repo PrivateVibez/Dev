@@ -114,7 +114,6 @@ def room_data_func(request,user_country,user_region):
                                 })
                                 
 
-        print(broadcaster_data,flush=True)
 
         rooms = Room_Data.objects.filter(User__Status="Broadcaster")
         rooms_list = []
@@ -165,7 +164,7 @@ def room_data_func(request,user_country,user_region):
 
 def home(request):
         
-        items_per_page = 4  # Number of items per page
+        items_per_page = 20  # Number of items per page
         page_number = request.GET.get('page', 1) 
         if request.user.is_authenticated:
                 blocked_broadcasters = Bad_Acters.objects.filter(Reporty = request.user.id)
@@ -221,7 +220,6 @@ def home(request):
                                 broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
                         
                         
-                                print(broadcaster_data,flush=True)
                                 
                                 
 
