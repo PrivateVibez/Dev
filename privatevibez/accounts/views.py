@@ -114,10 +114,11 @@ def Registration(request):
             return redirect("Main_home")
         
         else:
+            print(form.errors,flush=True)
             messages.error(request, form.errors)
     else:    
         form =UserRegisterForm()
-    return render(request, "accounts/registration.html", {'registration_form': form,"user_datas":user_datas})
+    return render(request, "accounts/registration.html", {'registration_form': form})
 
 
 

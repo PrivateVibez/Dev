@@ -651,7 +651,7 @@ def get_prize(request):
                     
                     msg = f'Two of a kind!!'
                     data = player_remaining_spins_or_vibez(winner,msg,pot)
-                    print(data,flush=True)
+                    
                     
                 if prize == "3OAK":
                     feature = room_data.Feature_OHYes_button
@@ -679,8 +679,8 @@ def get_prize(request):
                         remaining_price = charge_user(cost_per_spin)
                     
                     
+                    availed_item(winner.User.id,room_data,"Slot Spin",price,"Loss")
                     winner = trigger_toy(room_data.User.id,cost_per_spin,winner.User.id,feature,strength,timesec)
-                    
                     slot_machine_pot = Slot_Machine.objects.filter(User=room_data.User)
                     
                     for machine in slot_machine_pot:
@@ -959,6 +959,8 @@ def display_user_availed_item_in_broadcaster_room(user_data,item,room,remaining_
         slot_machine_instance = None
     
     
+    show_itemAvailedInPublicChat(room,user_data,item)
+    
     
     channel_layer = get_channel_layer()
     channel_name = "broadcaster_visitor_" + str(room.User.id)
@@ -979,6 +981,26 @@ def display_user_availed_item_in_broadcaster_room(user_data,item,room,remaining_
     )
 
     return slot_machine_instance
+
+
+def show_itemAvailedInPublicChat(room,user_data,item):
+    channel_layer = get_channel_layer()
+    channel_name = "public_chat_" + room.User.username
+    print(channel_name,flush=True)
+    
+    # Prepare data to send
+    item = {
+        "user": user_data.User.username,
+        "item": item.Item,
+        "price": item.Cost,  # Changed "Cost" to "Price"
+        "note": item.Note
+    }
+    
+    # Send the data to the WebSocket consumer
+    async_to_sync(channel_layer.group_send)(
+        channel_name,
+        {"type": "show.itemAvailed", "item": item}
+    )
 
 def availed_item(user,room,item,price,note=None):
     

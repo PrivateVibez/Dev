@@ -1093,3 +1093,16 @@ function check_modal()
     </div>
   </div>
     
+
+    show_itemAvailedInPublicChat(room,user_data,item)
+
+
+    <div class="text-muted d-flex justify-content-end">
+      <small class="public_chat_room_message_username font-weight-bold text-dark">{{ item.User }}</small>
+  </div>
+
+  <div class="card card-body py-2 my-1 public_chat_room_message_text mb-4 ml-auto" style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">
+
+      {{ item.Item }}
+      
+                                    </div>

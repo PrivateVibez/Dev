@@ -1,0 +1,65 @@
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="row mt-5">
+      <div class="col-2">
+        <h3 class="">Slot Machine</h3>
+            <button class="btn btn-primary fs-5" data-bs-toggle="modal" data-bs-target="#modal-for-slot-machine-cost-per-spin"> Update slot machine</button>
+
+      </div>
+    </div>
+
+
+    
+      <!-- Modal for updating slot machine cost per spin -->
+<div class="modal fade" id="modal-for-slot-machine-cost-per-spin" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update Slot machine cost per spin</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center">
+        <label for="slot-machine-cost" class="d-block">Slot machine cost per spin</label>
+        <input class="" name="slot-machine-cost" id="slot-machine-cost" placeholder="{{slot_machine.Slot_Machine_Spin_Cost}}">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" onclick="update_Slot_Machine_Cost_Per_Spin()" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  </div>
+
+
+</div>
+
+
+<script>
+
+
+  function update_Slot_Machine_Cost_Per_Spin() {
+    let slot_machine_cost = document.getElementById('slot-machine-cost').value;
+    let data = {
+      "slot_machine_cost": slot_machine_cost,
+      'csrfmiddlewaretoken':"{{csrf_token}}",
+    }
+    $.ajax({
+      type: "POST",
+      url: "/staff/update_slot_machine_cost_per_spin/",
+      data: data,
+      success: function(data) {
+        console.log(data);
+        successToast(data.data);
+      },
+      error: function(data) {
+        console.log(data);
+        alert("Something went wrong");
+      }
+    });
+  }
+
+</script>

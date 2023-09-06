@@ -93,7 +93,7 @@
              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
            </div>
            <div class="toast-body fs-2">
-             {{ message | safe }}
+             {{ message }} 
            </div>
          </div>
       
@@ -195,44 +195,85 @@
 <!-- Login Modal-->
 
 <div class="modal fade" id="login_modal" tabindex="-1" role="dialog" aria-labelledby="login_modal_label" aria-hidden="true">
-    <div class="modal-dialog  modal-dialog-centered" role="document">
-      <div class="modal-content" style="background-image: url('{% static 'images/loginimg1.jpg' %}');  background-size: cover; background-position: center; ">
+    <div class="modal-dialog  modal-dialog-centered" style="max-width:800px;" role="document">
+      <div class="modal-content" style="background-color: #6cc6ba;">
         <div class="modal-header">
-          <h5 class="modal-title display-4 font-weight-bold text-white text-center w-100" id="login_modal_label">Login</h5>
+          <h5 class="modal-title display-4 font-weight-bold text-dark text-center w-100" id="login_modal_label">Login</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span class="fs-1" style="color:#1db9a7" aria-hidden="true">&times;</span>
+            <span class="fs-1 text-dark" aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form action="/accounts/login/" method="POST">
-            {% csrf_token %}
+        <section class="vh-75" style="background-color: #6cc6ba;">
 
-            {% block user_login_credentials %}
-            <div class="modal-body">
-                <div class="col-8 h-50 m-auto">
-                <div class="form-group">
-                    <label class="text-white" style="font-size:2rem" for="username">username</label>
-                    <input type="type" style="font-size:2rem" class="form-control h-50" id="username" name="username" aria-describedby="emailHelp" >
+            <div class="container py-5 h-75">
+              
+              <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col col-xl-10">
+                  <div class="card" style="border-radius: 1rem;">
+                    <div class="row g-0">
+        
+                      <div class="col-md-6 col-lg-5 d-none d-md-block">
+                        <img src="{% static 'images/pexels-alexander-krivitskiy-1271374.jpg' %}"
+                          alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
+                      </div>
+        
+        
+                      <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                        <div class="card-body p-4 p-lg-5 text-black">
+          
+                            <div class="d-flex align-items-center mb-3 pb-1">
+        
+                              <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;">  
+                                    <img src="{% static 'images/logo/small_logo.png' %}" alt="Private Vibez Logo" width="50" class="d-inline-block align-text-top">
+                              </i>
+        
+                              <span class="h1 fw-bold display-4 mb-0">Interactive Pleasures</span>
+        
+                            </div>
+          
+                            <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px; font-size:2rem;">Sign In</h5>
+        
+                            <div id="info_box" style='display:block;'>
+                              <div class="form-outline mb-4">
+                                
+                                <form action="/accounts/login/" method="POST">
+                                  {% csrf_token %}
+        
+                                    <div class="form-outline mb-4"> 
+        
+                                            <input type="type" name="username" id="username" style="font-size:2rem;" class="form-control" />
+                                            <label class="form-label my-2" style="font-size:2rem;" name="username" id="username" for="form3Example3">
+                                              Email address or Username</label>
+        
+                                    </div>
+        
+                                    <div class="form-outline mb-4">                               
+                  
+                                      <input type="password" id="password" style="font-size:2rem;" name="password"class="form-control" />
+                                      <label class="form-label my-2" style="font-size:2rem;" for="password">Password</label>
+                                            
+                                    </div>
+            
+                                    <div class="pt-1 mb-4">
+                                        <button type="submit" style="font-size:2rem;" class="btn btn-dark btn-lg btn-block">Sign in</button>
+        
+                                        <p class="my-2" style="font-size:2rem;">New to PriveVibez? 
+                                          <a href="/accounts/signup/" style="font-size:2rem;" type="button" class="btn btn-link"> Sign up now.
+                                          </a>
+                                        </p>
+                                        
+                                    </div>
+                                </form>
+          
+                            </div>
+                        </div>
+        
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="form-group">
-                    <label class="text-white" style="font-size:2rem" for="password">password</label>
-                    <input type="password" style="font-size:2rem" class="form-control" id="password" name="password" >
-                </div>
-                </div>
-                <div class="small text-center">
-                    <p class="text-white" style="font-size:2rem">New to Private vibez? <a href='/accounts/signup/' type="button" class="btn text-warning" style="font-size:2.3rem"  onclick='change_signUp()'> Sign up now.</a></p>
-                </div>
-            </div>
-            {% endblock user_login_credentials %}
-
-
-            <div class="modal-footer container-fluid" style="height:100px">
-                <div class="col-2 p-0">
-                </div>
-                <div class="col-2 p-0">
-                    <button type="submit" style="font-size:2rem" class="btn btn-primary font-weight-bold w-100" id="btn_submit_store">Login</button>
-                </div>
-            </div>
-        </form>
+              </div>
+            </section>
       </div>
     </div>
 </div>
@@ -240,49 +281,74 @@
   <!-- Registration Modal-->
   {% block registration_modal %}
 <div class="modal fade" id="registration_modal" tabindex="-1" role="dialog" aria-labelledby="registration_modal_label" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered"  role="document">
-      <div class="modal-content" style="background-image: url('{% static 'images/loginimg1.jpg' %}');  background-size: cover; background-position: center; ">
+    <div class="modal-dialog modal-dialog-centered" style="max-width:900px"  role="document">
+      <div class="modal-content" style="background-color: #6cc6ba;">
         <div class="modal-header">
-          <h5 class="modal-title font-weight-bold text-white w-100 text-center fs-1" id="registration_modal_label">Sign Up</h5>
+          <h5 class="modal-title font-weight-bold text-dark w-100 text-center fs-1" id="registration_modal_label">Sign Up</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span class="fs-1" style="color:#1db9a7" aria-hidden="true">&times;</span>
           </button>
         </div>
 
-                              {% comment %} REGISTRATION FORM {% endcomment %}
-
-        <form action="/accounts/signup/" method="POST">
-            
-            {% csrf_token %}
-            <div class="modal-body">
-                <div class="col-8 h-50 m-auto">
-                    <div class="form-group">
-                        <label class="text-white" style="font-size:2rem" for="username">Username</label>
-                        <input type="type" class="form-control" style="font-size:2rem" id="register_username" name="username" aria-describedby="emailHelp" placeholder="Username">
+        <section class="vh-100" style="background-color: #6cc6ba;">
+            <div class="container py-5 h-100">
+              <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col col-xl-10">
+                  <div class="card" style="border-radius: 1rem;">
+                    <div class="row g-0">
+                      <div class="col-md-6 col-lg-5 d-none d-md-block">
+                        <img src="{% static 'images/pexels-alexander-krivitskiy-1271374.jpg' %}"
+                          alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
+                      </div>
+                      <div class="col-md-6 col-lg-7 d-flex align-items-center">
+                        <div class="card-body p-4 p-lg-5 text-black">
+          
+                            <div class="d-flex align-items-center mb-3 pb-1">
+                              <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;">  
+                                    <img src="{% static 'images/logo/small_logo.png' %}" alt="Private Vibez Logo" width="50" class="d-inline-block align-text-top">
+                              </i>
+                              <span class="h1 fw-bold display-4 text-center mb-0">Interactive Pleasures</span>
+                            </div>
+          
+                            <h5 class="fw-normal display-4 my-5 text-center pb-3" style="letter-spacing: 1px;">Sign Up</h5>
+                            <div id="info_box" style='display:block;'>
+                              <div class="form-outline mb-4">
+                                <form action="/accounts/signup/" method="POST">
+                                    <div class="form-outline row gap-3 mb-4">                               
+                                            {% csrf_token %}
+                                       <label style="font-size:2rem;">username</label>
+                                       <input type="text" style="font-size:2rem;" class="border-1" name="username"></input>
+        
+                                       
+                                       <label style="font-size:2rem;">email</label>
+                                       <input type="text" style="font-size:2rem;" class="border-1" name="email"></input>
+        
+                                       
+                                       <label style="font-size:2rem;">password</label>
+                                       <input type="password" style="font-size:2rem;" class="border-1" name="password1"></input>
+        
+                                       
+                                       <label style="font-size:2rem;">confirm password</label>
+                                       <input type="password" style="font-size:2rem;" class="border-1" name="password2"></input>
+        
+                                       
+        
+                                          
+                                    </div>
+                                    <div class="pt-1 mb-4">
+                                        <button type="submit" style="font-size:2rem" class="btn btn-dark btn-lg btn-block my-5">Sign Up</button>
+                                        <p class="mt-5" style="font-size:2rem">Not new to PriveVibez? <a href="/accounts/login/" style="font-size:2rem" type="button" class="btn btn-link"> Sign in now.</a></p>
+                                    </div>
+                                </form>
+          
+                            </div>
+                        </div>
+                      </div>
                     </div>
-                    <div class="form-group">
-                        <label class="text-white" style="font-size:2rem" for="email">Email address</label>
-                        <input type="email" class="form-control" style="font-size:2rem" id="email" name="email" aria-describedby="emailHelp" placeholder="Email">
-                    </div>
-                    <div class="form-group">
-                        <label class="text-white" style="font-size:2rem" for="password1">Password</label>
-                        <input type="password" class="form-control" style="font-size:2rem" id="password1" name="password1" placeholder="Password">
-                    </div>
-                    <div class="form-group">
-                        <label class="text-white" style="font-size:2rem" for="password2">Confirm password</label>
-                        <input type="password" class="form-control" style="font-size:2rem" id="password2" name="password2" placeholder="Confirm password">
-                    </div>
+                  </div>
                 </div>
-
-            </div>
-            <div class="small text-center">
-            <p class="text-white" style="font-size:2rem" >Not new to Private Vibez? <a href="/accounts/login/" style="font-size:2.3rem" type="button" class="btn text-warning"> Sign in now.</a></p>
-            </div>
-
-            <div class="modal-footer">
-            <button type="submit" style="font-size:2rem" class="btn btn-primary">Register</button>
-            </div>
-        </form>
+              </div>
+            </section>
       </div>
     </div>
   </div>

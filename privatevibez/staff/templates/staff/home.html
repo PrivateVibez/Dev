@@ -53,10 +53,20 @@
                     </button>
 
 
+                    <!--PROMOTIONS-->
                     <button class="nav-link d-flex justify-content-between" id="v-pills-promotions-tab" data-bs-toggle="pill" data-bs-target="#v-pills-promotions" type="button" role="tab" aria-controls="v-pills-promotions" aria-selected="true">
                         <span class="text-white">Promotions</span>
                         <span class=""><i class="bi text-white bi-badge-ad-fill"></i></span>
                     </button>
+                    <!--PROMOTIONS-->
+
+
+                    <!--SLOT MACHINE-->
+                    <button class="nav-link d-flex justify-content-between" id="v-pills-slot-machine-tab" data-bs-toggle="pill" data-bs-target="#v-pills-slot-machine" type="button" role="tab" aria-controls="v-pills-slot-machine" aria-selected="true">
+                        <span class="text-white">Interactives</span>
+                        <span class=""><i class="bi text-white bi-badge-ad-fill"></i></span>
+                    </button>
+                    <!--PROMOTIONS-->
 
 
                     {% if perms.staff.can_view_id_check %}
@@ -139,6 +149,11 @@
         <!--PROMOTIONS-->
         <div class="tab-pane fade w-100 m-lg-5" id="v-pills-promotions" role="tabpanel" aria-labelledby="v-pills-promotions-tab">
             {% include 'staff/include/promotions.html'%} 
+       </div>
+
+        <!--SLOT MACHINE-->
+        <div class="tab-pane fade w-100 m-lg-5" id="v-pills-slot-machine" role="tabpanel" aria-labelledby="v-pills-slot-machine-tab">
+            {% include 'staff/include/slot_machine.html'%} 
        </div>
 
         {% comment %} create staff {% endcomment %}

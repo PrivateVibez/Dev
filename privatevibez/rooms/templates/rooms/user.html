@@ -973,8 +973,43 @@ let public_socket = new WebSocket(protocol + '://' + window.location.host + '/ws
         var data = JSON.parse(e.data);
         var message = data.message;
         var username = data.username;
+        var item_availed = data.item_availed;
+
+        
+
+        if(typeof item_availed !== 'undefined')
+            {
+                var user_wrapper = document.createElement('div');
+                var item_availed_wrapper = document.createElement('div');
+                var user = document.createElement('small');
+
+                user_wrapper.setAttribute('class', 'text-muted d-flex justify-content-end');
+                user.setAttribute('class', 'public_chat_room_message_username font-weight-bold text-dark');
+                item_availed_wrapper.setAttribute('class', 'card card-body py-2 my-1 public_chat_room_message_text mb-4 ml-auto');
+                item_availed_wrapper.setAttribute('style', 'border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;');
+                
+                user.innerHTML = item_availed.user;
+                user_wrapper.appendChild(user);
+
+                item_availed_wrapper.innerHTML = `${item_availed.user} availed ` + item_availed.item;
+
+                console.log(item_availed_wrapper);
+                console.log(user_wrapper);
+                var messages_element = document.getElementById('public_chat_room_messages');
+
+                document.getElementById('public_chat_room_messages').appendChild(user_wrapper);
+                document.getElementById('public_chat_room_messages').appendChild(item_availed_wrapper);
+
+
+                document.getElementById('public_chat_room_messages').scrollTop = document.getElementById('public_chat_room_messages').scrollHeight;
+
+            }
+
+
+
+
         // Add message to chat room
-        if(username === "{{ user }}"){
+        else if(username === "{{ user }}"){
             var message_element = document.createElement('div');
             message_element.setAttribute('class', 'card card-body py-2 my-1 public_chat_room_message_text mb-4 ml-auto');
             message_element.setAttribute('style', 'border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;');
@@ -990,7 +1025,10 @@ let public_socket = new WebSocket(protocol + '://' + window.location.host + '/ws
             var messages_element = document.getElementById('public_chat_room_messages');
             messages_element.appendChild(username_element);
             messages_element.appendChild(message_element);
-        }else{
+
+        }
+        else if(username !== "{{ user }}")
+        {
             var message_element = document.createElement('div');
             message_element.setAttribute('class', 'card card-body py-2 my-1 public_chat_room_message_text mb-4');
             message_element.setAttribute('style', 'border-radius: 13px; width: fit-content;');

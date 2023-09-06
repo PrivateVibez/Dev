@@ -16,10 +16,16 @@ class Profile_Image(forms.ModelForm):
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
     username = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
+    password1 = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
+    password2 = forms.CharField(error_messages={'password_mismatch': ''},widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
 
     class Meta:
+        error_messages = {
+            'password_mismatch':'error'
+        }
         model = User
         fields = ['username', 'email', 'password1', 'password2']
+
 
 
 

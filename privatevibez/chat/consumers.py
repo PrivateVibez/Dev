@@ -44,7 +44,14 @@ class PublicChatConsumer(AsyncWebsocketConsumer):
         )
         
         
-    # show 
+    # show user availed item in broadcaster public chat
+    
+    async def show_itemAvailed(self,event):
+        item = event['item']
+        modified_data = {
+        "item_availed": item
+            }
+        await self.send(text_data=json.dumps(modified_data))
 
     # Receive message from room group
     async def chat_message(self, event):
