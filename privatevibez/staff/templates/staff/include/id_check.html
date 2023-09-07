@@ -65,17 +65,23 @@
 
                                                           <!-- Modal -->
                             <div class="modal fade" id="modal-{{user.User.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                              <div class="modal-dialog modal-dialog-scrollable" role="document">
+                              <div class="modal-dialog modal-dialog-scrollable" style="max-width:900px" role="document">
                                 <div class="modal-content">
                                   <div class="modal-header">
+                                    <div class="col">
                                     <h5 class="modal-title" id="exampleModalLongTitle"> ID CHECK</h5>
-
+                                    <button id="zoom-in" onclick="zoom_in_user_id({{user.id}})">Zoom In</button>
+                                    <button id="zoom-out" onclick="zoom_out_user_id({{user.id}})" >Zoom Out</button>
+                                    </div>
                                   </div>
                                   <div class="modal-body">
                                     <div class="container-fluid">
                                       <div class="row justify-content-center">
-                                        <div class="">
-                                          <img src="{{user.Id_File.url}}" alt="" class="img-fluid">
+                                        <div id="zoom-container-{{user.id}}" style="position: relative;
+                                        overflow: hidden;">
+                                          <img src="{{user.Id_File.url}}" alt="" id="user-id-pic-{{user.id}}" style="width: 100%;
+                                          height: 100%;
+                                          transition: transform 0.3s ease-in-out;" class="img-fluid">
                                         </div>
                                         <div class="row">
                                           <span>First Name:</span>
@@ -86,21 +92,6 @@
 
                                           <span>Birth date:</span>
                                           <span class="fs-3 text-center">{{user.Birth_Date}}</span>
-
-                                          <span>Age:</span>
-                                          <span class="fs-3 text-center">{{user.Age}}</span>
-
-                                          <span>Gender:</span>
-                                          <span class="fs-3 text-center">{{user.I_Am}}</span>
-
-                                          <span>Interested in:</span>
-                                          <span class="fs-3 text-center">{{user.Interested_In}}</span>
-
-                                          <span>Language:</span>
-                                          <span class="fs-3 text-center">{{user.Language}}</span>
-
-                                          <span>Body type:</span>
-                                          <span class="fs-3 text-center">{{user.Body_Type}}</span>
 
                                         </div>
 
@@ -400,4 +391,70 @@ function send_decline_message() {
   }
 
 
+  let currentScales = {}; // Store current scales for each image by ID
+  let isDragging = false;
+  let offsetX, offsetY;
+  let currentImageId;
+  
+  function zoom_in_user_id(id) {
+    if (!currentScales[id]) {
+      currentScales[id] = 1.0; // Initialize scale to 1.0 if not set
+    }
+  
+    currentScales[id] += 0.1; // Increase the zoom level by 0.1
+    var img = document.getElementById('user-id-pic-' + id);
+    img.style.transform = `scale(${currentScales[id]})`;
+  
+    // Add mouse event listeners for drag
+    img.addEventListener('mousedown', (e) => startDrag(e, id));
+    img.addEventListener('mouseup', stopDrag);
+  }
+  function zoom_out_user_id(id) {
+    if (!currentScales[id]) {
+      currentScales[id] = 1.0; // Initialize scale to 1.0 if not set
+    }
+  
+    currentScales[id] -= 0.1; // Increase the zoom level by 0.1
+    var img = document.getElementById('user-id-pic-' + id);
+    img.style.transform = `scale(${currentScales[id]})`;
+  
+    // Add mouse event listeners for drag
+    img.addEventListener('mousedown', (e) => startDrag(e, id));
+    img.addEventListener('mouseup', stopDrag);
+  }
+  
+  function startDrag(e, id) {
+    isDragging = true;
+    currentImageId = id;
+    const img = document.getElementById('user-id-pic-' + id);
+    offsetX = e.clientX - img.getBoundingClientRect().left;
+    offsetY = e.clientY - img.getBoundingClientRect().top;
+    
+    // Prevent browser's default drag-and-drop behavior
+    e.preventDefault();
+    
+    // Listen to mousemove and mouseup events on the document
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', stopDrag);
+  }
+  
+  function drag(e) {
+    if (!isDragging) return;
+  
+    const img = document.getElementById('user-id-pic-' + currentImageId);
+    const container = document.getElementById('zoom-container-' + currentImageId);
+    console.log(currentImageId);
+    console.log(document.getElementById('zoom-container-' + currentImageId));
+    const newX = e.clientX - container.getBoundingClientRect().left - offsetX;
+    const newY = e.clientY - container.getBoundingClientRect().top - offsetY;
+  
+    img.style.transform = `scale(${currentScales[currentImageId]}) translate(${newX}px, ${newY}px)`;
+  }
+  
+  function stopDrag() {
+    isDragging = false;
+    document.removeEventListener('mousemove', drag);
+    document.removeEventListener('mouseup', stopDrag);
+  }
+  
 </script>

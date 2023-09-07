@@ -64,9 +64,17 @@
                     <!--SLOT MACHINE-->
                     <button class="nav-link d-flex justify-content-between" id="v-pills-slot-machine-tab" data-bs-toggle="pill" data-bs-target="#v-pills-slot-machine" type="button" role="tab" aria-controls="v-pills-slot-machine" aria-selected="true">
                         <span class="text-white">Interactives</span>
-                        <span class=""><i class="bi text-white bi-badge-ad-fill"></i></span>
+                        <span class=""><i class="bi text-white bi-hand-index-fill"></i></span>
                     </button>
-                    <!--PROMOTIONS-->
+                    <!--SLOT MACHINE-->
+
+                   
+                     <!--SUBSCRIPTIONS-->
+                    <button class="nav-link d-flex justify-content-between" id="v-pills-slot-machine-tab" data-bs-toggle="pill" data-bs-target="#v-pills-subscription" type="button" role="tab" aria-controls="v-pills-subscription" aria-selected="true">
+                        <span class="text-white">Subscriptions</span>
+                        <span class=""><i class="bi text-white bi-star-fill"></i></span>
+                    </button>
+                    <!--SUBSCRIPTIONS-->
 
 
                     {% if perms.staff.can_view_id_check %}
@@ -154,6 +162,11 @@
         <!--SLOT MACHINE-->
         <div class="tab-pane fade w-100 m-lg-5" id="v-pills-slot-machine" role="tabpanel" aria-labelledby="v-pills-slot-machine-tab">
             {% include 'staff/include/slot_machine.html'%} 
+       </div>
+
+        <!--SUBSCRIPTIONS-->
+        <div class="tab-pane fade w-100 m-lg-5" id="v-pills-subscription" role="tabpanel" aria-labelledby="v-pills-subscription-tab">
+            {% include 'staff/include/subscription.html'%} 
        </div>
 
         {% comment %} create staff {% endcomment %}

@@ -55,6 +55,13 @@ urlpatterns = [
     path('updateStaffData/', views.updateStaffData, name="updateStaffData"),
     
     
+    # update subscription
+    path('update-subscription/', views.updateSubscriptions, name="updateSubscriptions"),
+    
+    # delete subscription
+    path('delete-subscription/', views.deleteSubscriptions, name="deleteSubscriptions"),
+    
+    
     # update slot machine cost per spin
     path('update_slot_machine_cost_per_spin/', views.update_slot_machine_cost_per_spin, name="update_slot_machine_cost_per_spin"),
     

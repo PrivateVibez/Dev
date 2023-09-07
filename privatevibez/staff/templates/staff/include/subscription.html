@@ -1,0 +1,144 @@
+<div class="container-fluid">
+
+  <div class="row">
+    <h3 class="text-center">Subscriptions</h3>
+  </div>
+
+  <div class="row">
+    <table class="table">
+      <thead>
+        <tr>
+ 
+          <th scope="col">Promotion</th>
+          <th scope="col">Cost</th>
+          <th scope="col">Vibez</th>
+          <th scope="col">Free slot spins</th>
+          <th scope="col">Badge</th>
+      
+        </tr>
+      </thead>
+      <tbody>
+        {% for subscription in subscriptions %}
+        <tr>
+          <th>{{subscription.Name}}</th>
+          <td>${{subscription.Cost}}</td>
+          <td>{{subscription.Vibez}}</td>
+          <td>{{subscription.Slots}}</td>
+          <td class="w-50"><img style="max-width: 8%;" src="{{subscription.Badge.url}}"></td>
+          <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#update-subscription-{{subscription.id}}">Update</button></td>
+          <td><button class="btn btn-danger" onclick="delete_subscription({{subscription.id}})">Delete</button></td>
+        </tr>
+
+
+        <div class="modal fade" id="update-subscription-{{subscription.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Update Subscription</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="container-fluid">
+                  <div class="row">
+                  
+                      <label class="" for="subscription-name-{{subscription.id}}">Promotion</label>
+                      <input id="subscription-name-{{subscription.id}}" value="{{subscription.Name}}" class="">
+                      <label class="" for="subscription-cost-{{subscription.id}}">Cost</label>
+                      <input id="subscription-cost-{{subscription.id}}" value="${{subscription.Cost}}" class="">
+                      <label class="" for="subscription-vibez-{{subscription.id}}">Vibez</label>
+                      <input id="subscription-vibez-{{subscription.id}}" value="{{subscription.Vibez}}" class="">
+                      <label class="" for="subscription-slots-{{subscription.id}}">Free spins</label>
+                      <input id="subscription-slots-{{subscription.id}}" value="{{subscription.Slots}}" class="">
+                      <label class="" for="subscription-badge-{{subscription.id}}">Badge</label>
+                      <img style="max-width: 20%;" class="my-2 m-auto" src="{{subscription.Badge.url}}">
+                      <input type="file" id="subscription-badge-{{subscription.id}}" class="">
+                   
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" onclick="update_subscription({{subscription.id}})" class="btn btn-primary">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+<script>
+
+  function update_subscription(id) {
+    var form_data = new FormData();
+    
+    // Append form fields to the FormData object
+    form_data.append("subscription_name", document.getElementById("subscription-name-" + id).value);
+    form_data.append("cost", document.getElementById("subscription-cost-" + id).value);
+    form_data.append("subscription_id", id);
+    form_data.append("vibez", document.getElementById("subscription-vibez-" + id).value);
+    form_data.append("slots", document.getElementById("subscription-slots-" + id).value);
+  
+    var badge = document.getElementById("subscription-badge-" + id).files[0];
+    if (badge) {
+      form_data.append("badge", badge);
+    }
+    var csrf_token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+
+    $.ajax({
+      type: "POST",
+      url: "update-subscription/",
+      data: form_data,
+      processData: false,  // Important: prevent jQuery from processing the data
+      contentType: false,  // Important: let the server handle the content type
+      headers: {
+        "X-CSRFToken": csrf_token // Include the CSRF token in the request headers
+      },
+      success: function(data) {
+        console.log(data);
+        location.reload();
+      },
+      error: function(xhr, textStatus, errorThrown) {
+        console.error("Error:", errorThrown);
+        // Handle error as needed
+      }
+    });
+  }
+
+
+  function delete_subscription(id) {
+    // Ask for confirmation
+    if (confirm("Are you sure you want to delete this subscription?")) {
+      var form_data = new FormData();
+      form_data.append("subscription_id", id);
+      var csrf_token = document.getElementsByName("csrfmiddlewaretoken")[0].value;
+  
+      $.ajax({
+        type: "POST",
+        url: "delete-subscription/",
+        data: form_data,
+        processData: false,  // Important: prevent jQuery from processing the data
+        contentType: false,  // Important: let the server handle the content type
+        headers: {
+          "X-CSRFToken": csrf_token // Include the CSRF token in the request headers
+        },
+        success: function(data) {
+          console.log(data);
+          location.reload();
+        },
+        error: function(xhr, textStatus, errorThrown) {
+          console.error("Error:", errorThrown);
+          // Handle error as needed
+        }
+      });
+    }
+  }
+  
+  
+
+</script>

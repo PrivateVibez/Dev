@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from accounts.models import User_Data
+from accounts.models import User_Data, Subscription
 from .models import StaffManager
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -49,6 +49,12 @@ class UpdateStaffInfoForm(forms.ModelForm):
         staff_id = forms.IntegerField(widget=forms.HiddenInput())
         model = StaffManager
         fields = ['staff_id','email','fname', 'lname', 'birthday', 'address']
+        
+        
+class UpdateSubscriptions(forms.ModelForm):
+    class Meta:
+        model = Subscription
+        fields = ['Name','Cost','Vibez','Slots','Badge']
         
 
 

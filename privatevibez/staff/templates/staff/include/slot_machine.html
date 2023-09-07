@@ -1,6 +1,6 @@
 <div class="container-fluid">
 
-  <div class="row">
+  <div class="row gap-5">
     <div class="row mt-5">
       <div class="col-2">
         <h3 class="">Slot Machine</h3>
@@ -29,6 +29,110 @@
       </div>
     </div>
   </div>
+</div>
+
+
+
+<div class="col">
+
+  <!--MENU DATA-->
+  <h3 class="font-weight-bold fs-2">Favorite buttons</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Button</th>
+        <th scope="col">Total Availed</th>
+        <th scope="col">Revenue</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for button in fav_buttons %}
+      <tr>
+        <td>{{button.item}}</td>
+        <td>{{button.item_count}}</td>
+        <td>{{button.cost_sum}}</td>
+        <td></td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <th>TOTAL:</th>
+        <td></td>
+        <td>{{total_revenue_fav_buttons}}</td>
+
+      </tr>
+    </tbody>
+  </table>
+
+
+</div>
+
+
+<div class="col">
+
+  <!--MENU DATA-->
+  <h3 class="font-weight-bold fs-2">Menu Items</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Item</th>
+        <th scope="col">Total Availed</th>
+        <th scope="col">Revenue</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in menu_items %}
+      <tr>
+        <td>{{item.item}}</td>
+        <td>{{item.item_count}}</td>
+        <td>{{item.cost_sum}}</td>
+        <td></td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <th>TOTAL:</th>
+        <td></td>
+        <td>{{total_revenue_menu_items}}</td>
+
+      </tr>
+    </tbody>
+  </table>
+
+
+</div>
+
+
+<div class="col">
+
+  <!--MENU DATA-->
+  <h3 class="font-weight-bold fs-2">Slot Machine</h3>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Prize</th>
+        <th scope="col">Total Availed</th>
+        <th scope="col">Revenue</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+      {% for slot in slot_machine_data %}
+      <tr>
+        <td>{{slot.item}}</td>
+        <td>{{slot.item_count}}</td>
+        <td>{{slot.cost_sum}}</td>
+        <td></td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <th>TOTAL:</th>
+        <td></td>
+        <td>{{total_revenue_slot_machine_data}}</td>
+
+      </tr>
+    </tbody>
+  </table>
+
+
 </div>
 
 

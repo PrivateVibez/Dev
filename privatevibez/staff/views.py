@@ -34,13 +34,63 @@ from django.shortcuts import get_object_or_404
 from django.views import View
 from .serializers import StaffMessagesSerializer, UserStatusSerializer, StaffSerializer
 from staff.models import Memos
-from django.db.models import Q, Sum
+from django.db.models import Q, Sum, Count
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
 # Create your views here.
+def get_all_availed_fav_buttons():
+        filter_values = ['MMM','OH','OHYes']# Add more values as needed
+        # Use conditional aggregation to get counts and cost sums for the specified values
+        result = (
+        Item_Availed.objects
+        .filter(Item__in=filter_values)
+        .values('Item')
+        .annotate(item_count=Count('Item'), cost_sum=Sum('Cost'))
+        )
+                        
+        # Create a dictionary to store the results
+        fav_buttons = [{'item': item['Item'], 'item_count': item['item_count'], 'cost_sum': item['cost_sum']} for item in result]
 
+        return fav_buttons
+
+def get_all_availed_menu_items():
+    filter_values = ['MMM', 'OH', 'OHYes','3OAK','2OAK','Sent Vibez','Slot Spin']  # Add more values as needed
+    # Use conditional aggregation to get counts and cost sums for the specified values
+    result = (
+        Item_Availed.objects
+        .exclude(Item__in=filter_values)  # Exclude items in filter_values
+        .values('Item')
+        .annotate(item_count=Count('Item'), cost_sum=Sum('Cost'))
+    )
+
+    # Create a dictionary to store the results
+    menu_items = [{'item': item['Item'], 'item_count': item['item_count'], 'cost_sum': item['cost_sum']} for item in result]
+
+    return menu_items
+
+
+def get_all_slot_machine_data():
+    filter_values = ['3OAK','2OAK','Slot Spin']  # Add more values as needed
+    # Use conditional aggregation to get counts and cost sums for the specified values
+    result = (
+        Item_Availed.objects
+        .filter(Item__in=filter_values) 
+        .values('Item')
+        .annotate(item_count=Count('Item'), cost_sum=Sum('Cost'))
+    )
+
+    # Create a dictionary to store the results
+    slot_machine_data = [{'item': item['Item'], 'item_count': item['item_count'], 'cost_sum': item['cost_sum']} for item in result]
+
+    return slot_machine_data
+
+
+def calculate_total_cost(data):
+    total_cost = sum(item['cost_sum'] for item in data)
+    return total_cost
+        
 def home(request):
         
         current_datetime = timezone.now()
@@ -54,11 +104,22 @@ def home(request):
                 promotions    = Promotion.objects.filter(
                 Q(timestamp__gte=current_datetime) | Q(Promotion_Registration_Limit__gt=0)
                 )
+                
                 broadcaster_promotions = Room_Data.objects.filter(Room_promotion__isnull=False)
-
-
                 total_cash = PrivatevibezRevenue.objects.aggregate(Sum('Total_Cash'))
                 
+                
+                subscriptions = Subscription.objects.all()
+                fav_buttons = get_all_availed_fav_buttons()
+                total_revenue_fav_buttons = calculate_total_cost(fav_buttons)
+                
+                menu_items = get_all_availed_menu_items()
+                total_revenue_menu_items = calculate_total_cost(menu_items)
+                
+                slot_machine_data = get_all_slot_machine_data()
+                total_revenue_slot_machine_data = calculate_total_cost(slot_machine_data)
+                
+
                 bad_acters_list = []
                 
                 pending = User.objects.filter(Status='Pending_Broadcaster')
@@ -657,7 +718,53 @@ def send_Promotion(request):
                 
                 else:
                         return JsonResponse({"data":f'Invalid input!'},status=500, safe=False)
+                
+                
+                
+def updateSubscriptions(request):
+        
+        if request.method == "POST":
+                
+                subscription_name = request.POST.get('subscription_name')
+                subscription_cost = request.POST.get('cost')
+                subscription_vibez = request.POST.get('vibez')
+                subscription_slots = request.POST.get('slots')
+                subscription_badge = request.FILES.get('badge')
+                subscription_id = request.POST.get('subscription_id')
+                
+                subscription = get_object_or_404(Subscription,id=subscription_id)
+                
+                if subscription:
+                                
+                                subscription.Name = subscription_name
+                                subscription.Cost = subscription_cost
+                                subscription.Vibez = subscription_vibez
+                                subscription.Slots = subscription_slots
+                                
+                                if subscription_badge is not None:
+                                        subscription.Badge = subscription_badge
+                                        
+                                subscription.save()
+                                
+                                return JsonResponse({"data":f'Successfully updated subscription'},status=200, safe=False)
+                print(subscription,flush=True)
 
+
+
+                return redirect(request.META.get('HTTP_REFERER'))
+        
+        
+def deleteSubscriptions(request):
+        
+        if request.method == "POST":
+                subscription_id = request.POST.get('subscription_id')
+                subscription = get_object_or_404(Subscription,id=subscription_id)
+                subscription.delete()
+                
+                return JsonResponse({"data":f'Successfully deleted subscription'},status=200, safe=False)
+
+                
+                
 
 
 

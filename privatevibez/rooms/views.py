@@ -626,7 +626,6 @@ def get_prize(request):
                         broadcaster = request.POST.get('broadcaster')
                         prize = request.POST.get('prize_won')
                         cost_per_spin = int(request.POST.get('cost_per_spin'))
-                 
                         room_data = get_object_or_404(Room_Data, User_id=broadcaster)     
                 
                 except IntegrityError as e:
@@ -645,7 +644,7 @@ def get_prize(request):
                     price = cost_per_spin
                     note = f'{winner.User.username} Won Two of a kind!'
             
-                    pot = availed_item(winner.User.id,room_data,"OH",price,note)
+                    pot = availed_item(winner.User.id,room_data,"2OAK",price,note)
                     
                     winner = trigger_toy(room_data.User.id,price,winner.User.id,feature,strength,timesec)
                     
@@ -672,14 +671,16 @@ def get_prize(request):
                     feature = room_data.Feature_OH_button
                     strength = room_data.Strength_OH_button
                     timesec = 1    
-                      
+                    print("costperspin",flush=True)
+                    print(cost_per_spin,flush=True)
                     if winner.Free_spins != 0:
                         remaining_price = cost_per_spin
                     else:
                         remaining_price = charge_user(cost_per_spin)
                     
                     
-                    availed_item(winner.User.id,room_data,"Slot Spin",price,"Loss")
+
+                    availed_item(winner.User.id,room_data,"Slot Spin",remaining_price,"Loss")
                     winner = trigger_toy(room_data.User.id,cost_per_spin,winner.User.id,feature,strength,timesec)
                     slot_machine_pot = Slot_Machine.objects.filter(User=room_data.User)
                     
