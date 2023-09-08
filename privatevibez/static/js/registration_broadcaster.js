@@ -26,7 +26,7 @@ function ID_Next(){
             },
             'dataType': 'json',
             success:function(){
-              document.getElementById('info_box').style.display='none'
+              document.getElementById('info_boxs').style.display='none'
               document.getElementById('id_card_box').style.display='block'
 
               hideLoadingScreen();
@@ -36,14 +36,17 @@ function ID_Next(){
 
 function Stumiting_id_words(){  
     showLoadingScreen();
-    const file = document.getElementById('Id_Card_File').files[0];
-    const id_card_file = new FormData();
-    id_card_file.append('file', file);
+    const id_File = document.getElementById('Id_Card_File').files[0];
+    const  second_id_File= document.getElementById('Second_Id_Card_File').files[0];
+    const formData = new FormData();
+
+    formData.append('id_File', id_File);
+    formData.append('second_id_File', second_id_File);
     $.ajax({
         method:'POST',
         url: "/accounts/saveBroacasterId/",
         mimeType:"multipart/form-data",
-        data: id_card_file,
+        data: formData,
         processData: false,
         contentType: false,
         success:function(data){
@@ -173,12 +176,12 @@ function done(){
           dataType: 'json',
           processData: false, // Prevent jQuery from processing the data
           contentType: false, // Prevent jQuery from setting content type
-          success: function () {
+          success: function (data) {
             document.getElementById('bio_box').style.display = 'none'
             document.getElementById('bio_words').style.display = 'none'
             document.getElementById('Shown_questions').style.display = 'none'
             document.getElementById('Done_box').style.display = 'block'
-
+            console.log(data);
             hideLoadingScreen();
           },
           error: function (xhr, status, error) {

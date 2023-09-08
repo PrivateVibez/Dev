@@ -16,19 +16,7 @@
       </div>
 
       <div class="col-3 m-auto">
-      <form class="d-flex flex-column justify-content-center gap-2" method="POST">
-        <label for="email" class="fs-4">Email</label>
-        <input class="fs-4" id="promotion_email">
-        <label for="email" class="fs-4">Promotion code</label>
-        <select name="promotion">
-          {% for promotion in promotions %}
-          <option value="{{promotion.id}}">{{promotion.Promotion_Code}}</option>
-            {% endfor %}
-        </select>
-      
-        </select>
-        <button class="btn btn-primary fs-4" onclick="send_promotion()" type="submit">Send</button>
-      </form>
+          
       </div>
 
     </div>
@@ -69,7 +57,55 @@
                 </svg></span>
               </button>
           </td>
+
+          <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sendPromotion-{{promotion.id}}">Send Promotion</button></td>
           </tr>
+
+
+<!--MODAL FOR SENDING PROMITIONS-->
+<div class="modal fade" id="sendPromotion-{{promotion.id}}" tabindex="-1" aria-labelledby="sendPromotionModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Send Promotions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body row">
+        
+
+        <form method="POST" action="{% url 'send_Promotion' %}">
+          {% csrf_token %}
+          {{ formset.management_form }}
+        <div class="col gap-2" id="sendPromotionEmailsContainer">
+          <label for="promotion-email-0">Email:</label>
+        </div>
+
+        <div class="col text-center" id="">
+          <button type="button" onclick="add_email_input({{promotion.id}})" class="btn btn-primary m-auto">Add Email</button>
+        </div>
+        
+      </div>
+
+      <div class="col text-center d-block my-2" id="">
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+
+    </form>
+
+      <div class="modal-footer">     
+      </div>
+    </div>
+  </div>
+</div>
+<!--MODAL FOR SENDING PROMITIONS-->
+
+
+
+
+
+
+
+
 
         <!-- Modal for updating promotions -->
 <div class="modal fade" id="modalUpdatePromotion-{{promotion.id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -269,6 +305,51 @@ function send_promotion(){
     }
   });
 }
+
+let number_of_email_inputs = 0;
+let promotion_id;
+
+function add_email_input(id) {
+  console.log('called');
+  let sendPromotionEmailsContainer = document.getElementById('sendPromotionEmailsContainer');
+
+  if (number_of_email_inputs < 10) {
+    let input = document.createElement('input');
+    let input_Total_forms = document.getElementById('id_form-TOTAL_FORMS');
+    let input_Total_initial_forms = document.getElementById('id_form-INITIAL_FORMS');
+    let input_Min_num_forms = document.getElementById('id_form-MIN_NUM_FORMS');
+    let input_Max_num_forms = document.getElementById('id_form-MAX_NUM_FORMS');
+
+    input.setAttribute('type', 'email');
+    input.setAttribute('class', 'promotion-email my-2');
+    input.setAttribute('name', 'form-' + number_of_email_inputs + '-email');
+    input.setAttribute('id', 'promotion-email-' + number_of_email_inputs);
+    input.setAttribute('placeholder', 'Email');
+
+    number_of_email_inputs++;
+
+    // Update or create the TOTAL_FORMS field
+
+
+    // Create INITIAL_FORMS field if it doesn't exist
+
+
+    // Create promotion_id field if it doesn't exist
+    if (!promotion_id) {
+      promotion_id = document.createElement('input');
+      promotion_id.setAttribute('type', 'hidden');
+      promotion_id.setAttribute('name', 'promotion_id');
+      promotion_id.setAttribute('id', 'promotion_id');
+      promotion_id.setAttribute('value', id);
+      sendPromotionEmailsContainer.appendChild(promotion_id);
+    }
+
+    sendPromotionEmailsContainer.appendChild(input);
+  } else {
+    alert('You cannot add more than 10 email inputs.');
+  }
+}
+
 
 
 

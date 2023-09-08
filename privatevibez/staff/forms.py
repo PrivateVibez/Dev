@@ -56,6 +56,10 @@ class UpdateSubscriptions(forms.ModelForm):
         model = Subscription
         fields = ['Name','Cost','Vibez','Slots','Badge']
         
+        
+class promotionEmailForms(forms.Form):
+    email = forms.EmailField()
+        
 
 
 

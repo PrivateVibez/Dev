@@ -1106,3 +1106,21 @@ function check_modal()
       {{ item.Item }}
       
                                     </div>
+
+
+
+
+
+      <form class="d-flex flex-column justify-content-center gap-2" method="POST">
+        <label for="email" class="fs-4">Email</label>
+        <input class="fs-4" id="promotion_email">
+        <label for="email" class="fs-4">Promotion code</label>
+        <select name="promotion">
+          {% for promotion in promotions %}
+          <option value="{{promotion.id}}">{{promotion.Promotion_Code}}</option>
+            {% endfor %}
+        </select>
+      
+        </select>
+        <button class="btn btn-primary fs-4" onclick="send_promotion()" type="submit">Send</button>
+      </form>

@@ -8,8 +8,8 @@ import secrets
 import string
 from django.conf import settings
 from chat.models import Staff
-from django.conf import settings
-from .forms import UserRegisterForm, AddStaffPermission, AddStaff
+from django.forms import formset_factory
+from .forms import UserRegisterForm, AddStaffPermission, AddStaff, promotionEmailForms
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.contrib import messages
@@ -119,7 +119,10 @@ def home(request):
                 slot_machine_data = get_all_slot_machine_data()
                 total_revenue_slot_machine_data = calculate_total_cost(slot_machine_data)
                 
-
+                
+                promotion_email_formset = formset_factory(promotionEmailForms, extra=10, max_num=10)
+                formset = promotion_email_formset(prefix='form')
+                
                 bad_acters_list = []
                 
                 pending = User.objects.filter(Status='Pending_Broadcaster')
@@ -704,9 +707,24 @@ def send_Promotion(request):
         
         if request.method == "POST":
                 
-                promotion_email = request.POST.get('promotion_email')
-                promotion_id = request.POST.get('promotion_id')
-                promotion = get_object_or_404(Promotion, id=promotion_id)
+                promotion_email_formset = formset_factory(promotionEmailForms,extra=10, max_num=10)
+                
+                formset = promotion_email_formset(request.POST)
+                
+                print(request.POST,flush=True)
+                print(formset.errors,flush=True)
+                
+                for form in formset:
+                  if form.is_valid():
+                     print(form.as_table(),flush=True)
+                  else:
+                        # Handle form validation errors
+                        print(form.errors)
+                  
+                        
+                        
+                promotion_code = request.POST.get('promotion_code')
+                promotion = get_object_or_404(Promotion, id=promotion_code)
                 
                 if promotion is not None and promotion_email is not None:
                         

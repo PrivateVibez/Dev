@@ -103,7 +103,7 @@ display:none;">
 
                 <p class="fw-normal mb-3 pb-3" id="Dice_small_words" style="letter-spacing: 1px;display:none;">Add 6 Items that will be pick by random when a view click on the dice</p>
 
-                <div id="info_box" style='display:block;'>
+                <div id="info_boxs" style='display:block;'>
 
                   <div class="form-outline mb-4 row gap-2 fs-2">
 
@@ -130,10 +130,13 @@ display:none;">
 
 
                 <div id="id_card_box" style='display:none;'>
-
+                  <h3 class="">Please upload two valid IDs</h3>
                   <div class="form-outline mb-4">
                     <input type="file" value="{{user_data.Id_File}}" class="form-control" style="font-size: 2rem;" id="Id_Card_File" aria-label="id_card">
-                    <label class="form-label fs-2 my-2" for="id_card">ID Card</label>
+                    <label class="form-label fs-2 my-2" for="id_card">First ID</label>
+
+                    <input type="file" value="{{user_data.Second_Id_File}}" class="form-control mt-3" style="font-size: 2rem;" id="Second_Id_Card_File" aria-label="id_card">
+                    <label class="form-label fs-2 my-2" for="id_card">Second ID</label>
                   </div>
 
                   <div class="pt-1 mb-4">
@@ -359,18 +362,9 @@ display:none;">
 
   {% comment %} <link rel="stylesheet" href="{% static 'css/cropper.min.css' %}">
   <script type="text/javascript" src="{% static 'js/cropper.min.js' %}"></script> {% endcomment %}
-
+{% if data %}
  
   <script>
-
-
-
-
-
-
-
-
-
     // Get the time remaining from Django template variables
     let daysRemaining = {{ data.days }};
     let hoursRemaining = {{ data.hours }};
@@ -421,5 +415,7 @@ display:none;">
   const countdownInterval = setInterval(updateCountdown, 1000);
 
 </script>
+
+{% endif %}
 
   {% endblock content %}

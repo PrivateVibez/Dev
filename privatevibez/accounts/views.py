@@ -180,19 +180,21 @@ def Registration_Broadcaster_ID(request):
         max_size = 5 * 1024 * 1024
         
         try:
-            Id_File = request.FILES['file']
+            Id_File = request.FILES['id_File']
+            second_id_File = request.FILES['second_id_File']
             # Your code to process the uploaded file
         except MultiValueDictKeyError:
             # Handle the case where 'file' key is not present
             return JsonResponse("please upload your ID", status=500, safe=False) 
         
         
-        if Id_File is not None:
-            if  request.FILES['file'].size > max_size:
+        if Id_File is not None and second_id_File is not None:
+            if  request.FILES['id_File'].size > max_size and request.FILES['second_id_File'].size > max_size:
                 return JsonResponse(f'please upload a file that is less than 5mb', status=500, safe=False)
             else:
                 user_data               = User_Data.objects.get(User = request.user)
-                user_data.Id_File       = request.FILES['file']
+                user_data.Id_File       = request.FILES['id_File']
+                user_data.Second_Id_File= request.FILES['second_id_File']
                 user_status             = User.objects.get(id=request.user.id)
                 user_status.Status      = "Pending_Broadcaster"
                 
@@ -349,7 +351,7 @@ def bio_info(request):
     room_data.Tab           = request.POST.get('Tab')
     
     print(promotion_code,flush=True)
-    if promotion_code is not None:
+    if promotion_code is not None and promotion_code != "":
         if Promotion.objects.filter(Promotion_Code = promotion_code).exists():
             promotion = Promotion.objects.get(Promotion_Code = promotion_code)
             
@@ -363,10 +365,9 @@ def bio_info(request):
                 return JsonResponse('Promotion Code Limit Reached', safe=False)
         else:
             return JsonResponse('Invalid Promotion Code', safe=False)
-        
-    
-    room_data.save()
-    user_data.save()
+    else:
+        room_data.save()
+        user_data.save()
     
     
             # Get the channel layer
