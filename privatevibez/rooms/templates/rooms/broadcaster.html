@@ -265,6 +265,14 @@
 <script type="text/javascript" src="{% static 'js/multi.js' %}"></script>
 
 <script>
+    var protocol = "";
+    
+    if(window.location.protocol == "http:"){
+        protocol = "ws";
+    }else if(window.location.protocol == "https:"){
+        protocol = "wss";
+    }
+
     var message = document.getElementById('alerts')
     const room_id = {{room_data.User.id}} // Get the room ID from somewhere
 
@@ -376,6 +384,24 @@
     };
 
 
+
+    let user_private_chat_invitation_socket = new WebSocket(protocol + '://' + window.location.host + '/ws/privateChatInvitation/{{ room_name }}/{{ user }}/');
+
+    user_private_chat_invitation_socket.onmessage = function(e) {
+      var data = JSON.parse(e.data);
+      var is_accepted = data.is_invitation_accepted;
+      var is_sent = data.is_invitation_sent;
+      console.log(is_accepted.is_invitation_accepted);
+
+      if(is_accepted.is_invitation_accepted === true)
+    {
+        $("#nav-private-chat").load(" #nav-private-chat > *");
+    }
+    else if(is_sent.is_invitation_sent === true)
+    {
+        $("#nav-private-chat").load(" #nav-private-chat > *");
+      
+    }
 
     function generate_lovense_qrcode(){
         $.ajax({

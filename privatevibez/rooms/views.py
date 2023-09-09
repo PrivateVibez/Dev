@@ -11,6 +11,7 @@ from .models import *
 from staff.models import PrivatevibezRevenue
 from django.utils.safestring import mark_safe
 import json
+import random
 from .forms import Slot_MachineForm, Fav_vibezForm, BioForm, MenuDataForm
 from django.http import HttpResponse as httpresponse
 import requests
@@ -129,7 +130,7 @@ def Room(request, Broadcaster):
                                     slot_machine_data = Slot_Machine.objects.filter(User=broadcaster_user.id).values('pot', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
                             try:
                                 user = request.user
-                            
+
                                 if user.Status == "User":
 
                                     try:
@@ -142,6 +143,17 @@ def Room(request, Broadcaster):
                                                     invite_accepted = True if invitee.Is_Accepted == True else False
                                     except Private_Chat_Invitee.DoesNotExist:
                                         pass
+                                    
+                                    
+                                    try:
+                                        user_spendings = Item_Availed.objects.filter(User=request.user)
+                                        total_user_spendings = sum(int(item.Cost) for item in user_spendings)
+
+                                        
+                                    except Item_Availed.DoesNotExist:
+                                        
+                                        pass
+
                                     
                                                 
                     
@@ -613,6 +625,28 @@ def player_remaining_spins_or_vibez(winner,msg,pot,serializer=None):
     
     return data
 
+
+def random_favorite_button(room_data):
+    
+    buttons = ["OHYes", "OH", "MMM"]
+    random_button = random.choice(buttons)
+    
+    if random_button == "OHYes":
+        feature = room_data.Feature_OHYes_button
+        strength = room_data.Strength_OHYes_button
+        timesec = room_data.Duration_OHYes_button
+    elif random_button == "OH":
+        feature = room_data.Feature_OH_button
+        strength = room_data.Strength_OH_button
+        timesec = room_data.Duration_OH_button
+    elif random_button == "MMM":
+        feature = room_data.Feature_MMM_button
+        strength = room_data.Strength_MMM_button
+        timesec = room_data.Duration_MMM_button
+        
+    return feature, strength, timesec
+    
+    
 @csrf_exempt
 def get_prize(request):
     
@@ -638,10 +672,10 @@ def get_prize(request):
            
             if winner.Vibez >= cost_per_spin or winner.Free_spins != 0:
                 if prize == "2OAK":
-                    feature = room_data.Feature_OH_button
-                    strength = room_data.Strength_OH_button
-                    timesec = room_data.Duration_OH_button
+                    
+                    feature, strength, timesec = random_favorite_button(room_data)
                     price = cost_per_spin
+                    
                     note = f'{winner.User.username} Won Two of a kind!'
             
                     pot = availed_item(winner.User.id,room_data,"2OAK",price,note)
@@ -786,6 +820,21 @@ def invite_private_chat(request):
                             room_data.Revenue += broadcaster_private_chat_price
                             room_data.save()
                             broadcaster.Invitee_relationships.add(invitee_relationship)
+                            
+                            channel_layer = get_channel_layer()
+                            channel_name = "private_chat_invitation" + str(broadcaster.Broadcaster.username) + "_" + str(user.User.username)
+                            print(channel_name,flush=True)
+                                
+                                # Prepare data to send
+                            data = {
+                                "invitation_sent": True,
+                            }
+                            
+                            # Send the data to the WebSocket consumer
+                            async_to_sync(channel_layer.group_send)(
+                                channel_name,
+                                {"type": "is.InvitationSent", "data": data}
+                            )
                             return JsonResponse({'data':"Invite sent!"},safe=False)
                         else:
                             return JsonResponse(f'not enough vibez!',status=500,safe=False)
@@ -1174,14 +1223,30 @@ def accept_privatechat(request):
             
             with transaction.atomic():
         
-                user_id = User.objects.get(id = request.POST.get('user_id'))
+                user = User.objects.get(id = request.POST.get('user_id'))
             
-                broadcaster = Private_Chat_Invitee.objects.get(Broadcaster=request.user, Invitee_relationships__Invitee=user_id)
+                broadcaster = Private_Chat_Invitee.objects.get(Broadcaster=request.user, Invitee_relationships__Invitee=user)
                 for invitee in broadcaster.Invitee_relationships.all():
-                    if invitee.Invitee == user_id:
+                    if invitee.Invitee == user:
                         invitee.Is_Accepted = True
                         invitee.save()
                         print(invitee.Is_Accepted,flush=True)
+                        
+                        
+                        channel_layer = get_channel_layer()
+                        channel_name = "private_chat_invitation" + str(broadcaster.Broadcaster.username) + "_" + str(user.username)
+                        print(channel_name,flush=True)
+                            
+                            # Prepare data to send
+                        data = {
+                            "is_invitation_accepted": True,
+                        }
+                        
+                        # Send the data to the WebSocket consumer
+                        async_to_sync(channel_layer.group_send)(
+                            channel_name,
+                            {"type": "is.InvitationAccepted", "data": data}
+                        )
             
                 
                 return JsonResponse({'data':"success"}, safe=False)

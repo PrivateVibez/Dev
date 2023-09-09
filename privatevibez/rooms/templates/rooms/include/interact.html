@@ -11,8 +11,11 @@
           <ul class="nav nav-pills m-auto gap-2" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 
           <li class="nav-item">
-          <button class="nav-link" id="v-pills-menu-tab" data-bs-toggle="pill" data-bs-target="#v-pills-menu" type="button" role="tab" aria-controls="v-pills-menu" aria-selected="true"><span class="fs-3 font-weight-bold">Menu</span></button>
-          </li>
+
+            <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#confirmation_to_spendModal">
+              <span class="fs-3 font-weight-bold">Menu</span>
+            </button>
+
 
           <li class="nav-item">
           <button class="nav-link" id="v-pills-dice-tab" data-bs-toggle="pill" data-bs-target="#v-pills-dice" type="button" role="tab" aria-controls="v-pills-dice" aria-selected="false"><span class="fs-3 font-weight-bold">Dice</span></button>
@@ -22,10 +25,30 @@
           <button class="nav-link" id="v-pills-Slots-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Slots" type="button" role="tab" aria-controls="v-pills-Slots" aria-selected="false"><span class="fs-3 font-weight-bold">Slots</span></button>
           </li>
 
+          
+      <div class="modal fade" id="confirmation_to_spendModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel"></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <h3 class="text-center fs-1 font-weight-bold">you are about to spend vibez</h3>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary fs-3" data-bs-dismiss="modal">Cancel</button>
+              <button class="nav-link" id="v-pills-menu-tab" onclick="dismiss_modal_cofirmation_to_spend_vibez()" data-bs-toggle="pill" data-bs-target="#v-pills-menu" type="button" role="tab" aria-controls="v-pills-menu" aria-selected="true"><span class="fs-2 font-weight-bold" data-bs-dismiss="modal">Okay</span></button>
+            </li>
+            </div>
+          </div>
+        </div>
+      </div>
           </ul>
         </div>
 
       </div>
+
 
       <div class="d-flex flex-row">
 
@@ -95,6 +118,10 @@
           errorToast(errors.responseJSON.data)
       }
   })
+  }
+
+  function dismiss_modal_cofirmation_to_spend_vibez(){
+    $('#confirmation_to_spendModal').modal('hide')
   }
 
 </script>

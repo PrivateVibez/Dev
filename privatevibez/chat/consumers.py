@@ -143,6 +143,36 @@ class PrivateChatConsumer(AsyncWebsocketConsumer):
                 'username': to
             }))
 
+class privateChatInvitation(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.broc = self.scope['url_route']['kwargs']['broc']
+        self.user_name = self.scope['url_route']['kwargs']['user_name']
+        self.room_group_name = 'private_chat_invitation%s_%s' % (self.broc, self.user_name)
+
+        # Join room group
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        # Leave room group
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+        
+    async def is_InvitationAccepted(self,event):
+        data = event['data']
+        print(data,flush=True)
+        await self.send(text_data=json.dumps({"is_invitation_accepted": data}))
+        
+    async def is_InvitationSent(self,event):
+        data = event['data']
+        print(data,flush=True)
+        await self.send(text_data=json.dumps({"is_invitation_sent": data}))
 
 class PrivateChatConsumerBroc(JsonWebsocketConsumer):
     # Keep track of last submission time for each user

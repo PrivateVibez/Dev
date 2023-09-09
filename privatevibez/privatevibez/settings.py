@@ -143,6 +143,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+STAFF_WITH_PROMOTION_REGISTRATION_LINK = f'http://127.0.0.1:8000/accounts/BroadcasterRegistration/'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/

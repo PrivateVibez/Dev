@@ -83,6 +83,9 @@ class StaffManager(models.Model):
                 ("can_view_bad_acters", "Can view a bad acters"),
                 ("can_view_todo_list", "Can view a todo list"),
                 ("can_view_inbox", "Can view a inbox"),
+                ("can_view_promotions", "Can view promotions"),
+                ("can_view_interactives", "Can view interactives"),
+                ("can_view_subscriptions", "Can view subscriptions"),
             ]
         
         def add_staff(self, user):
@@ -118,6 +121,7 @@ class Promotion(models.Model):
     Promotion_Earning                     = models.FloatField(null=True,blank=True)
     Promotion_Registration_Limit          = models.IntegerField(null=True,blank=True)
     Duration                              = models.DateTimeField(null=True,blank=True)
+    Total_Viewers                         = models.IntegerField(null=True,blank=True)
     timestamp                             = models.DateTimeField(auto_now_add=True,null=True,blank=True)
     def __str__(self):
         return str(self.Promotion_Code)

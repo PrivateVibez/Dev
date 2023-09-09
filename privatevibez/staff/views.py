@@ -101,10 +101,11 @@ def home(request):
                 total_user_vibez = User_Data.objects.aggregate(Sum('Vibez'))
                 total_broadcaster_vibez = Room_Data.objects.aggregate(Sum('Revenue'))
                 slot_machine  = Slot_Machine_Data.objects.order_by('-timestamp').values('Slot_Machine_Spin_Cost').first()
+                
                 promotions    = Promotion.objects.filter(
                 Q(timestamp__gte=current_datetime) | Q(Promotion_Registration_Limit__gt=0)
                 )
-                
+                                
                 broadcaster_promotions = Room_Data.objects.filter(Room_promotion__isnull=False)
                 total_cash = PrivatevibezRevenue.objects.aggregate(Sum('Total_Cash'))
                 
@@ -122,6 +123,9 @@ def home(request):
                 
                 promotion_email_formset = formset_factory(promotionEmailForms, extra=10, max_num=10)
                 formset = promotion_email_formset(prefix='form')
+                
+                
+                staff_reg_link_with_promotion_code = settings.STAFF_WITH_PROMOTION_REGISTRATION_LINK
                 
                 bad_acters_list = []
                 
@@ -703,39 +707,49 @@ def delete_Promotion(request,id):
         return JsonResponse({"data":f'Successfully deleted promotion'},status=200, safe=False)
 
 
+
 def send_Promotion(request):
         
         if request.method == "POST":
+                promotion_id = request.POST.get('promotion_id')
+                print(promotion_id,flush=True)
+                promotion = get_object_or_404(Promotion, id=int(promotion_id))
                 
                 promotion_email_formset = formset_factory(promotionEmailForms,extra=10, max_num=10)
                 
                 formset = promotion_email_formset(request.POST)
                 
-                print(request.POST,flush=True)
-                print(formset.errors,flush=True)
+                if promotion is not None:
+                        for form in formset:
+                                if form.is_valid():
+                                
+                                        for field_name, email in form.cleaned_data.items():
+                                                # Access each form field name and value
+                                                print(f"Field: {field_name}, Value: {email}", flush=True)
+                                                message = f"click the link and fill in the form, earn {promotion.Promotion_Earning} dollar per vibe if you register now! \n\nhttp://127.0.0.1:8000/accounts/BroadcasterRegistration/{promotion.Promotion_Code}"
+                                        
+                                                send_mail('Promotion Code', message, settings.EMAIL_HOST, [email])
+                                        
+                                else:
+                                        # Handle form validation errors
+                                        messages.error(request,form.errors)
+                                        
+                                        return redirect(request.META.get('HTTP_REFERER'))
                 
-                for form in formset:
-                  if form.is_valid():
-                     print(form.as_table(),flush=True)
-                  else:
-                        # Handle form validation errors
-                        print(form.errors)
-                  
+                messages.success(request, f'Promotion sent!')
+                return redirect(request.META.get('HTTP_REFERER'))
                         
                         
-                promotion_code = request.POST.get('promotion_code')
-                promotion = get_object_or_404(Promotion, id=promotion_code)
+                        
                 
-                if promotion is not None and promotion_email is not None:
-                        
-                        message = f"click the link and fill in the form, earn {promotion.Promotion_Earning} dollar per vibe if you register now! \n\nhttp://127.0.0.1:8000/accounts/BroadcasterRegistration/{promotion.Promotion_Code}"
-                        
-                        send_mail('Promotion Code', message, settings.EMAIL_HOST, [promotion_email])
-                        
-                        return JsonResponse({"data":f'Successfully sent promotion'},status=200, safe=False)
                 
-                else:
-                        return JsonResponse({"data":f'Invalid input!'},status=500, safe=False)
+                
+                        
+
+                        
+                
+        else:
+                return JsonResponse({"data":f'Invalid input!'},status=500, safe=False)
                 
                 
                 

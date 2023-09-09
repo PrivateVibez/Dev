@@ -55,6 +55,9 @@
                                 <li><button class="border-0 bg-transparent fs-2 my-2"  data-toggle="modal" data-target="#Subscription" >Subscription</button></li>
                                 {% endif %}
 
+                                <li><button class="border-0 bg-transparent fs-2 my-2"  data-toggle="modal" data-target="#Expenses" >Spending</button></li>
+
+
                                 {% if user_status == "Broadcaster" or user_status == "Decline_Broadcaster" %} 
                                 <li><button class="border-0 bg-transparent fs-2 my-2"  data-toggle="modal"  data-target="#Settings" ><i class="icofont-gear fs-2"></i> Settings</button></li>
 
@@ -512,6 +515,55 @@
       </div>
     </div>
   </div>
+
+
+  <!--MODAL FOR EXPENSES-->
+  <div class="modal fade" id="Expenses" tabindex="-1" role="dialog" aria-labelledby="Profile_Label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fs-1" id="Profile_Label">My Spendings <span class="fs-2 text-center font-weight-bold d-block">Total Spending: {{total_user_spendings}} Vibez</span></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span class="fs-1" aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+         
+
+          <div class="d-flex flex-row justify-content-center">
+
+              <div class="col fs-1">
+                  
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Item</th>
+                      <th scope="col">Cost</th>
+                      <th scope="col">Note</th>
+                      <th scope="col">Broadcaster</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in user_spendings %}
+                    <tr>
+                      <th>{{item.Item}}</th>
+                      <td>{{item.Cost}}</td>
+                      <td>{{item.Note|default:""}}</td>
+                      <td><a href="{% url 'rooms:room' item.Room.User %}">{{item.Room.User}}</a> </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+
+          
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--MODAL FOR EXPENSES-->
   
   {% comment %} modal for settings {% endcomment %}
 
@@ -764,6 +816,8 @@
 
     {% comment %} get invitees {% endcomment %}
     {% if user_status == "Broadcaster" %}
+
+    
     $.ajax({
         method:'GET',
         url: "/room/get_invitees/",
@@ -946,7 +1000,7 @@ function Save_Chat(){
 function Save_RoomPatterns(){
     $.ajax({
         method:'POST',
-        url: " {% url 'Save_RoomPatterns' %}",
+        url: " {% url 'rooms:Save_RoomPatterns' %}",
         data:{
                 'Price_MMM':document.getElementById('Price_MMM_button').value,
                 'Duration_MMM':document.getElementById('Duration_MMM_button').value,

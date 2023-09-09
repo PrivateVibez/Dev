@@ -22,6 +22,6 @@ urlpatterns = [
     path('', include('base.urls')),
     path('accounts/', include('accounts.urls')),
     path('staff/', include('staff.urls')),
-    path('room/', include('rooms.urls')),
+    path('room/', include('rooms.urls', namespace='rooms')),
     path('chat/', include('chat.urls')),
 ]

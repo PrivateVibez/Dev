@@ -170,7 +170,17 @@ def home(request):
                 blocked_broadcasters = Bad_Acters.objects.filter(Reporty = request.user.id)
                 try:
                         user_datas        = User_Data.objects.get(User =  request.user)
+                        
+                        try:
+                                user_spendings = Item_Availed.objects.filter(User=request.user)
+                                total_user_spendings = sum(int(item.Cost) for item in user_spendings)
 
+                        
+                        except Item_Availed.DoesNotExist:
+                        
+                                pass
+                
+                
                         user_status_data = User.objects.get(id = request.user.id)
                         user_status      = user_status_data.Status
                         

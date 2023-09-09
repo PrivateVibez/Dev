@@ -154,20 +154,26 @@
         </div>
         {% endif %}
 
+        {% if perms.staff.can_view_promotions %}
         <!--PROMOTIONS-->
         <div class="tab-pane fade w-100 m-lg-5" id="v-pills-promotions" role="tabpanel" aria-labelledby="v-pills-promotions-tab">
             {% include 'staff/include/promotions.html'%} 
        </div>
+       {% endif %}
 
+       {% if perms.staff.can_view_interactives %}
         <!--SLOT MACHINE-->
         <div class="tab-pane fade w-100 m-lg-5" id="v-pills-slot-machine" role="tabpanel" aria-labelledby="v-pills-slot-machine-tab">
             {% include 'staff/include/slot_machine.html'%} 
        </div>
+       {% endif %}
 
+       {% if perms.staff.can_view_subscriptions %}
         <!--SUBSCRIPTIONS-->
         <div class="tab-pane fade w-100 m-lg-5" id="v-pills-subscription" role="tabpanel" aria-labelledby="v-pills-subscription-tab">
             {% include 'staff/include/subscription.html'%} 
        </div>
+       {% endif %}
 
         {% comment %} create staff {% endcomment %}
         {% if perms.staff.can_view_staff %}

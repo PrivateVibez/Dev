@@ -1,5 +1,8 @@
 from django.urls import path
 from . import views
+
+app_name = 'rooms'
+
 urlpatterns = [
     # url for broadcaster room
     path('<str:Broadcaster>', views.Room, name="room"),

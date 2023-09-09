@@ -58,7 +58,7 @@ class Room_Data(models.Model):
     Room_Rules            = models.TextField(null=True,blank=True)
     Room_Description      = models.TextField(null=True,blank=True)
     Revenue               = models.IntegerField(null=True, blank=True)
-    Room_promotion        = models.ForeignKey(Promotion, null=True, blank=True, on_delete=models.CASCADE)
+    Room_promotion        = models.ForeignKey(Promotion, null=True, blank=True, on_delete=models.CASCADE,related_name='room_promotion')
     Total_Viewers         = models.IntegerField(null=True, blank=True)
     Timestamp             = models.DateTimeField(auto_now_add=True)     
     

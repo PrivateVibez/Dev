@@ -33,6 +33,8 @@
             <th scope="col">Promotion Code</th>
             <th scope="col">Promotion Duration</th>
             <th scope="col">Promotion Registration Limit</th>
+            <th scope="col">Total Viewers</th>
+            <th scope="col">Registered Broadcasters</th>
           </tr>
         </thead>
         <tbody>
@@ -42,6 +44,14 @@
             <td>{{promotion.Promotion_Code}}</td>
             <td>{{ promotion.Duration|date:"Y-m-d H:i:s" }}</td>
             <td>{{promotion.Promotion_Registration_Limit}}</td>
+            <td>
+              {{promotion.Total_Viewers}}
+            </td>
+
+            <td>
+              {{ promotion.room_promotion.all.count }}        
+          </td>
+
             <td>
               <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUpdatePromotion-{{promotion.id}}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -58,53 +68,9 @@
               </button>
           </td>
 
-          <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sendPromotion-{{promotion.id}}">Send Promotion</button></td>
+          <td><button class="btn btn-primary" data-bs-toggle="modal" onclick="set_promotion_id({{ promotion.id }}, '{{ promotion.Promotion_Code }}')" data-bs-target="#sendPromotion">Send Promotion</button></td>
+
           </tr>
-
-
-<!--MODAL FOR SENDING PROMITIONS-->
-<div class="modal fade" id="sendPromotion-{{promotion.id}}" tabindex="-1" aria-labelledby="sendPromotionModal" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Send Promotions</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body row">
-        
-
-        <form method="POST" action="{% url 'send_Promotion' %}">
-          {% csrf_token %}
-          {{ formset.management_form }}
-        <div class="col gap-2" id="sendPromotionEmailsContainer">
-          <label for="promotion-email-0">Email:</label>
-        </div>
-
-        <div class="col text-center" id="">
-          <button type="button" onclick="add_email_input({{promotion.id}})" class="btn btn-primary m-auto">Add Email</button>
-        </div>
-        
-      </div>
-
-      <div class="col text-center d-block my-2" id="">
-        <button type="submit" class="btn btn-primary">Save changes</button>
-      </div>
-
-    </form>
-
-      <div class="modal-footer">     
-      </div>
-    </div>
-  </div>
-</div>
-<!--MODAL FOR SENDING PROMITIONS-->
-
-
-
-
-
-
-
 
 
         <!-- Modal for updating promotions -->
@@ -142,6 +108,51 @@
 
 
     </div>
+
+
+
+
+<!--MODAL FOR SENDING PROMITIONS-->
+<div class="modal fade" id="sendPromotion" tabindex="-1" aria-labelledby="sendPromotionModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Send Promotions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex flex-column">
+        
+
+        <form method="POST" class="d-flex flex-column" action="{% url 'send_Promotion' %}">
+          {% csrf_token %}
+          {{ formset.management_form }}
+
+        <label for="promotionURL">Promotion URL:</label>
+        <input id="promotionURL">
+
+        <div class="row gap-2 p-5" id="sendPromotionEmailsContainer">
+          <div class="text-end" id="">
+            <button type="button" onclick="add_email_input()" class="btn btn-primary m-auto">Add Email</button>
+          </div>
+          <label for="promotion-email-0">Email:</label>
+        </div>
+
+
+        
+      </div>
+
+      <div class="col text-center d-block my-2" id="">
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+
+    </form>
+
+      <div class="modal-footer">     
+      </div>
+    </div>
+  </div>
+</div>
+<!--MODAL FOR SENDING PROMITIONS-->
 
 
   <div class="mt-5">
@@ -203,6 +214,7 @@
 </div>
 
 <div id="csrfTokenElement" data-csrf-token="{{ csrf_token }}"></div>
+<div id="staffRegistrationWithPromotionCode" class="d-none" >{{staff_reg_link_with_promotion_code}}</div>
 
 
 <script>
@@ -306,19 +318,26 @@ function send_promotion(){
   });
 }
 
-let number_of_email_inputs = 0;
 let promotion_id;
+let promotion_code;
+let number_of_email_inputs = 0;
+let isPromotion_id_appended = false;
 
-function add_email_input(id) {
-  console.log('called');
+function set_promotion_id(id,code) {
+  promotion_id = id;
+  promotion_code = code;
+
+
+}
+
+
+function add_email_input() {
+ 
   let sendPromotionEmailsContainer = document.getElementById('sendPromotionEmailsContainer');
+  let promotionURL = document.getElementById('promotionURL');
 
   if (number_of_email_inputs < 10) {
     let input = document.createElement('input');
-    let input_Total_forms = document.getElementById('id_form-TOTAL_FORMS');
-    let input_Total_initial_forms = document.getElementById('id_form-INITIAL_FORMS');
-    let input_Min_num_forms = document.getElementById('id_form-MIN_NUM_FORMS');
-    let input_Max_num_forms = document.getElementById('id_form-MAX_NUM_FORMS');
 
     input.setAttribute('type', 'email');
     input.setAttribute('class', 'promotion-email my-2');
@@ -335,13 +354,21 @@ function add_email_input(id) {
 
 
     // Create promotion_id field if it doesn't exist
-    if (!promotion_id) {
-      promotion_id = document.createElement('input');
-      promotion_id.setAttribute('type', 'hidden');
-      promotion_id.setAttribute('name', 'promotion_id');
-      promotion_id.setAttribute('id', 'promotion_id');
-      promotion_id.setAttribute('value', id);
-      sendPromotionEmailsContainer.appendChild(promotion_id);
+    if (!isPromotion_id_appended) {
+      var promotion_input = document.createElement('input');
+      console.log('appended');
+      promotion_input.setAttribute('type', 'hidden');
+      promotion_input.setAttribute('name', 'promotion_id');
+      promotion_input.setAttribute('id', 'promotion_id');
+      promotion_input.setAttribute('value', promotion_id);
+
+      sendPromotionEmailsContainer.appendChild(promotion_input);
+      isPromotion_id_appended = true;
+
+      console.log(promotion_code);
+      promotionURL.setAttribute('value', document.getElementById('staffRegistrationWithPromotionCode').innerHTML + promotion_code);
+
+
     }
 
     sendPromotionEmailsContainer.appendChild(input);

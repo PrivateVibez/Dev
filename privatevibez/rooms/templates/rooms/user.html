@@ -233,14 +233,14 @@
 
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
                             
-                            <button class="tab nav-link" id="nav-chat-tab" data-bs-toggle="tab" data-bs-target="#nav-chat" type="button" role="tab" aria-controls="nav-chat" style="font-weight:bold;" aria-selected="false">Chat</button>
+                            <button class="tab nav-link w-25" id="nav-chat-tab" data-bs-toggle="tab" data-bs-target="#nav-chat" type="button" role="tab" aria-controls="nav-chat" style="font-weight:bold;" aria-selected="false">Chat</button>
 
                             {% if request.user.is_authenticated %}
 
-                            <button class="tab nav-link active" id="nav-interact-tab" data-bs-toggle="tab" data-bs-target="#nav-interact" type="button" role="tab" aria-controls="nav-interact" style="font-weight:bold;" aria-selected="true">Interact</button>
+                            <button class="tab nav-link active w-25" id="nav-interact-tab" data-bs-toggle="tab" data-bs-target="#nav-interact" type="button" role="tab" aria-controls="nav-interact" style="font-weight:bold;" aria-selected="true">Interact</button>
 
 
-                            <button class="tab nav-link" id="nav-private-chat-tab" data-bs-toggle="tab" data-bs-target="#nav-private-chat" type="button" role="tab" aria-controls="nav-private-chat" style="font-weight:bold;" aria-selected="false">Private Chat</button>
+                            <button class="tab nav-link w-25" id="nav-private-chat-tab" data-bs-toggle="tab" data-bs-target="#nav-private-chat" type="button" role="tab" aria-controls="nav-private-chat" style="font-weight:bold;" aria-selected="false">Private Chat</button>
 
 <!--
                             <button class="tab nav-link" id="nav-connect-my-toy-tab" data-bs-toggle="tab" data-bs-target="#nav-connect-my-toy" type="button" role="tab" style="font-weight:bold;" aria-controls="nav-connect-toy" aria-selected="false">Connect My Toy</button>
@@ -388,13 +388,17 @@
   
                                 {% else %}
 
-                                <div class="row justify-content-center align-content-center h-75">
+                                <div id="invite_model_chat" class="row justify-content-center align-content-center h-75">
                                 
                                 
                                 <span class="fs-2 font-weight-bold m-auto text-center my-3">Private Chat Price: {{room_data.Private_Chat_Price}}</span>
-                                <button class="btn btn-warning font-weight-bold display-3" onclick="invite_model_chat({{room_data.User.id}})" id="invite_model_chat" style="width:150px; font-size:1rem; height:50px; left: 0px;">
+                                <button class="btn btn-warning font-weight-bold display-3" onclick="invite_model_chat({{room_data.User.id}})" id="" style="width:150px; font-size:1rem; height:50px; left: 0px;">
                                     <span class="fs-3">Invite</span>
                                 </button>
+                                </div>
+
+                                <div id="pending_invitation_chat" class="col" style="display:none">
+                                    <h3 class="fs-1">Please wait for {{room_data.User}} to accept your request</h3>
                                 </div>
 
                                  {% endif %}
@@ -919,23 +923,9 @@
 
 {% if request.user.is_authenticated %}
 <script>
+    let protocol = "";
+
     var logo = document.getElementById('privatevibezlogo');
-    var toastContainer = document.getElementById('toast-container');
-
-
-    var toastContainer = document.getElementById('toast-container');
-    var logo = document.getElementById('privatevibezlogo');
-    
-    
-    const toastElement = document.querySelector('.toast');
-    
-    if(toastElement){
-        setTimeout(function() {
-            var toast = new bootstrap.Toast(toastElement);
-            toast.hide();
-        }, 2000);
-    }
-
 
     document.addEventListener('DOMContentLoaded', function() {
         // Send visitor ID
@@ -962,7 +952,8 @@
         
         
         
-let protocol = "";
+
+
 if(window.location.protocol == "http:"){
     protocol = "ws";
 }else if(window.location.protocol == "https:"){
@@ -1069,9 +1060,17 @@ let public_socket = new WebSocket(protocol + '://' + window.location.host + '/ws
     // Close WebSocket on page close
     window.onbeforeunload = function() {
         public_socket.close();
+        user_private_chat_invitation_socket.close();
+        private_socket.close();
     }
 
-    let private_socket = new WebSocket('ws://' + window.location.host + '/ws/privateChat/{{ room_name }}/{{ user }}/');
+
+     user_private_chat_invitation_socket.onopen = function(e) {
+        console.log('private chat invitation socket is open')
+     }
+
+
+    let private_socket = new WebSocket(protocol + '://' + window.location.host + '/ws/privateChat/{{ room_name }}/{{ user }}/');
         private_socket.onmessage = function(e) {
             var data = JSON.parse(e.data);
             var message = data.message;
@@ -1150,6 +1149,12 @@ let public_socket = new WebSocket(protocol + '://' + window.location.host + '/ws
 
       });
 
+
+
+
+
+
+
     </script>
 
 {% endif %}
@@ -1160,6 +1165,7 @@ let public_socket = new WebSocket(protocol + '://' + window.location.host + '/ws
 
     function hideInviteButton(){
         document.getElementById("invite_model_chat").style.display = "none";
+        document.getElementById("pending_invitation_chat").style.display = "block";
     }
 
     function invite_model_chat(room_id) {
@@ -1177,7 +1183,6 @@ let public_socket = new WebSocket(protocol + '://' + window.location.host + '/ws
                   console.log(data)
                   hideInviteButton();
 
-                  $("#nav-private-chat").load(" #nav-private-chat > *");
 
 
                   successToast(data.data);

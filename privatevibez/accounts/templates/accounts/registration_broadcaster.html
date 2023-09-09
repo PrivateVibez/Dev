@@ -3,6 +3,7 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
+{% if not promotion_expired %}
 
 <section class="vh-100" style="background-color: #6cc6ba;">
 
@@ -328,6 +329,12 @@ display:none;">
   </div>
 
 </section>
+
+{% else %}
+
+<div class="display-1 text-center align-self-center font-weight-bold" style="height:300px;">PROMOTION EXPIRED</div>
+
+{% endif %}
 
 
 

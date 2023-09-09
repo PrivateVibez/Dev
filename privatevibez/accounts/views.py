@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from .forms import *
 from .models import *
+from django.http import Http404
 from rooms.views import display_user_availed_item_in_broadcaster_room
 from base.views import paginate_list
 from django.core.paginator import Paginator
@@ -741,8 +742,27 @@ def BroadcasterRegistration(request, code):
         
         if code is not None:
                 
-                code = get_object_or_404(Promotion, Promotion_Code=code)
+                try:
+                    code = get_object_or_404(Promotion, Promotion_Code=code)
+                    
+                    if code.Duration < timezone.now():
+                        promotion_expired = True
+                        messages.error(request, f'This promotion code has expired!')
+                        return render(request, "accounts/registration_broadcaster.html", locals())
+                    
+                    if code.Total_Viewers is None:
+                        code.Total_Viewers = 1
+                    else:
+                        code.Total_Viewers += 1
+                    code.save()
+                    
+                except Http404:
+                    print("Promotion object not found",flush=True)
+                    # Handle the case where the Promotion object is not found
+                    # You can raise a 404 error or perform some other action here
+   
                 data = countdown_timer(code)
+                
                 
                 if request.method == "POST":
         
