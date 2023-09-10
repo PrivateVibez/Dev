@@ -23,7 +23,7 @@ class PrivateVibezRevenueConsumer(AsyncWebsocketConsumer):
         
         
     async def show_updatedRevenue(self,event):
-        data = event['data'];
+        data = event['data']
         print(data,flush=True)
 
         await self.send(text_data=json.dumps(data))

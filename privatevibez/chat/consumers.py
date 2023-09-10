@@ -173,7 +173,40 @@ class privateChatInvitation(AsyncWebsocketConsumer):
         data = event['data']
         print(data,flush=True)
         await self.send(text_data=json.dumps({"is_invitation_sent": data}))
+        
+        
+        
+class fetchBroadcasterPrivateChatInvitation(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.broc = self.scope['url_route']['kwargs']['broc']
+        self.room_group_name = 'fetch_private_chat_invitation_%s' % (self.broc)
 
+        # Join room group
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        # Leave room group
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+        
+    async def is_InvitationAccepted(self,event):
+        data = event['data']
+        print(data,flush=True)
+        await self.send(text_data=json.dumps({"is_invitation_accepted": data}))
+        
+    async def is_InvitationSent(self,event):
+        data = event['data']
+        print(data,flush=True)
+        await self.send(text_data=json.dumps({"is_invitation_sent": data}))
+        
+        
 class PrivateChatConsumerBroc(JsonWebsocketConsumer):
     # Keep track of last submission time for each user
     last_submission_time = {}
@@ -201,26 +234,50 @@ class PrivateChatConsumerBroc(JsonWebsocketConsumer):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
         current_time = time.time()
-
+        
         # Check if there was a submission from this user within the last 3 seconds
         if self.user_name in self.last_submission_time and (current_time - self.last_submission_time[self.user_name] < 0.5):
             print("multiple submissions within 0.5 seconds are not allowed")
             return
+        
+        message_type = text_data_json.get('type', None)
 
-        # Update the last submission time for this user
-        self.last_submission_time[self.user_name] = current_time
-        broc = User.objects.get(username=self.broc)
-        user = User.objects.get(username=self.user_name)
-        Private.objects.create(From=broc, To=user, Message=message, sent_by_fan=False)
+        if message_type == 'from_broadcaster':
+            # Handle custom message type
+            self.last_submission_time[self.user_name] = current_time
+            broc = User.objects.get(username=self.broc)
+            user = User.objects.get(username=self.user_name)
+            conversation_instance = Private.objects.create(From=broc, To=user, Message=message, sent_by_fan=False)
+            
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat_message",
+                    "to": self.user_name,
+                    "from": self.broc,
+                    "message": message,
+                    "timestamp": conversation_instance.Timestamp.strftime("%d-%m-%Y %H:%M")
+                }
+            )
 
-        async_to_sync(self.channel_layer.group_send)(
-            self.room_group_name,
-            {
-                "type": "chat_message",
-                "broc": self.broc,
-                "user": self.user_name
-            }
-        )
+        else:
+
+            # Update the last submission time for this user
+            self.last_submission_time[self.user_name] = current_time
+            broc = User.objects.get(username=self.broc)
+            user = User.objects.get(username=self.user_name)
+            conversation_instance = Private.objects.create(From=user, To=broc, Message=message, sent_by_fan=False)
+
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name,
+                {
+                    "type": "chat_message",
+                    "to": self.broc,
+                    "from": self.user_name,
+                    "message": message,
+                    "timestamp": conversation_instance.Timestamp.strftime("%d-%m-%Y %H:%M")
+                }
+            )
 
     def disconnect(self, close_code):
         async_to_sync(self.channel_layer.group_discard)(
@@ -246,24 +303,34 @@ class PrivateChatConsumerBroc(JsonWebsocketConsumer):
         }))
 
     def chat_message(self, event):
-        broc = User.objects.get(username=event['broc'])
-        user = User.objects.get(username=event['user'])
-        data = Private.objects.filter(
-            Q(From=user, To=broc) | Q(To=user, From=broc)
-        ).order_by('Timestamp')
+
+        sender = event.get('from', 'unknown_sender')  # Use 'unknown_sender' as a default value
+        receiver = event.get('to', 'unknown_receiver')  # Use 'unknown_receiver' as a default value
+        message = event.get('message', 'No message')  # Use 'No message' as a default value
+        timestamp = event.get('timestamp', 'No timestamp')  # Use 'No timestamp' as a default value
         
-        data = [{
-        "From": obj.From.username,
-        "To": obj.To.username,
-        "Message": obj.Message,
-        "Timestamp": obj.Timestamp.strftime("%d-%m-%Y %H:%M"),
-        "sent_by": obj.sent_by_fan
-    } for obj in data]
-        self.send(text_data=json.dumps({
-            'data': data
-        }))
+        print(f"Sender: {sender}, Receiver: {receiver}, Message: {message}, Timestamp: {timestamp}")
         
-        
+        if (sender == 'unknown_sender' or receiver == 'unknown_receiver' or
+            message == 'No message' or timestamp == 'No timestamp' or
+            sender == 'undefined' or receiver == 'undefined' or
+            message == 'undefined' or timestamp == 'undefined'):
+                return 
+        else:
+            
+
+            data = {
+            "From": sender,
+            "To": receiver,
+            "Message": message,
+            "Timestamp": timestamp,
+    
+            } 
+            
+            print(data,flush=True)
+            self.send(text_data=json.dumps({'data': data}))
+            
+            
         
         # CONSUMER FOR STAFF CHAT
         

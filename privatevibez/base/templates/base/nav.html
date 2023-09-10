@@ -133,7 +133,7 @@
 
         {% if user_status == "Broadcaster" %}
             <p>
-                <button style="color:black;text-decoration:none;" class=" btn-transparent bg-transparent  border-0 rounded-3" style="box-shadow:0px; outline:0px;" data-toggle="modal" data-target="#private_chat_invites_modal">
+                <button style="color:black;text-decoration:none;" id="btn-pending-invites" class=" btn-transparent bg-transparent  border-0 rounded-3" style="box-shadow:0px; outline:0px;" data-toggle="modal" data-target="#private_chat_invites_modal">
 
                     <span class="fs-2 font-weight-bold" style="color:#6cc6ba;">
                         Number of Invitees : {{all_private_chat_invitees.count}} | Pending request : {{pending_private_chat_invitees}}
@@ -180,8 +180,16 @@
                     <th scope="col"></th>
                   </tr>
                 </thead>
-                <tbody id="invitees" class="fs-2">
-
+                <tbody class="fs-2">
+                  {% for invitee in all_private_chat_invitees %}
+                  <tr>
+                    <th scope="row"><p class="fs-2">{{invitee.name}}</p></th>
+                    <td class="text-center">
+                        <button class="btn btn-success fs-3" data-dismiss="modal" onclick="Accept_Invitee('{{invitee.user_id}}')">Accept</button>
+                        <button class="btn btn-danger fs-3" onclick="decline_invite('{{invitee.user_id}}')" data-dismiss="modal">Decline</button>
+                    </td>
+                  </tr>
+                  {% endfor %}
                 </tbody>
               </table>
 
@@ -814,48 +822,6 @@
 
   <script type="text/javascript" >
 
-    {% comment %} get invitees {% endcomment %}
-    {% if user_status == "Broadcaster" %}
-
-    
-    $.ajax({
-        method:'GET',
-        url: "/room/get_invitees/",
-        success:function(data){
-            invitees = data.data;
-            console.log(invitees)
-
-            if (invitees != "None")
-            {
-                for (let i = 0; i < invitees.length; i++) {
-                    const invitee = invitees[i];
-                    console.log(invitee.name, invitee.user_id);
-    
-                    let invitees_table = document.getElementById('invitees');
-                    let wrapper = document.createElement('tr');
-                    let cell = document.createElement('td');
-                    cell.classList.add('fs-2');
-                    
-                    // Create the button element and set its class name
-                    let accept = document.createElement('button');
-                    accept.className = "btn btn-success text-dark border-0 m-auto w-100 fs-2";
-                    wrapper.setAttribute("id", "accept-button-" + invitee.user_id);
-                    accept.setAttribute("onclick", "Accept_Invitee("+invitee.user_id+")");
-                    accept.innerHTML = "Accept";
-                    
-                    cell.innerHTML = invitee.name;
-                    wrapper.appendChild(cell);
-                    wrapper.appendChild(accept);
-                    invitees_table.appendChild(wrapper);
-                  }
-            }
-
-        },
-        error:function(errors, status, xhr){
-            console.log(errors.responseText);
-        }
-    })
-    {% endif %}
 
 
 function Accept_Invitee(user_id){
@@ -873,7 +839,11 @@ function Accept_Invitee(user_id){
             if (acceptButton) {
                 acceptButton.style.display = "none";
                 successToast("Invitation accepted!");
+
             }
+
+            $("#private_chat_invites_modal").load(" #private_chat_invites_modal > *");
+            $("#btn-pending-invites").load(" #btn-pending-invites > *");
         },
         error:function(errors, status, xhr){
             console.log(errors.responseText);

@@ -62,9 +62,9 @@
               <div class="card card-body pri_broc_chat_list p-0" id="fan_lists">
                 {% if invitee_list %}
                 {% for fan in invitee_list %}
-                <div class="d-flex justify-content-between mb-2 border-top pt-2 px-3" id="fan_list_username" onclick="toggle_private_broc_room('{{ fan.username }}')">
+                <button type="button" class="d-flex justify-content-between mb-2 border-top pt-2 px-3" id="fan_list_username" onclick="toggle_private_broc_room('{{ fan.username }}')">
                   <h4 class="mt-5">{{ fan.name }}</h4>
-                </div>
+                </button>
                 {% endfor %}
                 {% else %}
                 <h4 class="text-muted">no fans found!</h4>
@@ -102,6 +102,9 @@
 function toggle_private_broc_room(username, isUserClicked) {
   let publicWrap = document.getElementById("pub_room_wrap");
   let privateWrap = document.getElementById("pri_room_wrap");
+  let is_initialized = false;
+
+  console.log(username);
 
 
  
@@ -111,25 +114,50 @@ function toggle_private_broc_room(username, isUserClicked) {
 
 
     let socket = new WebSocket('ws://' + window.location.host + '/ws/privateChatBroc/{{ room_name }}/'+username+'/');
+    socket.onopen = function(e) {
+      console.log('private chat socket is open');
+    }
+
+   
+
     socket.onmessage = function(e) {
         let data = JSON.parse(e.data);
         let msg_wraper = document.getElementById("pri_fans_msg");
-        msg_wraper.innerHTML = "";
+  
         let msg_container = "";
-        console.log(data)
-        data.data.forEach(function(datum) {
-          if(datum.sent_by === false){
-            msg_container = `<div class="text-muted d-flex justify-content-end"><small class="broc_chat_room_message_username font-weight-bold text-dark">${datum.From}</small></div><div class="card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4 ml-auto" style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">${datum.Message}</div>`;
-          }else{
-            msg_container = `<div class="text-muted d-flex justify-content-start"><small class="broc_chat_room_message_username font-weight-bold text-dark">${datum.From}</small></div><div class="card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4" style="border-radius: 13px; width: fit-content; background: #9dffde;">${datum.Message}</div>`;
-          }
-          let new_element = document.createElement('div');
-          new_element.innerHTML = msg_container;
-          msg_wraper.appendChild(new_element);
+        var messages;
+        // Add message to chat room
+
+        if(!is_initialized){
+          messages = data.data;
+          is_initialized = true;
+        }
+        else{
+          messages = [data.data];
+        }
+
+          console.log(messages);
+        messages.forEach(function (messageText) {
+            var from = messageText.From;
+            var to = messageText.To;
+            var message = messageText.Message;
+
+            if(from === "{{ user }}"){
+              msg_container = `<div class="text-muted d-flex justify-content-end"><small class="broc_chat_room_message_username font-weight-bold text-dark">${from}</small></div><div class="card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4 ml-auto" style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">${message}</div>`;
+            }else{
+              msg_container = `<div class="text-muted d-flex justify-content-start"><small class="broc_chat_room_message_username font-weight-bold text-dark">${from}</small></div><div class="card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4" style="border-radius: 13px; width: fit-content; background: #9dffde;">${message}</div>`;
+            }
+            let new_element = document.createElement('div');
+            new_element.innerHTML = msg_container;
+            msg_wraper.appendChild(new_element);
+
         });
         let private_broc_chat_room_messages = document.getElementById("private_broc_chat_room_messages");
         private_broc_chat_room_messages.scrollTop = private_broc_chat_room_messages.scrollHeight;
         document.getElementById('private_broc_chat_room_message_field').value = '';
+
+
+
     }
     socket.onerror = function (error) {
       console.error('WebSocket error:', error);
@@ -141,8 +169,9 @@ function toggle_private_broc_room(username, isUserClicked) {
     e.preventDefault();
     var message_field = document.getElementById('private_broc_chat_room_message_field');
     socket.send(JSON.stringify({
-        'message': message_field.value
-    }));
+      'type': 'from_broadcaster',
+      'message': message_field.value
+  }));
     message_field.focus();
     });
   

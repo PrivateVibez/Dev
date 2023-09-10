@@ -343,25 +343,12 @@
                                 {% if invite_accepted == True %}
 
                                 <div id="private_chat_room_messages" style="min-width: 462px; max-height: 404px; overflow: auto; padding-bottom: 25px; padding-right: 8px;">
-                                    {% for msg in private_chat %}
 
-                                    
-                                    <div class="text-muted d-flex {% if msg.From == request.user %}justify-content-end {% else %} justify-content-start {% endif %}">
-                                        <small class="private_chat_room_message_username font-weight-bold text-dark">{{ msg.From }}</small>
-                                    </div>
-
-                                    <div class="card card-body py-2 my-1 private_chat_room_message_text mb-4 
-                                    {% if msg.From == request.user %}ml-auto {% else %} mr-0 {% endif %}
-                                    " style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">
-                                        {{ msg.Message }}
-                                    </div> 
-
-                                    {% endfor %}
                                     
                                     {% comment %} Message box {% endcomment %}
 
-                                    <div class="container-fluid">
-                                        <div class="input-group" style="bottom: 37px; height:42px; position: absolute;  left: 0px;">
+                                    <div class="container-fluid p-5 mt-5">
+                                        <div class="input-group" style="bottom: 0px; height:42px; z-index:1000; position: absolute;  left: 0px;">
                                             <form id="private_chat_room_form" class="d-flex w-100">
                                                 <input type="text" class="form-control" name="private_chat_room_message_field" required>
                                                 <div class="input-group-append">
@@ -1064,56 +1051,125 @@ let public_socket = new WebSocket(protocol + '://' + window.location.host + '/ws
         private_socket.close();
     }
 
+    let user_private_chat_invitation_socket = new WebSocket(protocol + '://' + window.location.host + '/ws/privateChatInvitation/{{ room_name }}/{{ user }}/');
 
-     user_private_chat_invitation_socket.onopen = function(e) {
+
+    user_private_chat_invitation_socket.onopen = function(e) {
         console.log('private chat invitation socket is open')
      }
 
 
-    let private_socket = new WebSocket(protocol + '://' + window.location.host + '/ws/privateChat/{{ room_name }}/{{ user }}/');
+     user_private_chat_invitation_socket.onmessage = function(e) {
+      var data = JSON.parse(e.data);
+      var is_accepted = data.is_invitation_accepted;
+      console.log(is_accepted);
+
+      if (typeof is_accepted !== 'undefined') {
+        // Your code here
+        $("#nav-private-chat").load(" #nav-private-chat > *");
+    }
+    
+   
+      
+     /* var is_accepted = data.is_invitation_accepted;
+      var is_sent = data.is_invitation_sent;
+      
+
+      if(is_accepted.is_invitation_accepted === true)
+    {
+        $("#nav-private-chat").load(" #nav-private-chat > *");
+    }
+    else if(is_sent.is_invitation_sent === true)
+    {
+        $("#nav-private-chat").load(" #nav-private-chat > *");
+      
+    }
+*/
+} 
+
+    let private_socket = new WebSocket(protocol + '://' + window.location.host + '/ws/privateChatBroc/{{ room_name }}/{{ user }}/');
+    let is_initialized = false;
+
+    private_socket.onopen = function(e) {
+        console.log('private chat socket is open');
+    }
+
         private_socket.onmessage = function(e) {
             var data = JSON.parse(e.data);
-            var message = data.message;
-            var username = data.username;
-            // Add message to chat room
-            if(username === "{{ user }}"){
-                var message_element = document.createElement('div');
-                message_element.setAttribute('class', 'card card-body py-2 my-1 private_chat_room_message_text mb-4 ml-auto');
-                message_element.setAttribute('style', 'border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;');
-                message_element.innerHTML = message;
-    
-                var username_element = document.createElement('div');
-                username_element.setAttribute('class', 'text-muted d-flex justify-content-end');
-                var username_small = document.createElement('small');
-                username_small.setAttribute('class', 'private_chat_room_message_username font-weight-bold text-dark');
-                username_small.innerHTML = username;
-                username_element.appendChild(username_small);
-    
-                var messages_element = document.getElementById('private_chat_room_messages');
-                messages_element.appendChild(username_element);
-                messages_element.appendChild(message_element);
-            }else{
-                var message_element = document.createElement('div');
-                message_element.setAttribute('class', 'card card-body py-2 my-1 private_chat_room_message_text mb-4');
-                message_element.setAttribute('style', 'border-radius: 13px; width: fit-content;');
-                message_element.innerHTML = message;
-    
-                var username_element = document.createElement('div');
-                username_element.setAttribute('class', 'text-muted d-flex');
-                var username_small = document.createElement('small');
-                username_small.setAttribute('class', 'private_chat_room_message_username font-weight-bold text-dark');
-                username_small.innerHTML = username;
-                username_element.appendChild(username_small);
-    
-                var messages_element = document.getElementById('private_chat_room_messages');
-                messages_element.appendChild(username_element);
-                messages_element.appendChild(message_element);
+            var messages;
+
+            if (is_initialized === true) {
+                
+            messages = [data.data];
+            } else {
+            messages = data.data;
             }
-    
-            // Scroll to bottom
-            messages_element.scrollTop = messages_element.scrollHeight;
+
+            (is_initialized) ? console.log('private chat socket is open') : is_initialized = true;
+
+            // Add message to chat room
+            
+            
+            console.log(messages);
+            if(typeof messages !== 'undefined')
+            {
+            messages.forEach(function (messageText) {
+                var from = messageText.From;
+                var to = messageText.To;
+                var message = messageText.Message;
+            
+                // Now you can use 'from', 'to', and 'messageText' for processing or displaying the message.
+                console.log(`From: ${from}, To: ${to}, Message: ${message}`);
+
+                if(from === "{{ user }}"){
+                    var message_element = document.createElement('div');
+                    message_element.setAttribute('class', 'card card-body py-2 my-1 private_chat_room_message_text mb-4 ml-auto');
+                    message_element.setAttribute('style', 'border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;');
+                    message_element.innerHTML = message;
+        
+                    var username_element = document.createElement('div');
+                    username_element.setAttribute('class', 'text-muted d-flex justify-content-end');
+                    var username_small = document.createElement('small');
+                    username_small.setAttribute('class', 'private_chat_room_message_username font-weight-bold text-dark');
+                    username_small.innerHTML = from;
+                    username_element.appendChild(username_small);
+        
+                    var messages_element = document.getElementById('private_chat_room_messages');
+                    messages_element.appendChild(username_element);
+                    messages_element.appendChild(message_element);
+                }else{
+                    var message_element = document.createElement('div');
+                    message_element.setAttribute('class', 'card card-body py-2 my-1 private_chat_room_message_text mb-4');
+                    message_element.setAttribute('style', 'border-radius: 13px; width: fit-content;');
+                    message_element.innerHTML = message;
+        
+                    var username_element = document.createElement('div');
+                    username_element.setAttribute('class', 'text-muted d-flex');
+                    var username_small = document.createElement('small');
+                    username_small.setAttribute('class', 'private_chat_room_message_username font-weight-bold text-dark');
+                    console.log(to);
+                    username_small.innerHTML = from;
+                    username_element.appendChild(username_small);
+        
+                    var messages_element = document.getElementById('private_chat_room_messages');
+                    messages_element.appendChild(username_element);
+                    messages_element.appendChild(message_element);
+                }
+        
+                // Scroll to bottom
+                messages_element.scrollTop = messages_element.scrollHeight;
+                
+            });
+        }
+
         }
     
+            // Close WebSocket on page close
+    window.onbeforeunload = function() {
+
+        private_socket.close();
+    }
+
         // Send message
         var private_form = document.getElementById('private_chat_room_form');
 

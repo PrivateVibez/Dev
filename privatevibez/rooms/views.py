@@ -184,6 +184,20 @@ def Room(request, Broadcaster):
                                     change_password(request)
                                     # change_email(request)
                                     
+                                    if Private_Chat_Invitee.objects.filter(Broadcaster=request.user).exists():
+                                        broadcaster = Private_Chat_Invitee.objects.get(Broadcaster=request.user)
+                                        invitee_list = broadcaster.Invitee_relationships.all()
+                                        
+                                        all_private_chat_invitees = []
+                                        for invitee in invitee_list:
+                                            
+                                            if invitee.Is_Accepted == False:
+                                                    all_private_chat_invitees.append({
+                                                        'user_id': invitee.Invitee.id,
+                                                        'name'  : invitee.Invitee.username,
+                                                    })
+                                            
+                                    
                                     if Slot_Machine.objects.filter(User=user).exists():
                         
                                         slot_machine_data = Slot_Machine.objects.filter(User=user).values('pot', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
@@ -822,7 +836,7 @@ def invite_private_chat(request):
                             broadcaster.Invitee_relationships.add(invitee_relationship)
                             
                             channel_layer = get_channel_layer()
-                            channel_name = "private_chat_invitation" + str(broadcaster.Broadcaster.username) + "_" + str(user.User.username)
+                            channel_name = "fetch_private_chat_invitation_" + str(broadcaster.Broadcaster.username)
                             print(channel_name,flush=True)
                                 
                                 # Prepare data to send
@@ -1234,7 +1248,7 @@ def accept_privatechat(request):
                         
                         
                         channel_layer = get_channel_layer()
-                        channel_name = "private_chat_invitation" + str(broadcaster.Broadcaster.username) + "_" + str(user.username)
+                        channel_name = "private_chat_invitation" + str(broadcaster.Broadcaster.username) + "_" +str(user.username)
                         print(channel_name,flush=True)
                             
                             # Prepare data to send

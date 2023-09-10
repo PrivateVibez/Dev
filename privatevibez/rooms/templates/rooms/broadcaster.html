@@ -265,7 +265,7 @@
 <script type="text/javascript" src="{% static 'js/multi.js' %}"></script>
 
 <script>
-    var protocol = "";
+  
     
     if(window.location.protocol == "http:"){
         protocol = "ws";
@@ -385,13 +385,29 @@
 
 
 
-    let user_private_chat_invitation_socket = new WebSocket(protocol + '://' + window.location.host + '/ws/privateChatInvitation/{{ room_name }}/{{ user }}/');
+    let fetch_broadcaster_invitation_socket = new WebSocket(protocol + '://' + window.location.host + '/ws/fetchBroadcasterPrivateChatInvitation/{{ room_name }}/');
 
-    user_private_chat_invitation_socket.onmessage = function(e) {
+    fetch_broadcaster_invitation_socket.onopen = function(e) {
+        console.log('user_private_chat_invitation_socket open');
+
+    }
+
+    fetch_broadcaster_invitation_socket.onmessage = function(e) {
       var data = JSON.parse(e.data);
-      var is_accepted = data.is_invitation_accepted;
+      var is_invitation_sent = data.is_invitation_sent;
+      console.log(is_invitation_sent);
+
+      if (typeof is_invitation_sent !== 'undefined') {
+        // Your code here
+        $("#private_chat_invites_modal").load(" #private_chat_invites_modal > *");
+        $("#btn-pending-invites").load(" #btn-pending-invites > *");
+    }
+    
+   
+      
+     /* var is_accepted = data.is_invitation_accepted;
       var is_sent = data.is_invitation_sent;
-      console.log(is_accepted.is_invitation_accepted);
+      
 
       if(is_accepted.is_invitation_accepted === true)
     {
@@ -402,7 +418,8 @@
         $("#nav-private-chat").load(" #nav-private-chat > *");
       
     }
-
+*/
+} 
     function generate_lovense_qrcode(){
         $.ajax({
             method:'POST',
