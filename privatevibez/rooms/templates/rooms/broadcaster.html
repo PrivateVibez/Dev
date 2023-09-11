@@ -75,12 +75,12 @@
 
 
                                 <li class="nav-item">
-                                  <a class="nav-link" id="pills-chat-tab" data-toggle="pill" href="#pills-public-chat" role="tab" aria-controls="pills-chat" aria-selected="true">Chat</a>
+                                  <a class="nav-link" id="pills-chat-tab" data-toggle="pill" href="#pills-public-chat" role="tab" aria-controls="pills-chat" aria-selected="false">Chat</a>
                                 </li>
 
 
                                 <li class="nav-item">
-                                  <a class="nav-link" id="pills-private-chat-tab" data-toggle="pill" href="#pills-private-chat" role="tab" aria-controls="pills-private-chat" aria-selected="true">Private Chat</a>
+                                  <a class="nav-link" id="pills-private-chat-tab" data-toggle="pill" href="#pills-private-chat" role="tab" aria-controls="pills-private-chat" aria-selected="false">Private Chat</a>
                                 </li>
 
 
@@ -91,6 +91,10 @@
 
                                 <li class="nav-item">
                                   <a class="nav-link" id="pills-chat-settings-tab" data-toggle="pill" href="#pills-chat-settings" role="tab" aria-controls="pills-chat-settings" aria-selected="false">Chat Settings</a>
+                                </li>
+
+                                <li class="nav-item">
+                                  <a class="nav-link" id="pills-followers-tab" data-toggle="pill" href="#pills-followers" role="tab" aria-controls="pills-followers" aria-selected="false">Followers</a>
                                 </li>
 
 
@@ -113,6 +117,11 @@
                             <div class="tab-pane fade pt-2" id="pills-chat-settings" role="tabpanel" aria-labelledby="pills-chat-settings-tab">
                                 {% include "rooms/include/chat_settings.html" %}     
                             </div>
+
+                            <div class="tab-pane fade pt-2" id="pills-followers" role="tabpanel" aria-labelledby="pills-followers-tab">
+                                {% include "rooms/include/followers.html" %}     
+                            </div>
+
                         </div>
                           
                         </div>

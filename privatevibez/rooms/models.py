@@ -145,7 +145,7 @@ class Follows(models.Model):
     Broadcaster  = models.ForeignKey(settings.AUTH_USER_MODEL,null=True,blank=True, on_delete=models.CASCADE, related_name = 'Broadcaster')
     Timestamp    = models.DateTimeField(auto_now_add=True)     
     def __str__(self):
-        return str(self.User)
+        return str(self.User) + ' follows ' + str(self.Broadcaster)
 
 
 

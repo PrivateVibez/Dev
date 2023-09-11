@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from rooms.models import *
 from accounts.models import *
 from chat.models import *
+from django.utils import timezone
+from django.contrib.sessions.models import Session
 from cities_light.models import Country, Region, City
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
@@ -159,12 +161,23 @@ def Room(request, Broadcaster):
                     
                                 elif user.Status == "Broadcaster":
                                     
-                                    
-                                    print(availed_items,flush=True)
+                        
                                     if Private_Chat_Invitee.objects.filter(Broadcaster=request.user).exists():
                                         private_chat_invite = Private_Chat_Invitee.objects.get(Broadcaster=request.user)
                                         pending_private_chat_invitees = private_chat_invite.Invitee_relationships.filter(Is_Accepted=False).count()
-                                        all_private_chat_invitees = private_chat_invite.Invitee_relationships.all()
+                                        all_pending_private_chat_invitees = private_chat_invite.Invitee_relationships.filter(Is_Accepted=False)
+                                        
+                                        invitees = private_chat_invite.Invitee_relationships.all()
+                                        
+                                        fan_list = []
+                                        
+                                        for fan in invitees:
+                                            if fan.Is_Accepted == True:
+                                                print(fan,flush=True)
+                                                fan_list.append({
+                                                    'user_id': fan.Invitee.id,
+                                                    'name': fan.Invitee.username,
+                                                })
                                         
                                     countries = Country.objects.all()
                                     room_data_blocked_countries = room_data.Blocked_Countries.all()
@@ -184,23 +197,16 @@ def Room(request, Broadcaster):
                                     change_password(request)
                                     # change_email(request)
                                     
-                                    if Private_Chat_Invitee.objects.filter(Broadcaster=request.user).exists():
-                                        broadcaster = Private_Chat_Invitee.objects.get(Broadcaster=request.user)
-                                        invitee_list = broadcaster.Invitee_relationships.all()
-                                        
-                                        all_private_chat_invitees = []
-                                        for invitee in invitee_list:
                                             
-                                            if invitee.Is_Accepted == False:
-                                                    all_private_chat_invitees.append({
-                                                        'user_id': invitee.Invitee.id,
-                                                        'name'  : invitee.Invitee.username,
-                                                    })
-                                            
+                                    
+                                    broadcaster_followers_details = get_broadcaster_followers(broadcaster_user)                                    
                                     
                                     if Slot_Machine.objects.filter(User=user).exists():
                         
                                         slot_machine_data = Slot_Machine.objects.filter(User=user).values('pot', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
+                                        
+                                        
+
                                 
                                 return render(request, "rooms/home.html", locals()) 
                             except User_Status.DoesNotExist:
@@ -222,6 +228,85 @@ def Room(request, Broadcaster):
     else:
         room_data = Room_Data.objects.get(User = User.objects.get(username = Broadcaster))
         return render(request, "rooms/home.html", locals())
+
+
+
+def get_broadcaster_followers(broadcaster):
+    
+    broadcaster_followers = Follows.objects.filter(Broadcaster=broadcaster)
+
+    # Extract the follower users from the queryset
+    follower_users = broadcaster_followers.values_list('User', flat=True).distinct()
+
+    # Filter Item_Availed objects based on the followers
+    broadcaster_followers_details = []
+    
+    print(follower_users,flush=True)
+    
+    for user in follower_users:
+        
+        item_availed = Item_Availed.objects.filter(User=user).first()  # Assuming you want one item per user
+
+        broadcaster_followers_details.append({
+            
+                'username': item_availed.User.username,
+                'status': is_user_online(broadcaster,item_availed.User),
+                'sent_vibez': get_total_user_spendings(item_availed.User,["Sent Vibez"]),
+                'total_menuitems_spending': get_total_user_spendings(item_availed.User),
+                'total_slots_spending': get_total_user_spendings(item_availed.User,["Slot Spin","2OAK","3OAK"]),
+                'total_buttons_availed': get_total_user_spendings(item_availed.User,["MMM","OHYes","OH"]),
+            
+         }),
+    
+    print(broadcaster_followers_details,flush=True)
+    
+    return broadcaster_followers_details
+    
+    
+
+def get_total_user_spendings(user,item=""):
+        
+        if item != "":
+            user_spendings = Item_Availed.objects.filter(User=user,Item__in=item)
+            total_user_spendings = sum(int(item.Cost) for item in user_spendings)
+        else:
+            user_spendings = Item_Availed.objects.filter(User=user).exclude(Item__in=["Sent Vibez","Slot Spin","2OAK","3OAK","MMM","OHYes","OH"])
+            total_user_spendings = sum(int(item.Cost) for item in user_spendings)
+            
+        return total_user_spendings
+
+def is_user_online(broadcaster,user):
+    try:
+        
+        expiration_datetime = timezone.now() - timezone.timedelta(seconds=settings.SESSION_COOKIE_AGE)
+
+
+        active_sessions = Session.objects.filter(expire_date__gte=timezone.now())      
+        
+        user_sessions = []  
+        
+        for s in active_sessions:
+            
+            if Follows.objects.filter(Broadcaster=broadcaster,
+                    User__pk=s.get_decoded().get('_auth_user_id')
+                ).exists():
+                user_sessions.append(s)
+        
+         
+        for session in user_sessions:
+            user_id = session.get_decoded().get('_auth_user_id')
+       
+            if int(user_id) == user.id:
+                return True
+            else:
+                return False
+
+            
+
+ # User is considered online if they have been active in the last 15 minutes
+    except Session.DoesNotExist:
+ 
+        return False
 
 
 @csrf_exempt

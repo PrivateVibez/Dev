@@ -60,10 +60,10 @@
               <h4 class="text-center font-weight-bold bg-light py-2 m-0">Private Chats</h4>
 
               <div class="card card-body pri_broc_chat_list p-0" id="fan_lists">
-                {% if invitee_list %}
-                {% for fan in invitee_list %}
-                <button type="button" class="d-flex justify-content-between mb-2 border-top pt-2 px-3" id="fan_list_username" onclick="toggle_private_broc_room('{{ fan.username }}')">
-                  <h4 class="mt-5">{{ fan.name }}</h4>
+                {% if fan_list %}
+                {% for fan in fan_list %}
+                <button type="button" class="d-flex justify-content-between mb-2 border-0 p-auto" id="fan_list_username" onclick="toggle_private_broc_room('{{ fan.name }}')">
+                  <h4 class="mt-3">{{ fan.name }}</h4>
                 </button>
                 {% endfor %}
                 {% else %}
@@ -125,9 +125,17 @@ function toggle_private_broc_room(username, isUserClicked) {
         let msg_wraper = document.getElementById("pri_fans_msg");
   
         let msg_container = "";
-        var messages;
-        // Add message to chat room
+        var messages = data.data;
 
+        if (typeof messages === "object" && messages instanceof Array) {
+          // messages is an array of objects
+          messages = data.data;
+        } else if (typeof messages === "object") {
+          messages = [data.data];
+          // messages is a single object
+        }
+        // Add message to chat room
+      /*
         if(!is_initialized){
           messages = data.data;
           is_initialized = true;
@@ -135,8 +143,8 @@ function toggle_private_broc_room(username, isUserClicked) {
         else{
           messages = [data.data];
         }
-
-          console.log(messages);
+      */
+          console.log(typeof(messages));
         messages.forEach(function (messageText) {
             var from = messageText.From;
             var to = messageText.To;
@@ -212,7 +220,5 @@ function fetchFans(broc) {
 }
 
 // Interval to fetch the list of fans every 3 seconds
-setInterval(function() {
-  fetchFans("{{ room_name }}");
-}, 3000);
+
 </script>

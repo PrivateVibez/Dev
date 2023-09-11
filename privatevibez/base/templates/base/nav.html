@@ -181,12 +181,14 @@
                   </tr>
                 </thead>
                 <tbody class="fs-2">
-                  {% for invitee in all_private_chat_invitees %}
+                  
+                  {% for invitee in all_pending_private_chat_invitees %}
                   <tr>
-                    <th scope="row"><p class="fs-2">{{invitee.name}}</p></th>
+                  
+                    <th scope="row"><p class="fs-2">{{invitee.Invitee}}</p></th>
                     <td class="text-center">
-                        <button class="btn btn-success fs-3" data-dismiss="modal" onclick="Accept_Invitee('{{invitee.user_id}}')">Accept</button>
-                        <button class="btn btn-danger fs-3" onclick="decline_invite('{{invitee.user_id}}')" data-dismiss="modal">Decline</button>
+                        <button class="btn btn-success fs-3" data-dismiss="modal" onclick="Accept_Invitee('{{invitee.Invitee.id}}')">Accept</button>
+                        <button class="btn btn-danger fs-3" onclick="decline_invite('{{invitee.Invitee.id}}')" data-dismiss="modal">Decline</button>
                     </td>
                   </tr>
                   {% endfor %}
@@ -844,6 +846,7 @@ function Accept_Invitee(user_id){
 
             $("#private_chat_invites_modal").load(" #private_chat_invites_modal > *");
             $("#btn-pending-invites").load(" #btn-pending-invites > *");
+            $("#fan_lists").load(" #fan_lists > *");
         },
         error:function(errors, status, xhr){
             console.log(errors.responseText);

@@ -22,16 +22,6 @@ def fan_list(request, broc):
         broadcaster = User.objects.get(username=broc)
         private_room_manager = Private_Chat_Invitee.objects.get(Broadcaster=broadcaster)
         
-        invitees = private_room_manager.Invitee_relationships.all()
-        fan_list = []
-        
-        for fan in invitees:
-            if fan.Is_Accepted == True:
-                print(fan,flush=True)
-                fan_list.append({
-                    'user_id': fan.Invitee.id,
-                    'name': fan.Invitee.username,
-                })
         return JsonResponse({'data': fan_list})
     except:
         return JsonResponse({'data': []})
