@@ -1,14 +1,94 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <div id="visitor_list" class="col">
+            <div id="visitor_list" class="col-4">
             {% for items in availed_items %}
                 <span style="color:purple; display:block; width:max-content; border:transparent; background:transparent;">
-                    {{items.User}} {{items.Item}} {{items.Cost}} vibez {% if items.Note %}{{items.Note}}{% endif %}
+
                 </span>
+
+                <div class="dropdown">
+                    <a class="" style="color:purple; display:block; width:max-content; border:transparent; background:transparent;" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                        {{items.User}} {{items.Item}} {{items.Cost}} vibez {% if items.Note %}{{items.Note}}{% endif %}
+                    </a>
+                  
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    
+                      <li>
+                        {% if items.User.username in fan_list_names %}
+                        <a class="dropdown-item" id="private-chat-with-user-{{items.User.id}}" onclick="chat_with_user('{{items.User.username}}')" data-toggle="pill" href="#pills-private-chat" role="tab" aria-controls="pills-private-chat" aria-selected="false">Private Chat
+
+                        </a>
+                    </li>
+                    {% endif %}
+
+                      <li><a class="dropdown-item" id="shout-out-user-{{items.User.id}}" onclick="shoutout_user('{{items.User.username}}')" data-bs-toggle="modal" data-bs-target="#shoutoutUserModal">Shout Out</a></li>
+                    </ul>
+                  </div>
             
                 {% endfor %}
             </div>
         </div>
     </div>
 </div>
+
+
+
+<!-- Modal for broadcaster shouting out a user -->
+<div class="modal fade" id="shoutoutUserModal" tabindex="-1" aria-labelledby="shoutoutUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fs-1 text-center" id="shoutoutUserModalLabel">Shout Out</h5>
+          <button type="button" class="btn-close fs-2" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="input-group mb-3">
+                <span class="input-group-text fs-2" id="basic-addon1">Message</span>
+                <textarea type="text" id="shoutout_message_field" class="form-control fs-2" placeholder="Message" aria-label="Message" aria-describedby="basic-addon1">
+                </textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><span class="fs-2">Cancel</span></button>
+          <button type="button" onclick="send_shoutout_message()" class="btn btn-primary" data-bs-dismiss="modal"><span class="fs-2">Shout Out</span></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<script>
+    function chat_with_user(user){
+        var username = user;
+    
+        $('#pills-users-tab').removeClass('active');
+        $('#pills-users-tab').attr('aria-selected', false);
+        $('#pills-private-chat-tab').addClass('active');
+        $('#pills-private-chat-tab').attr('aria-selected', true);
+        $('#private-chat-with-user-' + user).attr('aria-selected', false);
+        $('#private-chat-with-user-' + user).removeClass('active');
+    
+        toggle_private_broc_room(username);
+    
+      }
+
+
+    function shoutout_user(user){
+        var message_field = document.getElementById('shoutout_message_field');
+        message_field.value = 'Hey ' + user + '!';
+    }
+
+
+    function send_shoutout_message(){
+
+        var message_field = document.getElementById('shoutout_message_field');
+        broc_socket.send(JSON.stringify({
+            'message': message_field.value,
+            'username': '{{ user }}'
+        }));
+        message_field.value = '';
+        message_field.focus();
+    }
+
+</script>

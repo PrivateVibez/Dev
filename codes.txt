@@ -1124,3 +1124,17 @@ function check_modal()
         </select>
         <button class="btn btn-primary fs-4" onclick="send_promotion()" type="submit">Send</button>
       </form>
+
+
+
+
+              invitees = private_room_manager.Invitee_relationships.all()
+        fan_list = []
+        
+        for fan in invitees:
+            if fan.Is_Accepted == True:
+                print(fan,flush=True)
+                fan_list.append({
+                    'user_id': fan.Invitee.id,
+                    'name': fan.Invitee.username,
+                })

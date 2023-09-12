@@ -77,7 +77,7 @@
                                   <div class="modal-body">
                                     <div class="container-fluid">
                                       <div class="row justify-content-center">
-                                        <div id="zoom-container-{{user.id}}" style="position: relative;
+                                        <div id="zoom-container-{{user.id}}" class="w-75" style="position: relative;
                                         overflow: hidden;">
                                           <img src="{{user.Id_File.url}}" alt="" id="user-id-pic-{{user.id}}" style="width: 100%;
                                           height: 100%;
@@ -392,31 +392,39 @@ function send_decline_message() {
 
 
   let currentScales = {}; // Store current scales for each image by ID
+  let currentTranslations = {}; // Store current translations for each image by ID
   let isDragging = false;
-  let offsetX, offsetY;
+  let startX, startY;
   let currentImageId;
   
   function zoom_in_user_id(id) {
     if (!currentScales[id]) {
       currentScales[id] = 1.0; // Initialize scale to 1.0 if not set
+      currentTranslations[id] = { x: 0, y: 0 }; // Initialize translation
     }
   
     currentScales[id] += 0.1; // Increase the zoom level by 0.1
     var img = document.getElementById('user-id-pic-' + id);
-    img.style.transform = `scale(${currentScales[id]})`;
+    img.style.transform = `scale(${currentScales[id]}) translate(${currentTranslations[id].x}px, ${currentTranslations[id].y}px)`;
   
     // Add mouse event listeners for drag
     img.addEventListener('mousedown', (e) => startDrag(e, id));
     img.addEventListener('mouseup', stopDrag);
   }
+  
   function zoom_out_user_id(id) {
     if (!currentScales[id]) {
       currentScales[id] = 1.0; // Initialize scale to 1.0 if not set
+      currentTranslations[id] = { x: 0, y: 0 }; // Initialize translation
     }
   
-    currentScales[id] -= 0.1; // Increase the zoom level by 0.1
+    currentScales[id] -= 0.1; // Decrease the zoom level by 0.1
+    if (currentScales[id] < 0.1) {
+      currentScales[id] = 0.1; // Limit the minimum zoom level
+    }
+  
     var img = document.getElementById('user-id-pic-' + id);
-    img.style.transform = `scale(${currentScales[id]})`;
+    img.style.transform = `scale(${currentScales[id]}) translate(${currentTranslations[id].x}px, ${currentTranslations[id].y}px)`;
   
     // Add mouse event listeners for drag
     img.addEventListener('mousedown', (e) => startDrag(e, id));
@@ -426,29 +434,36 @@ function send_decline_message() {
   function startDrag(e, id) {
     isDragging = true;
     currentImageId = id;
-    const img = document.getElementById('user-id-pic-' + id);
-    offsetX = e.clientX - img.getBoundingClientRect().left;
-    offsetY = e.clientY - img.getBoundingClientRect().top;
-    
+    startX = e.clientX;
+    startY = e.clientY;
+  
     // Prevent browser's default drag-and-drop behavior
     e.preventDefault();
-    
+  
     // Listen to mousemove and mouseup events on the document
     document.addEventListener('mousemove', drag);
     document.addEventListener('mouseup', stopDrag);
   }
   
   function drag(e) {
-    if (!isDragging) return;
+    if (!isDragging || !currentScales[currentImageId]) return;
   
     const img = document.getElementById('user-id-pic-' + currentImageId);
-    const container = document.getElementById('zoom-container-' + currentImageId);
-    console.log(currentImageId);
-    console.log(document.getElementById('zoom-container-' + currentImageId));
-    const newX = e.clientX - container.getBoundingClientRect().left - offsetX;
-    const newY = e.clientY - container.getBoundingClientRect().top - offsetY;
   
-    img.style.transform = `scale(${currentScales[currentImageId]}) translate(${newX}px, ${newY}px)`;
+    // Calculate the new translation based on the difference in mouse position
+    const deltaX = e.clientX - startX;
+    const deltaY = e.clientY - startY;
+  
+    // Update the current translation
+    currentTranslations[currentImageId].x += deltaX;
+    currentTranslations[currentImageId].y += deltaY;
+  
+    // Apply both scale and translation to the image
+    img.style.transform = `scale(${currentScales[currentImageId]}) translate(${currentTranslations[currentImageId].x}px, ${currentTranslations[currentImageId].y}px)`;
+  
+    // Update the start position for the next drag movement
+    startX = e.clientX;
+    startY = e.clientY;
   }
   
   function stopDrag() {
@@ -456,5 +471,6 @@ function send_decline_message() {
     document.removeEventListener('mousemove', drag);
     document.removeEventListener('mouseup', stopDrag);
   }
+  
   
 </script>

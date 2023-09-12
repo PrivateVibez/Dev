@@ -100,7 +100,7 @@ def Room(request, Broadcaster):
                             # room_sesson          = Room_Sesson.objects.get(User = User.objects.get(username = Broadcaster))
                             broadcaster_data     = User_Data.objects.get(User = User.objects.get(username = Broadcaster))
                             availed_items = Item_Availed.objects.filter(Room = room_data).all()
-                    
+                            subscriptions        = Subscription.objects.all()
                         
                             private_chat = Private.objects.filter(
                                 Q(From=request.user, To=broadcaster_user) | Q(To=request.user, From=broadcaster_user)
@@ -170,6 +170,7 @@ def Room(request, Broadcaster):
                                         invitees = private_chat_invite.Invitee_relationships.all()
                                         
                                         fan_list = []
+                                        fan_list_names = []
                                         
                                         for fan in invitees:
                                             if fan.Is_Accepted == True:
@@ -178,6 +179,7 @@ def Room(request, Broadcaster):
                                                     'user_id': fan.Invitee.id,
                                                     'name': fan.Invitee.username,
                                                 })
+                                                fan_list_names.append(fan.Invitee.username)
                                         
                                     countries = Country.objects.all()
                                     room_data_blocked_countries = room_data.Blocked_Countries.all()

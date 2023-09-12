@@ -1,9 +1,10 @@
-<div class="container-fluid">
+<h3 class="text-center fs-2">VIBEZ SPENT</h3>
+
+<div class="col" style="overflow-y: auto; height:400px">
 
   <div class="row">
-<h3 class="text-center fs-2">VIBEZ SPENT</h3>
     <table class="table">
-      <thead>
+      <thead style="position: sticky; top: 0; z-index: 1;">
         <tr>
           <th scope="col">Follower</th>
           <th scope="col">Status</th>
@@ -34,6 +35,8 @@
           <td>{{follower.total_menuitems_spending}}</td>
           <td>{{follower.total_slots_spending}}</td>
           <td>{{follower.total_buttons_availed}}</td>
+
+          {% if follower.username in fan_list_names %}
           <td>
             <a class="bg-transparent border-0" id="open-private-chat-{{follower.username}}" data-toggle="pill" href="#pills-private-chat" role="tab" aria-controls="pills-private-chat" aria-selected="false" onclick="chat_with_follower('{{follower.username}}')">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-chat-dots-fill" viewBox="0 0 16 16">
@@ -41,6 +44,8 @@
           </svg>
         </a>
       </td>
+          {% endif %}
+
         </tr>
         {% endfor %}
 
@@ -49,6 +54,8 @@
 
 
   </div>
+
+ 
 
 </div>
 

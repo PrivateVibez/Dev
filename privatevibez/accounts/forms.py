@@ -13,18 +13,28 @@ class Profile_Image(forms.ModelForm):
         fields = ['Image']
 
 
+custom_errors = {
+    'required': 'Your custom error message'
+}
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
     username = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
     password1 = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
-    password2 = forms.CharField(error_messages={'password_mismatch': ''},widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
+    password2 = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
+
 
     class Meta:
-        error_messages = {
-            'password_mismatch':'error'
-        }
+
         model = User
         fields = ['username', 'email', 'password1', 'password2']
+        
+    def clean(self):
+        cd = self.cleaned_data
+        if cd.get('password1') != cd.get('password2'):
+            self.add_error('password2', "passwords do not match !")
+        return cd
+        
+
 
 
 

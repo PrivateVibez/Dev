@@ -38,11 +38,17 @@ def Logout(request):
     
     # DELETE BOTH PRIVATE AND PUBLIC CHATS ONCE SESSION IS TERMINATED
     
+    user = request.user
+    
+    if user.Status == "Broadcaster":
+        
     # Private.objects.filter(From_id = request.user).delete()
-    # Public.objects.filter(User_id = request.user).delete()
+        Public.objects.filter(Room = request.user).delete()
     
     if StaffManager.objects.filter(staff_id = request.user).exists():
         StaffManager.objects.filter(staff_id = request.user).update(logout_time = timezone.now())
+        
+    
     logout(request)
     messages.error(request, 'You are logged out')
     return redirect('Main_home')
@@ -116,7 +122,7 @@ def Registration(request):
         
         else:
             print(form.errors,flush=True)
-            messages.error(request, form.errors)
+            
     else:    
         form =UserRegisterForm()
     return render(request, "accounts/registration.html", {'registration_form': form})

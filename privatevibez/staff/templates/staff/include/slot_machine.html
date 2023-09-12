@@ -31,48 +31,54 @@
   </div>
 </div>
 
-
-
-<div class="col">
-
-  <!--MENU DATA-->
+<div class="container-fluid">
   <h3 class="font-weight-bold fs-2">Favorite buttons</h3>
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">Button</th>
-        <th scope="col">Total Availed</th>
-        <th scope="col">Revenue</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for button in fav_buttons %}
-      <tr>
-        <td>{{button.item}}</td>
-        <td>{{button.item_count}}</td>
-        <td>{{button.cost_sum}}</td>
-        <td></td>
-      </tr>
-      {% endfor %}
-      <tr>
-        <th>TOTAL:</th>
-        <td></td>
-        <td>{{total_revenue_fav_buttons}}</td>
 
-      </tr>
-    </tbody>
-  </table>
+  <div class="col" style="height:200px; overflow-y: auto;">
+
+    <!--MENU DATA-->
+    <table class="table position-relative">
+      <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
+        <tr>
+          <th scope="col">Button</th>
+          <th scope="col">Total Availed</th>
+          <th scope="col">Revenue</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for button in fav_buttons %}
+        <tr>
+          <td>{{button.item}}</td>
+          <td>{{button.item_count}}</td>
+          <td>{{button.cost_sum}}</td>
+          <td></td>
+        </tr>
+
+        {% endfor %}
+      </tbody>
+    </table>
 
 
+  </div>
+
+  <div class="d-flex flex-row justify-content-between" style="width:71%;">
+    <p class="font-weight-bold">TOTAL:</p>
+    <div class>{{total_revenue_fav_buttons}}</div>
+
+  </div>
 </div>
 
 
-<div class="col">
+<div class="container-fluid">
+
+  <h3 class="font-weight-bold fs-2">Menu Items</h3>
+
+<div class="col" style="height:200px; overflow-y: auto;">
 
   <!--MENU DATA-->
-  <h3 class="font-weight-bold fs-2">Menu Items</h3>
-  <table class="table">
-    <thead>
+
+  <table class="table position-relative">
+    <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
       <tr>
         <th scope="col">Item</th>
         <th scope="col">Total Availed</th>
@@ -88,51 +94,59 @@
         <td></td>
       </tr>
       {% endfor %}
-      <tr>
-        <th>TOTAL:</th>
-        <td></td>
-        <td>{{total_revenue_menu_items}}</td>
 
-      </tr>
     </tbody>
   </table>
 
+
+
+
+  </div>
+
+  <div class="d-flex flex-row justify-content-between" style="width:71%;">
+    <p class="font-weight-bold">TOTAL:</p>
+    <div class>{{total_revenue_menu_items}}</div>
+
+  </div>
 
 </div>
 
 
-<div class="col">
-
-  <!--MENU DATA-->
+<div class="container-fluid">
   <h3 class="font-weight-bold fs-2">Slot Machine</h3>
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">Prize</th>
-        <th scope="col">Total Availed</th>
-        <th scope="col">Revenue</th>
-      </tr>
-    </thead>
-    <tbody>
-      
-      {% for slot in slot_machine_data %}
-      <tr>
-        <td>{{slot.item}}</td>
-        <td>{{slot.item_count}}</td>
-        <td>{{slot.cost_sum}}</td>
-        <td></td>
-      </tr>
-      {% endfor %}
-      <tr>
-        <th>TOTAL:</th>
-        <td></td>
-        <td>{{total_revenue_slot_machine_data}}</td>
 
-      </tr>
-    </tbody>
-  </table>
+  <div class="col" style="height:200px; overflow-y: auto;">
+
+    <!--MENU DATA-->
+    <table class="table position-relative">
+      <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
+        <tr>
+          <th scope="col">Prize</th>
+          <th scope="col">Total Availed</th>
+          <th scope="col">Revenue</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        {% for slot in slot_machine_data %}
+        <tr>
+          <td>{{slot.item}}</td>
+          <td>{{slot.item_count}}</td>
+          <td>{{slot.cost_sum}}</td>
+          <td></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
 
 
+  </div>
+
+  <div class="d-flex flex-row justify-content-between" style="width:71%;">
+    <p class="font-weight-bold">TOTAL:</p>
+    <div class>{{total_revenue_slot_machine_data}}</div>
+
+  </div>
 </div>
 
 

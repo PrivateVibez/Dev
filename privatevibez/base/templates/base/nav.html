@@ -86,6 +86,7 @@
     <div aria-live="polite" aria-atomic="true" class="position-relative">
 
         <div id="toast-container" data-bs-animation="" style="z-index: 2000;" class="toast-container position-fixed end-0 p-3">
+          
           {% for message in messages %}
       
           <div class="toast show position-fixed top-25 end-0 mr-5 fade bg-{{message.tags}}" role="alert" aria-live="assertive" aria-atomic="true">
@@ -96,11 +97,13 @@
              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
            </div>
            <div class="toast-body fs-2">
-             {{ message }} 
+            {{ message|safe }}
            </div>
          </div>
       
       {% endfor %}
+
+
         </div>
       </div>
 
@@ -110,7 +113,8 @@
                 Sign Up to  enjoy Vibrations
                 <span><i class="icofont-sign-in"></i></span>
             </p> 
-        </a>    
+        </a>  
+          
     {% endif %}
 
     {% if request.user.is_authenticated %} 
@@ -210,10 +214,9 @@
 <div class="modal fade" id="login_modal" tabindex="-1" role="dialog" aria-labelledby="login_modal_label" aria-hidden="true">
     <div class="modal-dialog  modal-dialog-centered" style="max-width:800px;" role="document">
       <div class="modal-content" style="background-color: #6cc6ba;">
-        <div class="modal-header">
-          <h5 class="modal-title display-4 font-weight-bold text-dark text-center w-100" id="login_modal_label">Login</h5>
+        <div class="">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span class="fs-1 text-dark" aria-hidden="true">&times;</span>
+            <span class="display-1 text-dark" aria-hidden="true">&times;</span>
           </button>
         </div>
         <section class="vh-75" style="background-color: #6cc6ba;">
@@ -296,15 +299,14 @@
 <div class="modal fade" id="registration_modal" tabindex="-1" role="dialog" aria-labelledby="registration_modal_label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width:900px"  role="document">
       <div class="modal-content" style="background-color: #6cc6ba;">
-        <div class="modal-header">
-          <h5 class="modal-title font-weight-bold text-dark w-100 text-center fs-1" id="registration_modal_label">Sign Up</h5>
+        <div class="">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span class="fs-1" style="color:#1db9a7" aria-hidden="true">&times;</span>
+            <span class="display-1 text-dark" aria-hidden="true">&times;</span>
           </button>
         </div>
 
         <section class="vh-100" style="background-color: #6cc6ba;">
-            <div class="container py-5 h-100">
+            <div class="container h-100">
               <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col col-xl-10">
                   <div class="card" style="border-radius: 1rem;">
