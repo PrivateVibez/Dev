@@ -192,25 +192,7 @@
  
               successToast(msg.msg);  
 
-              if (pot !== null) {
-                document.getElementById('pot').innerHTML = msg.pot;
-            }
-              if (spins !== null) {
-                document.getElementById('free_spins').innerHTML = msg.spins.spins;    
-              }
-              else {
-                
-                  document.getElementById('free_spins').innerHTML = 0;
-                }
-              if (msg.vibez !== null) {
-                document.getElementById('user_vibez').innerHTML = msg.vibez.vibez;    
-              }
-              else {
-                document.getElementById('user_vibez').innerHTML = 0;
-              }
-                 
-              
-
+              $("#user-details").load(" #user-details > *");
          
       
               

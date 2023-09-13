@@ -349,9 +349,15 @@ def avail_menu_item(request):
                 item = Item_Availed.objects.create(Room = broadcaster_room,User=request.user, Item = menu_item.Menu_Name, Cost = menu_item.Vibez_Cost)
                 
                 user = User_Data.objects.get(User = request.user)
+                
                 if user.Vibez >= menu_item.Vibez_Cost:
                     user.Vibez = user.Vibez - menu_item.Vibez_Cost
-                    broadcaster_room.Revenue = menu_item.Vibez_Cost
+                    
+                    if broadcaster_room.Revenue != None:
+                        broadcaster_room.Revenue += menu_item.Vibez_Cost
+                    else:
+                        broadcaster_room.Revenue = menu_item.Vibez_Cost
+                    
                     
                     user.save()
                     broadcaster_room.save()
@@ -795,7 +801,7 @@ def get_prize(request):
                     note = f'{winner.User.username} Won Three of a kind!'
             
                     pot = availed_item(winner.User.id,room_data,"3OAK",price,note)
-                    
+           
                     is_Jackpot = True
                     winner = trigger_toy(room_data.User.id,price,winner.User.id,feature,strength,timesec,room_data,is_Jackpot)
                     
@@ -806,8 +812,8 @@ def get_prize(request):
                     feature = room_data.Feature_OH_button
                     strength = room_data.Strength_OH_button
                     timesec = 1    
-                    print("costperspin",flush=True)
-                    print(cost_per_spin,flush=True)
+                    
+
                     if winner.Free_spins != 0:
                         remaining_price = cost_per_spin
                     else:
@@ -823,8 +829,7 @@ def get_prize(request):
                         machine.pot += remaining_price
                         machine.save()
                         pot = machine.pot
-                     
-                        
+                 
                     serializer = SlotMachineSerializer(slot_machine_pot,many=True)
                     msg = f'You lose some, you win some. Keep vibing!'
                    
@@ -918,7 +923,11 @@ def invite_private_chat(request):
                         if user.Vibez > broadcaster_private_chat_price:
                             user.Vibez -= broadcaster_private_chat_price
                             user.save()
-                            room_data.Revenue += broadcaster_private_chat_price
+                            
+                            if room_data.Revenue != None:
+                                room_data.Revenue += broadcaster_private_chat_price
+                            else:
+                                room_data.Revenue = broadcaster_private_chat_price
                             room_data.save()
                             broadcaster.Invitee_relationships.add(invitee_relationship)
                             
@@ -1091,10 +1100,13 @@ def display_user_availed_item_in_broadcaster_room(user_data,item,room,remaining_
                 
             # Update the room's revenue
             if room.Revenue is not None:
-                room.Revenue = new_revenue - remaining_price
-                room.save()
+                room.Revenue += new_revenue - remaining_price
+               
             else:
-                print('room error',flush=True)
+                room.Revenue = new_revenue - remaining_price
+    
+                
+            room.save()
             
                 
                 
@@ -1159,7 +1171,7 @@ def availed_item(user,room,item,price,note=None):
         
         with transaction.atomic():
             user_data = User_Data.objects.get(User__id=user)
-            
+            print(price,flush=True)
             if user_data.Free_spins != 0:
                 item = Item_Availed.objects.create(Room=room,User=user_data.User,Item=item, Cost=0, Note="free spin")
                 user_data.Availed.add(item)  
@@ -1167,9 +1179,28 @@ def availed_item(user,room,item,price,note=None):
                 slot_instance = display_user_availed_item_in_broadcaster_room(user_data,item,room,remaining_price=price)
                 
                 
+                private_vibez = PrivatevibezRevenue.objects.order_by('timestamp').first()
+                
+                if private_vibez:
+                    # charge user per spin
+                    remaining_price = price - private_vibez.Chargeback
+                    print(remaining_price,flush=True)
+                    if private_vibez.Slot_Machine_Revenue is None:
+                        private_vibez.Slot_Machine_Revenue = private_vibez.Chargeback
+                    else:
+                        private_vibez.Slot_Machine_Revenue = private_vibez.Slot_Machine_Revenue + private_vibez.Chargeback
+                    private_vibez.save()
+                
+                
+                    if room.Revenue != None:
+                        room.Revenue += remaining_price
+                    else:
+                        room.Revenue = remaining_price
+                    room.save()
+                
                 return slot_instance
                 
-                
+            
             if user_data.Vibez >= price:
                 
                 private_vibez = PrivatevibezRevenue.objects.order_by('timestamp').first()
@@ -1195,11 +1226,13 @@ def availed_item(user,room,item,price,note=None):
 
                 # add revenues
            
-                if room.Revenue is not None:
-                    room.Revenue = room.Revenue + remaining_price
+                if room.Revenue != None:
+                    room.Revenue += remaining_price
                 else:
                     room.Revenue = remaining_price
                 room.save()
+                
+                print(room.Revenue,flush=True)
                 
                 return slot_instance
                 

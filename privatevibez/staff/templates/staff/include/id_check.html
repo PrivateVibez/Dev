@@ -77,11 +77,17 @@
                                   <div class="modal-body">
                                     <div class="container-fluid">
                                       <div class="row justify-content-center">
-                                        <div id="zoom-container-{{user.id}}" class="w-75" style="position: relative;
-                                        overflow: hidden;">
-                                          <img src="{{user.Id_File.url}}" alt="" id="user-id-pic-{{user.id}}" style="width: 100%;
-                                          height: 100%;
-                                          transition: transform 0.3s ease-in-out;" class="img-fluid">
+                                        <div id="zoom-container-{{user.id}}" class="d-flex flex-row" style="position: relative;
+                                      ">
+                                          <div class="d-flex flex-row gap-2" style="overflow-x: auto;">
+                                            <img src="{{user.Id_File.url}}" alt="" id="user-id-pic-{{user.id}}" style="
+                                            
+                                            transition: transform 0.3s ease-in-out;" class="img-fluid col">
+
+                                            <img src="{% if user.Second_Id_File %}{{user.Second_Id_File.url}}{% endif %}" alt="" id="user-id2-pic-{{user.id}}" style="
+                                            
+                                            transition: transform 0.3s ease-in-out;" class="img-fluid col">
+                                          </div>
                                         </div>
                                         <div class="row">
                                           <span>First Name:</span>

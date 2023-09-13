@@ -1,71 +1,79 @@
+<ul class="nav nav-tabs gap-0" id="v-pills-tab" role="tablist" aria-orientation="vertical" style="position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; width: 100%; box-sizing: border-box;">
+
+  <li class="nav-item col">
+
+    <button type="button" class="tab nav-link w-100" data-bs-toggle="modal" data-bs-target="#confirmation_to_spendModal">
+      <span class="fs-3 font-weight-bold">Menu</span>
+    </button>
+
+
+    <div class="modal fade" id="confirmation_to_spendModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel"></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <h3 class="text-center fs-1 font-weight-bold">you are about to spend vibez</h3>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary fs-3" data-bs-dismiss="modal">Cancel</button>
+            <button class="nav-link" id="v-pills-menu-tab" onclick="dismiss_modal_cofirmation_to_spend_vibez()" data-bs-toggle="pill" data-bs-target="#v-pills-menu" type="button" role="tab" aria-controls="v-pills-menu" aria-selected="true"  data-bs-dismiss="modal"><span class="fs-2 font-weight-bold">Okay</span></button>
+        
+          </div>
+        </div>
+      </div>
+    </div>
+ </li>
+
+  <li class="nav-item col">
+  <button class="tab nav-link w-100" id="v-pills-dice-tab" data-bs-toggle="pill" data-bs-target="#v-pills-dice" type="button" role="tab" aria-controls="v-pills-dice" aria-selected="false"><span class="fs-3 font-weight-bold">Dice</span></button>
+  </li>
+
+  <li class="nav-item col">
+  <button class="tab nav-link w-100" id="v-pills-Slots-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Slots" type="button" role="tab" aria-controls="v-pills-Slots" aria-selected="false"><span class="fs-3 font-weight-bold">Slots</span></button>
+  </li>
+
+</ul>
+
 <div class="msg-list-wrapper-split justify-content-center" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
+
+
+
 
   <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;"></div>
 
 
   <div class="col w-100 justify-content-center">
       
-      <div class="d-flex flex-row">
 
-        <div class="row">
-          <ul class="nav nav-pills m-auto gap-2" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-
-          <li class="nav-item">
-
-            <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#confirmation_to_spendModal">
-              <span class="fs-3 font-weight-bold">Menu</span>
-            </button>
+        <div class="row w-100 gap-0">
 
 
-          <li class="nav-item">
-          <button class="nav-link" id="v-pills-dice-tab" data-bs-toggle="pill" data-bs-target="#v-pills-dice" type="button" role="tab" aria-controls="v-pills-dice" aria-selected="false"><span class="fs-3 font-weight-bold">Dice</span></button>
-          </li>
 
-          <li class="nav-item">
-          <button class="nav-link" id="v-pills-Slots-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Slots" type="button" role="tab" aria-controls="v-pills-Slots" aria-selected="false"><span class="fs-3 font-weight-bold">Slots</span></button>
-          </li>
-
-          
-      <div class="modal fade" id="confirmation_to_spendModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel"></h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <h3 class="text-center fs-1 font-weight-bold">you are about to spend vibez</h3>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary fs-3" data-bs-dismiss="modal">Cancel</button>
-              <button class="nav-link" id="v-pills-menu-tab" onclick="dismiss_modal_cofirmation_to_spend_vibez()" data-bs-toggle="pill" data-bs-target="#v-pills-menu" type="button" role="tab" aria-controls="v-pills-menu" aria-selected="true"><span class="fs-2 font-weight-bold" data-bs-dismiss="modal">Okay</span></button>
-            </li>
-            </div>
-          </div>
-        </div>
-      </div>
-          </ul>
+         
         </div>
 
-      </div>
+   
 
 
       <div class="d-flex flex-row">
 
       <div class="tab-content w-100" id="v-pills-tabContent">
         <div class="tab-pane fade" id="v-pills-menu" role="tabpanel" aria-labelledby="v-pills-menu-tab" tabindex="0">
-          <div class="col-12">
+          <div class="col-10 m-auto">
 
-            <div class="d-flex flex-column justify-content-center align-items-center gap-4">
+            <div class="row justify-content-center align-items-center gap-4">
             {% for item in menu_data %}
 
-           
-                <button type="button" class="btn btn-dark fs-3 w-100 col-3" onclick="avail_menu_item({{item.id}})">
+          
+                <button type="button" class="btn btn-dark fs-3 col-3" onclick="avail_menu_item({{item.id}})">
                   <span class="fs-2">{{item.Menu_Name}}</span>
                   <small class="d-block">{{item.Vibez_Cost}} vibez</small>
                 </button>
   
-                
+      
                 {% endfor %}
               </div>
           </div>
@@ -122,7 +130,9 @@
 
   function dismiss_modal_cofirmation_to_spend_vibez(){
     $('#confirmation_to_spendModal').modal('hide');
-    $('#confirmation_to_spendModal').modal('hide');
+    $('#v-pills-menu-tab').removeClass('active');
+    $('#v-pills-menu-tab').attr('aria-selected', false);
+    
   }
 
 </script>

@@ -28,9 +28,9 @@
             {% if request.user.is_authenticated %}
                 <ul class=" navbar-collapse justify-content-end" style="margin-right: 50px;" id="navbarsid" >
                     <li class="nav-item dropdown" style="list-style-type:none;">
-                        <li class="nav-item dropdown" style="list-style-type:none; ">
-                            <button class="nav-link dropdown bg-transparent border-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="icofont-user-alt-2 fs-2 text-lg" style="color:#6cc6ba;"> {{request.user.username}}
-                                <span class="bg-transparent"><img class="img-thumbnail bg-transparent border-0" width="30px" src="{{user_datas.Subscription_Type.Badge.url}}"></span>
+                        <li id="user-details" class="nav-item dropdown" style="list-style-type:none; ">
+                            <button class="nav-link dropdown bg-transparent border-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="icofont-user-alt-2 fs-2 text-lg" style="color:#6cc6ba;"> <span class="fs-3" id="user-username">{{request.user.username}}</span>
+                                <span class="bg-transparent"><img class="img-thumbnail bg-transparent border-0" id="user-badge" width="30px" src="{{user_datas.Subscription_Type.Badge.url}}"></span>
                             </i> 
                                 <br><i id="user_vibez" class="icofont-sound-wave fs-2 text-lg" style="color:#6cc6ba;">
                                     {% if user_datas == None %}
@@ -92,6 +92,7 @@
           <div class="toast show position-fixed top-25 end-0 mr-5 fade bg-{{message.tags}}" role="alert" aria-live="assertive" aria-atomic="true">
            <div class="toast-header">
             <img src="{% static 'images/logo/small_green_logo.png' %}" id="privatevibezlogo" width="30px" height="30px" class="rounded me-2 d-none" alt="...">
+            
              <strong class="me-auto">Notification</strong>
              <!--<small class="">just now</small>-->
              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -512,14 +513,14 @@
 
 
             <div class="col justify-content-center">
-                <span class="bg-transparent"><img class="img-thumbnail bg-transparent border-0" width="100px" src="{{user_datas.Subscription_Type.Badge.url}}"></span>
+                <span class="bg-transparent"><img id="subscription-badge" class="img-thumbnail bg-transparent border-0" width="100px" src="{{user_datas.Subscription_Type.Badge.url}}"></span>
             </div>
  
         
         </div>
 
         <div class="">
-            <button class="btn btn-primary fs-2" onclick="unsubscribe()">Unsubscribe</button>
+            <button class="btn btn-primary fs-2" onclick="unsubscribe()" data-dismiss="modal">Unsubscribe</button>
         </div>
 
 
@@ -1024,7 +1025,8 @@ function unsubscribe() {
                 console.log(data)
                 var message = data.data
                 successToast(message);
-                location.reload();
+                $("#user-details").load(" #user-details > *");
+                $("#subscription-badge").load(" subscription-badge > *");
             },
             error:function(errors){
                 console.log(errors.responseText)

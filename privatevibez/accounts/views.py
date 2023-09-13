@@ -26,7 +26,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q, Sum
 from rest_framework.renderers import JSONRenderer
 from rest_framework.utils.serializer_helpers import ReturnDict
-from .serializers import User_DataSerializer, Room_DataSerializer,UserSerializer
+from .serializers import User_DataSerializer, Room_DataSerializer,UserSerializer, UserDataSubscriptionSerializer
 from django.contrib.auth import update_session_auth_hash
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -699,7 +699,12 @@ def avail_subscription(request):
                 user_data.Vibez += subscription.Vibez
                 user_data.Free_spins += subscription.Slots
                 user_data.save()
-                return JsonResponse({"data":f'you have successfully subscribed to {user_data.Subscription_Type} plan. Enjoy vibing!'}, safe=False)
+                
+                user_serializer = UserDataSubscriptionSerializer(user_data)
+                serialized_user_instance = JSONRenderer().render(user_serializer.data)
+                # If needed, you can decode the JSON bytes to a string
+                
+                return JsonResponse({"data":f'you have successfully subscribed to {user_data.Subscription_Type} plan. Enjoy vibing!',"userdata":user_serializer.data}, safe=False)
             else:
                 
                 return JsonResponse({"data":f'you are already subscribed to {user_data.Subscription_Type} a plan.'},status=500, safe=False)

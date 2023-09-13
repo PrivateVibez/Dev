@@ -306,6 +306,7 @@
         const visitors = data.user_visitors;
         const item_availed = data.item_availed;
         console.log(item_availed)
+
         if (visitors)
         {
             
@@ -383,7 +384,7 @@
             });
             visitors_list.appendChild(wrapper);
            
-
+            $("#room-stats-table").load(" #room-stats-table > *");  
 
             }
 
