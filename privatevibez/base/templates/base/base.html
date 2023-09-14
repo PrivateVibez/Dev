@@ -30,7 +30,34 @@
 
 <body class="">
 
+
+    <div aria-live="polite" aria-atomic="true" class="position-relative">
+
+        <div id="toast-container" class="toast-container position-absolute top-0 end-0 p-3" style="z-index:2000">          
+            {% for message in messages %}
+        
+            <div class="toast show bg-{{message.tags}}" role="alert" aria-live="assertive" aria-atomic="true">
+             <div class="toast-header">
+              <img src="{% static 'images/logo/small_green_logo.png' %}" id="privatevibezlogo" width="30px" height="30px" class="rounded me-2 d-none" alt="...">
+              
+               <strong class="me-auto">Notification</strong>
+               <!--<small class="">just now</small>-->
+               <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+             </div>
+             <div class="toast-body fs-2">
+              {{ message|safe }}
+             </div>
+           </div>
+        
+        {% endfor %}
+  
+  
+          </div>
+        </div>
+
     {% include 'base/nav.html'%}
+
+
 
 
 
@@ -54,20 +81,8 @@
 <script src="{% static 'plugins/google-map/gmap.js' %}"></script>
 <script src="https://vjs.zencdn.net/8.5.2/video.min.js"></script>
 
-<script> 
+<script>
 
-    var toastContainer = document.getElementById('toast-container');
-    var logo = document.getElementById('privatevibezlogo');
-    
-    
-    const toastElement = document.querySelector('.toast');
-    
-    if(toastElement){
-        setTimeout(function() {
-            var toast = new bootstrap.Toast(toastElement);
-            toast.hide();
-        }, 2000);
-    }
-</script>
+  </script>
 
  </html>

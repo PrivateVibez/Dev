@@ -13,9 +13,6 @@ class Profile_Image(forms.ModelForm):
         fields = ['Image']
 
 
-custom_errors = {
-    'required': 'Your custom error message'
-}
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
     username = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
@@ -28,11 +25,6 @@ class UserRegisterForm(UserCreationForm):
         model = User
         fields = ['username', 'email', 'password1', 'password2']
         
-    def clean(self):
-        cd = self.cleaned_data
-        if cd.get('password1') != cd.get('password2'):
-            self.add_error('password2', "passwords do not match !")
-        return cd
         
 
 

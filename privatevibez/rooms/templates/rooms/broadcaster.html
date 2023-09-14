@@ -283,11 +283,26 @@
     var message = document.getElementById('alerts')
     const room_id = {{room_data.User.id}} // Get the room ID from somewhere
 
+        
+    const roomViewerSocket = new WebSocket(
+        protocol + '://' + window.location.host + `/ws/room_viewer/${room_id}/`
+    );
+
+    roomViewerSocket.onopen = function(e) {
+        console.log('viewer socket open');
+    }
+
+    roomViewerSocket.onmessage = function(e) {
+        console.log('viewer recieved');
+        $("#room-stats-table").load(" #room-stats-table > * ");
+    }
+
 
 
     const roomVisitorsSocket = new WebSocket(
-        'ws://' + window.location.host + `/ws/user_visitors/${room_id}/`
+        protocol + '://' + window.location.host + `/ws/user_visitors/${room_id}/`
     );
+
     roomVisitorsSocket.onopen = function(e) {
 
 
@@ -307,89 +322,22 @@
         const item_availed = data.item_availed;
         console.log(item_availed)
 
-        if (visitors)
-        {
-            
-        const objectValuesArray = Object.values(visitors);
-        console.log(objectValuesArray.length)
-        console.log(visitors)
-        num_of_visitors.textContent = objectValuesArray.length
+  
         
-
-        for(var i=0; i < objectValuesArray.length; i++)
-        {
-            let visitor = objectValuesArray[i]
-            let visitor_list_item = document.createElement('li')
-            visitor_list_item.textContent = visitor.username
-            visitor_list_item.classList.add('list-group-item')
-            visitor_list_item.style.width = 'max-content'
-            visitor_list_item.style.border = 'transparent'
-            visitor_list_item.style.background ='transparent'
-            visitors_list.appendChild(visitor_list_item)
-        }
-    }
-
-
-        if(item_availed)
-        {
-            let user = "";
-            let wrapper = document.createElement('div');
-            Object.keys(item_availed).forEach(function(key) {
-                var value = item_availed[key];
-                console.log(key + ": " + value);
-                
-                let item_list_item = document.createElement('span')
-                let user = document.createElement('span');
-                let price = document.createElement('span');
-                let note = document.createElement('span');
-                wrapper.classList.add('row');
-                user.classList.add('list-group-item')
-                item_list_item.classList.add('list-group-item');
-                price.classList.add('list-group-item');
-                note.classList.add('list-group-item');
-            
-                if (key === "user") {
-
-                    user.textContent = value;
-                    user.style.color = "purple";
-                    user.style.width = "max-content";
-                    user.style.border = "transparent";
-                    user.style.background = "transparent";
-                    wrapper.appendChild(user);
-            
-                } else if (key === "item") {
-                    item_list_item.textContent = value;
-                    item_list_item.style.color = "purple";
-                    item_list_item.style.width = "max-content";
-                    item_list_item.style.border = "transparent";
-                    item_list_item.style.background = "transparent";
-                    wrapper.appendChild(item_list_item);
-                }
-                else if (key === "price") {
-                    price.textContent = value + " vibez!";
-                    price.style.color = "purple";
-                    price.style.width = "max-content";
-                    price.style.border = "transparent";
-                    price.style.background = "transparent";
-                    wrapper.appendChild(price);
-                }
-                else if (key === "note") {
-                    note.textContent = value;
-                    note.style.color = "purple";
-                    note.style.width = "max-content";
-                    note.style.border = "transparent";
-                    note.style.background = "transparent";
-                    wrapper.appendChild(note);
-                }
-            });
-            visitors_list.appendChild(wrapper);
-           
-            $("#room-stats-table").load(" #room-stats-table > *");  
-
-            }
+        $("#room-stats-table").load(" #room-stats-table > *");  
+        $("#visitor_list").load(" #visitor_list > *");  
+        document.getElementById('visitors').innerHTML =  visitors.length
 
             document.querySelector('.msg-list-wrapper-split').scrollTop = document.querySelector('.msg-list-wrapper-split').scrollHeight;
     };
+
+
+
+
+
+
+
+
 
 
 

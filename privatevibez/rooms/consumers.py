@@ -1,6 +1,8 @@
 # consumers.py
 
 import json
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .models import Room_Data, Room_Visitors,  Blocked_Countries, Blocked_Regions
 from cities_light.models import Country, Region
@@ -8,6 +10,34 @@ from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
+
+class RoomViewersConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.room_id = self.scope['url_route']['kwargs']['room_id']
+    
+        self.room_group_name = 'room_viewers_%s' % (self.room_id)
+
+        # Join room group
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+        
+    async def receive(self, text_data):
+     
+        modified_data = {
+        "saved": True
+            }
+        await self.send(text_data=json.dumps(modified_data))
+        
+    
 
 class UserVisitorsConsumer(AsyncWebsocketConsumer):
     
@@ -28,6 +58,7 @@ class UserVisitorsConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
+        
     
     # Display availed items in broadcaster room
     async def show_itemAvailed(self, event):
@@ -37,7 +68,6 @@ class UserVisitorsConsumer(AsyncWebsocketConsumer):
         "item_availed": data
             }
         await self.send(text_data=json.dumps(modified_data))
-        
         
     def add_visitor_to_room(self,room,visitor):
         room = room
@@ -49,6 +79,21 @@ class UserVisitorsConsumer(AsyncWebsocketConsumer):
         else:
             room.Total_Viewers = 1
         room.save()
+        
+        channel_layer = get_channel_layer()
+        channel_name = "room_viewers_" + str(self.room_id)
+        
+            
+            # Prepare data to send
+        data = {
+            "viewed": True,
+        }
+        
+        # Send the data to the WebSocket consumer
+        async_to_sync(channel_layer.group_send)(
+            channel_name,
+            {"type":"receive","data": data},
+        )
         
     @database_sync_to_async
     def get_all_visitors(self):

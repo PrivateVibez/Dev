@@ -4,6 +4,7 @@ from rooms.models import *
 from accounts.models import *
 from chat.models import *
 from django.utils import timezone
+from datetime import date
 from django.contrib.sessions.models import Session
 from cities_light.models import Country, Region, City
 from django.views.decorators.csrf import csrf_exempt
@@ -22,7 +23,7 @@ from accounts.forms import CustomPasswordChangeForm
 from cryptography.fernet import Fernet
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404, redirect
-from .serializers import Private_Chat_InviteeSerializer, CountrySerializer, RegionSerializer, SlotMachineSerializer
+from .serializers import Private_Chat_InviteeSerializer, CountrySerializer, RegionSerializer, SlotMachineSerializer, Item_AvailedSerializer
 from django.conf import settings
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
@@ -99,7 +100,7 @@ def Room(request, Broadcaster):
                             room_data            = Room_Data.objects.get(User = User.objects.get(username = Broadcaster))
                             # room_sesson          = Room_Sesson.objects.get(User = User.objects.get(username = Broadcaster))
                             broadcaster_data     = User_Data.objects.get(User = User.objects.get(username = Broadcaster))
-                            availed_items = Item_Availed.objects.filter(Room = room_data).all()
+                            availed_items = Item_Availed.objects.filter(Room=room_data, Timestamp__date=timezone.now().date()).all()
                             subscriptions        = Subscription.objects.all()
                         
                             private_chat = Private.objects.filter(
@@ -293,6 +294,8 @@ def is_user_online(broadcaster,user):
                     User__pk=s.get_decoded().get('_auth_user_id')
                 ).exists():
                 user_sessions.append(s)
+                
+                print(s,flush=True)
         
          
         for session in user_sessions:
@@ -1582,3 +1585,15 @@ def save_hashtags(request):
             return JsonResponse({'data':"Hashtags is empty."}, safe=False)
         
      
+     
+def get_follower_spending(request,username,room):
+    
+    item_availed = Item_Availed.objects.filter(User__username=username, Room__User__username=room).order_by('-Timestamp')
+    
+    item_availed_serializer = Item_AvailedSerializer(item_availed,many=True)
+    print(item_availed_serializer.data,flush=True)
+    return JsonResponse({'data':item_availed_serializer.data},safe=False)
+    
+ 
+    
+    

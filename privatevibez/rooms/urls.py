@@ -80,6 +80,10 @@ urlpatterns = [
     #Room Stats
     
          path('hashtags/save', views.save_hashtags, name="save_hashtags"),
+         
+         
+         
+         path('get_follower_spending/<str:username>/<str:room>/', views.get_follower_spending, name="get_follower_spending"),
      
 
      

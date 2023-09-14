@@ -50,8 +50,13 @@ def Logout(request):
         
     
     logout(request)
+    
+    request.session.set_expiry(0)
+    
     messages.error(request, 'You are logged out')
     return redirect('Main_home')
+ 
+ 
  
 def Login(request):
     
@@ -121,6 +126,8 @@ def Registration(request):
             return redirect("Main_home")
         
         else:
+            for error in form.errors:
+                messages.error(request, form.errors[error])
             print(form.errors,flush=True)
             
     else:    
