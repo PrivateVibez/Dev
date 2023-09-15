@@ -39,6 +39,35 @@ class RoomViewersConsumer(AsyncWebsocketConsumer):
         
     
 
+class UserSessionConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+
+        self.room_group_name = 'user_session'
+
+        # Join room group
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+        
+    
+    async def logoutuser(self, event):
+        data = event['data']
+        print(data,flush=True)
+        modified_data = {
+        "is_user_logged_out": data
+            }
+        await self.send(text_data=json.dumps(modified_data))
+           
+    
+    
 class UserVisitorsConsumer(AsyncWebsocketConsumer):
     
     async def connect(self):

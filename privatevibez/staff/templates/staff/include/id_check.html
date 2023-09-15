@@ -70,8 +70,8 @@
                                   <div class="modal-header">
                                     <div class="col">
                                     <h5 class="modal-title" id="exampleModalLongTitle"> ID CHECK</h5>
-                                    <button id="zoom-in" onclick="zoom_in_user_id({{user.id}})">Zoom In</button>
-                                    <button id="zoom-out" onclick="zoom_out_user_id({{user.id}})" >Zoom Out</button>
+                                    <button id="zoom-in" onclick="zoomin('{{user.id}}')">Zoom In</button>
+                                    <button id="zoom-out" onclick="zoomout('{{user.id}}')" >Zoom Out</button>
                                     </div>
                                   </div>
                                   <div class="modal-body">
@@ -82,11 +82,13 @@
                                           <div class="d-flex flex-row gap-2" style="overflow-x: auto;">
                                             <img src="{{user.Id_File.url}}" alt="" id="user-id-pic-{{user.id}}" style="
                                             
-                                            transition: transform 0.3s ease-in-out;" class="img-fluid col">
+                                            transition: transform 0.3s ease-in-out;" class="img-fluid col imageZoom">
 
-                                            <img src="{% if user.Second_Id_File %}{{user.Second_Id_File.url}}{% endif %}" alt="" id="user-id2-pic-{{user.id}}" style="
-                                            
-                                            transition: transform 0.3s ease-in-out;" class="img-fluid col">
+                                            <img src="{% if user.Second_Id_File %}{{user.Second_Id_File.url}}{% endif %}" alt="" id="user-id2-pic-{{user.Second_Id_File.name}}"
+                                            class="img-fluid col imageZoom">
+
+      
+
                                           </div>
                                         </div>
                                         <div class="row">
@@ -179,6 +181,26 @@
           var toast = new bootstrap.Toast(toastElement);
           toast.hide();
       }, 2000);
+  }
+
+
+  function zoomIn(event,imageName) {
+    var element = document.getElementById("overlay-"+imageName);
+    element.style.display = "inline-block";
+    var img = document.getElementById("user-id2-pic-"+imageName);
+    var posX = event.offsetX ? (event.offsetX) : event.pageX - img.offsetLeft;
+    var posY = event.offsetY ? (event.offsetY) : event.pageY - img.offsetTop;
+    element.style.backgroundPosition = (-posX * 05) + "px " + (-posY * 0.8) + "px";
+
+    console.log(element);
+    console.log(img);
+
+  
+  }
+  
+  function zoomOut(imageName) {
+    var element = document.getElementById("overlay-"+imageName);
+    element.style.display = "none";
   }
 
 

@@ -15,6 +15,7 @@ from staff.models import PrivatevibezRevenue
 from django.utils.safestring import mark_safe
 import json
 import random
+from datetime import datetime
 from .forms import Slot_MachineForm, Fav_vibezForm, BioForm, MenuDataForm
 from django.http import HttpResponse as httpresponse
 import requests
@@ -1588,12 +1589,57 @@ def save_hashtags(request):
      
 def get_follower_spending(request,username,room):
     
-    item_availed = Item_Availed.objects.filter(User__username=username, Room__User__username=room).order_by('-Timestamp')
-    
+    timestamp_str = request.GET.get('timestamp')
+    print(timestamp_str, flush=True)
+
+    print(username, flush=True)
+    print(room, flush=True)
+    if timestamp_str is None:
+        item_availed = Item_Availed.objects.filter(
+            User__username=username,
+            Room__User__username=room,
+            Timestamp__date=timezone.now().date()
+        ).order_by('-Timestamp')
+
+    else:
+
+        # Convert the timestamp parameter to a datetime.date object
+        timestamp_datetime = datetime.strptime(timestamp_str, '%Y-%m-%d')
+        
+        # Extract only the date part from the datetime object
+        timestamp_date = timestamp_datetime.date()
+        
+        print(timestamp_date,flush=True)
+        item_availed = Item_Availed.objects.filter(
+            User__username=username,
+            Room__User__username=room,
+            Timestamp__date=timestamp_date
+        ).order_by('-Timestamp')
+        
+
+ 
+        
     item_availed_serializer = Item_AvailedSerializer(item_availed,many=True)
+        
     print(item_availed_serializer.data,flush=True)
     return JsonResponse({'data':item_availed_serializer.data},safe=False)
     
  
     
     
+    
+    
+def get_user_by_date_spending(request):
+    
+    if request.method == 'GET':
+        timestamp_str = request.GET.get('timestamp')
+        timestamp_datetime = datetime.strptime(timestamp_str, '%Y-%m-%d')
+        
+        # Extract only the date part from the datetime object
+        timestamp_date = timestamp_datetime.date()
+        
+        user_spendings = Item_Availed.objects.filter(User=request.user,Timestamp__date=timestamp_date)
+        total_user_spendings = sum(int(item.Cost) for item in user_spendings)
+        item_availed_serializer = Item_AvailedSerializer(user_spendings,many=True)
+
+        return JsonResponse({"data": {"total_user_spendings": total_user_spendings,"user_spendings": item_availed_serializer.data}},safe=False)

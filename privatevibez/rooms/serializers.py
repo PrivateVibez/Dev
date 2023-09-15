@@ -51,7 +51,8 @@ class RoomSerializer(serializers.ModelSerializer):
 
 class Item_AvailedSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='User.username', read_only=True)
+    room = serializers.CharField(source='Room.User.username', read_only=True)
 
     class Meta:
         model = Item_Availed
-        fields = ['Item', 'Cost', 'Note', 'username', 'Timestamp']
+        fields = ['Item', 'Cost', 'Note','room', 'username', 'Timestamp']

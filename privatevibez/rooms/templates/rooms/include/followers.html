@@ -3,7 +3,7 @@
 <div class="col" style="overflow-y: auto; height:400px">
 
   <div class="row">
-    <table class="table">
+    <table class="table" id="follower-details-table">
       <thead style="position: sticky; top: 0; z-index: 1;">
         <tr>
           <th scope="col">Follower</th>
@@ -70,6 +70,7 @@
             </button>
           </div>
           <div class="modal-body" style="height:500px; overflow-y: auto">
+            <input type="date" id="follower-item-availed-date" class="form-control fs-2">
             <div class="row" id="follower-spending-container">
             </div>
           </div>
@@ -89,6 +90,9 @@
 
 
 <script>
+let userName;
+let roomName;
+
   function chat_with_follower(user){
     var username = user;
 
@@ -106,11 +110,12 @@
 
 
     function show_follower_spending(username) {
-      var room_name = '{{room_name}}';
+      userName = username;
+      roomName = '{{room_name}}';
   
       $.ajax({
         method: 'GET',
-        url: `get_follower_spending/${username}/${room_name}`,
+        url: `get_follower_spending/${userName}/${roomName}`,
 
         success: function(data) {
           var followerSpending = data.data;
@@ -166,6 +171,7 @@
         
           // Append the table to the container
           var container = document.getElementById('follower-spending-container');
+          container.innerHTML = "";
           container.appendChild(table);
         },
         
@@ -176,6 +182,88 @@
         }
       });
     }
+
+
+    const followerItemAvailedInput = document.getElementById('follower-item-availed-date');
+
+    // Add a change event listener
+    followerItemAvailedInput.addEventListener('change', function(event) {
+        // This function will be called when the input value changes
+        const selectedDate = event.target.value;
+
+        $.ajax({
+          method: 'GET',
+          url: `get_follower_spending/${userName}/${roomName}`,
+          data:{
+            "timestamp": selectedDate,
+          },
+          success: function(data) {
+            var followerSpending = data.data;
+            console.log(followerSpending);
+          
+            // Create table elements
+            var table = document.createElement('table');
+            var thead = document.createElement('thead');
+            var tbody = document.createElement('tbody');
+  
+            table.setAttribute('style', 'border-collapse: separate; border-spacing: 10px; position: sticky; top: 0; z-index: 2; background-color: white; ');
+  
+  
+          
+            // Create table headers (th)
+            var headerRow = document.createElement('tr');
+            var headers = ['Item', 'Cost', 'Note', 'Username', 'Timestamp'];
+          
+            headers.forEach(function(headerText) {
+              var th = document.createElement('th');
+              th.setAttribute('style', 'padding: 8px; position: sticky; top: 0; z-index: 2;background-color: white; ');
+              th.textContent = headerText;
+              headerRow.appendChild(th);
+            });
+          
+            thead.appendChild(headerRow);
+          
+            // Create table rows (tr) and data cells (td)
+            followerSpending.forEach(function(obj) {
+              var tr = document.createElement('tr');
+              tr.setAttribute('style', 'padding: 8px;');
+  
+            const date = new Date(obj.Timestamp);
+  
+              // Format date and time
+              const formattedDateTime = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+  
+  
+              var data = [obj.Item, obj.Cost, obj.Note, obj.username, formattedDateTime];
+          
+              data.forEach(function(cellData) {
+                var td = document.createElement('td');
+                td.textContent = cellData;
+                tr.appendChild(td);
+              });
+          
+              tbody.appendChild(tr);
+            });
+          
+            // Append thead and tbody to the table
+            table.appendChild(thead);
+            table.appendChild(tbody);
+          
+            // Append the table to the container
+            var container = document.getElementById('follower-spending-container');
+            container.innerHTML = "";
+            container.appendChild(table);
+          },
+          
+          error: function(errors) {
+            console.log(errors.responseText);
+            var message = "Something went wrong.";
+            errorToast(message);
+          }
+        });
+        
+        // You can perform additional actions here, such as sending the date to a server or updating the UI.
+    });
   
 
 

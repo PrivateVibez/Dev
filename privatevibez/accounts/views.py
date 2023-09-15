@@ -34,6 +34,22 @@ from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
+
+def update_user_login_status():
+    channel_layer = get_channel_layer()
+    channel_name = "user_session"
+    print(channel_name,flush=True)
+        
+        # Prepare data to send
+    data = {
+        "user_logged_out": True,
+    }
+    
+    # Send the data to the WebSocket consumer
+    async_to_sync(channel_layer.group_send)(
+        channel_name,
+        {"type": "logoutuser", "data": data}
+    )
 def Logout(request):
     
     # DELETE BOTH PRIVATE AND PUBLIC CHATS ONCE SESSION IS TERMINATED
@@ -52,6 +68,7 @@ def Logout(request):
     logout(request)
     
     request.session.set_expiry(0)
+    update_user_login_status()
     
     messages.error(request, 'You are logged out')
     return redirect('Main_home')
@@ -69,6 +86,7 @@ def Login(request):
         print(user,flush=True)
         if user is not None:
             login(request, user)
+            update_user_login_status()
             
             messages.success(request, f'Thanks for coming back {username}!')
             if user.is_staff == False:

@@ -129,10 +129,10 @@
 
         <label for="promotionURL">Promotion URL:</label>
         <input id="promotionURL">
+        <input id="promotion_id" name="promotion_id" class="d-none">
 
-        <div class="row gap-2 p-5" id="sendPromotionEmailsContainer">
+        <div class="row gap-1 ps-5 pe-5" id="sendPromotionEmailsContainer">
           <div class="text-end" id="">
-            <button type="button" onclick="add_email_input()" class="btn btn-primary m-auto">Add Email</button>
           </div>
           <label for="promotion-email-0">Email:</label>
         </div>
@@ -141,8 +141,11 @@
         
       </div>
 
-      <div class="col text-center d-block my-2" id="">
-        <button type="submit" class="btn btn-primary">Save changes</button>
+      <div class="col text-center d-block" id="">
+
+        <button type="button" onclick="add_email_input()" class="btn btn-primary m-auto">Add Email</button>
+
+        <button type="submit" class="btn btn-primary">Send promotion</button>
       </div>
 
     </form>
@@ -326,6 +329,11 @@ let isPromotion_id_appended = false;
 function set_promotion_id(id,code) {
   promotion_id = id;
   promotion_code = code;
+
+  var promotionID = document.getElementById("promotion_id");
+  promotionID.value = promotion_id;
+
+  console.log(promotion_id);
 
 
 }

@@ -513,21 +513,23 @@
   <!--MODAL FOR EXPENSES-->
   <div class="modal fade" id="Expenses" tabindex="-1" role="dialog" aria-labelledby="Profile_Label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable" role="document">
-      <div class="modal-content" style="width:700px">
+      <div class="modal-content" style="width:900px">
         <div class="modal-header">
-          <h5 class="modal-title fs-1" id="Profile_Label">My Spendings <span class="fs-2 text-center font-weight-bold d-block">Total Spending: {{total_user_spendings}} Vibez</span></h5>
+          <h5 class="modal-title fs-1" id="Profile_Label">My Spendings <span id="total-user-spendings" class="fs-2 text-center font-weight-bold d-block">Total Spending: {{total_user_spendings}} Vibez</span></h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span class="fs-1" aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
          
-
+          
+          <input type="date" class="form-control fs-2" id="user-spending-date">
           <div class="d-flex flex-row justify-content-center">
 
-              <div class="col fs-1">
-                  
-                <table class="table">
+
+              <div class="col fs-1" id="user-spending-container">
+
+                <table class="table fs-2">
                   <thead>
                     <tr>
                       <th scope="col">Item</th>
@@ -809,6 +811,96 @@
 
   <script type="text/javascript" >
 
+    const userSpendingDateInput = document.getElementById('user-spending-date');
+
+
+    userSpendingDateInput.addEventListener('change', function(event) {
+      // This function will be called when the input value changes
+      const selectedDate = event.target.value;
+
+
+      $.ajax({
+        method: 'GET',
+        url: `get_user_by_date_spending/`,
+        data:{
+          "timestamp": selectedDate,
+        },
+        success: function(data) {
+          var userSpending = data.data;
+          var total_user_spendings = userSpending.total_user_spendings
+          var user_spendings = userSpending.user_spendings
+          console.log(total_user_spendings);
+          console.log(user_spendings);
+        
+          // Create table elements
+          var table = document.createElement('table');
+          var thead = document.createElement('thead');
+          var tbody = document.createElement('tbody');
+
+          table.setAttribute('style', 'border-collapse: separate; border-spacing: 10px; position: sticky; top: 0; z-index: 2; background-color: white; ');
+
+
+        
+          // Create table headers (th)
+          var headerRow = document.createElement('tr');
+          var headers = ['Item', 'Cost', 'Note', 'Broadcaster', 'Timestamp'];
+        
+          headers.forEach(function(headerText) {
+            var th = document.createElement('th');
+            th.setAttribute('style', 'padding: 8px; position: sticky; top: 0; z-index: 2;background-color: white; ');
+            th.textContent = headerText;
+            headerRow.appendChild(th);
+          });
+        
+          thead.appendChild(headerRow);
+        
+          // Create table rows (tr) and data cells (td)
+          user_spendings.forEach(function(obj) {
+            var tr = document.createElement('tr');
+            tr.setAttribute('style', 'padding: 8px;');
+
+          const date = new Date(obj.Timestamp);
+
+            // Format date and time
+            const formattedDateTime = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+
+
+            var data = [obj.Item, obj.Cost, obj.Note, obj.room, formattedDateTime];
+        
+            data.forEach(function(cellData) {
+              var td = document.createElement('td');
+              td.textContent = cellData;
+              tr.appendChild(td);
+            });
+        
+            tbody.appendChild(tr);
+          });
+        
+          // Append thead and tbody to the table
+          table.appendChild(thead);
+          table.appendChild(tbody);
+        
+          // Append the table to the container
+          var container = document.getElementById('user-spending-container');
+          container.innerHTML = "";
+          container.appendChild(table);
+
+          var totalSpendings = document.getElementById('total-user-spendings');
+          totalSpendings.textContent = "Total Spending: " + total_user_spendings;
+
+        },
+        
+        error: function(errors) {
+          console.log(errors.responseText);
+          var message = "Something went wrong.";
+          errorToast(message);
+        }
+      });
+      
+      
+    });
+
+
     document.addEventListener('DOMContentLoaded', function() {
       var toastContainer = document.getElementById('toast-container');
       var logo = document.getElementById('privatevibezlogo');
@@ -822,6 +914,9 @@
         }, 2000);
       });
     });
+
+
+  
 
 
 function Accept_Invitee(user_id){

@@ -84,6 +84,8 @@ urlpatterns = [
          
          
          path('get_follower_spending/<str:username>/<str:room>/', views.get_follower_spending, name="get_follower_spending"),
+         
+         path('get_user_by_date_spending/', views.get_user_by_date_spending, name="get_user_by_date_spending"),
      
 
      

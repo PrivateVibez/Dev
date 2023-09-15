@@ -712,34 +712,40 @@ def send_Promotion(request):
         
         if request.method == "POST":
                 promotion_id = request.POST.get('promotion_id')
+                
                 print(promotion_id,flush=True)
-                promotion = get_object_or_404(Promotion, id=int(promotion_id))
-                
-                promotion_email_formset = formset_factory(promotionEmailForms,extra=10, max_num=10)
-                
-                formset = promotion_email_formset(request.POST)
-                
-                if promotion is not None:
+
+                if promotion_id is not None:
+                        promotion = get_object_or_404(Promotion, id=int(promotion_id))
+                        
+                        promotion_email_formset = formset_factory(promotionEmailForms,extra=10, max_num=10)
+                        
+                        formset = promotion_email_formset(request.POST)
+                        
+                    
+                        print(formset,flush=True)
                         for form in formset:
                                 if form.is_valid():
                                 
                                         for field_name, email in form.cleaned_data.items():
                                                 # Access each form field name and value
-                                                print(f"Field: {field_name}, Value: {email}", flush=True)
                                                 message = f"click the link and fill in the form, earn {promotion.Promotion_Earning} dollar per vibe if you register now! \n\nhttp://127.0.0.1:8000/accounts/BroadcasterRegistration/{promotion.Promotion_Code}"
                                         
                                                 send_mail('Promotion Code', message, settings.EMAIL_HOST, [email])
-                                        
+                                                print(f"Promotion Code: {promotion.Promotion_Code} Email:{email}", flush=True)
                                 else:
                                         # Handle form validation errors
                                         messages.error(request,form.errors)
                                         
                                         return redirect(request.META.get('HTTP_REFERER'))
                 
-                messages.success(request, f'Promotion sent!')
+                        messages.success(request, f'Promotion sent!')
+                        return redirect(request.META.get('HTTP_REFERER'))
+                
+                messages.error(request, f'Please enter a valid email address!')
                 return redirect(request.META.get('HTTP_REFERER'))
-                        
-                        
+                                
+                                
                         
                 
                 

@@ -332,7 +332,24 @@
     };
 
 
+    
+const userSessionSocket = new WebSocket(
+      protocol + '://' + window.location.host + `/ws/user_session/`
+  );
 
+
+
+  userSessionSocket.onopen = function(e) {
+    console.log("user session online");
+  }
+  userSessionSocket.onmessage = function(e) {
+    const data = JSON.parse(e.data);
+    console.log(data);
+
+    $("#follower-details-table").load(" #follower-details-table > * ");
+
+
+  }
 
 
 
