@@ -326,9 +326,15 @@
         
         $("#room-stats-table").load(" #room-stats-table > *");  
         $("#visitor_list").load(" #visitor_list > *");  
-        document.getElementById('visitors').innerHTML =  visitors.length
+        document.querySelector('.msg-list-wrapper-split').scrollTop = document.querySelector('.msg-list-wrapper-split').scrollHeight;
 
-            document.querySelector('.msg-list-wrapper-split').scrollTop = document.querySelector('.msg-list-wrapper-split').scrollHeight;
+        console.log(visitors);
+
+        if(visitors !== undefined)
+        {
+            document.getElementById('visitors').innerHTML =  visitors.length;
+        }
+
     };
 
 

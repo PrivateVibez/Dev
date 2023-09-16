@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <div id="visitor_list" class="col-4">
+            <div id="visitor_list" class="col-4" style="margin-top: 50px; margin-bottom: 50px;">
             {% for items in availed_items %}
                 <span style="color:purple; display:block; width:max-content; border:transparent; background:transparent;">
 
@@ -12,7 +12,7 @@
                         {{items.User}} {{items.Item}} {{items.Cost}} vibez {% if items.Note %}{{items.Note}}{% endif %}
                     </a>
                   
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink" style="z-index:2">
                     
                       <li>
                         {% if items.User.username in fan_list_names %}

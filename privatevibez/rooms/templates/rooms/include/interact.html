@@ -2,7 +2,7 @@
 
   <li class="nav-item col">
 
-    <button type="button" class="tab nav-link w-100" data-bs-toggle="modal" data-bs-target="#confirmation_to_spendModal">
+    <button type="button" class="tab nav-link w-100" id="menu-tab-nav-btn" data-bs-toggle="modal" data-bs-target="#confirmation_to_spendModal">
       <span class="fs-3 font-weight-bold">Menu</span>
     </button>
 
@@ -131,6 +131,7 @@
   function dismiss_modal_cofirmation_to_spend_vibez(){
     $('#confirmation_to_spendModal').modal('hide');
     $('#v-pills-menu-tab').removeClass('active');
+    $('#menu-tab-nav-btn').addClass('active');
     $('#v-pills-menu-tab').attr('aria-selected', false);
     
   }

@@ -13,6 +13,7 @@ from base.views import paginate_list
 from django.core.paginator import Paginator
 from chat.models import Private, Public
 from rooms.models import *
+from django.contrib.sessions.models import Session
 from django.contrib.auth.decorators import login_required
 from staff.models import StaffManager, PrivatevibezRevenue
 from django.utils import timezone
@@ -67,7 +68,12 @@ def Logout(request):
     
     logout(request)
     
-    request.session.set_expiry(0)
+    # Session.objects.all().delete()
+    # Query for sessions associated with the user
+    sessions = Session.objects.filter(session_key__in=request.session.keys())
+
+    # Delete the sessions
+    sessions.delete()
     update_user_login_status()
     
     messages.error(request, 'You are logged out')
@@ -364,61 +370,73 @@ def bio_info(request):
     user_data               = User_Data.objects.get(User = request.user)
     room_data               = Room_Data.objects.get(User = request.user)
     
-    promotion_code          = request.POST.get('promotion_code')
-    user_data.Real_Name     = request.POST.get('Real_Name')
-    user_data.Age           = request.POST.get('Age')
-    user_data.I_Am          = request.POST.get('I_Am')
-    user_data.Interested_In = request.POST.get('Interested_In')
-    user_data.Location      = request.POST.get('Location')
-    user_data.Language      = request.POST.get('Language')
-    user_data.Body_Type     = request.POST.get('Body_Type')
-    user_data.Image        = request.FILES['cropped_image']
-    
-    fernet               = Fernet(settings.FERNET_KEY)
-    random_token         = secrets.token_urlsafe(32)
-    U_token              = fernet.encrypt(random_token.encode())
-    
-    user_data.U_token      = U_token
-    
-    room_data.Tab           = request.POST.get('Tab')
-    
-    print(promotion_code,flush=True)
-    if promotion_code is not None and promotion_code != "":
-        if Promotion.objects.filter(Promotion_Code = promotion_code).exists():
-            promotion = Promotion.objects.get(Promotion_Code = promotion_code)
+    if request.method == 'POST':
+        
+        form = BioInfoForm(request.POST)
+        
+        if form.is_valid():
             
-            if promotion.Promotion_Registration_Limit > 0:
-                
-                promotion.Promotion_Registration_Limit -= 1
-                promotion.save()
-                room_data.Room_promotion = promotion
-                
+            promotion_code          = form.cleaned_data.get('promotion_code')
+            user_data.Real_Name     = form.cleaned_data.get('Real_Name')
+            user_data.Age           = form.cleaned_data.get('Age')
+            user_data.I_Am          = form.cleaned_data.get('I_Am')
+            user_data.Interested_In = form.cleaned_data.get('Interested_In')
+            user_data.Location      = form.cleaned_data.get('Location')
+            user_data.Language      = form.cleaned_data.get('Language')
+            user_data.Body_Type     = form.cleaned_data.get('Body_Type')
+            room_data.Tab           = form.cleaned_data.get('Tab')
+            
+            fernet               = Fernet(settings.FERNET_KEY)
+            random_token         = secrets.token_urlsafe(32)
+            U_token              = fernet.encrypt(random_token.encode())
+            
+            user_data.U_token      = U_token
+            
+    
+    
+            print(promotion_code,flush=True)
+            if promotion_code is not None and promotion_code != "":
+                if Promotion.objects.filter(Promotion_Code = promotion_code).exists():
+                    promotion = Promotion.objects.get(Promotion_Code = promotion_code)
+                    
+                    if promotion.Promotion_Registration_Limit > 0:
+                        
+                        promotion.Promotion_Registration_Limit -= 1
+                        promotion.save()
+                        room_data.Room_promotion = promotion
+                        
+                    else:
+                        return JsonResponse('Promotion Code Limit Reached', safe=False)
+                else:
+                    return JsonResponse('Invalid Promotion Code', safe=False)
             else:
-                return JsonResponse('Promotion Code Limit Reached', safe=False)
-        else:
-            return JsonResponse('Invalid Promotion Code', safe=False)
-    else:
-        room_data.save()
-        user_data.save()
-    
-    
-            # Get the channel layer
-    channel_layer = get_channel_layer()
-    channel_name = "staff"
-    
-    # Prepare data to send
-    data = {
-            "user": user_data,
-    }
-    
-    # Send the data to the WebSocket consumer
-    async_to_sync(channel_layer.group_send)(
-            channel_name,
-            {"type": "showPending.Broadcaster", "data": data}
-    )
-    
-    return JsonResponse('OK', safe=False) 
+                pass
+        
+            room_data.save()
+            user_data.save()
 
+    
+                    # Get the channel layer
+            channel_layer = get_channel_layer()
+            channel_name = "staff"
+            
+            # Prepare data to send
+            data = {
+                    "user": user_data,
+            }
+            
+            # Send the data to the WebSocket consumer
+            async_to_sync(channel_layer.group_send)(
+                    channel_name,
+                    {"type": "showPending.Broadcaster", "data": data}
+            )
+            
+            return JsonResponse('OK', safe=False) 
+        
+        else:
+            for error in form.errors:
+                messages.error(request, form.errors[error])
+                print(form.errors,flush=True)
 
 def getTotalReports(request):
     
@@ -774,6 +792,25 @@ def countdown_timer(code):
         'seconds': seconds,
     }  
     
+    
+def update_promotion_table():
+    
+    channel_layer = get_channel_layer()
+    channel_name = "promotions"
+    print(channel_name,flush=True)
+        
+        # Prepare data to send
+    data = {
+        "update_promotion": True,
+    }
+    
+    # Send the data to the WebSocket consumer
+    async_to_sync(channel_layer.group_send)(
+        channel_name,
+        {"type": "show.promotions", "data": data}
+    )
+    
+    
 def BroadcasterRegistration(request, code):
         
         if code is not None:
@@ -781,7 +818,7 @@ def BroadcasterRegistration(request, code):
                 try:
                     code = get_object_or_404(Promotion, Promotion_Code=code)
                     
-                    if code.Duration < timezone.now():
+                    if code.Duration < timezone.now() or code.Promotion_Registration_Limit == 0:
                         promotion_expired = True
                         messages.error(request, f'This promotion code has expired!')
                         return render(request, "accounts/registration_broadcaster.html", locals())
@@ -791,6 +828,9 @@ def BroadcasterRegistration(request, code):
                     else:
                         code.Total_Viewers += 1
                     code.save()
+                
+                    update_promotion_table()
+                    
                     
                 except Http404:
                     print("Promotion object not found",flush=True)

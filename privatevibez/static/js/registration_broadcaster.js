@@ -154,10 +154,9 @@ function done(){
         const formData = new FormData();
   
         // Append the cropped image Blob to the FormData object
-        formData.append('cropped_image', blob, 'cropped_image.jpg');
   
         // Append other form data fields to the FormData object
-        formData.append('Real_Name', document.getElementById('firstName').value);
+        formData.append('Real_Name', document.getElementById('Real_Name').value);
         formData.append('Age', document.getElementById('Age').value);
         formData.append('promotion_code', document.getElementById('promotion_code').value);
         formData.append('I_Am', document.getElementById('I_Am').value);
@@ -186,6 +185,7 @@ function done(){
           },
           error: function (xhr, status, error) {
             console.error('Error sending the AJAX request:', error.responseText);
+            errorToast(error.responseText);
           }
         });
       },  'image/jpeg' );

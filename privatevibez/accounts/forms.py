@@ -26,6 +26,17 @@ class UserRegisterForm(UserCreationForm):
         fields = ['username', 'email', 'password1', 'password2']
         
         
+class BioInfoForm(forms.Form):
+    promotion_code = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
+    Real_Name      = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
+    Age            = forms.IntegerField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
+    I_Am           = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
+    Interested_In  = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
+    Location       = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
+    Language       = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
+    Body_Type      = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
+    Tab            = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
+        
 
 
 

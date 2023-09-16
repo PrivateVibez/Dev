@@ -189,11 +189,25 @@
               console.log(msg);
               const spins = msg.spins;
               const pot = msg.pot
+              const vibez = msg.vibez
  
               successToast(msg.msg);  
+              
+              console.log(pot);
 
-              $("#user-details").load(" #user-details > *");
-              $("#slot-machine-pot").load(" #slot-machine-pot > *");
+              if(pot !== null){
+                document.getElementById('pot').innerHTML = pot;
+              }
+
+              if (vibez !== null){
+                document.getElementById('user_vibez').innerHTML = vibez;
+              }
+
+              if(spins !== null) {
+                document.getElementById('free_spins').innerHTML = spins.spins;
+              }
+
+              
          
       
               
@@ -218,9 +232,7 @@
                 if (uservibez !== null) {
                 document.getElementById('user_vibez').innerHTML = uservibez.vibez;    
                 }
-                else {
-                  document.getElementById('user_vibez').innerHTML = 0;
-                }
+
                 if (spins !== null) {
                   document.getElementById('free_spins').innerHTML = spins.spins;   
                 }
@@ -228,7 +240,7 @@
                   document.getElementById('free_spins').innerHTML = 0;
                 }
                 if (pot !== null) {
-                  document.getElementById('pot').innerHTML = pot;   
+                  document.getElementById('pot').textContent = pot;   
                 }
               }
 

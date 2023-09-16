@@ -1138,3 +1138,24 @@ function check_modal()
                     'user_id': fan.Invitee.id,
                     'name': fan.Invitee.username,
                 })
+
+
+
+                <div class="dropdown">
+                    <a class="" style="color:purple; display:block; width:max-content; border:transparent; background:transparent;" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                        {{items.User}} {{items.Item}} {{items.Cost}} vibez {% if items.Note %}{{items.Note}}{% endif %}
+                    </a>
+                  
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    
+                      <li>
+                        {% if items.User.username in fan_list_names %}
+                        <a class="dropdown-item" id="private-chat-with-user-{{items.User.id}}" onclick="chat_with_user('{{items.User.username}}')" data-toggle="pill" href="#pills-private-chat" role="tab" aria-controls="pills-private-chat" aria-selected="false">Private Chat
+
+                        </a>
+                    </li>
+                    {% endif %}
+
+                      <li><a class="dropdown-item" id="shout-out-user-{{items.User.id}}" onclick="shoutout_user('{{items.User.username}}')" data-bs-toggle="modal" data-bs-target="#shoutoutUserModal">Shout Out</a></li>
+                    </ul>
+                  </div>

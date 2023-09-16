@@ -6,6 +6,8 @@ from .models import *
 import os
 import secrets
 import string
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 from django.conf import settings
 from chat.models import Staff
 from django.forms import formset_factory
@@ -586,6 +588,20 @@ def approveBroadcaster(request):
                 user_data = User_Data.objects.filter(User__Status="Pending_Broadcaster")
                 serializer = UserStatusSerializer(user_data,many=True)
                 
+                channel_layer = get_channel_layer()
+                channel_name = "promotions"
+                print(channel_name,flush=True)
+
+                # Prepare data to send
+                data = {
+                "update_promotion": True,
+                }
+
+                # Send the data to the WebSocket consumer
+                async_to_sync(channel_layer.group_send)(
+                channel_name,
+                {"type": "show.promotions", "data": data}
+                )
                 return JsonResponse({'data':serializer.data},safe=False)
         
         

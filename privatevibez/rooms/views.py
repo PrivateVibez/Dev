@@ -816,15 +816,9 @@ def get_prize(request):
                     feature = room_data.Feature_OH_button
                     strength = room_data.Strength_OH_button
                     timesec = 1    
+                          
+                    remaining_price = cost_per_spin
                     
-
-                    if winner.Free_spins != 0:
-                        remaining_price = cost_per_spin
-                    else:
-                        remaining_price = charge_user(cost_per_spin)
-                    
-                    
-
                     availed_item(winner.User.id,room_data,"Slot Spin",remaining_price,"Loss")
                     winner = trigger_toy(room_data.User.id,cost_per_spin,winner.User.id,feature,strength,timesec)
                     slot_machine_pot = Slot_Machine.objects.filter(User=room_data.User)

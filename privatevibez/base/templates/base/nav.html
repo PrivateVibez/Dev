@@ -809,9 +809,16 @@
 
 </div>
 
+
   <script type="text/javascript" >
 
     const userSpendingDateInput = document.getElementById('user-spending-date');
+
+    if(window.location.protocol == "http:"){
+      protocol = "ws";
+  }else if(window.location.protocol == "https:"){
+      protocol = "wss";
+  }
 
 
     userSpendingDateInput.addEventListener('change', function(event) {
@@ -821,7 +828,7 @@
 
       $.ajax({
         method: 'GET',
-        url: `get_user_by_date_spending/`,
+        url: `{% url 'rooms:get_user_by_date_spending' %}`,
         data:{
           "timestamp": selectedDate,
         },
@@ -869,7 +876,14 @@
         
             data.forEach(function(cellData) {
               var td = document.createElement('td');
-              td.textContent = cellData;
+              if (cellData === obj.room) {
+                var a = document.createElement('a');
+                a.setAttribute('href', `/room/${obj.room}`);
+                a.textContent = cellData;
+                td.appendChild(a);
+              } else {
+                td.textContent = cellData;
+              }
               tr.appendChild(td);
             });
         

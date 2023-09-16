@@ -880,7 +880,7 @@
 
 {% if request.user.is_authenticated %}
 <script>
-    let protocol = "";
+
 
     var logo = document.getElementById('privatevibezlogo');
 
@@ -914,11 +914,7 @@
         
 
 
-if(window.location.protocol == "http:"){
-    protocol = "ws";
-}else if(window.location.protocol == "https:"){
-    protocol = "wss";
-}
+
 let public_socket = new WebSocket(protocol + '://' + window.location.host + '/ws/publicChat/{{ room_name }}/');
     public_socket.onmessage = function(e) {
         var data = JSON.parse(e.data);

@@ -80,3 +80,11 @@
     </div>
   </nav>
   <!-- top navigation bar -->
+
+  <script>
+    if(window.location.protocol == "http:"){
+      protocol = "ws";
+  }else if(window.location.protocol == "https:"){
+      protocol = "wss";
+  }
+  </script>

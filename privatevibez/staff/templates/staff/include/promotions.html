@@ -25,7 +25,7 @@
 
     <div class="mt-5">
 
-      <table class="table">
+      <table class="table" id="promotions-table">
         <thead>
           <tr>
 
@@ -160,7 +160,7 @@
 
   <div class="mt-5">
     <h1 class="text-center">Broadcaster with promotion codes</h1>
-    <table class="table">
+    <table class="table" id="broadcaster-table-with-promotioncodes">
       <thead>
         <tr>
 
@@ -386,6 +386,25 @@ function add_email_input() {
 }
 
 
+
+let promotions_socket = new WebSocket(protocol + '://' + window.location.host + '/ws/promotions/');
+
+promotions_socket.onopen = function(e) {
+  console.log('promotion socket is open');
+}
+
+promotions_socket.onmessage = function(e) {
+  let data = JSON.parse(e.data);
+  let promotions_table = document.getElementById('promotions-table')
+  
+  $("#promotions-table").load(" #promotions-table > * ");
+  $("#broadcaster-table-with-promotioncodes").load(" #broadcaster-table-with-promotioncodes > * ");
+  
+  if (data['type'] == 'send_promotion') {
+    console.log(data);
+    successToast(data['message']);
+  }
+}
 
 
 </script>
