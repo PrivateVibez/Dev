@@ -61,17 +61,18 @@
 
 
     <div class="modal fade" id="show-follower-spending" tabindex="-1" role="dialog" aria-labelledby="show-follower-spendingLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content" style="width:900px;">
+      <div class="modal-dialog modal-dialog-centered" style="margin:auto" role="document">
+        <div class="modal-content" style="width:900px; background-color: #6cc6ba;">
+          <button type="button" class="close fs-2 d-flex justify-content-end" data-dismiss="modal" aria-label="Close">
+            <span class="fs-2" aria-hidden="true">&times;</span>
+          </button>
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel"><span class="fs-2">Follower Spendings</span></h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <h5 class="modal-title" id="exampleModalLabel"><span class="fs-1">Follower Spendings</span></h5>
+
+            <input type="date" id="follower-item-availed-date" class="form-control fs-2">
           </div>
           <div class="modal-body" style="height:500px; overflow-y: auto">
-            <input type="date" id="follower-item-availed-date" class="form-control fs-2">
-            <div class="row" id="follower-spending-container">
+            <div class="row" id="follower-spending-container" style="background-color: #6cc6ba;">
             </div>
           </div>
           <div class="modal-footer">
@@ -126,17 +127,17 @@ let roomName;
           var thead = document.createElement('thead');
           var tbody = document.createElement('tbody');
 
-          table.setAttribute('style', 'border-collapse: separate; border-spacing: 10px; position: sticky; top: 0; z-index: 2; background-color: white; ');
+          table.setAttribute('style', 'border-collapse: separate; border-spacing: 10px; position: sticky; top: 0; z-index: 2; ');
 
 
         
           // Create table headers (th)
           var headerRow = document.createElement('tr');
-          var headers = ['Item', 'Cost', 'Note', 'Username', 'Timestamp'];
+          var headers = ['Item', 'Cost', 'Note', 'Username', 'Date'];
         
           headers.forEach(function(headerText) {
             var th = document.createElement('th');
-            th.setAttribute('style', 'padding: 8px; position: sticky; top: 0; z-index: 2;background-color: white; ');
+            th.setAttribute('style', 'padding: 8px; position: sticky; top: 0; z-index: 2; background-color: #6cc6ba;');
             th.textContent = headerText;
             headerRow.appendChild(th);
           });
@@ -206,7 +207,7 @@ let roomName;
             var thead = document.createElement('thead');
             var tbody = document.createElement('tbody');
   
-            table.setAttribute('style', 'border-collapse: separate; border-spacing: 10px; position: sticky; top: 0; z-index: 2; background-color: white; ');
+            table.setAttribute('style', 'border-collapse: separate; border-spacing: 10px; position: sticky; top: 0; z-index: 2;  ');
   
   
           
@@ -216,7 +217,7 @@ let roomName;
           
             headers.forEach(function(headerText) {
               var th = document.createElement('th');
-              th.setAttribute('style', 'padding: 8px; position: sticky; top: 0; z-index: 2;background-color: white; ');
+              th.setAttribute('style', 'padding: 8px; position: sticky; top: 0; z-index: 2;');
               th.textContent = headerText;
               headerRow.appendChild(th);
             });

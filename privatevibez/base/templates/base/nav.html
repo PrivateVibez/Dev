@@ -512,34 +512,36 @@
 
   <!--MODAL FOR EXPENSES-->
   <div class="modal fade" id="Expenses" tabindex="-1" role="dialog" aria-labelledby="Profile_Label" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable" role="document">
-      <div class="modal-content" style="width:900px">
-        <div class="modal-header">
-          <h5 class="modal-title fs-1" id="Profile_Label">My Spendings <span id="total-user-spendings" class="fs-2 text-center font-weight-bold d-block">Total Spending: {{total_user_spendings}} Vibez</span></h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span class="fs-1" aria-hidden="true">&times;</span>
-          </button>
+    <div class="modal-dialog modal-dialog-scrollable" style="margin:auto; max-width:900px;" role="document">
+      <div class="modal-content" style="width:900px; margin:0; background-color: #6cc6ba;">
+        <button type="button" class="close d-flex justify-content-end" data-dismiss="modal" aria-label="Close">
+          <span class="fs-1" aria-hidden="true">&times;</span>
+        </button>
+        <div class="modal-header text-center">
+          <h5 class="modal-title w-100 fs-1" id="Profile_Label">My Spendings <span id="total-user-spendings" class="fs-2 text-center font-weight-bold d-block">Total Spending: {{total_user_spendings}} Vibez</span></h5>
+          <input type="date" class="form-control fs-2" id="user-spending-date" style="position: sticky; top: 0; z-index: 1; ">
+
         </div>
         <div class="modal-body">
          
-          
-          <input type="date" class="form-control fs-2" id="user-spending-date">
           <div class="d-flex flex-row justify-content-center">
 
 
-              <div class="col fs-1" id="user-spending-container">
+            <div class="col fs-1" id="user-spending-container">
 
-                <table class="table fs-2">
-                  <thead>
-                    <tr>
-                      <th scope="col">Item</th>
-                      <th scope="col">Cost</th>
-                      <th scope="col">Note</th>
-                      <th scope="col">Broadcaster</th>
-                      <th scope="col">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+
+          <table class="table fs-2 position-relative">
+            <thead style="position: sticky; top: 0px; z-index: 1; background-color: #6cc6ba;">
+              <tr>
+                <th scope="col">Item</th>
+                <th scope="col">Cost</th>
+                <th scope="col">Note</th>
+                <th scope="col">Broadcaster</th>
+                <th scope="col">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+
                     {% for item in user_spendings %}
                     <tr>
                       <th class="w-25">{{item.Item}}</th>
@@ -844,7 +846,8 @@
           var thead = document.createElement('thead');
           var tbody = document.createElement('tbody');
 
-          table.setAttribute('style', 'border-collapse: separate; border-spacing: 10px; position: sticky; top: 0; z-index: 2; background-color: white; ');
+          table.setAttribute('style', 'border-collapse: separate; border-spacing: 10px; position: sticky; top: 0; z-index: 2; ');
+          thead.setAttribute('style', 'background-color: #6cc6ba;');
 
 
         
@@ -854,7 +857,7 @@
         
           headers.forEach(function(headerText) {
             var th = document.createElement('th');
-            th.setAttribute('style', 'padding: 8px; position: sticky; top: 0; z-index: 2;background-color: white; ');
+            th.setAttribute('style', 'padding: 8px; position: sticky; top: 0; z-index: 2;');
             th.textContent = headerText;
             headerRow.appendChild(th);
           });

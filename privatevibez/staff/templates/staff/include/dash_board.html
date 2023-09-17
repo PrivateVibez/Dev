@@ -2,14 +2,14 @@
     <div class="container-fluid my-5">
         <div class="row">
           <div class="col-md-12 mb-5">
-            <h4 class="display-5">Dashboard</h4>
+            <h4 class="display-5 font-weight-bold">Dashboard</h4>
           </div>
         </div>
 
-        <div class="row">
+        <div class="row justify-content-center">
 
           <div class="col">
-            <div class="card" style="width: 18rem;">
+            <div class="card h-100" style="width: 18rem;">
               <div class="card-body text-center">
                 <span class="fs-4">Slot Machine Vibez Earning</span>
                 <span class="fs-3 d-block" id="total_slot_vibez">{{total_slot_vibez.Slot_Machine_Revenue__sum}}</span>
@@ -19,7 +19,7 @@
           </div>
 
           <div class="col">
-            <div class="card" style="width: 18rem;">
+            <div class="card h-100" style="width: 18rem;">
               <div class="card-body text-center">
                 <span class="fs-4">Total Broadcaster Revenue Vibez</span>
                 <span class="fs-3 d-block" id="total_broadcaster_vibez">{{total_broadcaster_vibez.Revenue__sum}}</span>
@@ -30,7 +30,7 @@
 
 
           <div class="col">
-            <div class="card" style="width: 18rem;">
+            <div class="card h-100" style="width: 18rem;">
               <div class="card-body text-center">
                 <span class="fs-4">Total User Vibez</span>
                 <span class="fs-3 d-block" id="total_user_vibez">{{total_user_vibez.Vibez__sum}}</span>
@@ -41,7 +41,7 @@
 
 
           <div class="col">
-            <div class="card" style="width: 18rem;">
+            <div class="card h-100" style="width: 18rem;">
               <div class="card-body text-center">
                 <span class="fs-4">Slot cost per spin</span>
                 <span class="fs-3 d-block">{{slot_machine.Slot_Machine_Spin_Cost}}</span>
@@ -50,8 +50,8 @@
             </div>
           </div>
 
-          <div class="col my-2">
-            <div class="card" style="width: 18rem;">
+          <div class="col my-4">
+            <div class="card h-100" style="width: 18rem;">
               <div class="card-body text-center">
                 <span class="fs-4">Total Cash</span>
                 <span class="fs-3 d-block" id="total_cash">{{total_cash.Total_Cash__sum}}</span>

@@ -24,6 +24,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" />
   <link rel="stylesheet" href="{% static 'css/dataTables.bootstrap5.min.css'%}" />
   <link rel="stylesheet" href="{% static 'css/home_style.css'%}" />
+  <link rel="stylesheet" href="{% static 'css/image-zoom.css'%}" />
 
 
   <!-- summernote -->
@@ -35,6 +36,16 @@
   .imageZoom:hover {
     transform: scale(2,2);
 }
+
+th {
+  font-size:22px;
+}
+
+td{
+  font-size:20px;
+}
+
+
 </style>
 
 </head>
@@ -50,5 +61,6 @@
 <script src="{% static 'js/dataTables.bootstrap5.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/staff.js' %}"></script>
 <script src="{% static 'plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+
 
 {% endblock base %}

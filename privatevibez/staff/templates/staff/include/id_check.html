@@ -76,20 +76,23 @@
                                   <div class="modal-body">
                                     <div class="container-fluid">
                                       <div class="row justify-content-center">
-                                        <div id="zoom-container-{{user.id}}" class="d-flex flex-row" style="position: relative;
-                                      ">
-                                          <div class="d-flex flex-row gap-2" style="overflow-x: auto;">
-                                            <img src="{{user.Id_File.url}}" alt="" id="user-id-pic-{{user.id}}" style="
-                                            
-                                            transition: transform 0.3s ease-in-out;" class="img-fluid col imageZoom">
+                             
+                                          <div class="d-flex flex-row gap-2">
+                                          
+                                            <div class="col">
+                                            <img src="{{user.Id_File.url}}" onclick="zoom_image('{{user.Id_File.url}}')" alt="" id="user-id-pic-{{user.id}}" style="
+                                            transition: transform 0.3s ease-in-out;" class="img-fluid col">
+                                              </a>
+                                            </div>
 
-                                            <img src="{% if user.Second_Id_File %}{{user.Second_Id_File.url}}{% endif %}" alt="" id="user-id2-pic-{{user.Second_Id_File.name}}"
-                                            class="img-fluid col imageZoom">
-
-      
+                                          <div class="col">
+                                            <img src="{% if user.Second_Id_File %}{{user.Second_Id_File.url}}{% endif %}" alt="" onclick="zoom_image({% if user.Second_Id_File %}'{{user.Second_Id_File.url}}'{% endif %})" id="user-id2-pic-{{user.Second_Id_File.name}}"
+                                            class="img-fluid col">
+                                         
+                                          </div>
 
                                           </div>
-                                        </div>
+                                     
                                         <div class="row">
                                           <span>First Name:</span>
                                           <span class="fs-3 text-center">{{user.User.first_name}}</span>
@@ -162,13 +165,33 @@
 </div>
 
 
+
+<!--MODAL FOR IMAGE ZOOM-->
+<div class="modal fade" id="zoom-image-modal" tabindex="-1" aria-labelledby="zoom-image-modal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="margin:auto; max-width:1200">
+    <div class="modal-content bg-transparent" style="width:1200;">
+      <div class="d-flex justify-content-end">
+        <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body d-flex justify-content-center">
+          <img id="zoom-id">
+      </div>
+      <div class="">
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <div class="d-none" id="len_user">{{user_data|length}}</div>
 {% comment %} ADD DECLINE MESSAGE {% endcomment %}
 <!-- Modal -->
 <script src="{% static 'js/user_and_broadcaster.js' %}"></script>
+<script src="{% static 'js/image-zoom.min.js' %}"></script>
 
 <script>
-
+ 
   let table_body = document.getElementById("table_body");
   let pending_broadcasters_total = document.getElementById("len_user").innerHTML;
   let total_ID_checks = document.getElementById("id_check_len");
@@ -181,6 +204,13 @@
           toast.hide();
       }, 2000);
   }
+
+  $('.easyzoom').each(function() {
+    $(this).imageZoom({
+      // Your zoom options here
+    });
+  });
+
 
 
   function zoomIn(event,imageName) {
@@ -499,5 +529,13 @@ function send_decline_message() {
     document.removeEventListener('mouseup', stopDrag);
   }
   
+
+function zoom_image(imagesrc)
+{
+   var zoomimg = document.getElementById('zoom-id');
+  $('#zoom-image-modal').modal('show');
+
+  zoomimg.src = imagesrc;
+}
   
 </script>
