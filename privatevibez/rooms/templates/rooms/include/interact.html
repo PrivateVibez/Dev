@@ -1,43 +1,65 @@
-<ul class="nav nav-tabs gap-0" id="v-pills-tab" role="tablist" aria-orientation="vertical" style="position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; width: 100%; box-sizing: border-box;">
+<div class="row">
 
-  <li class="nav-item col">
+  <div class="col-3 align-content-center">
 
-    <button type="button" class="tab nav-link w-100" id="menu-tab-nav-btn" data-bs-toggle="modal" data-bs-target="#confirmation_to_spendModal">
-      <span class="fs-3 font-weight-bold">Menu</span>
-    </button>
+  <ul class="nav nav-tabs row gap-2 m-auto" id="v-pills-tab" role="tablist" aria-orientation="vertical" style="position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; width: 100%; box-sizing: border-box;">
 
-
-    <div class="modal fade" id="confirmation_to_spendModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel"></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <h3 class="text-center fs-1 font-weight-bold">you are about to spend vibez</h3>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary fs-3" data-bs-dismiss="modal">Cancel</button>
-            <button class="nav-link" id="v-pills-menu-tab" onclick="dismiss_modal_cofirmation_to_spend_vibez()" data-bs-toggle="pill" data-bs-target="#v-pills-menu" type="button" role="tab" aria-controls="v-pills-menu" aria-selected="true"  data-bs-dismiss="modal"><span class="fs-2 font-weight-bold">Okay</span></button>
-        
+      <li class="nav-item">
+    
+        <button type="button" class="tab nav-link w-100" id="menu-tab-nav-btn" data-bs-toggle="pill" data-bs-target="#v-pills-menu" type="button" role="tab" aria-controls="v-pills-dice" aria-selected="false">
+          <span class="fs-3 font-weight-bold">Menu</span>
+        </button>
+    
+    <!--
+        <div class="modal fade" id="confirmation_to_spendModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <h3 class="text-center fs-1 font-weight-bold">you are about to spend vibez</h3>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary fs-3" data-bs-dismiss="modal">Cancel</button>
+                <button class="nav-link" id="v-pills-menu-tab" onclick="dismiss_modal_cofirmation_to_spend_vibez()" data-bs-toggle="pill" data-bs-target="#v-pills-menu" type="button" role="tab" aria-controls="v-pills-menu" aria-selected="true"  data-bs-dismiss="modal"><span class="fs-2 font-weight-bold">Okay</span></button>
+            
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
- </li>
 
-  <li class="nav-item col">
-  <button class="tab nav-link w-100" id="v-pills-dice-tab" data-bs-toggle="pill" data-bs-target="#v-pills-dice" type="button" role="tab" aria-controls="v-pills-dice" aria-selected="false"><span class="fs-3 font-weight-bold">Dice</span></button>
-  </li>
+        -->
 
-  <li class="nav-item col">
-  <button class="tab nav-link w-100" id="v-pills-Slots-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Slots" type="button" role="tab" aria-controls="v-pills-Slots" aria-selected="false"><span class="fs-3 font-weight-bold">Slots</span></button>
-  </li>
+     </li>
+   
+    
 
-</ul>
+    
+      <li class="nav-item">
+      <button class="tab nav-link w-100" id="v-pills-dice-tab" data-bs-toggle="pill" data-bs-target="#v-pills-dice" type="button" role="tab" aria-controls="v-pills-dice" aria-selected="false"><span class="fs-3 font-weight-bold">Dice</span></button>
+      </li>
+    
 
-<div class="msg-list-wrapper-split justify-content-center" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
+    
+
+      <li class="nav-item">
+      <button class="tab nav-link w-100" id="v-pills-Slots-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Slots" type="button" role="tab" aria-controls="v-pills-Slots" aria-selected="false"><span class="fs-3 font-weight-bold">Slots</span></button>
+      </li>
+
+    
+    </ul>
+
+  </div>
+
+
+
+
+<div class="col">
+
+
+<div class="msg-list-wrapper-split justify-content-center col" data-listener-count-scroll="1" style="box-sizing: border-box; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
 
 
 
@@ -103,7 +125,9 @@
 
 </div>
 
+</div>
 
+</div>
 <script>
 
   function avail_menu_item(menu_item_id){
