@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="UTF-8">
+<title>Page Title</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="">
+<style>
+  .dice-body {
+    margin: 0;
+    padding: 0;
+    background: lightgray;
+  }
+  
+  .dice-container {
+    width: 200px;
+    height: 200px;
+    margin: 5em auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10em;
+  }
+  
+  .dice-wrapper {
+    width: 110px;
+    position: relative;
+  }
+  
+  .side-one-wrapper,
+  .side-two-wrapper,
+  .side-three-wrapper,
+  .side-four-wrapper {
+    border: 5px solid darkred;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    background: #fff;
+    transform: preserve-3d;
+  }
+  
+  .dot {
+    width: 20px;
+    height: 20px;
+    margin: 1em;
+    border-radius: 50%;
+    background: darkred;
+  }
+  
+  .side-one-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .side-two-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .dot-two-two {
+    margin-left: 4em;
+  }
+  
+  .side-three-wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .dot-three-two {
+    margin-left: -.75em;
+    margin-top: 2.5em;
+  }
+  
+  .dot-three-three {
+    margin-left: -.5em;
+    margin-top: 4em;
+  }
+  
+  .side-four-wrapper {
+    display: grid;
+    grid-template-columns: repeat(2, 2fr);
+  }
+  
+  .dice-button {
+    width: 100px;
+    height: 30px;
+    border: none;
+    cursor: pointer;
+    background: #333;
+    color: lightgray;
+    font-weight: 900;
+    letter-spacing: .5em;
+  }
+  
+  .dice-button:focus,
+  .dice-button:hover {
+    background: darkred;
+  }
+  
+  .roll-number {
+    z-index: 1;
+  }
+  
+  .dice-animation {
+    animation: rollAnimation .45s ease;
+  }
+  
+  @keyframes rollAnimation {
+    0%{
+      opacity: 0;
+      transform: scale(0);
+    } 100% {
+      opacity: 1; 
+      transform: scale(1);
+    } 
+  }
+  
+</style>
+<script src=""></script>
+<body class="dice-body">
+  <div class="dice-container">
+    <div class="dice-wrapper">
+  
+      <div class="side-one-wrapper">
+        <div class="dot dot-one-one"></div>
+      </div>
+  
+      <div class="side-two-wrapper">
+        <div class="dot dot-two-one"></div>
+        <div class="dot dot-two-two"></div>
+      </div>
+  
+      <div class="side-three-wrapper">
+        <div class="dot dot-three-one"></div>
+        <div class="dot dot-three-two"></div>
+        <div class="dot dot-three-three"></div>
+      </div>
+  
+      <div class="side-four-wrapper">
+        <div class="dot dot-four-one"></div>
+        <div class="dot dot-four-two"></div>
+        <div class="dot dot-four-three"></div>
+        <div class="dot dot-four-four"></div>
+      </div>
+  
+    </div>
+  
+    <button type="button" class="dice-button" onclick="roll_dice()" id="roll-btn">ROLL</button>
+  </div>
+    <script>
+ 
+
+    let sideOne = document.querySelector(".side-one-wrapper");
+    let sideTwo = document.querySelector(".side-two-wrapper");
+    let sideThree = document.querySelector(".side-three-wrapper");
+    let sideFour = document.querySelector(".side-four-wrapper");
+    const diceWrapper = document.querySelector(".dice-wrapper");
+    const rollBtn = document.getElementById("roll-btn");
+    
+    const dice = {
+      one: sideOne,
+      two: sideTwo,
+      three: sideThree,
+      four: sideFour
+    }
+    
+    function rollDice() {
+      const randomNumber = Math.floor(Math.random()*4)+1;
+      
+      setTimeout(()=>{
+         switch(randomNumber) {
+         case 1:
+            diceWrapper.classList.add("dice-animation");
+            dice.one.classList.add("roll-number");
+            break;
+          case 2:
+            diceWrapper.classList.add("dice-animation");
+            dice.two.classList.add("roll-number");
+            break;
+          case 3:
+            diceWrapper.classList.add("dice-animation");
+            dice.three.classList.add("roll-number");
+            break;
+          case 4:
+            diceWrapper.classList.add("dice-animation");
+            dice.four.classList.add("roll-number");
+            break;
+          default:
+            console.log("something went wrong!");
+          }
+      })
+    }
+    
+
+      // Your existing code goes here
+  
+      function roll_dice(){
+          diceWrapper.classList.remove("dice-animation");
+  
+          dice.one.classList.remove("roll-number");
+          dice.two.classList.remove("roll-number");
+          dice.three.classList.remove("roll-number");
+          dice.four.classList.remove("roll-number");
+  
+          console.log('clicked');
+          rollDice();
+  
+          rollBtn.disabled = true;
+          rollBtn.style.opacity = ".5";
+          setTimeout(() => {
+              rollBtn.style.opacity = "1";
+              rollBtn.disabled = false;
+          }, 1000);
+      };
+
+
+  
+  </script>
+</body>
+</html>

@@ -167,6 +167,10 @@
                             </li>
 
                             <li class="nav-item">
+                              <a class="nav-link" id="pills-lottery-tab" data-toggle="pill" href="#pills-lottery-items" role="tab" aria-controls="pills-lottery-items" aria-selected="true">Lottery</a>
+                            </li>
+
+                            <li class="nav-item">
                               <a class="nav-link" style="   " id="pills-room-rules-tab" data-toggle="pill" href="#pills-room-rules" role="tab" aria-controls="pills-room-rules" aria-selected="true">Room Rules</a>
                             </li>
 
@@ -201,6 +205,12 @@
                                 {% include 'rooms/include/menu_items.html' %}
                             </div>
 
+
+                            <div class="tab-pane fade" id="pills-lottery-items" role="tabpanel" aria-labelledby="pills-lottery-items-tab">
+                                {% include 'rooms/include/lottery.html' %}
+                            </div>
+
+                            
                             <div class="tab-pane fade" id="pills-lovense-toy" role="tabpanel" aria-labelledby="pills-lovense-toy">
 
                                 <div class="container align-content-center gap-2">

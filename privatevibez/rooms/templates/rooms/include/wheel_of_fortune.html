@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wheel of Fortune Game</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+          box-sizing: border-box;
+      }
+      
+      body {
+          font-family: 'Do Hyeon', sans-serif;
+          background: #7049f7;
+      }
+      
+      .title {
+          text-align: center;
+          margin: 1.2em 0;
+          font-size: 2em;
+          color: #FBFFFE;
+          text-transform: uppercase;
+      }
+      
+      .container {
+          display: flex;
+          flex-wrap: wrap;
+          width: 620px;
+          margin: 0px auto;
+      }
+      
+      .square {
+          border: 1px solid lightpink;
+          flex: 0 0 80px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 80px;
+          background: #EB73B2;
+      }
+      
+      .square.square:not(:nth-child(3n)) {
+          margin-right: 10px;
+      }
+      
+      .square.square:not(:nth-child(n+7)) {
+          margin-bottom: 10px;
+      }
+      
+      .square.is-active {
+          border: 5px solid gold;
+      }
+      
+      .square__content {
+          font-size: 2.8em;
+      }
+      
+      .square__start-btn {
+          background: gold;
+          color: #e97573;
+          font-size: 2em;
+          cursor: pointer;
+      }
+      
+      .square__start-btn:hover {
+          background: lighten(gold, 25%);
+      }
+      
+      
+    </style>
+</head>
+<body>
+  <h1 class="title">Lottery prize generator</h1>
+  <section class="" id="js-lotto">
+
+<div class="row">
+
+<div class="row justify-content-center">
+      <div class="square" data-order="0">
+          <div class="square__content">🙈</div>
+      </div>
+      <div class="square" data-order="1">
+          <div class="square__content">🤢</div>
+      </div>
+      <div class="square" data-order="2">
+          <div class="square__content">💩</div>
+      </div>
+</div>
+
+<div class="row justify-content-center">
+      <div class="square" data-order="7">
+          <div class="square__content">🤖</div>
+      </div>
+      <div class="square square__start-btn" id="js-start">
+          <div>START</div>
+      </div>
+      <div class="square" data-order="3">
+          <div class="square__content">🦊</div>
+      </div>
+</div>
+
+
+<div class="row justify-content-center">
+      <div class="square" data-order="6">
+          <div class="square__content">👻</div>
+      </div>
+      <div class="square" data-order="5">
+          <div class="square__content">👾</div>
+      </div>
+      <div class="square" data-order="4">
+          <div class="square__content">👀</div>
+      </div>
+</div>
+
+
+</div>
+  </section>
+
+    <script>
+        // JavaScript code goes here
+        const prizes = {
+          0: '🙈',
+          1: '🤢',
+          2: '💩',
+          3: '🦊',
+          4: '👀',
+          5: '👾',
+          6: '👻',
+          7: '🤖',
+      };
+      const total_items = 8;
+      const minimum_jumps = 30; 
+      let current_index = -1;
+      let jumps = 0;
+      let speed = 30;
+      let timer = 0;
+      let prize = -1;
+      
+      function runCircle() {
+          $(`[data-order="${current_index}"]`).removeClass('is-active');
+      
+          current_index += 1;
+      
+          if (current_index > total_items - 1) {
+              current_index = 0;
+          }
+      
+          $(`[data-order="${current_index}"]`).addClass('is-active');
+      }
+      
+      function generatePrizeNumber() {
+          return Math.floor(Math.random() * total_items);
+      }
+      
+      function controllSpeed() {
+          jumps += 1;
+          runCircle();
+     
+          if (jumps > minimum_jumps + 10 && prize === current_index) {
+              clearTimeout(timer);
+              console.log(`${prizes[current_index]}`)
+
+      
+              prize = -1;
+              jumps = 0;
+          } else {
+              if (jumps < minimum_jumps) {
+                  speed -= 5;
+            
+              } else if (jumps === minimum_jumps) {
+                  const random_number = generatePrizeNumber();
+                  prize = random_number;
+              } else {
+                  
+                  if ( (jumps > minimum_jumps + 10) && prize === (current_index + 1) ) {
+                      speed += 600;
+                  } else {
+                      speed += 20; 
+                  }
+              }
+              if (speed < 40) {
+                  speed = 40;
+              }
+      
+              timer = setTimeout(controllSpeed, speed);
+          }
+      }
+      
+      function init() {
+          jumps = 0;
+          speed = 100;
+          prize = -1;
+          controllSpeed();
+      }
+      
+      $(document).ready(() => {
+          $('#js-start').on('click', init);
+      });
+    </script>
+</body>
+</html>

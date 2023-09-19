@@ -163,6 +163,14 @@ def Room(request, Broadcaster):
                     
                                 elif user.Status == "Broadcaster":
                                     
+                                    # LOTTERY PRIZES
+                                    lottery_prizes_list = ['MMM Button','OH Button','OHYes Button']
+
+                                    # Loop through the queryset and append the values to the list
+                                    for item in menu_data:
+                                        lottery_prizes_list.append(item.Menu_Name)
+                                                                        
+                                    
                         
                                     if Private_Chat_Invitee.objects.filter(Broadcaster=request.user).exists():
                                         private_chat_invite = Private_Chat_Invitee.objects.get(Broadcaster=request.user)

@@ -48,6 +48,10 @@
       <button class="tab nav-link w-100" id="v-pills-Slots-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Slots" type="button" role="tab" aria-controls="v-pills-Slots" aria-selected="false"><span class="fs-3 font-weight-bold">Slots</span></button>
       </li>
 
+      <li class="nav-item">
+      <button class="tab nav-link w-100" id="v-pills-wheel-tab" data-bs-toggle="pill" data-bs-target="#v-pills-wheel" type="button" role="tab" aria-controls="v-pills-wheel" aria-selected="false"><span class="fs-3 font-weight-bold">Lottery</span></button>
+      </li>
+
     
     </ul>
 
@@ -101,7 +105,19 @@
           </div>
         </div>
 
-        <div class="tab-pane fade" id="v-pills-dice" role="tabpanel" aria-labelledby="v-pills-dice-tab" tabindex="0">dice</div>
+        <div class="tab-pane fade" id="v-pills-dice" role="tabpanel" aria-labelledby="v-pills-dice-tab" tabindex="0">
+          
+          {% if request.user.is_authenticated %}
+          {% include "rooms/include/dice.html" %}
+          {% endif %}
+        </div>
+
+        <div class="tab-pane fade" id="v-pills-wheel" role="tabpanel" aria-labelledby="v-pills-wheel-tab" tabindex="0">
+          
+          {% if request.user.is_authenticated %}
+          {% include "rooms/include/wheel_of_fortune.html" %}
+          {% endif %}
+        </div>
 
         <div class="tab-pane fade" style="overflow:hidden;" id="v-pills-Slots" role="tabpanel" aria-labelledby="v-pills-Slots-tab" tabindex="0">
           <div id="slot" class="ps-0 ml-0">

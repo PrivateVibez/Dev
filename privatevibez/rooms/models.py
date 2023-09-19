@@ -27,7 +27,13 @@ class Room_Visitors(models.Model):
     Timestamp  = models.DateTimeField(auto_now_add=True)     
     def __str__(self):
         return str(self.User)
- 
+
+class Lottery(models.Model):
+    User       = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True,blank=True)
+    prize      = models.CharField(max_length=200,null=True,blank=True)
+    Timestamp  = models.DateTimeField(auto_now_add=True)     
+    def __str__(self):
+        return str(self.prize)
     
 class Room_Data(models.Model):
     User                  = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
