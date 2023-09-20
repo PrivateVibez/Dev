@@ -3,13 +3,18 @@
 <div class="row">
 
   <div class="d-flex flex-row">
-    <form method="POST" id="lottery-form">
+
       <label for="price_for_slot_1">Slot 1 prize</label>
-      <select id="price_for_slot_1">
+      <select id="price_for_slot_1" value="s">
         <option value="None">None</option>
 
         {% for prize in lottery_prizes_list %}
+        {% if lottery_slot_1.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
         <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}
         {% endfor %}
       </select>
 
@@ -19,7 +24,12 @@
         <option value="None">None</option>
 
         {% for prize in lottery_prizes_list %}
+        {% if lottery_slot_2.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
         <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}       
         {% endfor %}
       </select>
 
@@ -29,7 +39,12 @@
         <option value="None">None</option>
 
         {% for prize in lottery_prizes_list %}
+        {% if lottery_slot_3.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
         <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}  
         {% endfor %}
       </select>
 
@@ -39,7 +54,12 @@
         <option value="None">None</option>
 
         {% for prize in lottery_prizes_list %}
+        {% if lottery_slot_4.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
         <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}        
         {% endfor %}
       </select>
 
@@ -49,7 +69,12 @@
         <option value="None">None</option>
 
         {% for prize in lottery_prizes_list %}
+        {% if lottery_slot_5.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
         <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}           
         {% endfor %}
       </select>
 
@@ -59,7 +84,12 @@
         <option value="None">None</option>
 
         {% for prize in lottery_prizes_list %}
+        {% if lottery_slot_6.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
         <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}    
         {% endfor %}
       </select>
 
@@ -69,7 +99,12 @@
         <option value="None">None</option>
 
         {% for prize in lottery_prizes_list %}
+        {% if lottery_slot_7.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
         <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %} 
         {% endfor %}
       </select>
 
@@ -79,13 +114,64 @@
         <option value="None">None</option>
 
         {% for prize in lottery_prizes_list %}
+        {% if lottery_slot_8.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
         <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}        
         {% endfor %}
       </select>
-    </form>
+
+
+      <button type="button" onclick="set_lottery_prize()" class="btn btn-primary">Set</button>
+  
   </div>
 
 </div>
 
 
 </div>
+
+
+<script>
+
+  function set_lottery_prize() {
+    var slot1 = document.getElementById('price_for_slot_1').value;
+    var slot2 = document.getElementById('price_for_slot_2').value;
+    var slot3 = document.getElementById('price_for_slot_3').value;
+    var slot4 = document.getElementById('price_for_slot_4').value;
+    var slot5 = document.getElementById('price_for_slot_5').value;
+    var slot6 = document.getElementById('price_for_slot_6').value;
+    var slot7 = document.getElementById('price_for_slot_7').value;
+    var slot8 = document.getElementById('price_for_slot_8').value;
+
+
+    $.ajax({
+
+      method: "POST",
+      url:"set_lottery_prize/",
+      data:{
+        'slot1': slot1,
+        'slot2': slot2,
+        'slot3': slot3,
+        'slot4': slot4,
+        'slot5': slot5,
+        'slot6': slot6,
+        'slot7': slot7,
+        'slot8': slot8,
+        'csrfmiddlewaretoken':"{{csrf_token}}",
+ 
+      },
+      success:function(data){
+        console.log(data.data);
+      },
+      error:function(errors){
+        console.log(errors.responseText);
+
+      }
+
+    });
+  }
+
+</script>

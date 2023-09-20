@@ -105,6 +105,8 @@ class StaffManager(models.Model):
 class PrivatevibezRevenue(models.Model):
     
     Slot_Machine_Revenue       = models.IntegerField(null=True,blank=True)
+    Lottery_Revenue            = models.IntegerField(null=True,blank=True)
+    Dice_Revenue               = models.IntegerField(null=True,blank=True)
     Total_Vibez                = models.IntegerField(null=True,blank=True)
     Total_Cash                 = models.FloatField(null=True,blank=True)
     Chargeback                 = models.IntegerField(null=True,blank=True)

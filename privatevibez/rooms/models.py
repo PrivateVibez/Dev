@@ -30,6 +30,7 @@ class Room_Visitors(models.Model):
 
 class Lottery(models.Model):
     User       = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True,blank=True)
+    slot_number = models.IntegerField(null=True,blank=True)
     prize      = models.CharField(max_length=200,null=True,blank=True)
     Timestamp  = models.DateTimeField(auto_now_add=True)     
     def __str__(self):
@@ -52,7 +53,6 @@ class Room_Data(models.Model):
     Strength_MMM_button   = models.CharField(null=True,blank=True, max_length=100)
     Strength_OH_button    = models.CharField(null=True,blank=True, max_length=100)
     Strength_OHYes_button = models.CharField(null=True,blank=True, max_length=100)
-    
     Feature_OHYes_button  = models.CharField(max_length=1,null=True,blank=True)
     Feature_OH_button     = models.CharField(max_length=1,null=True,blank=True)
     Feature_MMM_button    = models.CharField(max_length=1,null=True,blank=True)
@@ -65,6 +65,9 @@ class Room_Data(models.Model):
     Room_Description      = models.TextField(null=True,blank=True)
     Revenue               = models.IntegerField(null=True, blank=True)
     Room_promotion        = models.ForeignKey(Promotion, null=True, blank=True, on_delete=models.CASCADE,related_name='room_promotion')
+    Is_Dice_Active        = models.BooleanField(default=False)
+    Is_Menu_Active        = models.BooleanField(default=False)
+    Is_Lottery_Active     = models.BooleanField(default=False)  
     Total_Viewers         = models.IntegerField(null=True, blank=True)
     Timestamp             = models.DateTimeField(auto_now_add=True)     
     
@@ -134,13 +137,17 @@ class Slot_Machine(models.Model):
         return str(self.User)
     
     
-class Slot_Machine_Data(models.Model):
+class Games_Data(models.Model):
     
         Slot_Machine_Spin_Cost     = models.IntegerField(null=True,blank=True)
+        Lottery_Spin_Cost          = models.IntegerField(null=True,blank=True)
+        Dice_Spin_Cost             = models.IntegerField(null=True,blank=True)
         timestamp                  = models.DateTimeField(auto_now_add=True,null=True,blank=True)
         
         def __str__(self):
             return str(self.Slot_Machine_Spin_Cost)
+        
+
     
     
     

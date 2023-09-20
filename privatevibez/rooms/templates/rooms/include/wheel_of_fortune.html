@@ -72,11 +72,10 @@
     </style>
 </head>
 <body>
-  <h1 class="title">Lottery prize generator</h1>
+  <h1 class="title text-dark">Spin the lottery to win mystery prizes! <br> {{lottery_cost_per_spin.Lottery_Spin_Cost}} vibez per spin</h1>
   <section class="" id="js-lotto">
 
 <div class="row">
-
 <div class="row justify-content-center">
       <div class="square" data-order="0">
           <div class="square__content">🙈</div>
@@ -119,6 +118,86 @@
   </section>
 
     <script>
+
+        function lottery_prize(index) {
+            $.ajax({
+                method: "POST",
+                url:"get_lottery_prize/",
+                data: {
+                    lottery_number: index,
+                    winner:"{{ request.user }}",
+                    room_name: "{{ room_name }}",
+                    'csrfmiddlewaretoken':"{{csrf_token}}",
+
+                },
+                success: function(data){
+
+                    const msg = data;
+                    console.log(msg.data);
+                    const spins = msg.spins;
+                    const vibez = msg.vibez
+       
+                    successToast(msg.data);  
+                    
+                    console.log(spins);
+                    console.log(vibez);
+      
+                    if(pot !== null){
+                      document.getElementById('pot').innerHTML = pot;
+                    }
+      
+                    if (vibez !== null){
+                      document.getElementById('user_vibez').innerHTML = vibez;
+                    }
+      
+                    if(spins !== null) {
+                      document.getElementById('free_spins').innerHTML = spins;
+                    }
+      
+                    
+
+                },
+                error: function(errors){
+                    const response = JSON.parse(errors.responseText);
+                    console.log(response.data)
+      
+                    if (response.error) {
+                        errorToast(response.data);
+                    }
+                    else{
+                      const spins = response.spins;
+                      const uservibez = response.vibez;
+        
+                      console.log(spins);
+                      console.log(uservibez);
+                  
+      
+                      if (uservibez !== null) {
+                      document.getElementById('user_vibez').innerHTML = uservibez;    
+                      }
+      
+                      if (spins !== null) {
+                        document.getElementById('free_spins').innerHTML = spins;   
+                      }
+                      else {
+                        document.getElementById('free_spins').innerHTML = 0;
+                      }
+      
+                    }
+      
+      
+                    errorToast(response.data);
+      
+             
+               
+                }
+            });
+        }
+
+
+
+
+
         // JavaScript code goes here
         const prizes = {
           0: '🙈',
@@ -161,6 +240,9 @@
           if (jumps > minimum_jumps + 10 && prize === current_index) {
               clearTimeout(timer);
               console.log(`${prizes[current_index]}`)
+              console.log(`${current_index}`)
+
+              lottery_prize(current_index);
 
       
               prize = -1;
@@ -198,6 +280,10 @@
       $(document).ready(() => {
           $('#js-start').on('click', init);
       });
+
+
+    
+      
     </script>
 </body>
 </html>

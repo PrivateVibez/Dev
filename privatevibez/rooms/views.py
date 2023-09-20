@@ -130,7 +130,10 @@ def Room(request, Broadcaster):
                                 
                                 
                             if Slot_Machine.objects.filter(User=broadcaster_user).exists():
-                                    slot_machine_cost_per_spin = Slot_Machine_Data.objects.order_by('-timestamp').values('Slot_Machine_Spin_Cost').first()
+                                    slot_machine_cost_per_spin = Games_Data.objects.order_by('-timestamp').values('Slot_Machine_Spin_Cost').first()
+                                    lottery_cost_per_spin = Games_Data.objects.order_by('-timestamp').values('Lottery_Spin_Cost').first()
+                                    
+                                    
                                     slot_machine_data = Slot_Machine.objects.filter(User=broadcaster_user.id).values('pot', 'Win_3_of_a_kind_prize', 'Win_2_of_a_kind_prize').get()
                             try:
                                 user = request.user
@@ -164,14 +167,22 @@ def Room(request, Broadcaster):
                                 elif user.Status == "Broadcaster":
                                     
                                     # LOTTERY PRIZES
-                                    lottery_prizes_list = ['MMM Button','OH Button','OHYes Button']
+                                    lottery_prizes_list = ['MMM','OH','OHYes']
 
                                     # Loop through the queryset and append the values to the list
                                     for item in menu_data:
                                         lottery_prizes_list.append(item.Menu_Name)
                                                                         
-                                    
-                        
+                                    lottery_slot_1 = Lottery.objects.get(User=broadcaster_user, slot_number=1) if Lottery.objects.filter(User=broadcaster_user, slot_number=1).exists() else None
+                                    lottery_slot_2 = Lottery.objects.get(User=broadcaster_user, slot_number=2) if Lottery.objects.filter(User=broadcaster_user, slot_number=2).exists() else None
+                                    lottery_slot_3 = Lottery.objects.get(User=broadcaster_user, slot_number=3) if Lottery.objects.filter(User=broadcaster_user, slot_number=3).exists() else None
+                                    lottery_slot_4 = Lottery.objects.get(User=broadcaster_user, slot_number=4) if Lottery.objects.filter(User=broadcaster_user, slot_number=4).exists() else None
+                                    lottery_slot_5 = Lottery.objects.get(User=broadcaster_user, slot_number=5) if Lottery.objects.filter(User=broadcaster_user, slot_number=5).exists() else None
+                                    lottery_slot_6 = Lottery.objects.get(User=broadcaster_user, slot_number=6) if Lottery.objects.filter(User=broadcaster_user, slot_number=6).exists() else None
+                                    lottery_slot_7 = Lottery.objects.get(User=broadcaster_user, slot_number=7) if Lottery.objects.filter(User=broadcaster_user, slot_number=7).exists() else None
+                                    lottery_slot_8 = Lottery.objects.get(User=broadcaster_user, slot_number=8) if Lottery.objects.filter(User=broadcaster_user, slot_number=8).exists() else None
+
+                    
                                     if Private_Chat_Invitee.objects.filter(Broadcaster=request.user).exists():
                                         private_chat_invite = Private_Chat_Invitee.objects.get(Broadcaster=request.user)
                                         pending_private_chat_invitees = private_chat_invite.Invitee_relationships.filter(Is_Accepted=False).count()
@@ -804,7 +815,7 @@ def get_prize(request):
                         
                         note = f'{winner.User.username} Won Two of a kind! enjoy button {random_button}'
                 
-                        pot = availed_item(winner.User.id,room_data,"2OAK",price,random_button,button_cost,note)
+                        pot = availed_item(winner.User.id,room_data,"2OAK",price,"Slot_Machine",random_button,button_cost,note)
                         
                         winner = trigger_toy(room_data.User.id,price,winner.User.id,feature,strength,timesec)
                         
@@ -819,7 +830,7 @@ def get_prize(request):
                         price = cost_per_spin
                         note = f'{winner.User.username} Won Three of a kind!'
                 
-                        pot = availed_item(winner.User.id,room_data,"3OAK",price,note)
+                        pot = availed_item(winner.User.id,room_data,"3OAK",price,"Slot_Machine",note)
             
                         is_Jackpot = True
                         winner = trigger_toy(room_data.User.id,price,winner.User.id,feature,strength,timesec,room_data,is_Jackpot)
@@ -834,7 +845,7 @@ def get_prize(request):
                             
                         remaining_price = cost_per_spin
                         
-                        availed_item(winner.User.id,room_data,"Slot Spin",remaining_price,"Loss")
+                        availed_item(winner.User.id,room_data,"Slot Spin",remaining_price,"Slot_Machine","Loss")
                         winner = trigger_toy(room_data.User.id,cost_per_spin,winner.User.id,feature,strength,timesec)
                         slot_machine_pot = Slot_Machine.objects.filter(User=room_data.User)
                         
@@ -1204,7 +1215,7 @@ def show_itemAvailedInPublicChat(room,user_data,item):
         {"type": "show.itemAvailed", "item": item}
     )
 
-def availed_item(user,room,item,price,random_button=None,button_cost=None,note=None):
+def availed_item(user,room,item,price,game_type=None,random_button=None,button_cost=None,note=None):
     
     try:
         
@@ -1212,6 +1223,7 @@ def availed_item(user,room,item,price,random_button=None,button_cost=None,note=N
             user_data = User_Data.objects.get(User__id=user)
             print(price,flush=True)
             if user_data.Free_spins != 0:
+                
                 item = Item_Availed.objects.create(Room=room,User=user_data.User,Item=item, Cost=0, Note="free spin")
                 user_data.Availed.add(item)  
                 
@@ -1224,10 +1236,26 @@ def availed_item(user,room,item,price,random_button=None,button_cost=None,note=N
                     # charge user per spin
                     remaining_price = price - private_vibez.Chargeback
                     print(remaining_price,flush=True)
-                    if private_vibez.Slot_Machine_Revenue is None:
-                        private_vibez.Slot_Machine_Revenue = private_vibez.Chargeback
-                    else:
-                        private_vibez.Slot_Machine_Revenue = private_vibez.Slot_Machine_Revenue + private_vibez.Chargeback
+                    
+                    if game_type == "Slot_Machine":
+                        if private_vibez.Slot_Machine_Revenue is None:
+                            private_vibez.Slot_Machine_Revenue = private_vibez.Chargeback
+                        else:
+                            private_vibez.Slot_Machine_Revenue = private_vibez.Slot_Machine_Revenue + private_vibez.Chargeback
+                    
+                    elif game_type == "Lottery":
+                        if private_vibez.Lottery_Revenue is None:
+                            private_vibez.Lottery_Revenue = private_vibez.Chargeback
+                        else:
+                            private_vibez.Lottery_Revenue = private_vibez.Lottery_Revenue + private_vibez.Chargeback
+                        
+                        
+                    elif game_type == "Dice":
+                        if private_vibez.Dice_Revenue is None:
+                            private_vibez.Dice_Revenue = private_vibez.Chargeback
+                        else:
+                            private_vibez.Dice_Revenue = private_vibez.Dice_Revenue + private_vibez.Chargeback
+                        
                     private_vibez.save()
                 
                 
@@ -1678,3 +1706,140 @@ def get_user_by_date_spending(request):
         item_availed_serializer = Item_AvailedSerializer(user_spendings,many=True)
 
         return JsonResponse({"data": {"total_user_spendings": total_user_spendings,"user_spendings": item_availed_serializer.data}},safe=False)
+    
+    
+def set_lottery_prize(request):
+    
+    if request.method == "POST":
+        
+        slot_values = []
+
+        for i in range(1, 9):
+            slot_name = f'slot{i}'
+            slot_value = request.POST.get(slot_name)
+            slot_values.append(slot_value)
+
+            if Lottery.objects.filter(slot_number=i,User=request.user).exists():
+                lottery = Lottery.objects.get(slot_number=i,User=request.user)
+                
+                if slot_value != "None":
+                    lottery.prize = slot_value
+                else:
+                    lottery.prize = None
+                
+                lottery.save()
+                
+            else:
+                
+                if slot_value != "None":
+                    lottery = Lottery.objects.create(slot_number=i,User=request.user,prize=slot_value)
+        
+        
+        return JsonResponse({"data":f'lottery saved'},status=200, safe=False)
+                
+        
+
+def get_lottery_prize(request):
+    
+    
+    if request.method == "POST":
+        
+        winner = request.POST.get('winner')
+        room = request.POST.get('room_name')
+        lottery_number = request.POST.get('lottery_number')
+        
+        fav_btns_list = ['MMM','OH','OHYes']
+        
+        try:
+            game_data = Games_Data.objects.order_by('-timestamp').first()
+            user = User_Data.objects.get(User=request.user)
+            print(room,flush=True)
+            room_data = Room_Data.objects.get(User__username=room)
+            if user.Vibez < game_data.Lottery_Spin_Cost:
+                return JsonResponse({"data":f'not enough vibez!'},status=500, safe=False)
+
+        except Games_Data.DoesNotExist:
+            return JsonResponse({"data":f'there is some problem please contact staff'},status=500, safe=False)
+        
+        
+        if Lottery.objects.filter(slot_number=lottery_number,User__username=room).exists():
+            lottery_prize = Lottery.objects.get(slot_number=lottery_number,User__username=room)
+            
+            if lottery_prize.prize in fav_btns_list:
+                
+                if lottery_prize.prize == "MMM":
+                    price = game_data.Lottery_Spin_Cost
+                    feature = room_data.Feature_MMM_button
+                    strength = room_data.Strength_MMM_button
+                    timesec = room_data.Duration_MMM_button
+                    deduct_spin_or_vibez(user,room_data,game_data)
+
+                    note = f'Lottery win!'
+                    availed_item(request.user.id,room_data,lottery_prize.prize,price,"Lottery",note)
+                        
+                    trigger_toy(room_data.User.id,price,request.user.id,feature,strength,timesec)
+                    
+                elif lottery_prize.prize == "OH":
+                    price = game_data.Lottery_Spin_Cost
+                    feature = room_data.Feature_OH_button
+                    strength = room_data.Strength_OH_button
+                    timesec = room_data.Duration_OH_button
+                    deduct_spin_or_vibez(user,room_data,game_data)
+
+                    note = f'Lottery win!'
+                    availed_item(request.user.id,room_data,lottery_prize.prize,price,"Lottery",note)
+                        
+                    trigger_toy(room_data.User.id,price,request.user.id,feature,strength,timesec)
+                    
+                elif lottery_prize.prize == "OHYes":
+                    price = game_data.Lottery_Spin_Cost
+                    feature = room_data.Feature_OHYes_button
+                    strength = room_data.Strength_OHYes_button
+                    timesec = room_data.Duration_OHYes_button
+                    
+                    deduct_spin_or_vibez(user,room_data,game_data)
+
+                    note = f'Lottery win!'
+                    availed_item(request.user.id,room_data,lottery_prize.prize,price,"Lottery",note)
+                        
+                    trigger_toy(room_data.User.id,price,request.user.id,feature,strength,timesec)
+            
+            else:
+                
+                if Menu_Data.objects.filter(Menu_Name=lottery_prize,User__username=room).exists():
+                    menu_item = Menu_Data.objects.get(Menu_Name=lottery_prize,User__username=room)
+                    item = Item_Availed.objects.create(Room = room_data,User=request.user, Item = menu_item.Menu_Name, Cost = menu_item.Vibez_Cost)
+                    
+                    user = User_Data.objects.get(User = request.user)
+                    availed_item(request.user.id,room_data,lottery_prize.prize,price,"Lottery",note)
+
+                    deduct_spin_or_vibez(user,room_data,game_data)
+                    display_user_availed_item_in_broadcaster_room(user,item,room_data)
+                        
+            return JsonResponse({"data":f'you won {lottery_prize}',"spins":user.Free_spins,"vibez":user.Vibez},status=200, safe=False) 
+        
+        else:            
+            
+            user.Vibez = user.Vibez - game_data.Lottery_Spin_Cost
+            deduct_spin_or_vibez(user,room_data,game_data)
+            
+            return JsonResponse({"data":f'it\'s okay to lose, try again!',"spins":user.Free_spins,"vibez":user.Vibez},status=500, safe=False) 
+
+
+def deduct_spin_or_vibez(user,broadcaster_room,game_data):
+    
+    if user.Free_spins != 0:
+        user.Free_spins -= 1
+    else:
+        if user.Vibez >= game_data.Lottery_Spin_Cost:
+            user.Vibez = user.Vibez - game_data.Lottery_Spin_Cost
+            
+    if broadcaster_room.Revenue != None:
+        broadcaster_room.Revenue += game_data.Lottery_Spin_Cost
+    else:
+        broadcaster_room.Revenue = game_data.Lottery_Spin_Cost
+    
+
+        user.save()
+        broadcaster_room.save()
+        

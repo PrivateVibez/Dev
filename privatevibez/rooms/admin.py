@@ -13,5 +13,5 @@ admin.site.register(Room_Visitors)
 admin.site.register(Blocked_Regions)
 admin.site.register(Blocked_Countries)
 admin.site.register(Slot_Machine)
-admin.site.register(Slot_Machine_Data)
+admin.site.register(Games_Data)
 
