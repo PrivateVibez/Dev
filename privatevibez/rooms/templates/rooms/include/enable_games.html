@@ -4,20 +4,147 @@
 
   <div class="">
      <h3 class="">Menu</h3>
-    <button class="btn btn-dark fs-2">Activate</button>
+    <button id="menu_button" data-btn="{{room_data.Is_Menu_Active}}" onclick="enable_menu_items()" class="btn {% if room_data.Is_Menu_Active %}btn-secondary{% else %}btn-dark{% endif %} fs-2">{% if room_data.Is_Menu_Active %}Disable{% else %}Enable{% endif %}</button>
   </div>
   
   <div class="">
      <h3 class="">Dice</h3>
-    <button class="btn btn-dark fs-2">Activate</button>
+    <button id="dice_button" data-btn="{{room_data.Is_Dice_Active}}" onclick="enable_dice()" class="btn {% if room_data.Is_Dice_Active %}btn-secondary{% else %}btn-dark{% endif %} fs-2">{% if room_data.Is_Dice_Active %}Disable{% else %}Enable{% endif %}</button>
   </div>
 
   <div class="">
      <h3 class="">Lottery</h3>
-    <button class="btn btn-dark fs-2">Activate</button>
+    <button id="lottery_button" data-btn="{{room_data.Is_Lottery_Active}}" onclick="enable_lottery()" class="btn {% if room_data.Is_Lottery_Active %}btn-secondary{% else %}btn-dark{% endif %} fs-2">{% if room_data.Is_Lottery_Active %}Disable{% else %}Enable{% endif %}</button>
   </div>
 
 
 </div>
 
 </div>
+
+
+
+<script>
+
+  var menu_button    = document.getElementById('menu_button');
+  var dice_button    = document.getElementById('dice_button');
+  var lottery_button = document.getElementById('lottery_button');
+
+  var menu_button_status = menu_button.getAttribute('data-btn');
+  var dice_button_status = dice_button.getAttribute('data-btn');
+  var lottery_button_status = lottery_button.getAttribute('data-btn');
+
+
+
+  //MENU ITEMS ACTIVATION
+  function enable_menu_items() {
+
+
+    $.ajax({
+      method: "POST",
+      url: "enable_menu_items/",
+      data: {
+        is_enabled: menu_button_status,
+        'csrfmiddlewaretoken':"{{csrf_token}}",
+      },
+      success: function(data) {
+        var is_active = data.is_active;
+        
+        console.log(is_active);
+        if (is_active == false) {
+          menu_button.textContent = "Enable";
+          menu_button.classList.remove("btn-secondary");
+          menu_button.classList.add("btn-dark");
+          menu_button_status = "True";
+        }
+        else if(is_active == true){
+          menu_button.textContent = "Disable";
+          menu_button.classList.remove("btn-dark");
+          menu_button.classList.add("btn-secondary");
+          menu_button_status = "False";
+        }
+      },
+      error: function(error) {
+        console.log(errors.responseText);
+      }
+    });
+    
+  }
+
+
+//DICE BUTTON ACTIVATION
+
+function enable_dice() {
+
+
+  $.ajax({
+    method: "POST",
+    url: "enable_dice/",
+    data: {
+      is_enabled: dice_button_status,
+      'csrfmiddlewaretoken':"{{csrf_token}}",
+    },
+    success: function(data) {
+      var is_active = data.is_active;
+        
+      console.log(is_active); 
+      if (is_active == false) {
+        dice_button.textContent = "Enable";
+        dice_button.classList.remove("btn-secondary");
+        dice_button.classList.add("btn-dark");
+  
+      }
+      else if(is_active == true){
+        dice_button.textContent = "Disable";
+        dice_button.classList.remove("btn-dark");
+        dice_button.classList.add("btn-secondary");
+        
+      }
+    },
+    error: function(error) {
+      console.log(errors.responseText);
+    }
+  });
+  
+}
+
+
+//ENABLE LOTTERY BUTTON
+
+function enable_lottery() {
+
+
+  $.ajax({
+    method: "POST",
+    url: "enable_lottery/",
+    data: {
+      is_enabled: lottery_button_status,
+      'csrfmiddlewaretoken':"{{csrf_token}}",
+    },
+    success: function(data) {
+      var is_active = data.is_active;
+        
+      
+      if (is_active == false) {
+        lottery_button.textContent = "Enable";
+        lottery_button.classList.remove("btn-secondary");
+        lottery_button.classList.add("btn-dark");
+
+      }
+      else if(is_active == true){
+        lottery_button.textContent = "Disable";
+        lottery_button.classList.remove("btn-dark");
+        lottery_button.classList.add("btn-secondary");
+        
+      }
+    },
+    error: function(error) {
+      console.log(errors.responseText);
+    }
+  });
+  
+}
+
+
+
+</script>

@@ -102,7 +102,7 @@ def home(request):
                 total_slot_vibez = PrivatevibezRevenue.objects.aggregate(Sum('Slot_Machine_Revenue'))
                 total_user_vibez = User_Data.objects.aggregate(Sum('Vibez'))
                 total_broadcaster_vibez = Room_Data.objects.aggregate(Sum('Revenue'))
-                slot_machine  = Slot_Machine_Data.objects.order_by('-timestamp').values('Slot_Machine_Spin_Cost').first()
+                slot_machine  = Games_Data.objects.order_by('-timestamp').values('Slot_Machine_Spin_Cost').first()
                 
                 promotions    = Promotion.objects.filter(
                 Q(timestamp__gte=current_datetime) | Q(Promotion_Registration_Limit__gt=0)
@@ -636,7 +636,7 @@ def update_slot_machine_cost_per_spin(request):
         if request.method == "POST":
                 
                 if request.POST.get('slot_machine_cost') is not None:
-                        slot_machine = Slot_Machine_Data.objects.create(
+                        slot_machine = Games_Data.objects.create(
                         Slot_Machine_Spin_Cost = request.POST.get('slot_machine_cost'))
                         
                         return JsonResponse({"data":f'Successfully updated slot machine cost per spin to {slot_machine.Slot_Machine_Spin_Cost}'},status=200, safe=False)

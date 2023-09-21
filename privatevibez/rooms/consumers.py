@@ -11,6 +11,37 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 
+class GamesSocketConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.room_id = self.scope['url_route']['kwargs']['room_id']
+    
+        self.room_group_name = 'game_socket_%s' % (self.room_id)
+
+        # Join room group
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+        
+    async def updateGames(self, event):
+        data = event['data']
+        modified_data = {
+            "is_Lottery_Active": data['is_Lottery_Active'],
+            "is_Menu_Active": data['is_Menu_Active'],
+            "is_Dice_Active": data['is_Dice_Active']
+        }
+        print(modified_data,flush=True)
+        await self.send(text_data=json.dumps(modified_data))
+        
+        
+
 class RoomViewersConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.room_id = self.scope['url_route']['kwargs']['room_id']
@@ -60,7 +91,6 @@ class UserSessionConsumer(AsyncWebsocketConsumer):
     
     async def logoutuser(self, event):
         data = event['data']
-        print(data,flush=True)
         modified_data = {
         "is_user_logged_out": data
             }
@@ -92,7 +122,6 @@ class UserVisitorsConsumer(AsyncWebsocketConsumer):
     # Display availed items in broadcaster room
     async def show_itemAvailed(self, event):
         data = event['data']
-        print(data,flush=True)
         modified_data = {
         "item_availed": data
             }
@@ -258,7 +287,6 @@ class BlockedCountriesConsumer(AsyncWebsocketConsumer):
                 
                 try:
                     room_data.Blocked_Countries.remove(blocking_instance)
-                    print("removed csountry")
                 except Room_Data.DoesNotExist:
                     
                     pass
@@ -313,7 +341,6 @@ class BlockedCountriesConsumer(AsyncWebsocketConsumer):
     async def remove_block(self, action,country,region):
         
         if action is not None and action == "able_countries":
-            print(action)
         
             await self.remove_country(country)
 

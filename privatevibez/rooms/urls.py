@@ -92,6 +92,14 @@ urlpatterns = [
          
          
          path('get_lottery_prize/', views.get_lottery_prize, name="get_lottery_prize"),
+         
+         
+        #  Button activation
+         path('enable_menu_items/', views.enable_menu_items, name="enable_menu_items"),
+         
+         path('enable_dice/', views.enable_dice, name="enable_dice"),
+         
+         path('enable_lottery/', views.enable_lottery, name="enable_lottery"),
      
 
      
