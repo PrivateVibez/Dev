@@ -171,6 +171,10 @@
                             <li class="nav-item">
                               <a class="nav-link" id="pills-lottery-tab" data-toggle="pill" href="#pills-lottery-items" role="tab" aria-controls="pills-lottery-items" aria-selected="true">Lottery</a>
                             </li>
+                            
+                            <li class="nav-item">
+                              <a class="nav-link" id="pills-dice-tab" data-toggle="pill" href="#pills-dice-items" role="tab" aria-controls="pills-dice-items" aria-selected="true">Dice</a>
+                            </li>
 
                             <li class="nav-item">
                               <a class="nav-link" style="   " id="pills-room-rules-tab" data-toggle="pill" href="#pills-room-rules" role="tab" aria-controls="pills-room-rules" aria-selected="true">Room Rules</a>
@@ -214,6 +218,11 @@
 
                             <div class="tab-pane fade" id="pills-lottery-items" role="tabpanel" aria-labelledby="pills-lottery-items-tab">
                                 {% include 'rooms/include/lottery.html' %}
+                            </div>
+
+
+                            <div class="tab-pane fade" id="pills-dice-items" role="tabpanel" aria-labelledby="pills-dice-items-tab">
+                                {% include 'rooms/include/set_dice_prize.html' %}
                             </div>
 
                             <div class="tab-pane fade" id="pills-games" role="tabpanel" aria-labelledby="pills-games-tab">

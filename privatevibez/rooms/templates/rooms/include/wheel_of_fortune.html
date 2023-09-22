@@ -72,7 +72,7 @@
     </style>
 </head>
 <body>
-  <h1 class="title text-dark">Spin the lottery to win mystery prizes! <br> {{lottery_cost_per_spin.Lottery_Spin_Cost}} vibez per spin</h1>
+  <h1 class="title text-dark">lottery <br> {{lottery_cost_per_spin.Lottery_Spin_Cost}} vibez per spin</h1>
   <section class="" id="js-lotto">
 
 <div class="row">
@@ -142,9 +142,6 @@
                     console.log(spins);
                     console.log(vibez);
       
-                    if(pot !== null){
-                      document.getElementById('pot').innerHTML = pot;
-                    }
       
                     if (vibez !== null){
                       document.getElementById('user_vibez').innerHTML = vibez;

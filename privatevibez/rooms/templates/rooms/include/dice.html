@@ -118,7 +118,12 @@
   
 </style>
 <script src=""></script>
+
+
 <body class="dice-body">
+  <span class="row justify-content-center mt-5 fs-2">
+  Dice per roll {{dice_cost_per_spin.Dice_Spin_Cost}} vibez
+  </span>
   <div class="dice-container">
     <div class="dice-wrapper">
   
@@ -168,6 +173,9 @@
     function rollDice() {
       const randomNumber = Math.floor(Math.random()*4)+1;
       
+      console.log(randomNumber);
+      give_dice_price(randomNumber);
+
       setTimeout(()=>{
          switch(randomNumber) {
          case 1:
@@ -190,6 +198,78 @@
             console.log("something went wrong!");
           }
       })
+    }
+
+
+
+    function give_dice_price(dice_number) {
+      $.ajax({
+          method: "POST",
+          url: "give_dice_price/",
+          data: {
+              room: "{{ room_name }}",
+              dice_number: dice_number,
+              'csrfmiddlewaretoken':"{{csrf_token}}",
+          },
+          success: function (data) {
+            const msg = data;
+            console.log(msg.data);
+            const spins = msg.spins;
+            const vibez = msg.vibez
+
+            successToast(msg.data);  
+            
+            console.log(spins);
+            console.log(vibez);
+
+
+            if (vibez !== null){
+              document.getElementById('user_vibez').innerHTML = vibez;
+            }
+
+            if(spins !== null) {
+              document.getElementById('free_spins').innerHTML = spins;
+            }
+
+           
+
+      
+          },
+          error: function (errors) {
+            
+            const response = JSON.parse(errors.responseText);
+            console.log(response.data)
+
+            if (response.error) {
+                errorToast(response.data);
+            }
+            else{
+              const spins = response.spins;
+              const uservibez = response.vibez;
+
+              console.log(spins);
+              console.log(uservibez);
+          
+
+              if (uservibez !== null) {
+              document.getElementById('user_vibez').innerHTML = uservibez;    
+              }
+
+              if (spins !== null) {
+                document.getElementById('free_spins').innerHTML = spins;   
+              }
+              else {
+                document.getElementById('free_spins').innerHTML = 0;
+              }
+
+            }
+
+
+            errorToast(response.data);
+
+     
+          }
+      });
     }
     
 

@@ -5,7 +5,7 @@
   <div class="d-flex flex-row">
 
       <label for="price_for_slot_1">Slot 1 prize</label>
-      <select id="price_for_slot_1" value="s">
+      <select id="price_for_slot_1">
         <option value="None">None</option>
 
         {% for prize in lottery_prizes_list %}
@@ -137,14 +137,14 @@
 <script>
 
   function set_lottery_prize() {
-    var slot1 = document.getElementById('price_for_slot_1').value;
-    var slot2 = document.getElementById('price_for_slot_2').value;
-    var slot3 = document.getElementById('price_for_slot_3').value;
-    var slot4 = document.getElementById('price_for_slot_4').value;
-    var slot5 = document.getElementById('price_for_slot_5').value;
-    var slot6 = document.getElementById('price_for_slot_6').value;
-    var slot7 = document.getElementById('price_for_slot_7').value;
-    var slot8 = document.getElementById('price_for_slot_8').value;
+    var slot0 = document.getElementById('price_for_slot_1').value;
+    var slot1 = document.getElementById('price_for_slot_2').value;
+    var slot2 = document.getElementById('price_for_slot_3').value;
+    var slot3 = document.getElementById('price_for_slot_4').value;
+    var slot4 = document.getElementById('price_for_slot_5').value;
+    var slot5 = document.getElementById('price_for_slot_6').value;
+    var slot6 = document.getElementById('price_for_slot_7').value;
+    var slot7 = document.getElementById('price_for_slot_8').value;
 
 
     $.ajax({
@@ -152,6 +152,7 @@
       method: "POST",
       url:"set_lottery_prize/",
       data:{
+        'slot0': slot0,
         'slot1': slot1,
         'slot2': slot2,
         'slot3': slot3,
@@ -159,7 +160,6 @@
         'slot5': slot5,
         'slot6': slot6,
         'slot7': slot7,
-        'slot8': slot8,
         'csrfmiddlewaretoken':"{{csrf_token}}",
  
       },

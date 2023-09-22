@@ -14,4 +14,5 @@ admin.site.register(Blocked_Regions)
 admin.site.register(Blocked_Countries)
 admin.site.register(Slot_Machine)
 admin.site.register(Games_Data)
+admin.site.register(Lottery)
 

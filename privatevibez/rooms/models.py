@@ -36,6 +36,15 @@ class Lottery(models.Model):
     def __str__(self):
         return str(self.prize)
     
+class Dice(models.Model):
+    User       = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True,blank=True)
+    dice_number = models.IntegerField(null=True,blank=True)
+    prize      = models.CharField(max_length=200,null=True,blank=True)
+    Timestamp  = models.DateTimeField(auto_now_add=True)     
+    def __str__(self):
+        return str(self.prize)
+    
+    
 class Room_Data(models.Model):
     User                  = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     Tab                   = models.CharField(max_length=200,null=True,blank=True)

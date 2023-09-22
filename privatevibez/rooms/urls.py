@@ -90,6 +90,8 @@ urlpatterns = [
          
          path('set_lottery_prize/', views.set_lottery_prize, name="set_lottery_prize"),
          
+         path('set_dice_prize/', views.set_dice_prize, name="set_dice_prize"),
+         
          
          path('get_lottery_prize/', views.get_lottery_prize, name="get_lottery_prize"),
          
@@ -100,6 +102,9 @@ urlpatterns = [
          path('enable_dice/', views.enable_dice, name="enable_dice"),
          
          path('enable_lottery/', views.enable_lottery, name="enable_lottery"),
+         
+         
+         path('give_dice_price/', views.give_dice_price, name="give_dice_price"),
      
 
      
