@@ -255,7 +255,7 @@ def paginate_list(page_number, user_data_list, items_per_page):
 
 
 def searchbroadcaster(request):
-        items_per_page = 4  # Number of items per page
+        items_per_page = 20  # Number of items per page
         page_number = request.GET.get('page', 1) 
         if request.method == "GET":
 
@@ -266,8 +266,7 @@ def searchbroadcaster(request):
                         Q(hashtags__icontains=search) |
                         Q(User__username__icontains=search)
                         ).filter(User__Status="Broadcaster")
-                        
-                        print(broadcasters,flush=True)
+                   
                         if broadcasters.exists():
                                 
                                 if request.user.is_authenticated:
@@ -292,7 +291,6 @@ def searchbroadcaster(request):
                                                                         "description": room_data.Room_Description  # Accessing the description from room_data
                                                                 })
 
-                                        
                                         rooms_list = []
                                         
                                         for broadcaster in broadcasters:
@@ -345,11 +343,13 @@ def searchbroadcaster(request):
                                                 
                                                 for user_data in user_data_list:
                                                         
-                                                        broadcaster_data.append({
-                                                                                        "user_id": user.id,
-                                                                                        "username": user.username,
-                                                                                        "Image": user_data.Image.url,
-                                                                                        })
+                                                        for room_data in room_data_list:
+                                                                broadcaster_data.append({
+                                                                        "user_id": user.id,
+                                                                        "username": user.username,
+                                                                        "image": user_data.Image.url,
+                                                                        "description": room_data.Room_Description  # Accessing the description from room_data
+                                                                })
 
                                       
                                         rooms_list = []

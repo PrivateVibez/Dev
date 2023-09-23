@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from .forms import *
 from .models import *
 from django.http import Http404
-from rooms.views import display_user_availed_item_in_broadcaster_room
+from rooms.views import show_item_in_roomstats
 from base.views import paginate_list
 from django.core.paginator import Paginator
 from chat.models import Private, Public
@@ -89,7 +89,7 @@ def Login(request):
 
         
         user = authenticate(request, username=username, password=password)
-        print(user,flush=True)
+        
         if user is not None:
             login(request, user)
             update_user_login_status()
@@ -97,15 +97,17 @@ def Login(request):
             messages.success(request, f'Thanks for coming back {username}!')
             if user.is_staff == False:
                 try:
-                    status = User_Status.objects.get(User = request.user).Status
+                    status = request.user.Status
                     if status:
-                        status = User_Status.objects.get(User = request.user).Status
+                        status = request.user.Status
 
                         if status == "Broadcaster":
                                 return redirect(f'/room/{username}')
                         else:
                             if StaffManager.objects.filter(staff_id = request.user).exists():
                                 return redirect('staff_home')
+                        print(status,flush=True)
+                        return redirect('Main_home')
                 except Exception as e:
                     return redirect('login')
             else:
@@ -117,7 +119,7 @@ def Login(request):
             
         
            
-        return redirect('Main_home') 
+         
     return render(request,'accounts/login.html')
 
     
@@ -336,9 +338,9 @@ def Send_Vibez(request):
             
             item = Item_Availed.objects.create(Room=room_id,User=user.User,Item="Sent Vibez",Cost=vibez,Note=note)
             
-            display_user_availed_item_in_broadcaster_room(user,item,room_id)
+            show_item_in_roomstats(room_id,user,item)
             
-            return JsonResponse({'data':'sent vibez!'}, safe=False)
+            return JsonResponse({'data':'sent vibez!',"vibez":user.Vibez}, safe=False)
         else:
             return JsonResponse(f'not enough vibez',status=500,safe=False)
     else:
@@ -392,6 +394,7 @@ def bio_info(request):
             
             user_data.U_token      = U_token
             
+            slot_machine = Slot_Machine.objects.create(User = user_data.User)
     
     
             print(promotion_code,flush=True)
@@ -647,7 +650,7 @@ def filter_broadcasters(user,user_country,user_region,broadcaster_gender):
 def get_broadcaster(request):
         
         if request.method == 'GET':
-            items_per_page = 4  # Number of items per page
+            items_per_page = 20 # Number of items per page
             page_number = request.GET.get('page', 1) 
             broadcaster_gender = request.GET.get('Tab')
             

@@ -1325,8 +1325,9 @@ let public_socket = new WebSocket(protocol + '://' + window.location.host + '/ws
                 'dataType': 'json',
                 success:function(data){
                     var message = data.data;
-
-                    $( "#user_vibez_data" ).load(window.location.href + " #user_vibez_data" );
+                    var user_vibez = data.vibez;
+                    
+                    document.getElementById("user_vibez").innerHTML = user_vibez;
                     document.getElementById("custom_Vibez").value = '';
 
                     successToast(message);

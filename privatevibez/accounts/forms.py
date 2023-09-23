@@ -27,7 +27,7 @@ class UserRegisterForm(UserCreationForm):
         
         
 class BioInfoForm(forms.Form):
-    promotion_code = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
+    promotion_code = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}),required=False)
     Real_Name      = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
     Age            = forms.IntegerField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
     I_Am           = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
