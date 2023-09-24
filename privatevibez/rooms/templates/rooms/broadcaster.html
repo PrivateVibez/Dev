@@ -194,10 +194,6 @@
                             <li class="nav-item">
                                 <a class="nav-link" id="pills-settings-privacy-tab" data-toggle="pill" href="#pills-settings-privacy" role="tab" aria-controls="pills-settings-privacy" aria-selected="false">Settings and Privacy</a>
                             </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" id="pills-enable-games-tab" data-toggle="pill" href="#pills-games" role="tab" aria-controls="pills-enable-games" aria-selected="false">Enable Games</a>
-                            </li>
          
                           </ul>
 
@@ -226,10 +222,11 @@
                             </div>
 
                             <div class="tab-pane fade" id="pills-games" role="tabpanel" aria-labelledby="pills-games-tab">
-                                {% include "rooms/include/enable_games.html" %}     
+                                   
                             </div>
                             
                             <div class="tab-pane fade" id="pills-lovense-toy" role="tabpanel" aria-labelledby="pills-lovense-toy">
+                                <h3 class="fs-1 font-weight-bold">Lovense Toy</h3>
 
                                 <div class="container align-content-center gap-2">
                                 <img class="" id="lovense_qr_code_img"> 
@@ -334,7 +331,7 @@
     roomVisitorsSocket.onopen = function(e) {
 
 
-        console.log("socket open")
+        console.log("room visitor socket open")
         
         // Send a trigger message to the server
         roomVisitorsSocket.send(JSON.stringify({
@@ -349,6 +346,7 @@
         const visitors = data.user_visitors;
         const item_availed = data.item_availed;
         console.log(item_availed)
+        console.log("room visitor triggered");
 
   
         

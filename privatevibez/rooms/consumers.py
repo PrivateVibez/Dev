@@ -200,7 +200,7 @@ class UserVisitorsConsumer(AsyncWebsocketConsumer):
         
         room_instance = await self.get_room_instance()
         
-
+        print(is_leaving,flush=True)
 
         if is_leaving:
             if user_id is not None:

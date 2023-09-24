@@ -25,25 +25,29 @@
           </table>
       </div>
 
+ 
+
   </div>
 
 
   <!--Room Hashtags-->
   
-  <div class="row gap-3">
+<div class="row gap-3">
     <span class="font-weight-bold fs-2">Hashtags:</span>
 
       <div class="col-lg-3 col-sm-12">
-        <textarea class="form-control fs-2" id="hashtags" rows="5" style="resize:none;">{% if room_data.hashtags %}{{room_data.hashtags}}{% endif %}</textarea>   
+        <textarea class="form-control fs-2" placeholder="Add hashtags so users can easily find you! add something like, #asian #trans #men" id="hashtags" rows="5" style="resize:none;">{% if room_data.hashtags %}{{room_data.hashtags}}{% endif %}</textarea>   
         
       </div>
   </div>
 
-<div class="row my-2">
+<div class="row my-4">
   <div class="col-2 col-lg-1">
     <button class="btn btn-dark w-100" style="font-size:1.7rem" onclick="save_hashtags()"><span class="fs-2 font-weight-bold">save</span></button>
   </div>
 </div>
+
+{% include "rooms/include/enable_games.html" %}  
 
 </div>
 

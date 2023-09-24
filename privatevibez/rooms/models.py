@@ -72,7 +72,7 @@ class Room_Data(models.Model):
     hashtags              = models.TextField(null=True,blank=True)
     Room_Rules            = models.TextField(null=True,blank=True)
     Room_Description      = models.TextField(null=True,blank=True)
-    Revenue               = models.IntegerField(null=True, blank=True)
+    Revenue               = models.IntegerField(null=True, blank=True,default=0)
     Room_promotion        = models.ForeignKey(Promotion, null=True, blank=True, on_delete=models.CASCADE,related_name='room_promotion')
     Is_Dice_Active        = models.BooleanField(default=False)
     Is_Menu_Active        = models.BooleanField(default=False)

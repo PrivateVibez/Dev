@@ -209,7 +209,8 @@ def Room(request, Broadcaster):
                                                     'name': fan.Invitee.username,
                                                 })
                                                 fan_list_names.append(fan.Invitee.username)
-                                        
+                                                
+                                        fan_list_json = json.dumps(fan_list)
                                     countries = Country.objects.all()
                                     room_data_blocked_countries = room_data.Blocked_Countries.all()
 
