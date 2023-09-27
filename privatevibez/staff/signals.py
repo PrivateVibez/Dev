@@ -20,7 +20,7 @@ def send_update_to_consumer(sender, instance, **kwargs):
         "pending": json.dumps(pending_queryset, cls=DjangoJSONEncoder),
         "user_data": json.dumps(user_data, cls=DjangoJSONEncoder),
     })
-    async_to_sync(channel_layer.group_send)('staff', {'type': 'user_update', 'data': data})
+    async_to_sync(channel_layer.group_send)('staff', {'type': 'showPending.Broadcaster', 'data': data})
 
 
 @receiver(post_save, sender=User_Status)
@@ -33,7 +33,7 @@ def send_update_to_consumer(sender, instance, **kwargs):
         "pending": json.dumps(pending_queryset, cls=DjangoJSONEncoder),
         "user_data": json.dumps(user_data, cls=DjangoJSONEncoder),
     })
-    async_to_sync(channel_layer.group_send)('staff', {'type': 'user_update', 'data': data})
+    async_to_sync(channel_layer.group_send)('staff', {'type': 'showPending.Broadcaster', 'data': data})
 
 
 @receiver(post_save, sender=Bad_Acters)

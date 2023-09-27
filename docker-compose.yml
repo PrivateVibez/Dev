@@ -4,13 +4,13 @@ services:
   app:
     build:
       context: .
-    image: ubuntu:latest
+  
     volumes:
     - ./privatevibez:/privatevibez
     command: >
       sh -c "
  
-        python manage.py runserver 0.0.0.0:8000
+        python3.9 manage.py runserver 0.0.0.0:8000
       " 
 
     ports:

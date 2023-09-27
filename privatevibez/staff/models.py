@@ -104,13 +104,13 @@ class StaffManager(models.Model):
         
 class PrivatevibezRevenue(models.Model):
     
-    Slot_Machine_Revenue       = models.IntegerField(null=True,blank=True)
-    Lottery_Revenue            = models.IntegerField(null=True,blank=True)
-    Dice_Revenue               = models.IntegerField(null=True,blank=True)
-    Total_Vibez                = models.IntegerField(null=True,blank=True)
-    Total_Cash                 = models.FloatField(null=True,blank=True)
-    Chargeback                 = models.IntegerField(null=True,blank=True)
-    Vibe_Cost                  = models.FloatField(null=True,blank=True)
+    Slot_Machine_Revenue       = models.IntegerField(null=True,blank=True,default=0)
+    Lottery_Revenue            = models.IntegerField(null=True,blank=True,default=0)
+    Dice_Revenue               = models.IntegerField(null=True,blank=True,default=0)
+    Total_Vibez                = models.IntegerField(null=True,blank=True,default=0)
+    Total_Cash                 = models.FloatField(null=True,blank=True,default=0)
+    Chargeback                 = models.IntegerField(null=True,blank=True,default=0)
+    Vibe_Cost                  = models.FloatField(null=True,blank=True,default=0)
     timestamp                  = models.DateTimeField(auto_now_add=True,null=True,blank=True)
     
     def __str__(self):

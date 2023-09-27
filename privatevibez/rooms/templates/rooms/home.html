@@ -108,6 +108,27 @@
             transform: translate(-50%, -50%);
         }
 
+        .slider-container {
+            width: 300px;
+            margin: 50px auto;
+            text-align: center;
+        }
+        
+        .single-slider {
+            margin-bottom: 30px;
+        }
+        
+        input[type=range] {
+            width: 80%;
+            margin: 20px 0;
+        }
+        
+        .slider-value {
+            font-size: 24px;
+            color: #333;
+        }
+        
+
 
 
         
@@ -133,9 +154,13 @@
 
 
                 {% elif not is_broadcaster_room and is_pending_broadcaster or is_declined_broadcaster or not is_broadcaster_room %}
-
                 
+                {% if room_data.User.Status == 'Broadcaster' %}
                 {% include "rooms/user.html" %}
+
+                {% else %}
+                <div class="display-2 d-flex flex-row justify-content-center font-weight-bold text-dark m-auto" style="height:500px">BROADCASTER DOES NOT EXIST</div>
+                {% endif %}
 
                 {% elif is_broadcaster_room and is_broadcaster %}
 
@@ -143,7 +168,7 @@
                 
 
                 {% else %}
-
+                
                 {% include "rooms/user.html" %}
                 {% endif %}
             

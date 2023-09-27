@@ -18,7 +18,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.utils import timezone
 from datetime import timedelta
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -128,14 +128,14 @@ def room_data_func(request,user_country,user_region):
                 for blocked_country in room.Blocked_Countries.all():
                         if blocked_country is not None:
                                 print(blocked_country,flush=True)
-                                country = blocked_country.Country.code2
+                                country = blocked_country.Country.code
                                 if country == user_country:
                                         is_blocked = True  # Set the flag if user's country is blocked
                                         
                                         break 
                                 
                 for blocked_regions in room.Blocked_Regions.all():
-                        region = blocked_regions.Region.display_name
+                        region = blocked_regions.Region.name_std
                         if region == user_region:
                                 is_blocked = True
                                 
@@ -199,7 +199,9 @@ def home(request):
                         
                         
                         broadcaster_data = room_data_func(request,user_status_data.Country,user_status_data.Region)
-                        broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
+                        
+                        if broadcaster_data is not None:
+                                broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
 
                         
                 except(User_Status.DoesNotExist, User_Data.DoesNotExist):
@@ -222,12 +224,13 @@ def home(request):
                                         guest_region = request.session.get('guest_region')
                                         broadcaster_data = room_data_func(request,guest_country,guest_region)
                 
-                                        
-                                        broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
+                                        if broadcaster_data is not None:
+                                                broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
                                 
                         else:
                                 broadcaster_data = room_data_func(request,guest_country,guest_region)
-                                broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
+                                if broadcaster_data is not None:
+                                        broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
                         
                         
                                 
@@ -242,7 +245,9 @@ def paginate_list(page_number, user_data_list, items_per_page):
     
     paginator = Paginator(user_data_list, items_per_page)
     
+    print(user_data_list,flush=True)
     try:
+
         page = paginator.page(page_number)
     except PageNotAnInteger:
         page = paginator.page(1)
@@ -298,12 +303,12 @@ def searchbroadcaster(request):
                                                 country_blocked = False
                                                 region_blocked = False
                                                 for blocked_country in broadcaster.Blocked_Countries.all():
-                                                        if blocked_country.Country.code2 == user_country:
+                                                        if blocked_country.Country.code == user_country:
                                                                 country_blocked = True
                                                                 break  # If the user's country is blocked, no need to check other blocked countries
                                                 
                                                 for blocked_region in broadcaster.Blocked_Regions.all():
-                                                        if blocked_region.Region.display_name == user_region:
+                                                        if blocked_region.Region.name_std == user_region:
                                                                 region_blocked = True
                                                                 break
                                                 if country_blocked or region_blocked:
@@ -358,13 +363,13 @@ def searchbroadcaster(request):
                                                 is_blocked = False  # Initialize a flag to indicate if user's country is 
                                                 is_blocked_region = False #
                                                 for blocked_country in room.Blocked_Countries.all():
-                                                        country = blocked_country.Country.code2
+                                                        country = blocked_country.Country.code
                                                         if country == guest_country:
                                                                 is_blocked = True  # Set the flag if user's country is blocked
                                                                 
                                                                 break 
                                                 for blocked_regions in room.Blocked_Regions.all():
-                                                        region = blocked_regions.Region.display_name
+                                                        region = blocked_regions.Region.name_std
                                                         if region == guest_region:
                                                                 is_blocked = True
                                                                 

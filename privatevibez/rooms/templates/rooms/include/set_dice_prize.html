@@ -3,10 +3,13 @@
   <div class="row">
     <h3 class="fs-1 font-weight-bold">Dice</h3>
 
-    <div class="d-flex flex-row">
+    <div class="d-flex flex-column">
   
-        <label for="price_for_dice_1">Dice number 1 prize</label>
-        <select id="price_for_dice_1">
+
+    <div class="col">
+
+        <label class="fs-2" for="price_for_dice_1">Dice number 1 prize</label>
+        <select class="fs-2" id="price_for_dice_1">
           <option value="None">None</option>
   
           {% for prize in lottery_prizes_list %}
@@ -20,8 +23,8 @@
         </select>
   
         
-        <label for="price_for_dice_2">Dice number 2 prize</label>
-        <select id="price_for_dice_2">
+        <label class="fs-2" for="price_for_dice_2">Dice number 2 prize</label>
+        <select class="fs-2" id="price_for_dice_2">
           <option value="None">None</option>
   
           {% for prize in lottery_prizes_list %}
@@ -33,10 +36,15 @@
           {% endif %}       
           {% endfor %}
         </select>
+
+      </div>
   
   
-        <label for="price_for_dice_3">Dice number 3 prize</label>
-        <select id="price_for_dice_3">
+
+    <div class="col">
+
+        <label class="fs-2" for="price_for_dice_3">Dice number 3 prize</label>
+        <select class="fs-2" id="price_for_dice_3">
           <option value="None">None</option>
   
           {% for prize in lottery_prizes_list %}
@@ -50,8 +58,8 @@
         </select>
   
   
-        <label for="price_for_dice_4">Dice number 4 prize</label>
-        <select id="price_for_dice_4">
+        <label class="fs-2" for="price_for_dice_4">Dice number 4 prize</label>
+        <select class="fs-2" id="price_for_dice_4">
           <option value="None">None</option>
   
           {% for prize in lottery_prizes_list %}
@@ -63,10 +71,14 @@
           {% endif %}        
           {% endfor %}
         </select>
+
+      </div>
   
+
+      <div class="col">
   
-        <label for="price_for_dice_5">Dice number 5 prize</label>
-        <select id="price_for_dice_5">
+        <label class="fs-2" for="price_for_dice_5">Dice number 5 prize</label>
+        <select class="fs-2" id="price_for_dice_5">
           <option value="None">None</option>
   
           {% for prize in lottery_prizes_list %}
@@ -80,8 +92,8 @@
         </select>
   
   
-        <label for="price_for_dice_6">Dice number 6 prize</label>
-        <select id="price_for_dice_6">
+        <label class="fs-2" for="price_for_dice_6">Dice number 6 prize</label>
+        <select class="fs-2" id="price_for_dice_6">
           <option value="None">None</option>
   
           {% for prize in lottery_prizes_list %}
@@ -94,9 +106,14 @@
           {% endfor %}
         </select>
   
+
+      </div>
   
-        <button type="button" onclick="set_dice_prize()" class="btn btn-primary">Set</button>
-    
+
+      <div class="col-1 justify-content-center my-2">
+        <button type="button" onclick="set_dice_prize()" class="btn btn-dark w-75 m-auto fs-2">Set</button>
+      </div>
+
     </div>
   
   </div>

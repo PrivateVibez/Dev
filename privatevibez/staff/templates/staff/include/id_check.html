@@ -53,7 +53,7 @@
                                   <th></th>
                                 </tr>
                             </thead>   
-                            <tbody id="table_body">
+                            <tbody id="id-checking-table">
                               {% for user in user_data %}
                               <tr>
                                 <td>{{user.User.first_name}}</td>
@@ -191,12 +191,10 @@
 <script src="{% static 'js/image-zoom.min.js' %}"></script>
 
 <script>
- 
-  let table_body = document.getElementById("table_body");
+  let id_check_length = 0;
+  let table_body = document.getElementById("id-checking-table");
   let pending_broadcasters_total = document.getElementById("len_user").innerHTML;
   let total_ID_checks = document.getElementById("id_check_len");
-
-  total_ID_checks.innerHTML =pending_broadcasters_total;
     
   if(toastElement){
       setTimeout(function() {
@@ -243,8 +241,12 @@ pending_Broadcaster.onopen = function(e) {
 
 pending_Broadcaster.onmessage = function(e) {
   const data = JSON.parse(e.data);
+  
+  $("#id_check_len").load(" #id_check_len > * ");
+  $("#id-checking-table").load(" #id-checking-table > * ");
 
-  console.log(data)
+  console.log('pending');
+
   
 }
 
@@ -273,14 +275,14 @@ pending_Broadcaster.onmessage = function(e) {
           
           var pending_broadcasters = data.data; 
           
-          console.log(pending_broadcasters[0].first_name);
-          console.log(pending_broadcasters[0].email);
+          console.log(pending_broadcasters);
           table_body.innerHTML = "";
 
           if(pending_broadcasters)
           {
             let new_user_id;
-            total_ID_checks.innerHTML =pending_broadcasters.length;
+
+            $("#id_check_len").load(" #id_check_len > * ");
 
           for(var i=0;i<pending_broadcasters.length;i++){
 
@@ -375,8 +377,8 @@ function send_decline_message() {
           if(pending_broadcasters)
           {
             let new_user_id;
-            total_ID_checks.innerHTML =pending_broadcasters.length;
-
+            $("#id_check_len").load(" #id_check_len > * ");
+            
           for(var i=0;i<pending_broadcasters.length;i++){
 
             new_user_id = pending_broadcasters[i].user_id;

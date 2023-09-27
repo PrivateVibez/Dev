@@ -48,6 +48,39 @@
           var data = JSON.parse(e.data);
           var message = data.message;
           var username = data.username;
+
+          var item_availed = data.item_availed;
+
+        
+          console.log(item_availed);
+          if(typeof item_availed !== 'undefined')
+              {
+                  var user_wrapper = document.createElement('div');
+                  var item_availed_wrapper = document.createElement('div');
+                  var user = document.createElement('small');
+  
+                  user_wrapper.setAttribute('class', 'text-muted d-flex justify-content-end');
+                  user.setAttribute('class', 'public_chat_room_message_username font-weight-bold text-dark');
+                  item_availed_wrapper.setAttribute('class', 'card card-body py-2 my-1 public_chat_room_message_text mb-4 ml-auto');
+                  item_availed_wrapper.setAttribute('style', 'border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;');
+                  
+                  user.innerHTML = item_availed.user;
+                  user_wrapper.appendChild(user);
+  
+                  item_availed_wrapper.innerHTML = `${item_availed.user} availed ` + item_availed.item;
+  
+                  console.log(item_availed_wrapper);
+                  console.log(user_wrapper);
+                  var messages_element = document.getElementById('broc_chat_room_messages');
+  
+                  messages_element.appendChild(user_wrapper);
+                  messages_element.appendChild(item_availed_wrapper);
+  
+  
+                  messages_element.scrollTop = messages_element.scrollHeight;
+                  
+                  return
+              }
           // Add message to chat room
           if(username === "{{ user }}"){
               var message_element = document.createElement('div');

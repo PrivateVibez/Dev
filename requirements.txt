@@ -52,5 +52,5 @@ whitenoise==5.0.1
 zope.interface==5.5.1
 patool
 djangorestframework
-django-cities-light
+  django-cities-light
 

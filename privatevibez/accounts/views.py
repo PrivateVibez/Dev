@@ -257,10 +257,12 @@ def Buy_Vibez(request):
         
         privatevibez = PrivatevibezRevenue.objects.first()
         
+        print(vibez,flush=True) 
+         
         if privatevibez:
             cash = privatevibez.Vibe_Cost * float(vibez)
             
-            if privatevibez.Total_Cash is not None:
+            if privatevibez.Total_Cash != 0.0:
                 privatevibez.Total_Cash += cash
             else:
                 privatevibez.Total_Cash = cash
@@ -268,16 +270,34 @@ def Buy_Vibez(request):
             privatevibez.save()
             total_cash = privatevibez.Total_Cash
             total_slot_vibez = privatevibez.Slot_Machine_Revenue
+        
+        else:
+            privatevibez = PrivatevibezRevenue.objects.create(Total_Cash=0)
             
+            if privatevibez.Vibe_Cost != 0:
+                cash = privatevibez.Vibe_Cost * float(vibez)
+            else:
+                cash = 0.0
+            
+            if privatevibez.Total_Cash != 0.0:
+                privatevibez.Total_Cash += cash
+            else:
+                privatevibez.Total_Cash = cash
+            
+            privatevibez.save()
+            total_cash = privatevibez.Total_Cash
+            total_slot_vibez = privatevibez.Slot_Machine_Revenue
+        
+        
+       
         channel_layer = get_channel_layer()
         channel_name = "privatevibezrevenue"
-        print(channel_name,flush=True)
         
         # Prepare data to send
         data = {
-            "total_cash": total_cash,
+            "total_cash": privatevibez.Total_Cash,
             "total_user_vibez": User_Data.objects.aggregate(Sum('Vibez')),
-            "total_slot_vibez": total_slot_vibez,
+            "total_slot_vibez": privatevibez.Slot_Machine_Revenue,
         }
         
         # Send the data to the WebSocket consumer
@@ -491,12 +511,12 @@ def room_data_func(request,broadcaster_gender,user_country,user_region):
             country_blocked = False
             region_blocked = False
             for blocked_country in room.Blocked_Countries.all():
-                if blocked_country.Country.code2 == user_country:
+                if blocked_country.Country.code == user_country:
                     country_blocked = True
                     break  # If the user's country is blocked, no need to check other blocked countries
             
             for blocked_region in room.Blocked_Regions.all():
-                if blocked_region.Region.display_name == user_region:
+                if blocked_region.Region.name_std == user_region:
                     region_blocked = True
                     break
                 
@@ -522,12 +542,12 @@ def room_data_func(request,broadcaster_gender,user_country,user_region):
             country_blocked = False
             region_blocked = False
             for blocked_country in room.Blocked_Countries.all():
-                if blocked_country.Country.code2 == user_country:
+                if blocked_country.Country.code == user_country:
                     country_blocked = True
                     break  # If the user's country is blocked, no need to check other blocked countries
             
             for blocked_region in room.Blocked_Regions.all():
-                if blocked_region.Region.display_name == user_region:
+                if blocked_region.Region.name_std == user_region:
                     region_blocked = True
                     break
                 
@@ -614,12 +634,12 @@ def filter_broadcasters(user,user_country,user_region,broadcaster_gender):
             country_blocked = False
             region_blocked = False
             for blocked_country in broadcaster.Blocked_Countries.all():
-                    if blocked_country.Country.code2 == user_country:
+                    if blocked_country.Country.code == user_country:
                             country_blocked = True
                             break  # If the user's country is blocked, no need to check other blocked countries
             
             for blocked_region in broadcaster.Blocked_Regions.all():
-                    if blocked_region.Region.display_name == user_region:
+                    if blocked_region.Region.name_std == user_region:
                             region_blocked = True
                             break
                         

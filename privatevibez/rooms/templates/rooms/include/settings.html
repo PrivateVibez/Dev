@@ -623,8 +623,8 @@ function region_country_selection_event() {
         for (var i = 0; i < regions.length; i++) {
             let region = regions[i];
             console.log(region)
-            regionOptions += `<div class="option" data-value="${region.display_name}">${region.display_name}</div>`;
-            displayedOptionsRegions.push(region.display_name);  // Update the displayed options
+            regionOptions += `<div class="option" data-value="${region.name_std}">${region.name_std}</div>`;
+            displayedOptionsRegions.push(region.name_std);  // Update the displayed options
         }
 
         // Update the options only if there's a change in search input

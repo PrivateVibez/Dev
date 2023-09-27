@@ -3,10 +3,13 @@
   <h3 class="fs-1 font-weight-bold">Lottery</h3>
 <div class="row">
 
-  <div class="d-flex flex-row">
+  <div class="d-flex flex-column">
 
-      <label for="price_for_slot_1">Slot 1 prize</label>
-      <select id="price_for_slot_1">
+
+    <div class="col">
+
+      <label class="fs-2" for="price_for_slot_1">Slot 1 prize</label>
+      <select class="fs-2" id="price_for_slot_1">
         <option value="None">None</option>
 
         {% for prize in lottery_prizes_list %}
@@ -20,8 +23,8 @@
       </select>
 
       
-      <label for="price_for_slot_2">Slot 2 prize</label>
-      <select id="price_for_slot_2">
+      <label class="fs-2" for="price_for_slot_2">Slot 2 prize</label>
+      <select class="fs-2" id="price_for_slot_2">
         <option value="None">None</option>
 
         {% for prize in lottery_prizes_list %}
@@ -34,9 +37,12 @@
         {% endfor %}
       </select>
 
+    </div>
 
-      <label for="price_for_slot_3">Slot 3 prize</label>
-      <select id="price_for_slot_3">
+    <div class="col">
+
+      <label class="fs-2" for="price_for_slot_3">Slot 3 prize</label>
+      <select class="fs-2" id="price_for_slot_3">
         <option value="None">None</option>
 
         {% for prize in lottery_prizes_list %}
@@ -50,8 +56,8 @@
       </select>
 
 
-      <label for="price_for_slot_4">Slot 4 prize</label>
-      <select id="price_for_slot_4">
+      <label class="fs-2" for="price_for_slot_4">Slot 4 prize</label>
+      <select class="fs-2" id="price_for_slot_4">
         <option value="None">None</option>
 
         {% for prize in lottery_prizes_list %}
@@ -64,9 +70,13 @@
         {% endfor %}
       </select>
 
+    </div>
 
-      <label for="price_for_slot_5">Slot 5 prize</label>
-      <select id="price_for_slot_5">
+
+    <div class="col">
+
+      <label class="fs-2" for="price_for_slot_5">Slot 5 prize</label>
+      <select class="fs-2" id="price_for_slot_5">
         <option value="None">None</option>
 
         {% for prize in lottery_prizes_list %}
@@ -80,8 +90,8 @@
       </select>
 
 
-      <label for="price_for_slot_6">Slot 6 prize</label>
-      <select id="price_for_slot_6">
+      <label class="fs-2" for="price_for_slot_6">Slot 6 prize</label>
+      <select class="fs-2" id="price_for_slot_6">
         <option value="None">None</option>
 
         {% for prize in lottery_prizes_list %}
@@ -94,9 +104,13 @@
         {% endfor %}
       </select>
 
+    </div>
 
-      <label for="price_for_slot_7">Slot 7 prize</label>
-      <select id="price_for_slot_7">
+
+    <div class="col">
+
+      <label class="fs-2" for="price_for_slot_7">Slot 7 prize</label>
+      <select class="fs-2" id="price_for_slot_7">
         <option value="None">None</option>
 
         {% for prize in lottery_prizes_list %}
@@ -110,8 +124,8 @@
       </select>
 
 
-      <label for="price_for_slot_8">Slot 8 prize</label>
-      <select id="price_for_slot_8">
+      <label class="fs-2" for="price_for_slot_8">Slot 8 prize</label>
+      <select class="fs-2" id="price_for_slot_8">
         <option value="None">None</option>
 
         {% for prize in lottery_prizes_list %}
@@ -123,10 +137,13 @@
         {% endif %}        
         {% endfor %}
       </select>
+    
+    </div>
 
+    <div class="col-1 justify-content-center my-2">
+      <button type="button" onclick="set_lottery_prize()" class="btn btn-dark w-75 m-auto fs-2">Set</button>
+    </div>
 
-      <button type="button" onclick="set_lottery_prize()" class="btn btn-primary">Set</button>
-  
   </div>
 
 </div>

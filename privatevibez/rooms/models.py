@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from cities_light.models import Country, Region
+from cities.models import City, Country, Region
 from staff.models import Promotion
 # Create your models here.
 
@@ -21,6 +21,14 @@ class Block_Ip_Address(models.Model):
 
     ip_address = models.GenericIPAddressField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    
+    
+class Room_Viewer(models.Model):
+    User       = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True,blank=True)
+    Timestamp  = models.DateTimeField(auto_now_add=True)     
+    def __str__(self):
+        return str(self.User)
+
 
 class Room_Visitors(models.Model):
     User       = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True,blank=True)
@@ -78,6 +86,7 @@ class Room_Data(models.Model):
     Is_Menu_Active        = models.BooleanField(default=False)
     Is_Lottery_Active     = models.BooleanField(default=False)  
     Total_Viewers         = models.IntegerField(null=True, blank=True)
+    Viewers               = models.ManyToManyField(Room_Viewer, related_name='viewers', blank=True)
     Timestamp             = models.DateTimeField(auto_now_add=True)     
     
     def __str__(self):

@@ -4,8 +4,8 @@ import json
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import AsyncWebsocketConsumer
-from .models import Room_Data, Room_Visitors,  Blocked_Countries, Blocked_Regions
-from cities_light.models import Country, Region
+from .models import Room_Data, Room_Visitors,  Blocked_Countries, Blocked_Regions, Room_Viewer
+from cities.models import City, Country, Region
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 User = get_user_model()
@@ -69,6 +69,13 @@ class RoomViewersConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps(modified_data))
         
     
+    async def show_visitors(self, event):
+        
+        data = event['data']
+        
+        await self.send(text_data=json.dumps(data))
+        
+    
 
 class UserSessionConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -127,16 +134,13 @@ class UserVisitorsConsumer(AsyncWebsocketConsumer):
             }
         await self.send(text_data=json.dumps(modified_data))
         
-    def add_visitor_to_room(self,room,visitor):
-        room = room
-        room_instance = room.Visitors.add(visitor)
         
-        if room.Total_Viewers is not None:
-            room.Total_Viewers += 1
-            
-        else:
-            room.Total_Viewers = 1
-        room.save()
+        
+    def remove_visitor_from_room(self,room,visitor):
+        room = room
+        room_instance = room.Visitors.remove(visitor)
+        
+        print(room.Visitors.all(),flush=True)
         
         channel_layer = get_channel_layer()
         channel_name = "room_viewers_" + str(self.room_id)
@@ -144,14 +148,57 @@ class UserVisitorsConsumer(AsyncWebsocketConsumer):
             
             # Prepare data to send
         data = {
-            "viewed": True,
+            "is_leaving": True,
         }
         
         # Send the data to the WebSocket consumer
         async_to_sync(channel_layer.group_send)(
             channel_name,
-            {"type":"receive","data": data},
+            {"type":"show.visitors","data": data},
         )
+        
+        self.send(text_data=json.dumps({'is_leaving': True}))
+    
+    
+    def add_visitor_to_room(self,room,visitor):
+        room = room
+        room_instance = room.Visitors.add(visitor)
+        
+        print(room.Visitors.all(),flush=True)
+        
+        if room.Viewers.filter(User__id=visitor.User.id).exists():
+            pass
+        else:
+            room_viewer = Room_Viewer.objects.create(User=visitor.User)
+            
+            if room.Total_Viewers is not None:
+                room.Total_Viewers += 1
+                
+            else:
+                room.Total_Viewers = 1
+            
+            room.save()
+            
+            room.Viewers.add(room_viewer)
+            
+            
+        
+        channel_layer = get_channel_layer()
+        channel_name = "room_viewers_" + str(self.room_id)
+        
+            
+            # Prepare data to send
+        data = {
+            "is_leaving": False,
+        }
+        
+        # Send the data to the WebSocket consumer
+        async_to_sync(channel_layer.group_send)(
+            channel_name,
+            {"type":"show.visitors","data": data},
+        )
+        
+        self.send(text_data=json.dumps({'is_leaving': False}))
         
     @database_sync_to_async
     def get_all_visitors(self):
@@ -173,7 +220,7 @@ class UserVisitorsConsumer(AsyncWebsocketConsumer):
         return room_data
 
     @database_sync_to_async
-    def create_room_visitor(self, user_id):
+    def get_or_create_room_visitor(self, user_id):
         
         if Room_Visitors.objects.filter(User_id=user_id).exists():
             room_id = Room_Visitors.objects.get(User_id=user_id)
@@ -183,10 +230,9 @@ class UserVisitorsConsumer(AsyncWebsocketConsumer):
         return room_id
    
    
-    async def send_user_visitors(self, data):
-        await self.send(text_data=json.dumps(data))
 
     async def receive(self, text_data):
+        
         data = json.loads(text_data)
         action = data.get('action', None)
         
@@ -195,26 +241,36 @@ class UserVisitorsConsumer(AsyncWebsocketConsumer):
 
         if action == 'bought_item':
             await self.show_bought_item()
+            
         user_id = data.get('user_id', None)
         is_leaving = data.get('leaving', False)
         
         room_instance = await self.get_room_instance()
         
+        
         print(is_leaving,flush=True)
+        print(self.room_group_name,flush=True)
 
         if is_leaving:
             if user_id is not None:
-                room_visitor = await self.create_room_visitor(user_id)
-                await database_sync_to_async(room_instance.Visitors.remove)(room_visitor)
+                room_visitor = await self.get_or_create_room_visitor(user_id)
+                await database_sync_to_async(self.remove_visitor_from_room)(room_instance, room_visitor)
+                
+                
         else:
             if user_id is not None:
-                room_visitor = await self.create_room_visitor(user_id)
+                room_visitor = await self.get_or_create_room_visitor(user_id)
                 await database_sync_to_async(self.add_visitor_to_room)(room_instance, room_visitor)
 
-        user_visitors = [str(visitor) for visitor in await self.get_all_visitors()]
-        await self.send_user_visitors({'user_visitors': user_visitors})
-        
     
+    
+    async def send_user_visitors(self, data):
+        try:
+            print(data,flush=True)
+            await self.send(text_data=json.dumps(data))
+        except Exception as e:
+            print(f"Error during send: {e}", flush=True)
+
     async def broadcast_user_visitors(self):
         room_instance = await self.get_room_instance()
         visitors =  await self.get_all_visitors()
@@ -300,7 +356,7 @@ class BlockedCountriesConsumer(AsyncWebsocketConsumer):
     def remove_region(self,region):
             room_data = Room_Data.objects.get(User_id=self.room_id)
             try:
-                region_instance = Region.objects.get(display_name=region)
+                region_instance = Region.objects.get(name_std=region)
                 blocking_instance = Blocked_Regions.objects.get(Region=region_instance)
                 
                 try:

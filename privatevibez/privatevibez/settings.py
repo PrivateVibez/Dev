@@ -9,10 +9,14 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
+import django
+from django.utils.encoding import force_str, smart_str
+django.utils.encoding.force_text = force_str
+django.utils.encoding.smart_text = smart_str
 import os, datetime
 from pickle import TRUE
 from django.core.management.utils import get_random_secret_key
+
 
 
 
@@ -44,7 +48,7 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = [
 
-    'cities_light',
+    'cities',
     'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -98,6 +102,9 @@ TEMPLATES = [
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
+GEOS_LIBRARY_PATH = '/usr/lib/x86_64-linux-gnu/libgeos_c.so.1'
+
+GDAL_LIBRARY_PATH = '/usr/lib/libgdal.so'
 
 SESSION_COOKIE_AGE = 30 * 24 * 60 * 60
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
@@ -115,7 +122,7 @@ CHANNEL_LAYERS = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.contrib.gis.db.backends.spatialite',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }

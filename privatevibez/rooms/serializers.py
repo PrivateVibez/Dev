@@ -1,6 +1,6 @@
 from chat.models import Private_Chat_Invitee
 from rest_framework import serializers
-from cities_light.models import Country, Region
+from cities.models import City, Country, Region
 from .models import Slot_Machine, Room_Data
 from accounts.models import Item_Availed
 from django.contrib.auth import get_user_model
@@ -24,7 +24,7 @@ class RegionSerializer(serializers.ModelSerializer):
   
     class Meta:
         model = Region
-        fields = ['display_name']
+        fields = ['name_std']
         
         
 class SlotMachineSerializer(serializers.ModelSerializer):

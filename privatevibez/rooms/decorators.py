@@ -1,6 +1,6 @@
 from django.shortcuts import redirect,render
 from rooms.models import Room_Data
-
+import requests
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -25,8 +25,8 @@ def check_user_blocked_ip(redirect_url='/'):
           
           
           broadcaster = Room_Data.objects.get(User__username=slug)
-          blocked_countries = broadcaster.Blocked_Countries.values_list('Country__code2',flat=True)
-          blocked_regions = broadcaster.Blocked_Regions.values_list('Region__display_name',flat=True)
+          blocked_countries = broadcaster.Blocked_Countries.values_list('Country__code',flat=True)
+          blocked_regions = broadcaster.Blocked_Regions.values_list('Region__name_std',flat=True)
           
 
           
@@ -53,8 +53,8 @@ def check_user_blocked_ip(redirect_url='/'):
                             guest_country = request.session.get('guest_country')
                             guest_region = request.session.get('guest_region')
                             broadcaster = Room_Data.objects.get(User__username=slug)
-                            blocked_countries = broadcaster.Blocked_Countries.values_list('Country__code2',flat=True)
-                            blocked_regions = broadcaster.Blocked_Regions.values_list('Region__display_name',flat=True)
+                            blocked_countries = broadcaster.Blocked_Countries.values_list('Country__code',flat=True)
+                            blocked_regions = broadcaster.Blocked_Regions.values_list('Region__name_std',flat=True)
                             if guest_region not in blocked_regions and guest_country not in blocked_countries:
                     
                                 return view_func(request, *args, **kwargs)
@@ -68,8 +68,8 @@ def check_user_blocked_ip(redirect_url='/'):
                     slug = kwargs.get('Broadcaster')
                     if Room_Data.objects.filter(User__username=slug).exists():
                         broadcaster = Room_Data.objects.get(User__username=slug)
-                        blocked_countries = broadcaster.Blocked_Countries.values_list('Country__code2',flat=True)
-                        blocked_regions = broadcaster.Blocked_Regions.values_list('Region__display_name',flat=True)
+                        blocked_countries = broadcaster.Blocked_Countries.values_list('Country__code',flat=True)
+                        blocked_regions = broadcaster.Blocked_Regions.values_list('Region__name_std',flat=True)
                         guest_country = request.session.get('guest_country')
                         guest_region = request.session.get('guest_region')
                         if guest_region not in blocked_regions and guest_country not in blocked_countries:
