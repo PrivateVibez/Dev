@@ -153,8 +153,12 @@ def Registration(request):
         
         else:
             for error in form.errors:
-                messages.error(request, form.errors[error])
-            print(form.errors,flush=True)
+                if error != "password2":
+                    messages.error(request, f'{error} {form.errors[error]}')
+                else:
+                    
+                    messages.error(request, f'{form.errors[error]}')
+                print(error,flush=True)
             
     else:    
         form =UserRegisterForm()

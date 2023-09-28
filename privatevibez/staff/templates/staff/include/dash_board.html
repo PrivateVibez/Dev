@@ -91,9 +91,18 @@ privatevibezrevenue_socket.onmessage = function(e) {
 
   console.log(data);
 
-  document.getElementById('total_cash').innerHTML = data.total_cash
-  document.getElementById('total_slot_vibez').innerHTML = data.total_slot_vibez
-  document.getElementById('total_user_vibez').innerHTML = data.total_user_vibez.Vibez__sum
+  if (data.total_cash !== undefined) {
+    document.getElementById('total_cash').innerHTML = data.total_cash;
+}
+
+if (data.total_slot_vibez !== undefined) {
+    document.getElementById('total_slot_vibez').innerHTML = data.total_slot_vibez;
+}
+
+if (data.total_user_vibez.Vibez__sum !== undefined) {
+    document.getElementById('total_user_vibez').innerHTML = data.total_user_vibez.Vibez__sum;
+}
+
 }
 privatevibezrevenue_socket.onopen = function(e) {
 

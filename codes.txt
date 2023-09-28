@@ -1159,3 +1159,6 @@ function check_modal()
                       <li><a class="dropdown-item" id="shout-out-user-{{items.User.id}}" onclick="shoutout_user('{{items.User.username}}')" data-bs-toggle="modal" data-bs-target="#shoutoutUserModal">Shout Out</a></li>
                     </ul>
                   </div>
+
+
+                  show_updated_privatevibez_earning_to_staff_dashboard(privatevibezinstance)
