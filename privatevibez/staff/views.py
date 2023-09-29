@@ -100,6 +100,8 @@ def home(request):
         print(request.user,flush=True)
         if request.user.is_authenticated and StaffManager.objects.filter(staff_id=request.user).exists():
                 total_slot_vibez = PrivatevibezRevenue.objects.aggregate(Sum('Slot_Machine_Revenue'))
+                total_lottery_vibez = PrivatevibezRevenue.objects.aggregate(Sum('Lottery_Revenue'))
+                total_dice_vibez = PrivatevibezRevenue.objects.aggregate(Sum('Dice_Revenue'))
                 total_user_vibez = User_Data.objects.aggregate(Sum('Vibez'))
                 total_broadcaster_vibez = Room_Data.objects.aggregate(Sum('Revenue'))
                 slot_machine  = Games_Data.objects.order_by('-timestamp').values('Slot_Machine_Spin_Cost').first()

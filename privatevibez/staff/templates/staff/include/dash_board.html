@@ -8,7 +8,7 @@
 
         <div class="row justify-content-center">
 
-          <div class="col">
+          <div class="col my-4">
             <div class="card h-100" style="width: 18rem;">
               <div class="card-body text-center">
                 <span class="fs-4">Slot Machine Vibez Earning</span>
@@ -18,7 +18,28 @@
             </div>
           </div>
 
-          <div class="col">
+          <div class="col my-4">
+            <div class="card h-100" style="width: 18rem;">
+              <div class="card-body text-center">
+                <span class="fs-4">Lottery Vibez Earning</span>
+                <span class="fs-3 d-block" id="total_lottery_vibez">{{total_lottery_vibez.Lottery_Revenue__sum}}</span>
+                  
+              </div>
+            </div>
+          </div>
+
+          <div class="col my-4">
+            <div class="card h-100" style="width: 18rem;">
+              <div class="card-body text-center">
+                <span class="fs-4">Dice Vibez Earning</span>
+                <span class="fs-3 d-block" id="total_dice_vibez">{{total_dice_vibez.Dice_Revenue__sum}}</span>
+                  
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col my-4">
             <div class="card h-100" style="width: 18rem;">
               <div class="card-body text-center">
                 <span class="fs-4">Total Broadcaster Revenue Vibez</span>
@@ -29,7 +50,7 @@
           </div>
 
 
-          <div class="col">
+          <div class="col my-4">
             <div class="card h-100" style="width: 18rem;">
               <div class="card-body text-center">
                 <span class="fs-4">Total User Vibez</span>
@@ -40,7 +61,7 @@
           </div>
 
 
-          <div class="col">
+          <div class="col my-4">
             <div class="card h-100" style="width: 18rem;">
               <div class="card-body text-center">
                 <span class="fs-4">Slot cost per spin</span>
@@ -99,8 +120,21 @@ if (data.total_slot_vibez !== undefined) {
     document.getElementById('total_slot_vibez').innerHTML = data.total_slot_vibez;
 }
 
-if (data.total_user_vibez.Vibez__sum !== undefined) {
-    document.getElementById('total_user_vibez').innerHTML = data.total_user_vibez.Vibez__sum;
+
+if (data.total_lottery_vibez !== undefined) {
+    document.getElementById('total_lottery_vibez').innerHTML = data.total_lottery_vibez;
+}
+
+if (data.total_dice_vibez !== undefined) {
+    document.getElementById('total_dice_vibez').innerHTML = data.total_dice_vibez;
+}
+
+if (data.total_user_vibez !== undefined) {
+  document.getElementById('total_user_vibez').innerHTML = data.total_user_vibez.Vibez__sum;
+}
+
+if (data.total_broadcaster_vibez !== undefined) {
+  document.getElementById('total_broadcaster_vibez').innerHTML = data.total_broadcaster_vibez.Revenue__sum;
 }
 
 }

@@ -135,19 +135,17 @@
                     const msg = data;
                     console.log(msg.data);
                     const spins = msg.spins;
-                    const vibez = msg.vibez
+                    const vibez = msg.vibez;
        
                     successToast(msg.data);  
                     
-                    console.log(spins);
-                    console.log(vibez);
       
       
-                    if (vibez !== null){
+                    if (vibez !== null || vibez !== undefined){
                       document.getElementById('user_vibez').innerHTML = vibez;
                     }
       
-                    if(spins !== null) {
+                    if(spins !== null || spins !== undefined) {
                       document.getElementById('free_spins').innerHTML = spins;
                     }
       
@@ -169,11 +167,11 @@
                       console.log(uservibez);
                   
       
-                      if (uservibez !== null) {
+                      if (uservibez !== null && uservibez !== undefined) {
                       document.getElementById('user_vibez').innerHTML = uservibez;    
                       }
       
-                      if (spins !== null) {
+                      if (spins !== null && spins !== undefined) {
                         document.getElementById('free_spins').innerHTML = spins;   
                       }
                       else {

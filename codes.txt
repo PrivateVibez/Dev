@@ -1162,3 +1162,21 @@ function check_modal()
 
 
                   show_updated_privatevibez_earning_to_staff_dashboard(privatevibezinstance)
+                                  "total_user_vibez": User_Data.objects.aggregate(Sum('Vibez')),
+                "total_broadcaster_vibez": Room_Data.objects.aggregate(Sum('Revenue')),
+
+
+            channel_layer = get_channel_layer()
+            channel_name = "privatevibezrevenue"
+            
+            # Prepare data to send
+            data = {
+                "total_user_vibez": User_Data.objects.aggregate(Sum('Vibez')),
+                "total_broadcaster_vibez": Room_Data.objects.aggregate(Sum('Revenue')),
+            }
+            
+            # Send the data to the WebSocket consumer
+            async_to_sync(channel_layer.group_send)(
+                channel_name,
+                {"type": "show.updatedRevenue", "data": data}
+            )
