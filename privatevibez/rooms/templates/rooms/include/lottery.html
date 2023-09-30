@@ -183,6 +183,8 @@
       },
       success:function(data){
         console.log(data.data);
+
+        successToast(data.data);
       },
       error:function(errors){
         console.log(errors.responseText);

@@ -1061,6 +1061,21 @@ def invite_private_chat(request):
                     broadcaster = Private_Chat_Invitee.objects.create(Broadcaster=broadcaster)
                     invitee_relationship, _ = InviteeRelationship.objects.get_or_create(User=broadcaster.Broadcaster, Invitee=request.user)
                     broadcaster.Invitee_relationships.add(invitee_relationship)
+                    
+                    channel_layer = get_channel_layer()
+                    channel_name = "fetch_private_chat_invitation_" + str(broadcaster.Broadcaster.username)
+                
+                        
+                        # Prepare data to send
+                    data = {
+                        "invitation_sent": True,
+                    }
+                    
+                    # Send the data to the WebSocket consumer
+                    async_to_sync(channel_layer.group_send)(
+                        channel_name,
+                        {"type": "is.InvitationSent", "data": data}
+                    )
                     return JsonResponse({'data':"Invite sent!"},safe=False)
                 
         except IntegrityError as e:
@@ -1150,7 +1165,6 @@ def trigger_toy(broadcaster_id,price,user_id,feature,strength,timesec,room_data=
 # GIVE PROFIT TO BROADCASTER AND SHOW IT TO THE BROADCASTER ROOM
 def display_user_availed_item_in_broadcaster_room(user_data,item,room,random_button=None,button_cost=None,game_type=None):
     # Get the channel layer
-    print(item.Item,flush=True)
     
     try:
         slot_machine = Slot_Machine.objects.filter(User=room.User).first()
@@ -1160,7 +1174,7 @@ def display_user_availed_item_in_broadcaster_room(user_data,item,room,random_but
         
         print(f'slot machine does not exist',flush=True)
 
-    print(f'showing to dashboard',flush=True)
+
     if item.Item == "3OAK":
         if slot_machine:
             # Retrieve values from the Slot_Machine object
@@ -1226,13 +1240,16 @@ def display_user_availed_item_in_broadcaster_room(user_data,item,room,random_but
         if game_type == "Lottery" or game_type == "Dice":
             price = item.Cost
         
+            print(price,flush=True)
             print(button_cost,flush=True)
+            print(random_button,flush=True)
+            print(game_type,flush=True)
             
             if room.Revenue != 0:
-                room.Revenue += price
+                room.Revenue += button_cost
                 
             else:
-                room.Revenue = price 
+                room.Revenue = button_cost 
 
                 
             room.save()
@@ -1319,21 +1336,22 @@ def availed_item(user,room,item,price,game_type=None,random_button=None,button_c
             if user_data.Free_spins != 0:
 
                 if random_button != None:
-                    remaining_price = privatevibez_chargeback(price,game_type)
+                    remaining_price = privatevibez_chargeback(button_cost,game_type)
                     
                     item = Item_Availed.objects.create(Room=room,User=user_data.User,Item=item, Cost=0, Note="free spin")
                     user_data.Availed.add(item)  
                     
-                    slot_instance = display_user_availed_item_in_broadcaster_room(user_data,item,room,random_button,remaining_price)
+                    slot_instance = display_user_availed_item_in_broadcaster_room(user_data,item,room,random_button=random_button,button_cost=remaining_price,game_type=game_type)
                     
                 else:
                     
                     remaining_price = privatevibez_chargeback(price,game_type)
                     
+                    print(remaining_price,flush=True)
                     item = Item_Availed.objects.create(Room=room,User=user_data.User,Item=item, Cost=0, Note=note)
                     user_data.Availed.add(item)
                     
-                    slot_instance = display_user_availed_item_in_broadcaster_room(user_data,item,room,random_button,button_cost,game_type)
+                    slot_instance = display_user_availed_item_in_broadcaster_room(user_data,item,room,random_button=random_button,button_cost=remaining_price,game_type=game_type)
                     
                     
                 
@@ -1365,14 +1383,15 @@ def availed_item(user,room,item,price,game_type=None,random_button=None,button_c
                     item = Item_Availed.objects.create(Room=room,User=user_data.User,Item=item, Cost=button_cost, Note=note)
                     user_data.Availed.add(item)
                     
-                    slot_instance = display_user_availed_item_in_broadcaster_room(user_data,item,room,random_button,remaining_price)
+                    slot_instance = display_user_availed_item_in_broadcaster_room(user_data,item,room,random_button=random_button,button_cost=remaining_price,game_type=game_type)
+                    
 
                 else:
                     remaining_price = privatevibez_chargeback(price,game_type)
                     item = Item_Availed.objects.create(Room=room,User=user_data.User,Item=item, Cost=remaining_price, Note=note)
                     user_data.Availed.add(item)
                     
-                    slot_instance = display_user_availed_item_in_broadcaster_room(user_data,item,room,random_button,button_cost,game_type)
+                    slot_instance = display_user_availed_item_in_broadcaster_room(user_data,item,room,random_button=random_button,button_cost=button_cost,game_type=game_type)
 
                 # add revenues
                 

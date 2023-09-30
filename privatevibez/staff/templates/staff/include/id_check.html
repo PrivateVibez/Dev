@@ -38,7 +38,7 @@
     </div>
     <div class="row">
         <div class="col-md-12 mb-3">
-            <div class="card w-100">
+            <div class="card w-100" id="id-checking-card">
                 <div class="card-header">
                     <span><i class="bi bi-table me-2"></i></span> Pending Broadcasters
                 </div>
@@ -55,7 +55,7 @@
                             </thead>   
                             <tbody id="id-checking-table">
                               {% for user in user_data %}
-                              <tr>
+                              <tr id="pending-broadcaster-row-{{user.User.id}}">
                                 <td>{{user.User.first_name}}</td>
                                 <td>{{user.User.last_name}}</td>
                                 <td>{{user.Birth_Date}}</td>
@@ -242,8 +242,8 @@ pending_Broadcaster.onopen = function(e) {
 pending_Broadcaster.onmessage = function(e) {
   const data = JSON.parse(e.data);
   
-  $("#id_check_len").load(" #id_check_len > * ");
-  $("#id-checking-table").load(" #id-checking-table > * ");
+  $("#v-pills-profile-tab").load(" #v-pills-profile-tab > * ");
+  $("#id-checking-card").load(" #id-checking-card > * ");
 
   console.log('pending');
 
@@ -254,6 +254,8 @@ pending_Broadcaster.onmessage = function(e) {
 
   function approve_Broadcaster(user_id) {
     $('#modal-' + user_id).modal('hide');
+  
+    document.getElementById(`pending-broadcaster-row-${user_id}`).remove();
 
   
 
@@ -271,7 +273,8 @@ pending_Broadcaster.onmessage = function(e) {
       },
       success: function(data, textStatus, xhr) {
           // Handle the response data here
-          successToast("Broadcaster Approved!");
+          
+          $("#v-pills-profile-tab").load(" #v-pills-profile-tab > * ");
           
           var pending_broadcasters = data.data; 
           
@@ -282,7 +285,7 @@ pending_Broadcaster.onmessage = function(e) {
           {
             let new_user_id;
 
-            $("#id_check_len").load(" #id_check_len > * ");
+            
 
           for(var i=0;i<pending_broadcasters.length;i++){
 
@@ -290,7 +293,7 @@ pending_Broadcaster.onmessage = function(e) {
              user = pending_broadcasters[i];
 
             let row = `
-            <tr>
+            <tr id="pending-broadcaster-row-${user.user_id}">
               <td>${user.first_name}<td>
               <td>${user.last_name}</td>
               <td>${user.Birth_Date}</td>
@@ -320,7 +323,7 @@ pending_Broadcaster.onmessage = function(e) {
                   </div>
                   <div class="modal-footer">
                     <button type="button" onclick="showDeclineModal(${user.user_id})" class="btn btn-secondary" data-dismiss="modal">Disapprove</button>
-                    <button type="button" onclick="approve_Broadcaster(${user.user_id})" class="btn btn-primary">Approve</button>
+                    <button type="button" onclick="approve_Broadcaster(${user.user_id})" class="btn btn-primary" data-dismiss="modal">Approve</button>
                   </div>
                 </div>
               </div>

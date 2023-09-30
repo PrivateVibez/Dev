@@ -153,11 +153,11 @@ def Registration(request):
         
         else:
             for error in form.errors:
-                if error != "password2":
+                if error != "password2" and error != "password1":
                     messages.error(request, f'{error} {form.errors[error]}')
                 else:
                     
-                    messages.error(request, f'{form.errors[error]}')
+                    messages.error(request, f'password {form.errors[error]}')
                 print(error,flush=True)
             
     else:    
@@ -187,7 +187,14 @@ def RegistrationWithPromotionCode(request):
                 return redirect(request.META.get('HTTP_REFERER'))
             
             else:
-                messages.error(request, form.errors)
+                
+                for error in form.errors:
+                    if error != "password2" and error != "password1":
+                        messages.error(request, f'{error} {form.errors[error]}')
+                    else:
+                        
+                        messages.error(request, f'password {form.errors[error]}')
+                    print(error,flush=True)
         else:    
             form =UserRegisterForm()
         
