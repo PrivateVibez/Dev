@@ -104,7 +104,7 @@ def home(request):
                 total_dice_vibez = PrivatevibezRevenue.objects.aggregate(Sum('Dice_Revenue'))
                 total_user_vibez = User_Data.objects.aggregate(Sum('Vibez'))
                 total_broadcaster_vibez = Room_Data.objects.aggregate(Sum('Revenue'))
-                slot_machine  = Games_Data.objects.order_by('-timestamp').values('Slot_Machine_Spin_Cost').first()
+                slot_machine  = Games_Data.objects.order_by('-timestamp').first()
                 
                 promotions    = Promotion.objects.filter(
                 Q(timestamp__gte=current_datetime) | Q(Promotion_Registration_Limit__gt=0)
@@ -637,11 +637,28 @@ def update_slot_machine_cost_per_spin(request):
         
         if request.method == "POST":
                 
-                if request.POST.get('slot_machine_cost') is not None:
+                if request.POST.get('slot_machine_cost') != None:
+                                
+                        
                         slot_machine = Games_Data.objects.create(
                         Slot_Machine_Spin_Cost = request.POST.get('slot_machine_cost'))
                         
-                        return JsonResponse({"data":f'Successfully updated slot machine cost per spin to {slot_machine.Slot_Machine_Spin_Cost}'},status=200, safe=False)
+                        if request.POST.get('lottery_cost') != None:
+                                slot_machine.Lottery_Spin_Cost = int(request.POST.get('lottery_cost'))
+                                
+                        if request.POST.get('dice_cost') != None:
+                                slot_machine.Dice_Spin_Cost = int(request.POST.get('dice_cost'))
+                        
+                        slot_machine.Slot_Machine_Spin_Cost = int(request.POST.get('slot_machine_cost'))
+                        
+                        print(request.POST.get('slot_machine_cost'),flush=True)
+                        print(slot_machine.Slot_Machine_Spin_Cost,flush=True)
+
+                        slot_machine.save()
+                                
+
+                        
+                        return JsonResponse({"data":f'Successfully updated games'},status=200, safe=False)
                 else:
                         return JsonResponse({"data":f'Invalid input!'},status=500, safe=False)
                         

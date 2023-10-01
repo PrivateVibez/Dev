@@ -3,8 +3,8 @@
   <div class="row gap-5">
     <div class="row mt-5">
       <div class="col-2">
-        <h3 class="">Slot Machine</h3>
-            <button class="btn btn-primary fs-5" data-bs-toggle="modal" data-bs-target="#modal-for-slot-machine-cost-per-spin"> Update slot machine</button>
+        <h3 class="">Games</h3>
+            <button class="btn btn-primary fs-5" data-bs-toggle="modal" data-bs-target="#modal-for-slot-machine-cost-per-spin"> Update games cost per spin</button>
 
       </div>
     </div>
@@ -16,13 +16,25 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Update Slot machine cost per spin</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Update Games cost per spin</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+
       <div class="modal-body text-center">
         <label for="slot-machine-cost" class="d-block">Slot machine cost per spin</label>
-        <input class="" name="slot-machine-cost" id="slot-machine-cost" placeholder="{{slot_machine.Slot_Machine_Spin_Cost}}">
+        <input class="" name="slot-machine-cost" value="{{slot_machine.Slot_Machine_Spin_Cost}}" id="slot-machine-cost" placeholder="{{slot_machine.Slot_Machine_Spin_Cost}}">
       </div>
+
+      <div class="modal-body text-center">
+        <label for="dice-cost" class="d-block">Dice cost per spin</label>
+        <input class="" name="dice-cost" value="{{slot_machine.Dice_Spin_Cost}}" id="dice-cost" placeholder="{{slot_machine.Dice_Spin_Cost}}">
+      </div>
+
+      <div class="modal-body text-center">
+        <label for="lottery-cost" class="d-block">Lottery cost per spin</label>
+        <input class="" name="dice-cost" value="{{slot_machine.Lottery_Spin_Cost}}" id="lottery-cost" placeholder="{{slot_machine.Lottery_Spin_Cost}}">
+      </div>
+
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button type="button" onclick="update_Slot_Machine_Cost_Per_Spin()" class="btn btn-primary">Save changes</button>
@@ -161,8 +173,12 @@
 
   function update_Slot_Machine_Cost_Per_Spin() {
     let slot_machine_cost = document.getElementById('slot-machine-cost').value;
+    let dice_cost = document.getElementById('dice-cost').value;
+    let lottery_cost = document.getElementById('lottery-cost').value;
     let data = {
       "slot_machine_cost": slot_machine_cost,
+      "dice_cost": dice_cost,
+      "lottery_cost": lottery_cost,
       'csrfmiddlewaretoken':"{{csrf_token}}",
     }
     $.ajax({
