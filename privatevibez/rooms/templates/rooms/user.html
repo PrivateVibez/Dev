@@ -366,11 +366,12 @@
                                     </div>
                                 
                                 {% else %}
+               
 
                           
                                 {% if private_chat_invite and invite_accepted == False %}
                                 
-                                <div class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
+                                <div id="please-wait-for-user-to-accept-your-invite-container" class="msg-list-wrapper-split" data-listener-count-scroll="1" style="box-sizing: border-box; overflow: auto; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
                                     <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;"></div>
                                     <div class="msg-list-fvm message-list" style="width: 100%; user-select: text; cursor: text; padding-bottom: 4px;">
                                         <h2>Please wait for {{room_data.User}} to accept your request</h2>
@@ -885,6 +886,8 @@
 {% if request.user.is_authenticated %}
 <script>
 
+    var useractiveSocket = null; 
+    var usersockets = {};
 
     var logo = document.getElementById('privatevibezlogo');
 
@@ -998,7 +1001,7 @@ let public_socket = new WebSocket(protocol + '://' + window.location.host + '/ws
         }
 
         // Scroll to bottom
-        messages_element.scrollTop = messages_element.scrollHeight;
+        //messages_element.scrollTop = messages_element.scrollHeight;
     }
 
     // Send message
@@ -1047,64 +1050,37 @@ let public_socket = new WebSocket(protocol + '://' + window.location.host + '/ws
 
       if (typeof is_accepted !== 'undefined') {
         // Your code here
-        $("#nav-private-chat").load(" #nav-private-chat > *");
+        document.getElementById('pending_invitation_chat').style.display = "none";
+
+        let privateChat = document.getElementById('nav-private-chat');
+        let new_element = document.createElement('div');
+        new_element.setAttribute('id', 'private_chat_room_messages');
+        new_element.setAttribute('style', 'min-width: 462px; max-height: 404px; overflow: auto; padding-bottom: 25px; padding-right: 8px;');
+
+        let privateChatContainer = `
+
+            <div class="container-fluid p-5 mt-5">
+                <div class="input-group" style="bottom: 0px; height:42px; z-index:1000; position: absolute;  left: 0px;">
+                    
+                        <input type="text" class="form-control" name="private_chat_room_message_field" required="">
+                        <div class="input-group-append">
+                            <button type="button" onclick="send_private_message()" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+                                <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
+                              </svg></button>
+                        </div>
+                
+                </div>
+            </div>`
+        new_element.innerHTML = privateChatContainer;
+        privateChat.appendChild(new_element);
+
     }
     
-   
-      
-     /* var is_accepted = data.is_invitation_accepted;
-      var is_sent = data.is_invitation_sent;
-      
-
-      if(is_accepted.is_invitation_accepted === true)
-    {
-        $("#nav-private-chat").load(" #nav-private-chat > *");
-    }
-    else if(is_sent.is_invitation_sent === true)
-    {
-        $("#nav-private-chat").load(" #nav-private-chat > *");
-      
-    }
-*/
-} 
-
-
-    
-
-
-        // Send message
-        var private_form = document.getElementById('private_chat_room_form');
-
-        if(private_form !== null){
-        private_form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-        });
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-    </script>
-
-{% endif %}
-
-
-
-<script src="{% static 'js/user_and_broadcaster.js' %}"></script>
-<script>
 
     let private_socket = new WebSocket(protocol + '://' + window.location.host + '/ws/privateChatBroc/{{ room_name }}/{{ user }}/');
     let is_initialized = false;
+
+    useractiveSocket = private_socket;
 
     private_socket.onopen = function(e) {
         console.log('private chat socket is open');
@@ -1173,23 +1149,146 @@ let public_socket = new WebSocket(protocol + '://' + window.location.host + '/ws
                 }
         
                 // Scroll to bottom
-                messages_element.scrollTop = messages_element.scrollHeight;
+                //messages_element.scrollTop = messages_element.scrollHeight;
                 
             });
         }
 
         }
 
+
+   
+      
+} 
+
+
+    
+
+
+        // Send message
+        var private_form = document.getElementById('private_chat_room_form');
+
+        if(private_form !== null){
+        private_form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+        });
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+
+{% endif %}
+
+
+
+<script src="{% static 'js/user_and_broadcaster.js' %}"></script>
+
+<script>
+
+    {% if invite_accepted == True %}
+
+    let private_socket = new WebSocket(protocol + '://' + window.location.host + '/ws/privateChatBroc/{{ room_name }}/{{ user }}/');
+    let is_initialized = false;
+    useractiveSocket = private_socket;
+    private_socket.onopen = function(e) {
+        console.log('private chat socket is open');
+    }
+
+        private_socket.onmessage = function(e) {
+            var data = JSON.parse(e.data);
+            var messages;
+
+            if (is_initialized === true) {
+                
+            messages = [data.data];
+            } else {
+            messages = data.data;
+            }
+
+            (is_initialized) ? console.log('private chat socket is open') : is_initialized = true;
+
+            // Add message to chat room
+            
+            
+            console.log(messages);
+            if(typeof messages !== undefined)
+            {
+            messages.forEach(function (messageText) {
+                var from = messageText.From;
+                var to = messageText.To;
+                var message = messageText.Message;
+                
+                // Now you can use 'from', 'to', and 'messageText' for processing or displaying the message.
+                console.log(`From: ${from}, To: ${to}, Message: ${message}`);
+
+                if(from !== undefined && from === "{{ user }}"){
+                    var message_element = document.createElement('div');
+                    message_element.setAttribute('class', 'card card-body py-2 my-1 private_chat_room_message_text mb-4 ml-auto');
+                    message_element.setAttribute('style', 'border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;');
+                    message_element.innerHTML = message;
+        
+                    var username_element = document.createElement('div');
+                    username_element.setAttribute('class', 'text-muted d-flex justify-content-end');
+                    var username_small = document.createElement('small');
+                    username_small.setAttribute('class', 'private_chat_room_message_username font-weight-bold text-dark');
+                    username_small.innerHTML = from;
+                    username_element.appendChild(username_small);
+        
+                    var messages_element = document.getElementById('private_chat_room_messages');
+                    messages_element.appendChild(username_element);
+                    messages_element.appendChild(message_element);
+                }else if(from !== undefined && from !== "{{ user }}") {
+                    var message_element = document.createElement('div');
+                    message_element.setAttribute('class', 'card card-body py-2 my-1 private_chat_room_message_text mb-4');
+                    message_element.setAttribute('style', 'border-radius: 13px; width: fit-content;');
+                    message_element.innerHTML = message;
+        
+                    var username_element = document.createElement('div');
+                    username_element.setAttribute('class', 'text-muted d-flex');
+                    var username_small = document.createElement('small');
+                    username_small.setAttribute('class', 'private_chat_room_message_username font-weight-bold text-dark');
+                    console.log(typeof(to));
+                    username_small.innerHTML = from;
+                    username_element.appendChild(username_small);
+        
+                    var messages_element = document.getElementById('private_chat_room_messages');
+                    messages_element.appendChild(username_element);
+                    messages_element.appendChild(message_element);
+                }
+        
+                // Scroll to bottom
+               // messages_element.scrollTop = messages_element.scrollHeight;
+                
+            });
+        }
+
+        }
+
+
+
+    {% endif %}
+
     function send_private_message() {
         var message_field = document.getElementsByName('private_chat_room_message_field')[0];
-        private_socket.send(JSON.stringify({
+        useractiveSocket.send(JSON.stringify({
             'message': message_field.value,
             'username': '{{ user }}'
         }));
         message_field.value = '';
         message_field.focus();
     }
-
 
     function hideInviteButton(){
         document.getElementById("invite_model_chat").style.display = "none";

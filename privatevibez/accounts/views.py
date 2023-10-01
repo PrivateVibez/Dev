@@ -686,10 +686,11 @@ def get_broadcaster(request):
             broadcaster_gender = request.GET.get('Tab')
             
             if request.user.is_authenticated:
-                
+                            
                 user = request.user
                 user_country = user.Country
                 user_region = user.Region
+                user_status  = user.Status
                 
                 broadcaster_data = filter_broadcasters(user,user_country,user_region,broadcaster_gender) 
                 broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)

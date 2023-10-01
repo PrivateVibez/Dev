@@ -1445,6 +1445,7 @@ def fav_btn_trigger_toy(request):
                     timesec = room_data.Duration_MMM_button
 
                     # Call the trigger_toy() function with the extracted attributes
+                    availed_item(user_id,room_data,"MMM",room_data.Price_MMM_button)
                     trigger_toy(broadcaster_id, price, user_id, feature, strength, timesec)
                     
                 if str(button_type) == "oh":
@@ -1464,6 +1465,7 @@ def fav_btn_trigger_toy(request):
                     timesec = room_data.Duration_OH_button
 
                     # Call the trigger_toy() function with the extracted attributes
+                    availed_item(user_id,room_data,"OH",room_data.Price_OH_button)
                     trigger_toy(broadcaster_id, price, user_id, feature, strength, timesec)
                     
                 if str(button_type) == "ohyes":

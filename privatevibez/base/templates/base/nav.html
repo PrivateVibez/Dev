@@ -748,6 +748,7 @@ function Accept_Invitee(user_id){
         },
         'dataType': 'json',
         success:function(){
+          
             let acceptButton = document.getElementById(`accept-button-${user_id}`);
             if (acceptButton) {
                 acceptButton.style.display = "none";
