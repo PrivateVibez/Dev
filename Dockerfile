@@ -43,8 +43,12 @@ EXPOSE 8000
 
 # Create a user and group, and switch to that user
 RUN groupadd -g 1001 groupname && \
-    useradd -m -u 1001 -g 1001 username
+    useradd -m -u 1001 -g 1001 username && \
+    chmod 776 /privatevibez/db.sqlite3 && \
+    chown username:groupname /privatevibez/db.sqlite3
+
 USER username
+
 
 # CMD directive for running Django's runserver for development purposes
 CMD ["python3.9", "manage.py", "runserver", "0.0.0.0:8000"]
