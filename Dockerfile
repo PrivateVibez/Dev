@@ -44,8 +44,8 @@ EXPOSE 8000
 # Create a user and group, and switch to that user
 RUN groupadd -g 1001 groupname && \
     useradd -m -u 1001 -g 1001 username && \
-    chmod 776 /privatevibez/db.sqlite3 && \
-    chown username:groupname /privatevibez/db.sqlite3
+    chmod 776 db.sqlite3 && \
+    chown username:groupname db.sqlite3
 
 USER username
 

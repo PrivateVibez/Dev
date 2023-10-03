@@ -34,7 +34,7 @@ def get_Location(user_status_data,ip_address):
         url = "https://geo.ipify.org/api/v2/country,city"
         
         data = {
-                "apiKey":"at_HxIk3g73CVFEeZN2rAAsT7a81ROxs",
+                "apiKey":"at_TXVuAS9hyBcy6xhp4wSwNUoQ0hZhy",
                 "ipAddress": ip_address,
         }
         
@@ -72,7 +72,7 @@ def get_guest_location(request,ip_address):
         url = "https://geo.ipify.org/api/v2/country,city"
         
         data = {
-                "apiKey":"at_HxIk3g73CVFEeZN2rAAsT7a81ROxs",
+                "apiKey":"at_TXVuAS9hyBcy6xhp4wSwNUoQ0hZhy",
                 "ipAddress": ip_address,
         }
         
