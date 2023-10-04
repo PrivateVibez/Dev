@@ -53,7 +53,7 @@ class User_Data(models.Model):
     Image          = models.ImageField(upload_to='profile_pic',null=True,blank=True)
     Id_File        = models.ImageField(upload_to='ID',null=True,blank=True)
     Second_Id_File = models.ImageField(upload_to='2nd_ID',null=True,blank=True)
-    Availed        = models.ManyToManyField('Item_Availed',related_name='Item_Avail',blank=True)
+    Availed        = models.ManyToManyField('Item_Availed',related_name='Item_Avail', null=True, blank=True)
     Subscription_Type =  models.ForeignKey(Subscription, on_delete=models.CASCADE,null=True, blank=True)
     Free_spins     = models.IntegerField(null=True,blank=True,default=0)
     Timestamp      = models.DateTimeField(auto_now_add=True)     
