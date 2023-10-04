@@ -41,6 +41,7 @@ RUN pip install git+https://github.com/coderholic/django-cities.git
 
 RUN chmod -R 777 /py/lib/python3.9/site-packages/cities/
 
+RUN chmod +x /privatevibez/entrypoint.sh
 # Expose the desired port
 EXPOSE 8000
 
