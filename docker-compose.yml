@@ -4,17 +4,23 @@ services:
   app:
     build:
       context: .
-  
     volumes:
     - ./privatevibez:/privatevibez
     command: >
       sh -c "
- 
         python3.9 manage.py runserver 0.0.0.0:8000
       " 
-
     ports:
     - 8000:8000
     environment:
     - SECRET_KEY=devsecretkey
     - DEBUG=1
+    depends_on:
+      - db
+
+  db:
+    image: postgis/postgis
+    environment:
+      - POSTGRES_DB=privatevibez
+      - POSTGRES_USER=privatevibez
+      - POSTGRES_PASSWORD=privatevibez

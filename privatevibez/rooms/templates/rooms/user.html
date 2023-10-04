@@ -1020,20 +1020,6 @@ let public_socket = new WebSocket(protocol + '://' + window.location.host + '/ws
         message_field.focus();
     });
 }
-    // Close WebSocket on page close
-    window.onbeforeunload = function() {
-        public_socket.close();
-        user_private_chat_invitation_socket.close();
-        private_socket.close();
-
-        const data = {
-            user_id: {{request.user.id}},
-            leaving: true // Indicate that the user is leaving
-        };
-        userVisitorsSocket.send(JSON.stringify(data));
-
-        userVisitorsSocket.close();
-    }
 
     let user_private_chat_invitation_socket = new WebSocket(protocol + '://' + window.location.host + '/ws/privateChatInvitation/{{ room_name }}/{{ user }}/');
 
@@ -1157,12 +1143,14 @@ let public_socket = new WebSocket(protocol + '://' + window.location.host + '/ws
         }
 
 
+
+            // Close WebSocket on page close
+
    
       
 } 
 
 
-    
 
 
         // Send message
@@ -1178,7 +1166,21 @@ let public_socket = new WebSocket(protocol + '://' + window.location.host + '/ws
 
 
 
+    window.onbeforeunload = function() {
+        public_socket.close();
+        user_private_chat_invitation_socket.close();
+        
 
+        const data = {
+            user_id: {{request.user.id}},
+            leaving: true // Indicate that the user is leaving
+        };
+        userVisitorsSocket.send(JSON.stringify(data));
+
+        userVisitorsSocket.close();
+
+        private_socket.close();
+    }
 
 
 

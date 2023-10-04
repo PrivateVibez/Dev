@@ -1391,7 +1391,7 @@ def availed_item(user,room,item,price,game_type=None,random_button=None,button_c
                     item = Item_Availed.objects.create(Room=room,User=user_data.User,Item=item, Cost=remaining_price, Note=note)
                     user_data.Availed.add(item)
                     
-                    slot_instance = display_user_availed_item_in_broadcaster_room(user_data,item,room,random_button=random_button,button_cost=button_cost,game_type=game_type)
+                    slot_instance = display_user_availed_item_in_broadcaster_room(user_data,item,room,random_button=random_button,button_cost=remaining_price,game_type=game_type)
 
                 # add revenues
                 
@@ -1914,7 +1914,7 @@ def get_lottery_prize(request):
             user = User_Data.objects.get(User=request.user)
         
             room_data = Room_Data.objects.get(User__username=room)
-            if user.Vibez < game_data.Lottery_Spin_Cost or user.Free_spins == 0:
+            if user.Vibez < game_data.Lottery_Spin_Cost and user.Free_spins == 0:
                 return JsonResponse({"data":f'not enough vibez!'},status=500, safe=False)
 
         except Games_Data.DoesNotExist:

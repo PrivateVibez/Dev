@@ -45,47 +45,60 @@ User = get_user_model()
 def get_all_availed_fav_buttons():
         filter_values = ['MMM','OH','OHYes']# Add more values as needed
         # Use conditional aggregation to get counts and cost sums for the specified values
-        result = (
-        Item_Availed.objects
-        .filter(Item__in=filter_values)
-        .values('Item')
-        .annotate(item_count=Count('Item'), cost_sum=Sum('Cost'))
-        )
-                        
-        # Create a dictionary to store the results
-        fav_buttons = [{'item': item['Item'], 'item_count': item['item_count'], 'cost_sum': item['cost_sum']} for item in result]
+        if Item_Availed.objects.filter(Item__in=filter_values).exists():
+                result = (
+                Item_Availed.objects
+                .filter(Item__in=filter_values)
+                .values('Item')
+                .annotate(item_count=Count('Item'), cost_sum=Sum('Cost'))
+                )
+                                
+                # Create a dictionary to store the results
+                fav_buttons = [{'item': item['Item'], 'item_count': item['item_count'], 'cost_sum': item['cost_sum']} for item in result]
+        else:
+                fav_buttons = []
 
         return fav_buttons
 
 def get_all_availed_menu_items():
     filter_values = ['MMM', 'OH', 'OHYes','3OAK','2OAK','Sent Vibez','Slot Spin']  # Add more values as needed
     # Use conditional aggregation to get counts and cost sums for the specified values
-    result = (
-        Item_Availed.objects
-        .exclude(Item__in=filter_values)  # Exclude items in filter_values
-        .values('Item')
-        .annotate(item_count=Count('Item'), cost_sum=Sum('Cost'))
-    )
+    
+    if Item_Availed.objects.filter(Item__in=filter_values).exists():
+        result = (
+                Item_Availed.objects
+                .exclude(Item__in=filter_values)  # Exclude items in filter_values
+                .values('Item')
+                .annotate(item_count=Count('Item'), cost_sum=Sum('Cost'))
+        )
 
-    # Create a dictionary to store the results
-    menu_items = [{'item': item['Item'], 'item_count': item['item_count'], 'cost_sum': item['cost_sum']} for item in result]
+        # Create a dictionary to store the results
+        menu_items = [{'item': item['Item'], 'item_count': item['item_count'], 'cost_sum': item['cost_sum']} for item in result]
 
+    else:
+            menu_items = []
+            
     return menu_items
 
 
 def get_all_slot_machine_data():
     filter_values = ['3OAK','2OAK','Slot Spin']  # Add more values as needed
     # Use conditional aggregation to get counts and cost sums for the specified values
-    result = (
-        Item_Availed.objects
-        .filter(Item__in=filter_values) 
-        .values('Item')
-        .annotate(item_count=Count('Item'), cost_sum=Sum('Cost'))
-    )
+    
+    if Item_Availed.objects.filter(Item__in=filter_values).exists():
+        result = (
+                Item_Availed.objects
+                .filter(Item__in=filter_values) 
+                .values('Item')
+                .annotate(item_count=Count('Item'), cost_sum=Sum('Cost'))
+        )
 
-    # Create a dictionary to store the results
-    slot_machine_data = [{'item': item['Item'], 'item_count': item['item_count'], 'cost_sum': item['cost_sum']} for item in result]
+        # Create a dictionary to store the results
+        slot_machine_data = [{'item': item['Item'], 'item_count': item['item_count'], 'cost_sum': item['cost_sum']} for item in result]
 
+    else:
+        slot_machine_data = []
+        
     return slot_machine_data
 
 

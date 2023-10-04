@@ -331,9 +331,11 @@
             console.log(is_leaving);
 
             if (is_leaving === true) {
-                
-            broadcaster_visitors--;
-            document.getElementById('visitors').innerHTML =  broadcaster_visitors;
+            
+                        if (broadcaster_visitors > 0){
+                        broadcaster_visitors--;
+                        document.getElementById('visitors').innerHTML =  broadcaster_visitors;
+                    }
   
             }
 

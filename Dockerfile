@@ -11,17 +11,18 @@ RUN apt-get update && apt-get install -y tzdata && \
     ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
     dpkg-reconfigure --frontend noninteractive tzdata
 
-# Install essential packages and Python
+# Install essential packages, Python, and PostgreSQL client dependencies
 RUN apt-get update --fix-missing && apt-get install -y \
     python3.9 \
     python3.9-venv \
+    python3.9-dev \ 
     python3-pip \
     git \
-    libsqlite3-mod-spatialite \
-    spatialite-bin \
+    libpq-dev \
     libgdal-dev \
     libgeos-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 
 # Set the working directory
 WORKDIR /privatevibez
