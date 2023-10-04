@@ -20,31 +20,34 @@ def get_last_10_messages(chatId):
 
 def fan_list(request, broc):
     
-    try: 
-        
-        with transaction.atomic():
-            if Private_Chat_Invitee.objects.filter(Broadcaster=request.user).exists():
-                broadcaster = Private_Chat_Invitee.objects.get(Broadcaster=request.user)
-                invitee_list = broadcaster.Invitee_relationships.all()
-                
-                invitees = []
-                for invitee in invitee_list:
-                    
-                    if invitee.Is_Accepted == True:
-                            invitees.append({
-                                'user_id': invitee.Invitee.id,
-                                'name'  : invitee.Invitee.username,
-                            })
-                    
-                
-                return JsonResponse({"data":invitees}, safe=False)
-            else:
-                return JsonResponse({"data":"None"}, safe=False)
+    
+    if request.user.is_authenticated:
+        try: 
             
-    except IntegrityError as e:
-        print(e,flush=True)
-        
-            
+            with transaction.atomic():
+                if Private_Chat_Invitee.objects.filter(Broadcaster=request.user).exists():
+                    broadcaster = Private_Chat_Invitee.objects.get(Broadcaster=request.user)
+                    invitee_list = broadcaster.Invitee_relationships.all()
+                    
+                    invitees = []
+                    for invitee in invitee_list:
+                        
+                        if invitee.Is_Accepted == True:
+                                invitees.append({
+                                    'user_id': invitee.Invitee.id,
+                                    'name'  : invitee.Invitee.username,
+                                })
+                        
+                    
+                    return JsonResponse({"data":invitees}, safe=False)
+                else:
+                    return JsonResponse({"data":"None"}, safe=False)
+                
+        except IntegrityError as e:
+            print(e,flush=True)
+    else:
+        return JsonResponse({"data":"None"}, safe=False)     
+                
     
 def staff_list(request, broc):
 
