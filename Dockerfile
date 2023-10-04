@@ -51,7 +51,7 @@ RUN groupadd -g 1001 groupname && \
 
 USER root
 # ENTRYPOINT will run as root by default, unless specified otherwise before
-ENTRYPOINT ["/privatevibez/entrypoint.sh"]
+ENTRYPOINT ["sh", "/privatevibez/entrypoint.sh"]
 
 # Switch to the non-root user for subsequent operations and CMD
 USER username
