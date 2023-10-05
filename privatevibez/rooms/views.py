@@ -102,7 +102,6 @@ def Room(request, Broadcaster):
                             rooms                = Room_Data.objects.all()
                             room_users_data      = User_Data.objects.all()    
                             menu_data            = Menu_Data.objects.filter(User = broadcaster_user)
-                            broadcaster_status   = User_Status.objects.get(User = User.objects.get(username = Broadcaster))
                             room_data            = Room_Data.objects.get(User = User.objects.get(username = Broadcaster))
                             # room_sesson          = Room_Sesson.objects.get(User = User.objects.get(username = Broadcaster))
                             broadcaster_data     = User_Data.objects.get(User = User.objects.get(username = Broadcaster))
@@ -246,7 +245,7 @@ def Room(request, Broadcaster):
 
                                 
                                 return render(request, "rooms/home.html", locals()) 
-                            except User_Status.DoesNotExist:
+                            except User.DoesNotExist:
                                 messages.error(request, 'User does not exist')
                     
                     else:

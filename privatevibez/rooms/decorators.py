@@ -91,16 +91,19 @@ def check_user_status(redirect_url='/'):
     def check_user(request,*args, **kwargs):
       
       if request.user.is_authenticated:
-          user = User.objects.get(username=request.user)
-          broadcaster_username = kwargs.get('Broadcaster')
-          user_status = user.Status
-          if user_status == "Pending_Broadcaster" and user.username == broadcaster_username:
-              print(user_status,flush=True)
-              return redirect(redirect_url)
-          elif user_status == "Declined_Broadcaster":
-              print(user_status,flush=True)
-              return redirect(redirect_url)
-          
+          try:
+            user = User.objects.get(username=request.user)
+            broadcaster_username = kwargs.get('Broadcaster')
+            user_status = user.Status
+            if user_status == "Pending_Broadcaster" and user.username == broadcaster_username:
+                print(user_status,flush=True)
+                return redirect(redirect_url)
+            elif user_status == "Declined_Broadcaster":
+                print(user_status,flush=True)
+                return redirect(redirect_url)
+            
+          except (User.DoesNotExist):
+            return redirect(redirect_url)
           else:
             return view_func(request, *args, **kwargs)
       else:
