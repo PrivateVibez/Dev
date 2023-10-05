@@ -146,7 +146,6 @@ def Registration(request):
             if not User_Data.objects.filter(User = user).exists():
                 User_Data.objects.create(User = user,Vibez = "0")
                 
-            User_Status.objects.create(User = user,Status= "User")
             messages.success(request, f'You have created an account {username}! enjoy vibing!')
             
             return redirect("Main_home")
@@ -181,7 +180,6 @@ def RegistrationWithPromotionCode(request):
                 if not User_Data.objects.filter(User = user).exists():
                     User_Data.objects.create(User = user,Vibez = "0")
                     
-                User_Status.objects.create(User = user,Status= "User")
                 messages.success(request, f'You have created an account {username}! enjoy vibing!')
                 
                 return redirect(request.META.get('HTTP_REFERER'))
@@ -889,7 +887,6 @@ def BroadcasterRegistration(request, code):
                         if not User_Data.objects.filter(User = user).exists():
                             User_Data.objects.create(User = user,Vibez = "0")
                             
-                        User_Status.objects.create(User = user,Status= "User")
                         messages.success(request, f'You have created an account {username}! enjoy vibing!')
                         
                         return redirect("Main_home")
