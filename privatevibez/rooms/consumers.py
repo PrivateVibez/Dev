@@ -10,6 +10,64 @@ from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
+class FollowingConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.room_id = self.scope['url_route']['kwargs']['room_id']
+    
+        self.room_group_name = 'following_%s' % (self.room_id)
+
+        # Join room group
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+        
+    async def broadcaster_followers(self, event):
+        data = event['data']
+        modified_data = {
+        "followers": data
+            }
+        await self.send(text_data=json.dumps(modified_data))
+ 
+ 
+class GamesListOfPrizesConsumer(AsyncWebsocketConsumer):   
+    
+    async def connect(self):
+        self.room_id = self.scope['url_route']['kwargs']['room_id']
+    
+        self.room_group_name = 'update_games_list_%s' % (self.room_id)
+
+        # Join room group
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+        
+    async def updateGameListOfPrizes(self, event):
+        data = event['data']
+        modified_data = {
+            "is_updated": True,
+
+        }
+        print(modified_data,flush=True)
+        await self.send(text_data=json.dumps(modified_data))
+        
+        
+        
 
 class GamesSocketConsumer(AsyncWebsocketConsumer):
     async def connect(self):

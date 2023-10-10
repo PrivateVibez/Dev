@@ -265,7 +265,14 @@ let roomName;
         
         // You can perform additional actions here, such as sending the date to a server or updating the UI.
     });
-  
+
+
+    let broadcaster_follower_socket = new WebSocket(protocol + '://' + window.location.host + '/ws/following/'+'{{ room_data.User.id}}/');
+
+    broadcaster_follower_socket.onmessage = function(e) {
+
+      $(" #follower-details-table ").load(" #follower-details-table > * ");
+    }
 
 
 </script>

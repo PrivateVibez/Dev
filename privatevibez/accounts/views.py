@@ -369,12 +369,29 @@ def Send_Vibez(request):
             
             show_item_in_roomstats(room_id,user,item)
             
+            updateBroadcasterFollowersTab(room_id.User.id)
             return JsonResponse({'data':'sent vibez!',"vibez":user.Vibez}, safe=False)
         else:
             return JsonResponse(f'not enough vibez',status=500,safe=False)
     else:
         return JsonResponse(f'enter a valid amount',status=500,safe=False)
 
+
+def updateBroadcasterFollowersTab(broadcaster_id):
+    
+    channel_layer = get_channel_layer()
+    channel_name = "following_" + str(broadcaster_id)
+    
+    # Prepare data to send
+    data = {
+        "follow": "Update"
+    }
+    
+    # Send the data to the WebSocket consumer
+    async_to_sync(channel_layer.group_send)(
+        channel_name,
+        {"type": "broadcaster.followers", "data": data}
+    )
 
 @csrf_exempt
 def Profile_Pic(request):

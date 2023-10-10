@@ -105,6 +105,18 @@ urlpatterns = [
          
          
          path('give_dice_price/', views.give_dice_price, name="give_dice_price"),
+         
+         
+         #set social media links
+         path('set_social_media_links/', views.set_social_media_links, name="set_social_media_links"),
+         
+         
+         #get social media link
+         path('avail_social_media_link/', views.avail_social_media_link, name="avail_social_media_link"),
+         
+         
+         #remove social media link
+         path('remove_social_media_link/', views.remove_social_media_link, name="remove_social_media_link"),
      
 
      

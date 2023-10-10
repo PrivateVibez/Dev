@@ -17,7 +17,7 @@ from django.utils.safestring import mark_safe
 import json
 import random
 from datetime import datetime
-from .forms import Slot_MachineForm, Fav_vibezForm, BioForm, MenuDataForm
+from .forms import Slot_MachineForm, Fav_vibezForm, BioForm, MenuDataForm, SocialMediaLinks
 from django.http import HttpResponse as httpresponse
 import requests
 from .decorators import check_user_blocked_ip,check_user_status
@@ -57,7 +57,7 @@ def user_blocked(request):
 
 #check if user's region or country is not blocked by the room
 @check_user_blocked_ip(redirect_url="/room/notfound/404/")
-# @check_user_status(redirect_url="/")
+
 def Room(request, Broadcaster):
 
     if request.user.is_authenticated:
@@ -131,7 +131,17 @@ def Room(request, Broadcaster):
                                 follow_button = True
                             else:
                                 follow_button = False
-                                
+                            
+                            
+                            #SOCIAL MEDIA LINKS
+                            instagram = Social_Media_Links.objects.get(User = broadcaster_user, Social_Media = "Instagram") if Social_Media_Links.objects.filter(User=broadcaster_user, Social_Media="Instagram").exists() else None
+                                    
+                            onlyfans = Social_Media_Links.objects.get(User = broadcaster_user, Social_Media = "Onlyfans") if Social_Media_Links.objects.filter(User=broadcaster_user, Social_Media="Onlyfans").exists() else None
+                            
+                            snapchat = Social_Media_Links.objects.get(User = broadcaster_user, Social_Media = "Snapchat") if Social_Media_Links.objects.filter(User=broadcaster_user, Social_Media="Snapchat").exists() else None
+                            
+                            amazon = Social_Media_Links.objects.get(User = broadcaster_user, Social_Media = "Amazon") if Social_Media_Links.objects.filter(User=broadcaster_user, Social_Media="Amazon").exists() else None
+    
                                 
                             if Slot_Machine.objects.filter(User=broadcaster_user).exists():
                                     slot_machine_cost_per_spin = Games_Data.objects.order_by('-timestamp').values('Slot_Machine_Spin_Cost').first()
@@ -144,7 +154,22 @@ def Room(request, Broadcaster):
                                 user = request.user
 
                                 if user.Status == "User":
-
+                                    
+                                    
+                                    is_lottery_existing = Lottery.objects.filter(User=broadcaster_user).exists()
+                                    try:
+                                        lottery_prizes = Lottery.objects.filter(User=broadcaster_user)
+                                    except Lottery.DoesNotExist:
+                                        pass
+                                    
+                                    is_menu_items_existing = Menu_Data.objects.filter(User=broadcaster_user).exists()
+                                    
+                                    is_dice_existing = Dice.objects.filter(User=broadcaster_user).exists()
+                                    try:
+                                        dice_prizes = Dice.objects.filter(User=broadcaster_user)
+                                    except Dice.DoesNotExist:
+                                        pass
+                                    
                                     try:
                             
                                         private_chat_invite = Private_Chat_Invitee.objects.get(Broadcaster=broadcaster_user, Invitee_relationships__Invitee=user)   
@@ -177,7 +202,8 @@ def Room(request, Broadcaster):
                                     # Loop through the queryset and append the values to the list
                                     for item in menu_data:
                                         lottery_prizes_list.append(item.Menu_Name)
-                                                                        
+                                    
+                                            
                                     lottery_slot_1 = Lottery.objects.get(User=broadcaster_user, slot_number=0) if Lottery.objects.filter(User=broadcaster_user, slot_number=0).exists() else None
                                     lottery_slot_2 = Lottery.objects.get(User=broadcaster_user, slot_number=1) if Lottery.objects.filter(User=broadcaster_user, slot_number=1).exists() else None
                                     lottery_slot_3 = Lottery.objects.get(User=broadcaster_user, slot_number=2) if Lottery.objects.filter(User=broadcaster_user, slot_number=2).exists() else None
@@ -193,7 +219,8 @@ def Room(request, Broadcaster):
                                     dice_4 = Dice.objects.get(User=broadcaster_user, dice_number=4) if Dice.objects.filter(User=broadcaster_user, dice_number=4).exists() else None
                                     dice_5 = Dice.objects.get(User=broadcaster_user, dice_number=5) if Dice.objects.filter(User=broadcaster_user, dice_number=5).exists() else None
                                     dice_6 = Dice.objects.get(User=broadcaster_user, dice_number=6) if Dice.objects.filter(User=broadcaster_user, dice_number=6).exists() else None
-           
+                                    
+                
                     
                                     if Private_Chat_Invitee.objects.filter(Broadcaster=request.user).exists():
                                         private_chat_invite = Private_Chat_Invitee.objects.get(Broadcaster=request.user)
@@ -266,6 +293,138 @@ def Room(request, Broadcaster):
         return render(request, "rooms/home.html", locals())
 
 
+def avail_social_media_link(request):
+    
+    if request.method == "POST":
+        
+        
+        broadcaster_id = request.POST.get('broadcaster_id')
+        social_media   = request.POST.get('social_media')
+        
+        user = User_Data.objects.get(User=request.user)
+        room_data = Room_Data.objects.get(User__id=broadcaster_id)
+        
+        if broadcaster_id != "" and social_media != "":
+        
+            try:
+                broadcaster_socials = Social_Media_Links.objects.get(User__id=broadcaster_id,Social_Media=social_media)
+                
+                
+                if user.Vibez < broadcaster_socials.Vibez_Cost or user.Free_spins < 0:
+                    return JsonResponse({"data":"not enough vibez!"}, status=500, safe=False)
+                elif user.Free_spins > 0:
+                     user.Free_spins -= 1
+                    
+                elif user.Vibez >= broadcaster_socials.Vibez_Cost:
+                     user.Vibez -= broadcaster_socials.Vibez_Cost
+                
+                user.save()
+                
+                if broadcaster_socials.Vibez_Cost != None:
+                    
+                    if room_data.Revenue != 0:
+                        room_data.Revenue += broadcaster_socials.Vibez_Cost
+                    else:
+                        room_data.Revenue = broadcaster_socials.Vibez_Cost
+
+                        
+                    room_data.save()
+                    
+                broadcaster_data = {
+                    "user_vibez":user.Vibez,
+                    "free_spins":user.Free_spins,
+                    "link":broadcaster_socials.Link
+                }
+                
+                
+                item = Item_Availed.objects.create(Room = room_data,User=user.User, Item = broadcaster_socials.Social_Media, Cost = broadcaster_socials.Vibez_Cost)
+                
+                show_item_in_roomstats(room_data,user,item)
+                show_updated_broadcaster_revenue_and_total_user_vibez()
+                
+                return JsonResponse(broadcaster_data, status=200, safe=False)
+                
+            except Social_Media_Links.DoesNotExist as e:
+                print(e,flush=True)
+                return JsonResponse({"data":"broadcaster does not exist"}, status=500, safe=False)
+        
+
+def set_social_media_links(request):
+    
+    broadcaster = request.user
+    
+
+    if request.method == "POST":
+        form = SocialMediaLinks(request.POST)
+
+        if form.is_valid():
+                
+                instagram_link = form.cleaned_data['instagram_link']
+                onlyfans_link = form.cleaned_data['onlyfans_link']
+                snapchat_link = form.cleaned_data['snapchat_link']
+                amazon_link = form.cleaned_data['amazon_link']
+                
+                instagram_vibez_cost = form.cleaned_data['instagram_vibez_cost']
+                onlyfans_vibez_cost = form.cleaned_data['onlyfans_vibez_cost']
+                snapchat_vibez_cost = form.cleaned_data['snapchat_vibez_cost']
+                amazon_vibez_cost = form.cleaned_data['amazon_vibez_cost']
+                
+                
+                social_media_data = {
+                    'Instagram': {'link': instagram_link, 'cost': instagram_vibez_cost},
+                    'Onlyfans': {'link': onlyfans_link, 'cost': onlyfans_vibez_cost},
+                    'Snapchat': {'link': snapchat_link, 'cost': snapchat_vibez_cost},
+                    'Amazon': {'link': amazon_link, 'cost': amazon_vibez_cost},
+                }
+
+                for platform, data in social_media_data.items():
+                    if data['link'] != "":
+                        # Check if the entry already exists
+                        existing_entry = Social_Media_Links.objects.filter(User=broadcaster, Social_Media=platform).first()
+
+                        if existing_entry:
+                            # Update the existing entry
+                            existing_entry.Link = data['link']
+                            existing_entry.Vibez_Cost = data['cost']
+                            existing_entry.save()
+                        else:
+                            # Create a new entry
+                            Social_Media_Links.objects.create(
+                                User=broadcaster,
+                                Social_Media=platform,
+                                Link=data['link'],
+                                Vibez_Cost=data['cost']
+                            )
+                try:
+                                
+                    update_games_accessibility(Room_Data.objects.get(User=broadcaster))
+                except Room_Data.DoesNotExist as e:
+                    print("does not exist")
+
+                return JsonResponse({"data":f'social media links added!'}, safe=False)
+        else:
+
+
+            
+            return JsonResponse({"data":"input valid data"}, status=500, safe=False)
+
+def remove_social_media_link(request):
+    
+    broadcaster = request.user
+    social_media = request.POST.get('socialmedia')
+    
+    try:
+        print(social_media,flush=True)
+        if social_media != "":
+            
+            Social_Media_Links.objects.filter(User=broadcaster,Social_Media=social_media).delete()
+            update_games_accessibility(Room_Data.objects.get(User=broadcaster))
+    except Social_Media_Links.DoesNotExist as e:
+        
+        print("does not exist",flush=True)
+        
+    return JsonResponse({"data":f'social media links removed!'}, safe=False)
+        
 
 def get_broadcaster_followers(broadcaster):
     
@@ -398,6 +557,7 @@ def avail_menu_item(request):
                     
                     display_user_availed_item_in_broadcaster_room(user,item,broadcaster_room)
                     
+                    updateBroadcasterFollowersTab(broadcaster_room.User.id)
                     
                     return JsonResponse({"data":f'you bought {menu_item.Menu_Name} lets keep vibing!'}, safe=False)
                 else:
@@ -440,8 +600,29 @@ def remove_menu_data(request):
     
     if request.method == "POST":
 
-        Menu_Data.objects.get(id = request.POST.get('item_id')).delete()
+        try:
+            menu_item = Menu_Data.objects.get(id = request.POST.get('item_id'))
+            
+            lotter_prize_exists = Lottery.objects.filter(User = request.user, prize = menu_item.Menu_Name).exists()
+            dice_prize_exists = Dice.objects.filter(User = request.user, prize = menu_item.Menu_Name).exists()
+            
+            if lotter_prize_exists:
+                    Lottery.objects.filter(User=request.user, prize=menu_item.Menu_Name).delete()
+                    
+            if dice_prize_exists:
+                    Dice.objects.filter(User=request.user, prize=menu_item.Menu_Name).delete()
+            
+            menu_item.delete()
+            update_broadcaster_games_prizes_list(request.user.id)
+
+        except Menu_Data.DoesNotExist:
+            
+            return JsonResponse({"data":f'menu item does not exist'}, status=500, safe=False)
         
+        
+        
+        update_broadcaster_games_prizes_list(request.user.id)
+
         return JsonResponse({"data":"menu item deleted!"}, safe=False) 
 
     else:
@@ -518,13 +699,32 @@ def Following(request):
                         Broadcaster   =   User.objects.get(username = broadcaster)
                     )
                     message = f'You are now following {broadcaster}'
-                    
+            
+            broadcaster = User.objects.get(username = broadcaster)
+
+            updateBroadcasterFollowersTab(broadcaster.id)
+            
             return JsonResponse({'data':message}, safe=False) 
         
     except IntegrityError as e:
         
         print(e,flush=True)
 
+def updateBroadcasterFollowersTab(broadcaster_id):
+    
+    channel_layer = get_channel_layer()
+    channel_name = "following_" + str(broadcaster_id)
+    
+    # Prepare data to send
+    data = {
+        "follow": "Update"
+    }
+    
+    # Send the data to the WebSocket consumer
+    async_to_sync(channel_layer.group_send)(
+        channel_name,
+        {"type": "broadcaster.followers", "data": data}
+    )
 
 def Thumb(request):
     
@@ -799,7 +999,7 @@ def show_updated_privatevibez_earning_to_staff_dashboard(privatevibezinstance):
        
 
 
-def player_remaining_spins_or_vibez(winner,msg,pot,serializer=None):
+def player_remaining_spins_or_vibez(winner,msg,pot,random_button=None):
 
     if winner.Free_spins != 0:
         spins = {"spins": winner.Free_spins}
@@ -810,6 +1010,7 @@ def player_remaining_spins_or_vibez(winner,msg,pot,serializer=None):
 
     data = {
         "msg": msg,
+        "random_button": random_button if random_button is not None else None,
         "vibez": vibez if vibez is not None else None,
         "spins": spins if spins is not None else None,
         "pot": pot if pot is not None else None
@@ -885,8 +1086,9 @@ def get_prize(request):
                         
                         trigger_toy(room_data.User.id,price,winner.User.id,feature,strength,timesec)
                         
-                        msg = f'Two of a kind!! {random_button}'
-                        data = player_remaining_spins_or_vibez(winner,msg,pot)
+                        msg = f'2OAK'
+                        
+                        data = player_remaining_spins_or_vibez(winner,msg,pot,random_button)
                         
                         
                     if prize == "3OAK":
@@ -909,8 +1111,15 @@ def get_prize(request):
                     if prize == "Loss":
                         feature = room_data.Feature_OH_button
                         strength = room_data.Strength_OH_button
-                        remaining_price = cost_per_spin
+                        remaining_price = (cost_per_spin - 1)
                         timesec = 1    
+
+                        if room_data.Revenue != 0:
+                            room_data.Revenue +=  1
+                        else:
+                            room_data.Revenue = 1
+                            
+                        room_data.save()
                             
                         deduct_spin_or_vibez(winner,room_data,cost_per_spin,game_type=None,game_data=None)
                         
@@ -918,6 +1127,7 @@ def get_prize(request):
                         
                         trigger_toy(room_data.User.id,cost_per_spin,winner.User.id,feature,strength,timesec)
                         slot_machine_pot = Slot_Machine.objects.filter(User=room_data.User)
+                        
                         
                         for machine in slot_machine_pot:
                             machine.pot += remaining_price
@@ -1363,7 +1573,8 @@ def availed_item(user,room,item,price,game_type=None,random_button=None,button_c
                 # else:
                 #     room.Revenue = remaining_price
                 # room.save()
-            
+                updateBroadcasterFollowersTab(room.User.id)
+                
                 return slot_instance
                 
             
@@ -1402,7 +1613,7 @@ def availed_item(user,room,item,price,game_type=None,random_button=None,button_c
                 # room.save()
                 
           
-                
+                updateBroadcasterFollowersTab(room.User.id)
                 return slot_instance
                 
             else:
@@ -1485,6 +1696,8 @@ def fav_btn_trigger_toy(request):
 
                     # Call the trigger_toy() function with the extracted attributes
                     trigger_toy(broadcaster_id,price, user_id, feature, strength, timesec)
+                
+                updateBroadcasterFollowersTab(room_data.User_id)
                 
                 return JsonResponse({'data': button_type + f' availed!','user_vibez':user_vibez},safe=False)
             
@@ -1835,6 +2048,7 @@ def set_lottery_prize(request):
     
     if request.method == "POST":
         
+        broadcaster = request.user
         slot_values = []
 
         for i in range(0, 8):
@@ -1858,15 +2072,30 @@ def set_lottery_prize(request):
                 if slot_value != "None":
                     lottery = Lottery.objects.create(slot_number=i,User=request.user,prize=slot_value)
         
-        
+        update_broadcaster_games_prizes_list(broadcaster.id)
         return JsonResponse({"data":f'lottery saved'},status=200, safe=False)
                 
-        
+                
+                
+def update_broadcaster_games_prizes_list(broadcaster_id):  
+    channel_layer = get_channel_layer()
+    channel_name = "update_games_list_" + str(broadcaster_id)
+    
+    # Prepare data to send
+    data = {
+        "update_games_list": True,
+    }
+    
+    # Send the data to the WebSocket consumer
+    async_to_sync(channel_layer.group_send)(
+        channel_name,
+        {"type": "updateGameListOfPrizes", "data": data}
+    )
 
 def set_dice_prize(request):
     
     if request.method == "POST":
-        
+        broadcaster = request.user
         dice_values = []
 
         for i in range(1, 7):
@@ -1891,6 +2120,7 @@ def set_dice_prize(request):
                     dice = Dice.objects.create(dice_number=i,User=request.user,prize=dice_value)
         
         
+        update_broadcaster_games_prizes_list(broadcaster.id)
         return JsonResponse({"data":f'lottery saved'},status=200, safe=False)
                 
         
@@ -2003,7 +2233,7 @@ def get_lottery_prize(request):
             else:
                 cost = price
                 
-            item = Item_Availed.objects.create(Room=room_data,User=user.User,Item="lottery loss", Cost=cost, Note="Lottery game")
+            item = Item_Availed.objects.create(Room=room_data,User=user.User,Item="lottery loss", Cost=remaining_price, Note="Lottery game")
             user.Availed.add(item)
             
             show_item_in_roomstats(room_data,user,item)
@@ -2126,7 +2356,11 @@ def update_games_accessibility(roomData):
     data = {
         "is_Lottery_Active": roomData.Is_Lottery_Active,
         "is_Menu_Active": roomData.Is_Menu_Active,
-        "is_Dice_Active": roomData.Is_Dice_Active
+        "is_Dice_Active": roomData.Is_Dice_Active,
+        "is_Instagram_Set": True if Social_Media_Links.objects.filter(User=roomData.User,Social_Media="Instagram").exists() else False,
+        "is_OnlyFans_Set": True if Social_Media_Links.objects.filter(User=roomData.User,Social_Media="Onlyfans").exists() else False,
+        "is_Snapchat_Set": True if Social_Media_Links.objects.filter(User=roomData.User,Social_Media="Snapchat").exists() else False,
+        "is_Amazon_Set": True if Social_Media_Links.objects.filter(User=roomData.User,Social_Media="Amazon").exists() else False
     }
     
     # Send the data to the WebSocket consumer
@@ -2257,11 +2491,21 @@ def give_dice_price(request):
                 cost = 0
             else:
                 cost = price
-                
-            item = Item_Availed.objects.create(Room=room_data,User=user.User,Item="dice loss", Cost=cost, Note="Dice game")
-            user.Availed.add(item) 
             
-            show_item_in_roomstats(room_data,user,item)
+  
+            feature = room_data.Feature_MMM_button
+            strength = room_data.Strength_MMM_button
+            timesec = room_data.Duration_MMM_button
+         
+            
+            availed_item(request.user.id,room_data,"MMM",remaining_price,"Dice",random_button=None,button_cost=None,note="Dice game")
+
+            trigger_toy(room_data.User.id,cost,request.user.id,feature,strength,timesec)
+            
+            # item = Item_Availed.objects.create(Room=room_data,User=user.User,Item="MMM", Cost=cost, Note="Dice game")
+            # user.Availed.add(item) 
+            
+            # show_item_in_roomstats(room_data,user,item)
             
             
             channel_layer = get_channel_layer()
@@ -2279,4 +2523,4 @@ def give_dice_price(request):
                 {"type": "show.updatedRevenue", "data": data}
             )
 
-            return JsonResponse({"data":f'it\'s okay to lose, try again!',"spins":user.Free_spins,"vibez":user.Vibez},status=500, safe=False) 
+            return JsonResponse({"data":f'it\'s okay to lose, you still get MMM button. try again!',"spins":user.Free_spins,"vibez":user.Vibez},status=500, safe=False) 

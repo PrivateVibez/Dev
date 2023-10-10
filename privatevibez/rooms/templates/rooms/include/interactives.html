@@ -1,0 +1,985 @@
+<div class="container-fluid">
+
+  <h3 class="fs-1 font-weight-bold">Lottery</h3>
+<div class="row gap-5">
+
+      <!--SET SLOT MACHINE PRIZES SLOT MACHINE-->
+  <div class="d-flex flex-column" id="set-slotmachine-container">
+
+
+    <div class="col">
+
+      <label class="fs-2" for="price_for_slot_1">Slot 1 prize</label>
+      <select class="fs-2" id="price_for_slot_1">
+        <option value="None">None</option>
+
+        {% for prize in lottery_prizes_list %}
+        {% if lottery_slot_1.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
+        <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}
+        {% endfor %}
+      </select>
+
+      
+      <label class="fs-2" for="price_for_slot_2">Slot 2 prize</label>
+      <select class="fs-2" id="price_for_slot_2">
+        <option value="None">None</option>
+
+        {% for prize in lottery_prizes_list %}
+        {% if lottery_slot_2.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
+        <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}       
+        {% endfor %}
+      </select>
+
+    </div>
+
+    <div class="col">
+
+      <label class="fs-2" for="price_for_slot_3">Slot 3 prize</label>
+      <select class="fs-2" id="price_for_slot_3">
+        <option value="None">None</option>
+
+        {% for prize in lottery_prizes_list %}
+        {% if lottery_slot_3.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
+        <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}  
+        {% endfor %}
+      </select>
+
+
+      <label class="fs-2" for="price_for_slot_4">Slot 4 prize</label>
+      <select class="fs-2" id="price_for_slot_4">
+        <option value="None">None</option>
+
+        {% for prize in lottery_prizes_list %}
+        {% if lottery_slot_4.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
+        <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}        
+        {% endfor %}
+      </select>
+
+    </div>
+
+
+    <div class="col">
+
+      <label class="fs-2" for="price_for_slot_5">Slot 5 prize</label>
+      <select class="fs-2" id="price_for_slot_5">
+        <option value="None">None</option>
+
+        {% for prize in lottery_prizes_list %}
+        {% if lottery_slot_5.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
+        <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}           
+        {% endfor %}
+      </select>
+
+
+      <label class="fs-2" for="price_for_slot_6">Slot 6 prize</label>
+      <select class="fs-2" id="price_for_slot_6">
+        <option value="None">None</option>
+
+        {% for prize in lottery_prizes_list %}
+        {% if lottery_slot_6.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
+        <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}    
+        {% endfor %}
+      </select>
+
+    </div>
+
+
+    <div class="col">
+
+      <label class="fs-2" for="price_for_slot_7">Slot 7 prize</label>
+      <select class="fs-2" id="price_for_slot_7">
+        <option value="None">None</option>
+
+        {% for prize in lottery_prizes_list %}
+        {% if lottery_slot_7.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
+        <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %} 
+        {% endfor %}
+      </select>
+
+
+      <label class="fs-2" for="price_for_slot_8">Slot 8 prize</label>
+      <select class="fs-2" id="price_for_slot_8">
+        <option value="None">None</option>
+
+        {% for prize in lottery_prizes_list %}
+        {% if lottery_slot_8.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
+        <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}        
+        {% endfor %}
+      </select>
+    
+    </div>
+
+    <div class="col-1 justify-content-center my-2">
+      <button type="button" onclick="set_lottery_prize()" class="btn btn-dark w-75 m-auto fs-2">Set</button>
+    </div>
+
+  </div>
+
+
+<!--SET DICE PRIZES-->
+
+
+ 
+<div class="d-flex flex-column" id="set-dice-container">
+      
+  <h3 class="fs-1 font-weight-bold">Dice</h3>
+
+  <div class="col">
+
+      <label class="fs-2" for="price_for_dice_1">Dice number 1 prize</label>
+      <select class="fs-2" id="price_for_dice_1">
+        <option value="None">None</option>
+
+        {% for prize in lottery_prizes_list %}
+        {% if dice_1.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
+        <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}
+        {% endfor %}
+      </select>
+
+      
+      <label class="fs-2" for="price_for_dice_2">Dice number 2 prize</label>
+      <select class="fs-2" id="price_for_dice_2">
+        <option value="None">None</option>
+
+        {% for prize in lottery_prizes_list %}
+        {% if dice_2.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
+        <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}       
+        {% endfor %}
+      </select>
+
+    </div>
+
+
+
+  <div class="col">
+
+      <label class="fs-2" for="price_for_dice_3">Dice number 3 prize</label>
+      <select class="fs-2" id="price_for_dice_3">
+        <option value="None">None</option>
+
+        {% for prize in lottery_prizes_list %}
+        {% if dice_3.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
+        <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}  
+        {% endfor %}
+      </select>
+
+
+      <label class="fs-2" for="price_for_dice_4">Dice number 4 prize</label>
+      <select class="fs-2" id="price_for_dice_4">
+        <option value="None">None</option>
+
+        {% for prize in lottery_prizes_list %}
+        {% if dice_4.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
+        <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}        
+        {% endfor %}
+      </select>
+
+    </div>
+
+
+    <div class="col">
+
+      <label class="fs-2" for="price_for_dice_5">Dice number 5 prize</label>
+      <select class="fs-2" id="price_for_dice_5">
+        <option value="None">None</option>
+
+        {% for prize in lottery_prizes_list %}
+        {% if dice_5.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
+        <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}           
+        {% endfor %}
+      </select>
+
+
+      <label class="fs-2" for="price_for_dice_6">Dice number 6 prize</label>
+      <select class="fs-2" id="price_for_dice_6">
+        <option value="None">None</option>
+
+        {% for prize in lottery_prizes_list %}
+        {% if dice_6.prize == prize %}
+        <option selected value="{{ prize }}">{{ prize }}</option>
+
+        {% else %}
+        <option value="{{ prize }}">{{ prize }}</option>
+        {% endif %}    
+        {% endfor %}
+      </select>
+
+
+    </div>
+
+
+    <div class="col-1 justify-content-center my-2">
+      <button type="button" onclick="set_dice_prize()" class="btn btn-dark w-75 m-auto fs-2">Set</button>
+    </div>
+
+  </div>
+
+
+
+  <!--SET MENU ITEMS-->
+
+  <div class="container-fluid">
+    <label for="menu-item-1" data-item="1" class="control-label fs-2">Menu Item</label>
+  
+    <div class="row">
+      <div class="col-lg-5 col-sm-9 col-md-9">
+        <table style="border:none" class="table">
+          <thead>
+            <tr>
+              <th style="border:none" scope="col">Item</th>
+              <th style="border:none" scope="col">Price</th>
+              <th style="border:none" scope="col">Duration in seconds</th>
+            </tr>
+          </thead>
+          <tbody id="menu-items-table">
+  
+            {% for item in menu_data %}
+            <tr>
+              <th scope="row">{{item.Menu_Name}}</th>
+              <td>{{item.Vibez_Cost}}</td>
+              <td>{{item.Menu_Time}}</td>
+              <td class="d-flex justify-content-center gap-2">
+                <button type="button" class="btn btn-dark fs-3" data-bs-toggle="modal" data-bs-target="#modalUpdateMenuItems-{{item.id}}">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                  </svg>
+              </button>
+         
+                <button type="button" class="btn btn-danger fs-" onclick="remove_menu_data({{item.id}})">
+                  <span class="fs-1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/>
+                  </svg></span>
+              </button>
+        
+            </td>
+  
+            
+  
+  
+            </tr>
+  
+            <!-- Modal for editing menu items -->
+  <div class="modal fade" id="modalUpdateMenuItems-{{item.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fs-2" id="exampleModalLabel">Edit menu items</h5>
+          <button type="button" class="btn-close fs-2" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body container-fluid">
+          <div class="row">
+            <div class="col-3">
+                  <input type="text" id="update-menu-item-{{item.id}}" value="{{item.Menu_Name}}" placeholder="{{item.Menu_Name}}" class="">
+            </div>
+            <div class="col-3">
+                  <input type="text" id="update-menu-item-price-{{item.id}}" value="{{item.Vibez_Cost}}" placeholder="{{item.Vibez_Cost}}" class="">
+            </div>
+            <div class="col-3">
+                  <input type="text" id="update-menu-item-duration-{{item.id}}" value="{{item.Menu_Time}}" placeholder="{{item.id}}" class="">
+            </div>
+            <div class="col-3 d-flex justify-content-center">
+                  <button onclick="update_menu_items({{item.id}})" class="btn btn-dark fs-2 text-center w-100">Update</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+  
+        </div>
+      </div>
+    </div>
+  </div>
+  
+            {% endfor %}
+  
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+    <div class="row">
+      <div class="col-lg-1 col-sm-4">
+            <input type="text" id="menu-item" placeholder="item" class="">
+      </div>
+      <div class="col-lg-1 col-sm-4">
+            <input type="text" id="menu-item-price" placeholder="price" class="">
+      </div>
+      <div class="col-lg-1 col-sm-4">
+            <input type="text" id="menu-item-duration" placeholder="duration in seconds" class="">
+      </div>
+      <div class="col-lg-1 col-sm-2 mt-sm-2 d-flex justify-content-center">
+            <button onclick="save_menu_items()" class="btn btn-dark fs-2 text-center w-100">Add</button>
+      </div>
+    </div>
+  
+  
+  
+  
+  </div>
+
+
+
+<!--FAV BUTTON SLIDERS-->
+
+<div class="col-4 mt-5">
+
+  <div class="d-flex flex-row gap-4">
+    <div class="col-sm-4 col-md-10 col-lg-10">
+        <div class="card" style="background-color:lightcoral;">
+          
+            <div class="card-body">
+                <h5 class="card-title fs-2">MMM Button</h5>
+                <h6 class="card-subtitle mb-4 fs-2">Soft Vibez</h6>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Price</label>
+                    <input type="number" class="fs-3" id="Price_MMM_button" aria-describedby="emailHelp" value="{{room_data.Price_MMM_button}}">
+                    <small id="emailHelp" class="">By Vibez.</small>
+                </div>                    
+                <div class="form-group">
+                  
+                    <label for="">Feature</label>
+
+                    <select value="{{room_data.Price_MMM_button}}" class="fs-3 w-100" id="Feature_MMM_button">
+
+                        <option {% if room_data.Feature_MMM_button and room_data.Feature_MMM_button == "v" %}
+                        selected{% endif %} value="v"
+                        >Vibrate</option>
+
+                        <option
+                        {% if room_data.Feature_MMM_button and room_data.Feature_MMM_button == "r" %}
+                          selected{% endif %} value="r"
+                          >Rotate</option>
+
+                        <option 
+                        {% if room_data.Feature_MMM_button and room_data.Feature_MMM_button == "p" %}
+                        selected{% endif %}
+                          value="p">Pump</option>
+
+                        <option
+                        {% if room_data.Feature_MMM_button and room_data.Feature_MMM_button == "t" %}
+                          selected{% endif %}
+                          value="t">Thrusting</option>
+
+                        <option
+                        {% if room_data.Feature_MMM_button and room_data.Feature_MMM_button == "f" %} 
+                        selected
+                        {% endif %} 
+                        value="f">Fingering</option>
+
+                        <option 
+                        {% if room_data.Feature_MMM_button and room_data.Feature_MMM_button == "s" %}
+                        selected{% endif %}
+                          value="s">
+                          Suction</option>
+
+                    </select>
+                </div>                    
+                <div class="form-group">
+                    <label for="exampleInputEmail1" class="fs-3">Duration</label>
+                    <input type="number" class="fs-3" id="Duration_MMM_button" aria-describedby="emailHelp" value="{{room_data.Duration_MMM_button}}">
+                    <small id="emailHelp" class=" fs-5">in Min.</small>
+                </div>                    
+                
+                <div class="form-group">
+                    <label for="exampleInputEmail1" class="fs-3">Strength</label>
+
+                  <div class="single-slider m-auto">
+                    <input id="Strength_MMM_button" type="range" min="5" max="20" step="5" value="{{ room_data.Strength_MMM_button|default:"0" }}" class="slider">
+                    <span class="slider-value">{{room_data.Strength_MMM_button|default:"0"}}</span>
+                  </div>
+
+                </div>  
+            </div>
+        </div>   
+    </div>               
+    <div class="col-sm-4 col-md-10 col-lg-10">
+        <div class="card" style="background-color:lightsalmon;">
+            <div class="card-body">
+                <h5 class="card-title fs-2">OH Button</h5>
+                <h6 class="card-subtitle mb-4 fs-2">Mid Vibez button</h6>
+                <div class="form-group">
+                    <label for="exampleInputEmail1" class="fs-3">Price</label>
+                    <input type="number" class="fs-3" id="Price_OH_button" aria-describedby="emailHelp" value="{{room_data.Price_OH_button}}">
+                    <small id="emailHelp" class="">By Vibez.</small>
+                </div>  
+                
+                <div class="form-group">
+                    <label for="">Feature</label>
+
+                    <select class="fs-3 w-100" id="Feature_OH_button">
+
+                        <option {% if room_data.Feature_OH_button and room_data.Feature_OH_button == "v" %} selected{% endif %}  value="v">Vibrate</option>
+
+                        <option
+                        {% if room_data.Feature_OH_button and room_data.Feature_OH_button == "r" %} selected{% endif %}  
+                        value="r">
+                        Rotate</option>
+
+                        <option
+                        {% if room_data.Feature_OH_button and room_data.Feature_OH_button == "p" %} selected{% endif %}  
+                        value="p">Pump</option>
+
+                        <option
+                        {% if room_data.Feature_OH_button and room_data.Feature_OH_button == "t" %} selected{% endif %}  
+
+                        value="t">Thrusting</option>
+
+                        <option
+                        {% if room_data.Feature_OH_button and room_data.Feature_OH_button == "f" %} selected{% endif %} 
+
+                        value="f">Fingering</option>
+
+                        <option
+                        {% if room_data.Feature_OH_button and room_data.Feature_OH_button == "s" %} selected{% endif %}  
+                        value="s">Suction</option>
+
+                    </select>
+                </div> 
+                                
+                <div class="form-group">
+                    <label for="exampleInputEmail1" class="fs-3">Duration</label>
+                    <input type="number" class="fs-3" id="Duration_OH_button" aria-describedby="emailHelp" value="{{room_data.Duration_OH_button}}">
+                    <small id="emailHelp" class=" fs-5">in Min.</small>
+                </div>                    
+                
+                <div class="form-group">
+                    <label for="exampleInputEmail1" class="fs-3">Strength</label>
+
+                    <div class="single-slider m-auto">
+                      <input id="Strength_OH_button" type="range" min="5" max="20" step="5" value="{{ room_data.Strength_OH_button|default:"0" }}" class="slider">
+                      <span class="slider-value">{{room_data.Strength_OH_button|default:"0"}}</span>
+                    </div>
+                </div>  
+            </div>
+        </div>                  
+    </div> 
+    <div class="col-sm-4 col-md-10 col-lg-10">
+        <div class="card" style="background-color:lightgreen;">
+            <div class="card-body">
+                <h5 class="card-title fs-2">OHYes Button</h5>
+                <h6 class="card-subtitle mb-2 fs-2 mb-4">High Vibez button</h6>
+                <div class="form-group">
+                    <label for="exampleInputEmail1" class="fs-3">Price</label>
+                    <input type="number" class="fs-3" id="Price_OHYes_button" aria-describedby="emailHelp" value="{{room_data.Price_OHYes_button}}">
+                    <small id="emailHelp" class=" ">By Vibez.</small>
+                </div> 
+
+                <div class="form-group">
+                    <label for="Feature_OHYes_button" class="fs-3">Feature</label>
+
+                    <select class="fs-3 w-100" id="Feature_OHYes_button">
+                        <option
+                        {% if room_data.Feature_OHYes_button and room_data.Feature_OHYes_button == "v" %}
+                        selected{% endif %}  
+                        
+                        value="v">Vibrate</option>
+
+                        <option
+                        {% if room_data.Feature_OHYes_button and room_data.Feature_OHYes_button == "r" %}
+                        selected
+                        {% endif %}
+                        value="r">Rotate</option>
+
+                        <option
+                        {% if room_data.Feature_OHYes_button and room_data.Feature_OHYes_button == "p" %}
+                        selected
+                        {% endif %}
+                        value="p">Pump</option>
+
+                        <option
+                        {% if room_data.Feature_OHYes_button and room_data.Feature_OHYes_button == "t" %}
+                        selected
+                        {% endif %}
+                        value="t">Thrusting</option>
+
+                        <option
+                        {% if room_data.Feature_OHYes_button and room_data.Feature_OHYes_button == "f" %}
+                        selected
+                        {% endif %}
+                        value="f">Fingering</option>
+
+                        <option
+                        {% if room_data.Feature_OHYes_button and room_data.Feature_OHYes_button == "s" %}
+                        selected
+                        {% endif %}
+                        value="s">Suction</option>
+                    </select>
+                </div>  
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1" class="fs-3">Duration</label>
+                    <input type="number" class="fs-3" id="Duration_OHYes_button" aria-describedby="emailHelp" value="{{room_data.Duration_OHYes_button}}">
+                    <small id="emailHelp" class=" ">in Min.</small>
+                </div>                    
+                
+                <div class="form-group">
+                    <label for="exampleInputEmail1" class="fs-3">Strength</label>  
+
+                    <div class="single-slider">
+                      <input id="Strength_OHYes_button" type="range" min="5" max="20" step="5" value="{{ room_data.Strength_OHYes_button|default:"0" }}" class="slider">
+                      <span class="slider-value">{{ room_data.Strength_OHYes_button|default:"0" }}</span>
+                    </div>
+
+                </div>  
+            </div>
+        </div>                  
+    </div> 
+
+
+
+
+
+
+</div> 
+
+<div class="col">
+  <button type="button" id="" onclick="Save_RoomPatterns()" class="btn btn-dark fs-1">Save</button>
+</div>
+
+</div>
+
+<!--FAV BUTTON SLIDERS-->
+
+
+
+  <!--SET SOCIAL MEDIA ACCOUNTS COST-->
+
+  <div class="container-fluid mt-5">
+    <h3 class="fs-2">Add social media links and earn vibez<h3>
+
+    <div class="d-flex flex-row">
+
+        
+      <div class="col-2">
+        <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#socialMediaLinksModal"><span class="fs-2">Set Social Media Links</span></button>
+      </div>
+
+      <!--
+      <div class="col-2">
+        <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#onlyfansModal"><span class="fs-2">Set Onlyfans Link</span></button>
+      </div>
+
+      <div class="col-2">
+        <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#snapchatModal"><span class="fs-2">Set Snapchat Link</span></button>
+      </div>
+      
+      <div class="col-2">
+        <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#amazonModal"><span class="fs-2">Set Amazon Link</span></button>
+      </div>
+      -->
+
+    </div>
+  </div>
+
+
+
+  <!--SETTING SOCIAL MEDIA LINKS MODAL-->
+
+
+  <!-- SOCIAL MEDIA LINKS MODAL -->
+<div class="modal fade" id="socialMediaLinksModal" tabindex="-1" aria-labelledby="socialMediaLinksModal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 1300px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fs-2 font-weight-bold" id="socialMediaLinksLabel">Set Social Media Links</h5>
+        <button type="button" class="btn-close fs-2" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div id="set-social-media-links-container" class="modal-body d-flex flex-row gap-3">
+       
+        <div class="col" id="Instagram">
+          <label class="fs-2" for="instagram-link">Instagram Link</label>
+          <input type="text" id="instagram-link" value="{{instagram.Link}}" placeholder="https://" class="fs-2">
+          <label class="fs-2" for="instagram-vibez-cost">Vibez Cost</label>
+          <input type="text" id="instagram-vibez-cost" value="{{instagram.Vibez_Cost}}" placeholder="Instagsram Link Vibez Cost" class="fs-2">
+
+          <div class="d-flex justify-content-center p-5">
+            <button class="btn btn-danger fs-2" onclick="remove_socialmedia_link('{{instagram.Social_Media}}')">Remove</button>
+          </div>
+
+       </div>
+       
+        <div class="col" id="Onlyfans">
+
+        <label class="fs-2" for="onlyfans-link">Only Fans Link</label>
+        <input type="text" id="onlyfans-link" value="{{onlyfans.Link}}" placeholder="https://" class="fs-2">
+        <label class="fs-2" for="onlyfans-vibez-cost">Vibez Cost</label>
+        <input type="text" id="onlyfans-vibez-cost" value="{{onlyfans.Vibez_Cost}}"  placeholder="Onlyfans Link Vibez Cost" class="fs-2">
+
+        <div class="d-flex justify-content-center p-5">
+          <button class="btn btn-danger fs-2" onclick="remove_socialmedia_link('{{onlyfans.Social_Media}}')">Remove</button>
+        </div>
+
+       </div>
+       
+       
+        <div class="col" id="Snapchat">
+
+        <label class="fs-2" for="snapchat-link">Snapchat Link</label>
+        <input type="text" id="snapchat-link" value="{{snapchat.Link}}" placeholder="https://" class="fs-2">
+        <label class="fs-2" for="snapchat-vibez-cost">Vibez Cost</label>
+        <input type="text" id="snapchat-vibez-cost" value="{{snapchat.Vibez_Cost}}" placeholder="Snapchat Link Vibez Cost" class="fs-2">
+
+     
+        <div class="d-flex justify-content-center p-5">
+          <button class="btn btn-danger fs-2" onclick="remove_socialmedia_link('{{snapchat.Social_Media}}')">Remove</button>
+        </div>
+     
+
+       </div>
+       
+        <div class="col" id="Amazon">
+       
+        <label class="fs-2" for="amazon-link">Amazon Wishlist Link</label>
+        <input type="text" id="amazon-link" value="{{amazon.Link}}" placeholder="https://" class="fs-2">
+        <label class="fs-2" for="amazon-vibez-cost">Amazon Wishlist Vibez Cost</label>
+        <input type="text" id="amazon-vibez-cost" value="{{amazon.Vibez_Cost}}" placeholder="Amazon Wishlist Vibez Cost" class="fs-2">
+
+        <div class="d-flex justify-content-center p-5">
+          <button class="btn btn-danger fs-2" onclick="remove_socialmedia_link('{{amazon.Social_Media}}')">Remove</button>
+        </div>
+   
+       </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary fs-2" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary fs-2" onclick="setSocialMediaLinks()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- INSTAGRAM MODAL -->
+
+
+
+  <!--SETTING SOCIAL MEDIA LINKS MODAL-->
+
+
+
+</div>
+
+
+</div>
+
+
+<script>
+
+
+const sliders = document.querySelectorAll(".slider");
+const sliderValues = document.querySelectorAll(".slider-value");
+
+sliders.forEach((slider, index) => {
+    slider.addEventListener("input", function() {
+        sliderValues[index].textContent = slider.value;
+    });
+});
+  
+
+  function set_lottery_prize() {
+    var slot0 = document.getElementById('price_for_slot_1').value;
+    var slot1 = document.getElementById('price_for_slot_2').value;
+    var slot2 = document.getElementById('price_for_slot_3').value;
+    var slot3 = document.getElementById('price_for_slot_4').value;
+    var slot4 = document.getElementById('price_for_slot_5').value;
+    var slot5 = document.getElementById('price_for_slot_6').value;
+    var slot6 = document.getElementById('price_for_slot_7').value;
+    var slot7 = document.getElementById('price_for_slot_8').value;
+
+
+    $.ajax({
+
+      method: "POST",
+      url:"set_lottery_prize/",
+      data:{
+        'slot0': slot0,
+        'slot1': slot1,
+        'slot2': slot2,
+        'slot3': slot3,
+        'slot4': slot4,
+        'slot5': slot5,
+        'slot6': slot6,
+        'slot7': slot7,
+        'csrfmiddlewaretoken':"{{csrf_token}}",
+ 
+      },
+      success:function(data){
+        console.log(data.data);
+
+        successToast(data.data);
+      },
+      error:function(errors){
+        console.log(errors.responseText);
+
+      }
+
+    });
+  }
+
+
+
+
+  
+  function set_dice_prize() {
+    var dice1 = document.getElementById('price_for_dice_1').value;
+    var dice2 = document.getElementById('price_for_dice_2').value;
+    var dice3 = document.getElementById('price_for_dice_3').value;
+    var dice4 = document.getElementById('price_for_dice_4').value;
+    var dice5 = document.getElementById('price_for_dice_5').value;
+    var dice6 = document.getElementById('price_for_dice_6').value;
+
+
+    $.ajax({
+
+      method: "POST",
+      url:"set_dice_prize/",
+      data:{
+        'dice1': dice1,
+        'dice2': dice2,
+        'dice3': dice3,
+        'dice4': dice4,
+        'dice5': dice5,
+        'dice6': dice6,
+        'csrfmiddlewaretoken':"{{csrf_token}}",
+ 
+      },
+      success:function(data){
+        console.log(data.data);
+        
+        successToast(data.data);
+      },
+      error:function(errors){
+        console.log(errors.responseText);
+
+      }
+
+    });
+  }
+
+
+
+  
+  function save_menu_items()
+  {
+    $.ajax({
+      method:'POST',
+      url: "/room/save_menu_data/",
+      mimeType:"multipart/form-data",
+      data:{  
+            'menu_item':$("#menu-item").val(),
+            'menu_item_price':$("#menu-item-price").val(),
+            'menu_item_duration':$("#menu-item-duration").val(),
+            'csrfmiddlewaretoken':"{{csrf_token}}",
+          },
+          'dataType': 'json',
+          success:function(data){
+            console.log(data)
+
+            $("#menu-items-table").load(" #menu-items-table > *");
+            $("#set-slotmachine-container").load(" #set-slotmachine-container > *");
+            $("#set-dice-container").load(" #set-dice-container > *");
+
+            successToast(data.data);
+          },
+          error:function(errors){
+              console.log(errors.responseJSON.data)
+
+              errorToast(errors.responseJSON.data)
+
+          }
+          
+      });
+  }
+
+
+function update_menu_items(item_id)
+{
+
+  console.log($("#update-menu-item-" + item_id).val());
+  console.log($("#update-menu-item-price-" + item_id).val());
+  console.log($("#update-menu-item-duration-" + item_id).val());
+  $.ajax({
+    method:'POST',
+    url: "/room/update_menu_data/",
+    mimeType:"multipart/form-data",
+    data:{  
+          'menu_item':$("#update-menu-item-" + item_id).val(),
+          'item_id':item_id,
+          'menu_item_price':$("#update-menu-item-price-" + item_id).val(),
+          'menu_item_duration':$("#update-menu-item-duration-" + item_id).val(),
+          'csrfmiddlewaretoken':"{{csrf_token}}",
+        },
+        'dataType': 'json',
+        success:function(data){
+          console.log(data)
+
+          $("#menu-items-table").load(" #menu-items-table > *");
+
+
+          successToast(data.data);
+        },
+        error:function(errors){
+            console.log(errors.responseText)
+
+            errorToast(errors.responseText)
+
+        }
+        
+    });
+
+}
+
+
+
+function remove_menu_data(item_id)
+{
+  $.ajax({
+    method:'POST',
+    url: "/room/remove_menu_data/",
+    mimeType:"multipart/form-data",
+    data:{  
+          'item_id':item_id,
+          'csrfmiddlewaretoken':"{{csrf_token}}",
+        },
+        'dataType': 'json',
+        success:function(data){
+          console.log(data)
+
+          $("#menu-items-table").load(" #menu-items-table > *");
+          $("#set-slotmachine-container").load(" #set-slotmachine-container > *");
+          $("#set-dice-container").load(" #set-dice-container > *");
+
+          
+          successToast(data.data);
+        },
+        error:function(errors){
+            console.log(errors.responseText)
+
+            errorToast(errors.responseText)
+
+        }
+        
+    });
+}
+
+function setSocialMediaLinks() {
+  $.ajax({
+    method:'POST',
+    url: "/room/set_social_media_links/",
+    mimeType:"multipart/form-data",
+    data:{  
+          'instagram_link':$("#instagram-link").val(),
+          'instagram_vibez_cost':$("#instagram-vibez-cost").val(),
+
+          'onlyfans_link':$("#onlyfans-link").val(),
+          'onlyfans_vibez_cost':$("#onlyfans-vibez-cost").val(),
+
+          'snapchat_link':$("#snapchat-link").val(),
+          'snapchat_vibez_cost':$("#snapchat-vibez-cost").val(),
+
+          'amazon_link':$("#amazon-link").val(),
+          'amazon_vibez_cost':$("#amazon-vibez-cost").val(),
+
+          'csrfmiddlewaretoken':"{{csrf_token}}",
+        },
+        'dataType': 'json',
+        success:function(data){
+          console.log(data);
+          
+          $("#set-social-media-links-container").load(" #set-social-media-links-container > *");
+
+          successToast(data.data);
+        },
+        error:function(errors){
+          responseData = JSON.parse(errors.responseText);
+
+            console.log(responseData)
+
+            errorToast(responseData.data)
+
+        }
+        
+    });
+}
+
+
+function remove_socialmedia_link(socialmedia) {
+
+  console.log(socialmedia);
+  $.ajax({
+    method:'POST',
+    url: "remove_social_media_link/",
+    mimeType:"multipart/form-data",
+    data:{  
+          'socialmedia':socialmedia,
+          'csrfmiddlewaretoken':"{{csrf_token}}",
+        },
+        'dataType': 'json',
+    success:function(data){
+      console.log(data)
+
+      $(` #${socialmedia} `).load(` #${socialmedia} > *`);
+
+
+    },
+    error:function(errors){
+        console.log(errors.responseText)
+
+    }
+  });
+
+      
+}
+
+</script>

@@ -137,7 +137,7 @@
     </style>
   </head>
   <body id="slot_machine_wrapper">
-
+    
     <h1>Slot Machine</h1>
     <h3 class="text-center">Cost per spin <span id="cost_per_spin" class="text-center fs-2 d-inline">{{slot_machine_cost_per_spin.Slot_Machine_Spin_Cost}}</span> Vibez</h3>
 
@@ -190,10 +190,7 @@
               const spins = msg.spins;
               const pot = msg.pot
               const vibez = msg.vibez
- 
-              successToast(msg.msg);  
-              
-              console.log(pot);
+
 
               if(pot !== null){
                 document.getElementById('pot').innerHTML = pot;
@@ -206,6 +203,35 @@
               if(spins !== null) {
                 document.getElementById('free_spins').innerHTML = spins.spins;
               }
+ 
+              if(msg.msg === "2OAK"){
+
+                var newElement = document.createElement("div");
+                newElement.classList.add('tip_btn');
+
+                msg.random_button === "MMM" ? newElement.style.backgroundColor = "lightcoral" : '';
+                msg.random_button === "OHYes" ? newElement.style.backgroundColor = "lightsalmon" : '';
+
+
+                newElement.style.backgroundColor = "lightcoral";
+                newElement.innerHTML = `
+               
+                        <div>${msg.random_button}</div>
+                  `;
+                
+                console.log(newElement);
+                successToast("You won 2 of a kinds",newElement); 
+
+                return;
+              }
+               
+              successToast("JACKPOT!!!!");
+
+
+              
+              console.log(pot);
+
+
 
               
          
@@ -217,7 +243,7 @@
               console.log(response)
 
               if (response.error) {
-                  errorToast(response);
+                  errorToast(response.error);
               }
               else{
                 const pot = response.pot

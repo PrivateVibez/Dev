@@ -258,7 +258,7 @@
 
                             <div class="tab-pane fade show active container-fluid" id="nav-interact" role="tabpanel" aria-labelledby="nav-note-tab">
 
-                                {% include "rooms/include/interact.html" %}
+                                {% include "rooms/include/games.html" %}
 
                             </div>
 
@@ -274,10 +274,10 @@
                                     {% if msg.User == user %}
 
                                     <div class="text-muted d-flex justify-content-end">
-                                        <small class="public_chat_room_message_username font-weight-bold text-dark">{{ msg.User }}</small>
+                                        <small class="public_chat_room_message_username font-weight-bold text-dark fs-2">{{ msg.User }}</small>
                                     </div>
 
-                                    <div class="card card-body py-2 my-1 public_chat_room_message_text mb-4 ml-auto" style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">
+                                    <div class="card card-body py-2 my-1 public_chat_room_message_text mb-4 ml-auto fs-2" style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">
 
                                         {{ msg.Message }}
                                         
@@ -287,10 +287,10 @@
                                     {% else %}
 
                                     <div class="text-muted d-flex">
-                                        <small class="public_chat_room_message_username font-weight-bold text-dark">{{ msg.User }}</small>
+                                        <small class="public_chat_room_message_username font-weight-bold text-dark fs-2">{{ msg.User }}</small>
                                     </div>
 
-                                    <div class="card card-body py-2 my-1 public_chat_room_message_text mb-4" style="border-radius: 13px; width: fit-content;">
+                                    <div class="card card-body py-2 my-1 public_chat_room_message_text mb-4 fs-2" style="border-radius: 13px; width: fit-content;">
                                         {{ msg.Message }}
                                     </div>
 
@@ -303,10 +303,10 @@
 
                                     {% for item in availed_items %}
                                     <div class="text-muted d-flex justify-content-end">
-                                        <small class="public_chat_room_message_username font-weight-bold text-dark">{{ item.User }}</small>
+                                        <small class="public_chat_room_message_username font-weight-bold text-dark fs-2">{{ item.User }}</small>
                                     </div>
 
-                                    <div class="card card-body py-2 my-1 public_chat_room_message_text mb-4 ml-auto" style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">
+                                    <div class="card card-body py-2 my-1 public_chat_room_message_text mb-4 ml-auto fs-2" style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">
 
                                         {{ item.Item }}
                                         
@@ -320,11 +320,11 @@
                                     {% if request.user.is_authenticated %}
 
                                     <div class="container-fluid">
-                                        <div class="input-group" style="bottom:0px; left: 0px; height:40px; position: absolute;">
+                                        <div class="input-group" style="bottom:0px; left: 0px; height:70px; position: absolute;">
                                             <form id="public_chat_room_form" class="d-flex w-100">
-                                                <input type="text" class="form-control" name="public_chat_room_message_field" required>
+                                                <input type="text" class="form-control fs-2" style="height:50px" name="public_chat_room_message_field" required>
                                                 <div class="input-group-append">
-                                                    <button type="submit" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+                                                    <button type="submit" class="btn btn-primary h-75" style="width:50px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
                                                         <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
                                                       </svg></button>
                                                 </div>
@@ -352,9 +352,9 @@
                                     <div class="container-fluid p-5 mt-5">
                                         <div class="input-group" style="bottom: 0px; height:42px; z-index:1000; position: absolute;  left: 0px;">
                                             
-                                                <input type="text" class="form-control" name="private_chat_room_message_field" required="">
+                                                <input type="text" class="form-control fs-2" name="private_chat_room_message_field" style="width:70px" required="">
                                                 <div class="input-group-append">
-                                                    <button type="button" onclick="send_private_message()" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+                                                    <button type="button" onclick="send_private_message()" class="btn btn-primary" style="width:70px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
                                                         <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
                                                       </svg></button>
                                                 </div>

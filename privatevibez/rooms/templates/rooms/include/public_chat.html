@@ -4,16 +4,16 @@
     {% for msg in public_chat %}
     {% if msg.User == user %}
     <div class="text-muted d-flex justify-content-end">
-        <small class="broc_chat_room_message_username font-weight-bold text-dark">{{ msg.User }}</small>
+        <small class="broc_chat_room_message_username font-weight-bold text-dark fs-2">{{ msg.User }}</small>
     </div>
-    <div class="card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4 ml-auto" style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">
+    <div class="card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4 ml-auto fs-2" style="border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;">
         {{ msg.Message }}
     </div>
     {% else %}
     <div class="text-muted d-flex">
-        <small class="broc_chat_room_message_username font-weight-bold text-dark">{{ msg.User }}</small>
+        <small class="broc_chat_room_message_username font-weight-bold text-dark fs-2">{{ msg.User }}</small>
     </div>
-    <div class="card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4" style="border-radius: 13px; width: fit-content; background: #9dffde;">
+    <div class="card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4 fs-2" style="border-radius: 13px; width: fit-content; background: #9dffde;">
         {{ msg.Message }}
     </div>
     {% endif %}
@@ -22,8 +22,8 @@
   </div>
 
   <form id="broc_chat_room_form" class="d-flex">
-    <input type="text" name="broc_chat_room_message_field" class="form-control" style="height: 35px; font-size: 15px;" required/>
-    <button type="submit" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
+    <input type="text" name="broc_chat_room_message_field" class="form-control" style="height: 50px; font-size: 25px;" required/>
+    <button type="submit" class="btn btn-primary" style="width:60px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
       <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
     </svg></button>
   </form>
@@ -60,8 +60,8 @@
                   var user = document.createElement('small');
   
                   user_wrapper.setAttribute('class', 'text-muted d-flex justify-content-end');
-                  user.setAttribute('class', 'public_chat_room_message_username font-weight-bold text-dark');
-                  item_availed_wrapper.setAttribute('class', 'card card-body py-2 my-1 public_chat_room_message_text mb-4 ml-auto');
+                  user.setAttribute('class', 'public_chat_room_message_username font-weight-bold text-dark fs-2');
+                  item_availed_wrapper.setAttribute('class', 'card card-body py-2 my-1 public_chat_room_message_text mb-4 ml-auto fs-2');
                   item_availed_wrapper.setAttribute('style', 'border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;');
                   
                   user.innerHTML = item_availed.user;
@@ -84,14 +84,14 @@
           // Add message to chat room
           if(username === "{{ user }}"){
               var message_element = document.createElement('div');
-              message_element.setAttribute('class', 'card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4 ml-auto');
+              message_element.setAttribute('class', 'card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4 ml-auto fs-2');
               message_element.setAttribute('style', 'border-radius: 13px; width: fit-content; background: #000000; color: #ffffff;');
               message_element.innerHTML = message;
   
               var username_element = document.createElement('div');
               username_element.setAttribute('class', 'text-muted d-flex justify-content-end');
               var username_small = document.createElement('small');
-              username_small.setAttribute('class', 'broc_chat_room_message_username font-weight-bold text-dark');
+              username_small.setAttribute('class', 'broc_chat_room_message_username font-weight-bold text-dark fs-2');
               username_small.innerHTML = username;
               username_element.appendChild(username_small);
   
@@ -100,14 +100,14 @@
               messages_element.appendChild(message_element);
           }else{
               var message_element = document.createElement('div');
-              message_element.setAttribute('class', 'card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4');
+              message_element.setAttribute('class', 'card card-body font-weight-normal py-2 my-1 broc_chat_room_message_text mb-4 fs-2');
               message_element.setAttribute('style', 'border-radius: 13px; width: fit-content; background: #9dffde;');
               message_element.innerHTML = message;
   
               var username_element = document.createElement('div');
               username_element.setAttribute('class', 'text-muted d-flex');
               var username_small = document.createElement('small');
-              username_small.setAttribute('class', 'broc_chat_room_message_username font-weight-bold text-dark');
+              username_small.setAttribute('class', 'broc_chat_room_message_username font-weight-bold text-dark fs-2');
               username_small.innerHTML = username;
               username_element.appendChild(username_small);
   

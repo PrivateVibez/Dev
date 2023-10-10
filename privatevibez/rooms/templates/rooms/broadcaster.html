@@ -164,17 +164,11 @@
                               <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Room Stats</a>
                             </li>
 
-                            <li class="nav-item">
-                              <a class="nav-link" id="pills-menu-items-tab" data-toggle="pill" href="#pills-menu-items" role="tab" aria-controls="pills-menu-items" aria-selected="true">Menu Items</a>
-                            </li>
 
                             <li class="nav-item">
-                              <a class="nav-link" id="pills-lottery-tab" data-toggle="pill" href="#pills-lottery-items" role="tab" aria-controls="pills-lottery-items" aria-selected="true">Lottery</a>
+                              <a class="nav-link" id="pills-interactives-tab" data-toggle="pill" href="#pills-interactives-items" role="tab" aria-controls="pills-interactives-items" aria-selected="true">Interactives</a>
                             </li>
                             
-                            <li class="nav-item">
-                              <a class="nav-link" id="pills-dice-tab" data-toggle="pill" href="#pills-dice-items" role="tab" aria-controls="pills-dice-items" aria-selected="true">Dice</a>
-                            </li>
 
                             <li class="nav-item">
                               <a class="nav-link" style="   " id="pills-room-rules-tab" data-toggle="pill" href="#pills-room-rules" role="tab" aria-controls="pills-room-rules" aria-selected="true">Room Rules</a>
@@ -212,8 +206,8 @@
                             </div>
 
 
-                            <div class="tab-pane fade" id="pills-lottery-items" role="tabpanel" aria-labelledby="pills-lottery-items-tab">
-                                {% include 'rooms/include/lottery.html' %}
+                            <div class="tab-pane fade" id="pills-interactives-items" role="tabpanel" aria-labelledby="pills-interactives-items-tab">
+                                {% include 'rooms/include/interactives.html' %}
                             </div>
 
 
@@ -437,6 +431,8 @@ const userSessionSocket = new WebSocket(
         // Your code here
         $("#private_chat_invites_modal").load(" #private_chat_invites_modal > *");
         $("#btn-pending-invites").load(" #btn-pending-invites > *");
+
+        shakeBody();
     }
     
    

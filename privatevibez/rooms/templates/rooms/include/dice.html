@@ -124,6 +124,8 @@
   <span class="row justify-content-center mt-5 fs-2">
   Dice per roll {{dice_cost_per_spin.Dice_Spin_Cost}} vibez
   </span>
+
+  <div class="row">
   <div class="dice-container">
     <div class="dice-wrapper">
   
@@ -153,6 +155,51 @@
   
     <button type="button" class="dice-button" onclick="roll_dice()" id="roll-btn">ROLL</button>
   </div>
+
+  <div class="col">
+
+    <div class="d-flex flex-column">
+      <div class="col">
+
+      </div>
+
+      <div class="col">
+
+        <div class="row" id="list-of-dice-for-prizes">
+        
+        <div class="col">
+          <span class="row justify-content-center mt-5 fs-2">
+            Prizes
+          </span>
+
+          {% for prize in dice_prizes %}
+            <span class="d-block text-center fs-3">{{prize.prize}}</span>
+            
+          {% endfor %}
+        </div>
+
+        <div class="col justify-content-center">
+          <span class="row justify-content-center mt-5 fs-2">
+            Dice Number
+          </span>
+
+        {% for prize in dice_prizes %}
+        <span class="d-block text-center fs-3"> {{prize.dice_number}} </span>  
+        {% endfor %}
+        
+        </div>
+     
+
+      </div>
+
+
+      </div>
+      
+    </div>
+
+  </div>
+  
+</div>
     <script>
  
 

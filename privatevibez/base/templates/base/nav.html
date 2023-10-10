@@ -948,4 +948,15 @@ function unsubscribe() {
             })
 
 }
+
+
+function shakeBody() {
+  const body = document.body;
+  body.classList.add('shake-now');
+
+  // Remove the class after the animation completes to stop shaking
+  setTimeout(() => {
+      body.classList.remove('shake-now');
+  }, 820); // 820ms corresponds to the duration of the shake animation
+}
 </script>

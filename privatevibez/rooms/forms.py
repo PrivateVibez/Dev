@@ -49,3 +49,15 @@ class MenuDataForm(forms.Form):
     menu_item_price = forms.IntegerField(label='Price=',required=True)
     menu_item_duration = forms.IntegerField(label='Duration=',required=True)
     
+    
+
+class SocialMediaLinks(forms.Form):
+    instagram_link = forms.CharField(label='Instagram Link',required=False)
+    onlyfans_link = forms.CharField(label='Onlyfans Link',required=False)
+    snapchat_link = forms.CharField(label='Snapchat Link',required=False)
+    amazon_link = forms.CharField(label='Amazon Link',required=False)
+    
+    instagram_vibez_cost = forms.IntegerField(label='Instagram Vibez Cost',required=False)
+    onlyfans_vibez_cost = forms.IntegerField(label='Onlyfans Vibez Cost',required=False)
+    snapchat_vibez_cost = forms.IntegerField(label='Snapchat Vibez Cost',required=False)
+    amazon_vibez_cost = forms.IntegerField(label='Amazon Vibez Cost',required=False)

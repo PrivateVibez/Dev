@@ -18,4 +18,6 @@ admin.site.register(Room_Visitors)
 admin.site.register(Slot_Machine)
 admin.site.register(Games_Data)
 admin.site.register(Lottery)
+admin.site.register(Social_Media_Links)
+admin.site.register(Dice)
 

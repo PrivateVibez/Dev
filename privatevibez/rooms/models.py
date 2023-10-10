@@ -108,6 +108,15 @@ class Menu_Data(models.Model):
     Timestamp  = models.DateTimeField(auto_now_add=True)     
     def __str__(self):
         return str(self.User)
+    
+class Social_Media_Links(models.Model):
+    User                     = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    Social_Media             = models.CharField(max_length=200,null=True,blank=True)
+    Link                     = models.CharField(max_length=200,null=True,blank=True)
+    Vibez_Cost                = models.IntegerField(null=True,blank=True, default=0)
+    Timestamp                = models.DateTimeField(auto_now_add=True)     
+    def __str__(self):
+        return str(self.User)
 
 class Dice_Data(models.Model):
     User             = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

@@ -4,7 +4,7 @@ var logo = document.getElementById('privatevibezlogo');
 console.log(logo.src);
 var toastContainer = document.getElementById('toast-container');
 
-function successToast(message){
+function successToast(message,fav_btn_element = null){
       // Create a new toast element
       var newToastElement = document.createElement('div');
       newToastElement.className = 'toast';
@@ -28,9 +28,22 @@ function successToast(message){
       `;
 
           newToastElement.classList.add('bg-success');
+          newToastElement.classList.add('p-auto');
+
+        
+         if(fav_btn_element != null)
+         {
+            newToastElement.appendChild(fav_btn_element);
+            console.log(fav_btn_element);
+         }
+
 
           // Append the new toast element to the container
           toastContainer.appendChild(newToastElement);
+
+          
+
+          
 
           // Initialize and show the toast
           var newToast = new bootstrap.Toast(newToastElement);

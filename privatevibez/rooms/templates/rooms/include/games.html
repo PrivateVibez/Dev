@@ -1,0 +1,332 @@
+<div class="row">
+
+  <div class="col-3 align-content-center">
+
+  <ul class="nav nav-tabs row gap-2 m-auto" id="v-pills-tab" role="tablist" aria-orientation="vertical" style="position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; width: 100%; box-sizing: border-box;">
+
+      <li class="nav-item">
+    
+        <button type="button" class="tab nav-link w-100 {% if room_data.Is_Menu_Active and is_menu_items_existing %} {% else %}d-none{% endif %}" id="menu-tab-nav-btn" data-bs-toggle="pill" data-bs-target="#v-pills-menu" type="button" role="tab" aria-controls="v-pills-dice" aria-selected="false">
+          <span class="fs-3 font-weight-bold">Menu</span>
+        </button>
+    
+    <!--
+        <div class="modal fade" id="confirmation_to_spendModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <h3 class="text-center fs-1 font-weight-bold">you are about to spend vibez</h3>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary fs-3" data-bs-dismiss="modal">Cancel</button>
+                <button class="nav-link" id="v-pills-menu-tab" onclick="dismiss_modal_cofirmation_to_spend_vibez()" data-bs-toggle="pill" data-bs-target="#v-pills-menu" type="button" role="tab" aria-controls="v-pills-menu" aria-selected="true"  data-bs-dismiss="modal"><span class="fs-2 font-weight-bold">Okay</span></button>
+            
+              </div>
+            </div>
+          </div>
+        </div>
+
+        -->
+
+     </li>
+   
+    
+
+    
+      <li class="nav-item">
+      <button class="tab nav-link w-100 {% if room_data.Is_Dice_Active and is_dice_existing %} {% else %}d-none{% endif %}" id="v-pills-dice-tab" data-bs-toggle="pill" data-bs-target="#v-pills-dice" type="button" role="tab" aria-controls="v-pills-dice" aria-selected="false"><span class="fs-3 font-weight-bold">Dice</span></button>
+      </li>
+    
+
+    
+
+      <li class="nav-item">
+      <button class="tab nav-link w-100" id="v-pills-Slots-tab" data-bs-toggle="pill" data-bs-target="#v-pills-Slots" type="button" role="tab" aria-controls="v-pills-Slots" aria-selected="false"><span class="fs-3 font-weight-bold">Slots</span></button>
+      </li>
+
+      <li class="nav-item">
+      <button class="tab nav-link w-100 {% if room_data.Is_Lottery_Active and is_lottery_existing %} {% else %}d-none{% endif %}" id="v-pills-wheel-tab" data-bs-toggle="pill" data-bs-target="#v-pills-wheel" type="button" role="tab" aria-controls="v-pills-wheel" aria-selected="false"><span class="fs-3 font-weight-bold">Lottery</span></button>
+      </li>
+
+    
+    </ul>
+
+  </div>
+
+
+
+
+<div class="col">
+
+
+<div class="msg-list-wrapper-split justify-content-center col" data-listener-count-scroll="1" style="box-sizing: border-box; margin: 0px auto 5px; padding: 5px; height: 365px; line-height: 16pt;">
+
+
+
+
+  <div class="notice-list-fvm" style="width: 100%; user-select: text; cursor: text;"></div>
+
+
+  <div class="col w-100 justify-content-center">
+      
+
+        <div class="row w-100 gap-0">
+
+
+
+         
+        </div>
+
+   
+
+
+      <div class="d-flex flex-row">
+
+          <div class="tab-content w-100" id="v-pills-tabContent">
+            <div class="tab-pane fade" id="v-pills-menu" role="tabpanel" aria-labelledby="v-pills-menu-tab" tabindex="0">
+              <div class="col-10 m-auto">
+
+                <div class="row justify-content-center align-items-center gap-4">
+                {% for item in menu_data %}
+
+              
+                    <button type="button" class="btn btn-dark fs-3 col-3" onclick="avail_menu_item({{item.id}})">
+                      <span class="fs-2">{{item.Menu_Name}}</span>
+                      <small class="d-block">{{item.Vibez_Cost}} vibez</small>
+                    </button>
+      
+          
+                    {% endfor %}
+
+                    <div id="social-media-links-container" class="d-flex flex-row justify-content-center align-items-center gap-4">
+                        
+                      <div class="d-flex flex-column gap-2">
+
+                      <button id="instagram-btn" class="btn btn-dark fs-2 {% if instagram %}{% else %}d-none{% endif %}" onclick="avail_social_media_link('{{instagram.Social_Media}}')">
+                        Instagram
+                        <span class="d-block">{{instagram.Vibez_Cost}} Vibez</span>
+                      </button>
+
+                      <button id="onlyfans-btn" class="btn btn-dark fs-2 {% if onlyfans %}{% else %}d-none{% endif %}" onclick="avail_social_media_link('{{onlyfans.Social_Media}}')">
+                        OnlyFans
+                        <span class="d-block">{{onlyfans.Vibez_Cost}} Vibez</span>
+                      </button>
+
+                      </div>
+
+                      <div class="d-flex flex-column gap-2">
+
+                      <button id="snapchat-btn" class="btn btn-dark fs-2 {% if snapchat %}{% else %}d-none{% endif %}" onclick="avail_social_media_link('{{snapchat.Social_Media}}')">
+                        Snapchat
+                      <span class="d-block">{{snapchat.Vibez_Cost}} Vibez</span>
+
+                      </button>
+
+                      <button id="amazon-btn" class="btn btn-dark fs-2 {% if amazon %}{% else %}d-none{% endif %}" onclick="avail_social_media_link('{{amazon.Social_Media}}')">
+                        Amazon Wishlist
+                      <span class="d-block">{{amazon.Vibez_Cost}} Vibez</span>
+                      </button>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+              </div>
+            </div>
+
+            <div class="tab-pane fade" id="v-pills-dice" role="tabpanel" aria-labelledby="v-pills-dice-tab" tabindex="0">
+              
+              {% if request.user.is_authenticated %}
+              {% include "rooms/include/dice.html" %}
+              {% endif %}
+            </div>
+
+            <div class="tab-pane fade {% if room_data.Is_Lottery_Active and is_lottery_existing %} {% else %}d-none{% endif %}" id="v-pills-wheel" role="tabpanel" aria-labelledby="v-pills-wheel-tab" tabindex="0">
+              
+              {% if request.user.is_authenticated %}
+              {% include "rooms/include/wheel_of_fortune.html" %}
+              {% endif %}
+            </div>
+
+            <div class="tab-pane fade" style="overflow:hidden;" id="v-pills-Slots" role="tabpanel" aria-labelledby="v-pills-Slots-tab" tabindex="0">
+              <div id="slot" class="ps-0 ml-0">
+              {% if request.user.is_authenticated %}
+
+              {% include "rooms/include/slot_machine.html" %}
+
+              {% else %}
+
+              <h3 style='color:crimson; margin:10px 0 0 10px;'>
+                  Please Login to play
+              </h3>
+
+              {% endif %}
+
+              </div>
+            </div>
+          </div>
+      </div>
+</div>
+
+</div>
+
+</div>
+
+</div>
+<script>
+
+  function avail_menu_item(menu_item_id){
+    $.ajax({
+      method:'POST',
+      url: "avail_menu_item/",
+      data: {
+          'menu_item_id':menu_item_id,
+          'broadcaster_id':{{room_data.User.id}},
+          'csrfmiddlewaretoken':"{{csrf_token}}",
+      },
+      success:function(data)
+      {
+          console.log(data.data)
+          successToast(data.data)
+
+      },
+      error:function(errors){
+        responseData = JSON.parse(errors.responseText);
+
+          console.log(errors.responseText)
+          errorToast(responseData.data)
+      }
+  })
+  }
+
+  function dismiss_modal_cofirmation_to_spend_vibez(){
+    $('#confirmation_to_spendModal').modal('hide');
+    $('#v-pills-menu-tab').removeClass('active');
+    $('#menu-tab-nav-btn').addClass('active');
+    $('#v-pills-menu-tab').attr('aria-selected', false);
+    
+  }
+
+
+  let games_socket = new WebSocket(protocol + '://' + window.location.host + '/ws/games_socket/'+'{{ room_data.User.id}}/');
+  games_socket.onmessage = function(e) {
+    var data = JSON.parse(e.data);
+
+
+    is_Instagram_Set = data.is_Instagram_Set;
+    is_OnlyFans_Set = data.is_OnlyFans_Set;
+    is_Snapchat_Set = data.is_Snapchat_Set;
+    is_Amazon_Set = data.is_Amazon_Set;
+
+    var instagram_button = document.getElementById('instagram-btn');
+    
+    if (!is_Instagram_Set || !is_OnlyFans_Set || is_Snapchat_Set || is_Amazon_Set) {
+      $(" #social-media-links-container ").load(" #social-media-links-container > *");
+    } 
+    
+
+
+
+
+    menu_btn = data.is_Menu_Active;
+    lottery_btn = data.is_Lottery_Active;
+    dice_btn = data.is_Dice_Active;
+
+    var menuTabNavBtn = document.getElementById('menu-tab-nav-btn');
+    var menuContainer = document.getElementById('v-pills-menu');
+
+    if (!menu_btn) {
+      menuTabNavBtn.classList.add('d-none');
+      menuContainer.classList.add('d-none');
+    } else {
+      menuTabNavBtn.classList.remove('d-none');
+      menuContainer.classList.remove('d-none');
+    }
+    
+    var lotteryTabNavBtn = document.getElementById('v-pills-wheel-tab');
+    var lotteryContainer = document.getElementById('v-pills-wheel');
+    if (!lottery_btn) {
+      lotteryTabNavBtn.classList.add('d-none');
+      lotteryContainer.classList.add('d-none');
+    } else {
+      lotteryTabNavBtn.classList.remove('d-none');
+      lotteryContainer.classList.remove('d-none');
+    }
+    
+    var diceTabNavBtn = document.getElementById('v-pills-dice-tab');
+    var diceContainer = document.getElementById('v-pills-dice');
+    if (!dice_btn) {
+      diceTabNavBtn.classList.add('d-none');
+      diceContainer.classList.add('d-none');
+    } else {
+      diceTabNavBtn.classList.remove('d-none');
+      diceContainer.classList.remove('d-none');
+    }
+
+  }
+
+function avail_social_media_link(social_media){
+
+  $.ajax({
+    method:'POST',
+    url: "avail_social_media_link/",
+    data: {
+        'social_media':social_media,
+        'broadcaster_id':{{room_data.User.id}},
+        'csrfmiddlewaretoken':"{{csrf_token}}",
+    },
+    success:function(data)
+    {
+        var social_media_link = data.link;
+        var vibez = data.user_vibez;
+        var free_spins = data.free_spins;
+        
+        console.log(social_media_link);
+        link = document.createElement("a")
+        link.href = social_media_link
+        link.target = "_blank"
+        link.click()
+        
+        if (vibez !== null){
+          document.getElementById('user_vibez').innerHTML = vibez;
+        }
+
+        if(free_spins !== null) {
+          document.getElementById('free_spins').innerHTML = free_spins;
+        }
+
+        successToast("awesome!")
+
+    },
+    error:function(errors){
+      responseData = JSON.parse(errors.responseText);
+        errorToast(responseData.data);
+    }
+})
+}
+
+
+let update_games_list = new WebSocket('ws://' + window.location.host + '/ws/update_games_list_of_prizes/{{ room_data.User.id}}/');
+
+update_games_list.onopen = function(e) {
+  
+}
+update_games_list.onmessage = function(e) {
+  console.log("updatesgames");
+  $("#list-of-dice-for-prizes").load(" #list-of-dice-for-prizes > *");
+  $("#list-of-lottery-for-prizes").load(" #list-of-lottery-for-prizes > *");
+}
+
+
+window.onbeforeunload = function() {
+  games_socket.close();
+  update_games_list.close();
+};
+
+
+</script>
