@@ -107,6 +107,7 @@ class PrivatevibezRevenue(models.Model):
     Slot_Machine_Revenue       = models.IntegerField(null=True,blank=True,default=0)
     Lottery_Revenue            = models.IntegerField(null=True,blank=True,default=0)
     Dice_Revenue               = models.IntegerField(null=True,blank=True,default=0)
+    Test_Fav_Buttons_Revenue   = models.IntegerField(null=True,blank=True,default=0)
     Total_Vibez                = models.IntegerField(null=True,blank=True,default=0)
     Total_Cash                 = models.FloatField(null=True,blank=True,default=0)
     Chargeback                 = models.IntegerField(null=True,blank=True,default=0)

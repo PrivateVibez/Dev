@@ -110,7 +110,7 @@ def home(request):
         
         current_datetime = timezone.now()
         
-        print(request.user,flush=True)
+      
         if request.user.is_authenticated and StaffManager.objects.filter(staff_id=request.user).exists():
                 total_slot_vibez = PrivatevibezRevenue.objects.aggregate(Sum('Slot_Machine_Revenue'))
                 total_lottery_vibez = PrivatevibezRevenue.objects.aggregate(Sum('Lottery_Revenue'))
@@ -124,8 +124,9 @@ def home(request):
                 )
                                 
                 broadcaster_promotions = Room_Data.objects.filter(Room_promotion__isnull=False)
-                total_cash = PrivatevibezRevenue.objects.aggregate(Sum('Total_Cash'))
                 
+                total_cash = PrivatevibezRevenue.objects.aggregate(Sum('Total_Cash'))
+                total_test_fav_buttons = PrivatevibezRevenue.objects.aggregate(Sum('Test_Fav_Buttons_Revenue'))
                 
                 subscriptions = Subscription.objects.all()
                 fav_buttons = get_all_availed_fav_buttons()
@@ -235,8 +236,6 @@ def home(request):
                                                                 break
 
                                                 
-                        
-
                 return render(request, "staff/home.html", locals())
         
         else:
@@ -516,9 +515,6 @@ def save_memo(request):
                 
                 staff = User.objects.get(id=request.POST.get('staff'))
                 subject = request.POST.get('subject')
-   
-                
-
                 
                 memoContent = request.POST.get('memoContent', '')
                 
@@ -569,7 +565,6 @@ def getPendingBroadcasters(request):
     
         pending = User.objects.filter(Status='Pending_Broadcaster')
         pending_user_id = list(pending.values_list('id',flat=True))
-
 
         user_data = User_Data.objects.filter(User__id__in=pending_user_id)
         
@@ -675,9 +670,6 @@ def update_slot_machine_cost_per_spin(request):
                 else:
                         return JsonResponse({"data":f'Invalid input!'},status=500, safe=False)
                         
-                
-        
-
 
         else:
                 return JsonResponse({"data":f'Something went wrong'},status=400, safe=False)
@@ -742,8 +734,7 @@ def update_Promotion(request):
                 else:
                         return JsonResponse({"data":f'Invalid input!'},status=500, safe=False)
                 
-                
-                
+                          
                 
 def delete_Promotion(request,id):
         
@@ -793,14 +784,7 @@ def send_Promotion(request):
                 messages.error(request, f'Please enter a valid email address!')
                 return redirect(request.META.get('HTTP_REFERER'))
                                 
-                                
-                        
-                
-                
-                
-                        
-
-                        
+                                                
                 
         else:
                 return JsonResponse({"data":f'Invalid input!'},status=500, safe=False)
@@ -852,5 +836,43 @@ def deleteSubscriptions(request):
                 
                 
 
+def update_fav_button_cost(request):
+        
+        if request.method == "POST":
+                fav_button_list = ['MMM', 'OH', 'OHYes']
 
+                button_costs = [
+                        request.POST.get('mmm_button_cost', 0) or 0,
+                        request.POST.get('oh_button_cost', 0) or 0,
+                        request.POST.get('ohyes_button_cost', 0) or 0
+                ]
+                
+         
+                for button, cost in zip(fav_button_list, button_costs):
+                        
+                        if cost == "":
+                                cost = 0
+                        # Update or create
+                        fav_button, created = Test_Broadcaster_Lovense_Toy.objects.update_or_create(
+                        Button_Type=button,
+                        defaults={'Vibez_Cost': cost}
+                        )
+                        
+                
+                #REAL TIME UPDATE ON USER SIDE FAV BUTTON TESTING
+                channel_layer = get_channel_layer()
+                channel_name = "update_fav_button_visibility"
+                print(channel_name,flush=True)
 
+                # Prepare data to send
+                data = {
+                "update_all_buttons": True,
+                }
+
+                # Send the data to the WebSocket consumer
+                async_to_sync(channel_layer.group_send)(
+                channel_name,
+                {"type": "updateFavButtonVisibility", "data": data}
+                )
+
+        return JsonResponse({"data":f'Successfully updated fav buttons'},status=200, safe=False)

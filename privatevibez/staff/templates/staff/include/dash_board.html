@@ -81,6 +81,16 @@
             </div>
           </div>
 
+          <div class="col my-4">
+            <div class="card h-100" style="width: 18rem;">
+              <div class="card-body text-center">
+                <span class="fs-4">Total Test Fav Buttons</span>
+                <span class="fs-3 d-block" id="total_test_fav_buttons">{{total_test_fav_buttons.Test_Fav_Buttons_Revenue__sum}}</span>
+                  
+              </div>
+            </div>
+          </div>
+
 
 
 
@@ -135,6 +145,10 @@ if (data.total_user_vibez !== undefined) {
 
 if (data.total_broadcaster_vibez !== undefined) {
   document.getElementById('total_broadcaster_vibez').innerHTML = data.total_broadcaster_vibez.Revenue__sum;
+}
+
+if (data.total_test_fav_buttons !== undefined) {
+  document.getElementById('total_test_fav_buttons').innerHTML = data.total_test_fav_buttons;
 }
 
 }

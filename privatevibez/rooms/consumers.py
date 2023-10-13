@@ -36,7 +36,36 @@ class FollowingConsumer(AsyncWebsocketConsumer):
             }
         await self.send(text_data=json.dumps(modified_data))
  
- 
+
+class TestBroadacasterFavButtonConsumer(AsyncWebsocketConsumer):
+    
+    async def connect(self):
+    
+        self.room_group_name = 'update_fav_button_visibility'
+
+        # Join room group
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+        await self.accept()
+        
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+        
+    async def updateFavButtonVisibility(self, event):
+        data = event['data']
+        modified_data = {
+        "is_fav_button_visible": data
+            }
+        print("showing",flush=True)
+        await self.send(text_data=json.dumps(modified_data))
+        
+        
+        
 class GamesListOfPrizesConsumer(AsyncWebsocketConsumer):   
     
     async def connect(self):

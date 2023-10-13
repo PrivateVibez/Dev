@@ -75,5 +75,8 @@ urlpatterns = [
     path('delete_Promotion/<int:id>/', views.delete_Promotion, name="delete_Promotion"),
     
     # send promotion
-    path('send_Promotion/', views.send_Promotion, name="send_Promotion")
+    path('send_Promotion/', views.send_Promotion, name="send_Promotion"),
+    
+    #update lovense button testing cost
+    path('update_fav_button_cost/', views.update_fav_button_cost, name="update_fav_button_cost")
 ]

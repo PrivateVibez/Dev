@@ -117,6 +117,9 @@ urlpatterns = [
          
          #remove social media link
          path('remove_social_media_link/', views.remove_social_media_link, name="remove_social_media_link"),
+         
+         #try broadcaster button
+         path('try_broadcaster_button/', views.try_broadcaster_button, name="try_broadcaster_button"),
      
 
      

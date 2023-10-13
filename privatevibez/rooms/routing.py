@@ -12,5 +12,8 @@ websocket_urlpatterns = [
     re_path(r'ws/games_socket/(?P<room_id>\d+)/$', consumers.GamesSocketConsumer.as_asgi()),
     
     re_path(r'ws/update_games_list_of_prizes/(?P<room_id>\d+)/$', consumers.GamesListOfPrizesConsumer.as_asgi()),
+    
+    
+    re_path(r'ws/update_fav_button_visibility/$', consumers.TestBroadacasterFavButtonConsumer.as_asgi()),
 
 ]

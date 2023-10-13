@@ -16,6 +16,7 @@ from staff.models import PrivatevibezRevenue
 from django.utils.safestring import mark_safe
 import json
 import random
+import secrets
 from datetime import datetime
 from .forms import Slot_MachineForm, Fav_vibezForm, BioForm, MenuDataForm, SocialMediaLinks
 from django.http import HttpResponse as httpresponse
@@ -155,6 +156,18 @@ def Room(request, Broadcaster):
 
                                 if user.Status == "User":
                                     
+                                    fav_buttons_list = ['MMM', 'OH', 'OHYes']
+
+                                    # Filter the objects based on the Button_Type field
+                                    is_fav_button_existing = Test_Broadcaster_Lovense_Toy.objects.filter(Button_Type__in=fav_buttons_list).exists()
+                                                                        
+                                    try:
+                                        test_broadcaster_button_MMM = Test_Broadcaster_Lovense_Toy.objects.get(Button_Type = "MMM")
+                                        test_broadcaster_button_OH = Test_Broadcaster_Lovense_Toy.objects.get(Button_Type = "OH")
+                                        test_broadcaster_button_OHYes = Test_Broadcaster_Lovense_Toy.objects.get(Button_Type = "OHYes")
+                                    
+                                    except Test_Broadcaster_Lovense_Toy.DoesNotExist as e:
+                                        print(e,flush=True)
                                     
                                     is_lottery_existing = Lottery.objects.filter(User=broadcaster_user).exists()
                                     try:
@@ -830,16 +843,20 @@ def Save_RoomPatterns(request):
             room.Price_MMM_button      = request.POST.get('Price_MMM')
             room.Price_OH_button       = request.POST.get('Price_OH')
             room.Price_OHYes_button    = request.POST.get('Price_OHYes')
+            
             room.Duration_MMM_button   = request.POST.get('Duration_MMM')
             room.Duration_OH_button    = request.POST.get('Duration_OH')
             room.Duration_OHYes_button = request.POST.get('Duration_OHYes')
-            room.Strength_MMM_button   = request.POST.get('Strength_MMM')
-            room.Strength_OH_button    = request.POST.get('Strength_OH')
-            room.Strength_OHYes_button = request.POST.get('Strength_OHYes')
             
-            room.Feature_OHYes_button = request.POST.get('Feature_OHYes')
-            room.Feature_OH_button = request.POST.get('Feature_OH')
-            room.Feature_MMM_button = request.POST.get('Feature_MMM')
+            room.Strength_MMM_button   = request.POST.get('Strength_MMM').rstrip(';')
+            room.Strength_OH_button    = request.POST.get('Strength_OH').rstrip(';')
+            room.Strength_OHYes_button = request.POST.get('Strength_OHYes').rstrip(';')
+            
+            
+            room.Feature_OHYes_button = ';'.join(request.POST.getlist('Feature_OHYes'))
+            room.Feature_OH_button =  ';'.join(request.POST.getlist('Feature_OH'))
+            room.Feature_MMM_button = ';'.join(request.POST.getlist('Feature_MMM'))
+            
             
             room.save()
             return JsonResponse('OK', safe=False)
@@ -983,6 +1000,7 @@ def show_updated_privatevibez_earning_to_staff_dashboard(privatevibezinstance):
                 "total_slot_vibez": privatevibezinstance.Slot_Machine_Revenue,
                 "total_lottery_vibez": privatevibezinstance.Lottery_Revenue,
                 "total_dice_vibez": privatevibezinstance.Dice_Revenue,
+                "total_test_fav_buttons": privatevibezinstance.Test_Fav_Buttons_Revenue
             }
             
             # Send the data to the WebSocket consumer
@@ -1084,7 +1102,7 @@ def get_prize(request):
                         
                         pot = availed_item(winner.User.id,room_data,"2OAK",price,"Slot_Machine",random_button,button_cost,note)
                         
-                        trigger_toy(room_data.User.id,price,winner.User.id,feature,strength,timesec)
+                        trigger_toy(room_data.User.id,feature,strength,timesec)
                         
                         msg = f'2OAK'
                         
@@ -1103,7 +1121,7 @@ def get_prize(request):
                         pot = availed_item(winner.User.id,room_data,"3OAK",price,"Slot_Machine","30AK",room_data.Price_OHYes_button,note)
             
                         is_Jackpot = True
-                        trigger_toy(room_data.User.id,price,winner.User.id,feature,strength,timesec,room_data,is_Jackpot)
+                        trigger_toy(room_data.User.id,feature,strength,timesec,room_data,is_Jackpot)
                         
                         msg = f'JACPOT!!!!! crediting pot to {room_data.User.username}'
                         data = player_remaining_spins_or_vibez(winner,msg,pot)
@@ -1125,7 +1143,7 @@ def get_prize(request):
                         
                         availed_item(winner.User.id,room_data,"Slot Spin",remaining_price,"Slot_Machine",random_button=None,button_cost=None,note="Loss")
                         
-                        trigger_toy(room_data.User.id,cost_per_spin,winner.User.id,feature,strength,timesec)
+                        trigger_toy(room_data.User.id,feature,strength,timesec)
                         slot_machine_pot = Slot_Machine.objects.filter(User=room_data.User)
                         
                         
@@ -1170,6 +1188,17 @@ def generate_broadcaster_qrcode(request):
     d_token = settings.LOVENSE_DEV_KEY
     
     utoken = User_Data.objects.get(User = request.user)
+    
+    if utoken.U_token is not None:
+        pass
+    else:
+        fernet               = Fernet(settings.FERNET_KEY)
+        random_token         = secrets.token_urlsafe(32)
+        U_token              = fernet.encrypt(random_token.encode())
+        
+        utoken.U_token      = U_token
+        utoken.save()
+        
     data = {
         "token":d_token,
         "uid": request.user.id,
@@ -1298,7 +1327,7 @@ def invite_private_chat(request):
         
 
 
-def trigger_toy(broadcaster_id,price,user_id,feature,strength,timesec,room_data=None,is_Jackpot=False):
+def trigger_toy(broadcaster_id,feature,strength,timesec,room_data=None,is_Jackpot=False):
     
     if is_Jackpot == False:
         
@@ -1656,7 +1685,7 @@ def fav_btn_trigger_toy(request):
 
                     # Call the trigger_toy() function with the extracted attributes
                     availed_item(user_id,room_data,"MMM",room_data.Price_MMM_button)
-                    trigger_toy(broadcaster_id, price, user_id, feature, strength, timesec)
+                    trigger_toy(broadcaster_id, feature, strength, timesec)
                     
                 if str(button_type) == "oh":
                     
@@ -1676,7 +1705,7 @@ def fav_btn_trigger_toy(request):
 
                     # Call the trigger_toy() function with the extracted attributes
                     availed_item(user_id,room_data,"OH",room_data.Price_OH_button)
-                    trigger_toy(broadcaster_id, price, user_id, feature, strength, timesec)
+                    trigger_toy(broadcaster_id, feature, strength, timesec)
                     
                 if str(button_type) == "ohyes":
                     
@@ -1695,7 +1724,7 @@ def fav_btn_trigger_toy(request):
                     timesec = room_data.Duration_OHYes_button
 
                     # Call the trigger_toy() function with the extracted attributes
-                    trigger_toy(broadcaster_id,price, user_id, feature, strength, timesec)
+                    trigger_toy(broadcaster_id, feature, strength, timesec)
                 
                 updateBroadcasterFollowersTab(room_data.User_id)
                 
@@ -2167,7 +2196,7 @@ def get_lottery_prize(request):
                   
                     availed_item(request.user.id,room_data,lottery_prize.prize,price,"Lottery",random_button=None,button_cost=None,note=note)
                         
-                    trigger_toy(room_data.User.id,price,request.user.id,feature,strength,timesec)
+                    trigger_toy(room_data.User.id,feature,strength,timesec)
                     
                 elif lottery_prize.prize == "OH":
                     price = game_data.Lottery_Spin_Cost
@@ -2181,7 +2210,7 @@ def get_lottery_prize(request):
                     
                     availed_item(request.user.id,room_data,lottery_prize.prize,price,"Lottery",random_button=None,button_cost=None,note=note)
                         
-                    trigger_toy(room_data.User.id,price,request.user.id,feature,strength,timesec)
+                    trigger_toy(room_data.User.id,feature,strength,timesec)
                     
                 elif lottery_prize.prize == "OHYes":
                     price = game_data.Lottery_Spin_Cost
@@ -2195,7 +2224,7 @@ def get_lottery_prize(request):
                     
                     availed_item(request.user.id,room_data,lottery_prize.prize,price,"Lottery",random_button=None,button_cost=None,note=note)
                         
-                    trigger_toy(room_data.User.id,price,request.user.id,feature,strength,timesec)
+                    trigger_toy(room_data.User.id,feature,strength,timesec)
             
             else:
                 
@@ -2430,7 +2459,7 @@ def give_dice_price(request):
                     note = f'Dice win!'
                     availed_item(request.user.id,room_data,dice_prize.prize,price,"Dice",random_button=None,button_cost=None,note=note)
 
-                    trigger_toy(room_data.User.id,price,request.user.id,feature,strength,timesec)
+                    trigger_toy(room_data.User.id,feature,strength,timesec)
                     
                 elif dice_prize.prize == "OH":
                     price = game_data.Dice_Spin_Cost
@@ -2443,7 +2472,7 @@ def give_dice_price(request):
                     note = f'Dice win!'
                     availed_item(request.user.id,room_data,dice_prize.prize,price,"Dice",random_button=None,button_cost=None,note=note)
                         
-                    trigger_toy(room_data.User.id,price,request.user.id,feature,strength,timesec)
+                    trigger_toy(room_data.User.id,feature,strength,timesec)
                     
                 elif dice_prize.prize == "OHYes":
                     price = game_data.Dice_Spin_Cost
@@ -2456,7 +2485,7 @@ def give_dice_price(request):
                     note = f'Dice win!'
                     availed_item(request.user.id,room_data,dice_prize.prize,price,"Dice",random_button=None,button_cost=None,note=note)
                         
-                    trigger_toy(room_data.User.id,price,request.user.id,feature,strength,timesec)
+                    trigger_toy(room_data.User.id,feature,strength,timesec)
             
             else:
                 
@@ -2500,7 +2529,7 @@ def give_dice_price(request):
             
             availed_item(request.user.id,room_data,"MMM",remaining_price,"Dice",random_button=None,button_cost=None,note="Dice game")
 
-            trigger_toy(room_data.User.id,cost,request.user.id,feature,strength,timesec)
+            trigger_toy(room_data.User.id,feature,strength,timesec)
             
             # item = Item_Availed.objects.create(Room=room_data,User=user.User,Item="MMM", Cost=cost, Note="Dice game")
             # user.Availed.add(item) 
@@ -2524,3 +2553,96 @@ def give_dice_price(request):
             )
 
             return JsonResponse({"data":f'it\'s okay to lose, you still get MMM button. try again!',"spins":user.Free_spins,"vibez":user.Vibez},status=500, safe=False) 
+
+
+def try_broadcaster_button(request):
+    
+    if request.method == "POST":
+        
+        button_type = request.POST.get('button_type')
+        room_data = request.POST.get('room_data')
+        
+        try:
+            
+            if button_type != "":
+                room_data = Room_Data.objects.get(User__username = room_data)
+                user_data = User_Data.objects.get(User = request.user)
+                
+                try:
+                    
+                    if button_type == "MMM":
+                        test_broadcaster_lovense_toy = Test_Broadcaster_Lovense_Toy.objects.get(Button_Type = "MMM")
+                        duration = room_data.Duration_MMM_button
+                        feature = room_data.Feature_MMM_button
+                        strength = room_data.Strength_MMM_button
+                        
+                        
+                    if button_type == "OH":
+                        test_broadcaster_lovense_toy = Test_Broadcaster_Lovense_Toy.objects.get(Button_Type = "OH")
+                        duration = room_data.Duration_OH_button
+                        feature = room_data.Feature_OH_button
+                        strength = room_data.Strength_OH_button
+                        
+                    if button_type == "OHYes":
+                        test_broadcaster_lovense_toy = Test_Broadcaster_Lovense_Toy.objects.get(Button_Type = "OHYes")
+                        duration = room_data.Duration_OHYes_button
+                        feature = room_data.Feature_OHYes_button
+                        strength = room_data.Strength_OHYes_button
+                
+                    # total cost of button
+                  
+                    total_cost = test_broadcaster_lovense_toy.Vibez_Cost * duration
+                    
+                    
+                    #half cost of button
+                    half_cost = total_cost / 2
+                    
+                    
+                  
+                    if user_data.Vibez >= total_cost:
+                        # deduct user vibez
+                        user_data.Vibez = user_data.Vibez - total_cost
+                        user_data.save()
+                        
+                        # add to broadcaster revenue
+                        if room_data.Revenue != 0:
+                            room_data.Revenue = room_data.Revenue + half_cost
+                        else:
+                            room_data.Revenue = half_cost
+                        
+                        room_data.save()
+                            
+                        
+                        try:
+                            
+                            private_vibez = PrivatevibezRevenue.objects.order_by('timestamp').first()
+                            
+                            if private_vibez.Test_Fav_Buttons_Revenue != 0:
+                                private_vibez.Test_Fav_Buttons_Revenue += half_cost
+                            else:
+                                private_vibez.Test_Fav_Buttons_Revenue = half_cost
+                            
+                            private_vibez.save()
+                                
+                        except PrivatevibezRevenue.DoesNotExist as e:
+                            
+                            print(e,flush=True)
+                    
+                    
+                    item = Item_Availed.objects.create(Room=room_data,User=user_data.User,Item=f'{button_type}-Test', Cost=total_cost, Note=f'Test {room_data.User} fav button')
+                    
+                    user_data.Availed.add(item)  
+                    
+                    show_item_in_roomstats(room_data,user_data,item)
+                    show_updated_privatevibez_earning_to_staff_dashboard(private_vibez)
+                    show_updated_broadcaster_revenue_and_total_user_vibez()
+                    trigger_toy(user_data.User.id,feature,strength,duration,room_data=room_data,is_Jackpot=False)
+                    
+                    return JsonResponse({"data":f'button triggered!', "user_vibez":user_data.Vibez},status=200, safe=False)
+
+                except Test_Broadcaster_Lovense_Toy.DoesNotExist as e:
+                    print(e,flush=True)
+                
+        except Room_Data.DoesNotExist as e:
+            print(e,flush=True)
+        

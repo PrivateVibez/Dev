@@ -177,31 +177,48 @@
                    <div class="col">
                     <div aria-label="" class="my-5" style=" position:relative; bottom:0px">
                         <ul class="pagination col-2" style="width:min-content;">
-                        {% if broadcaster_data.has_previous %}
-                            <li class="page-item">
-                                <a class="page-link fs-3 rounded-2" style="color:#1db9a7" href="?page={{ broadcaster_data.previous_page_number }}">Previous</a>
-                            </li>
-                        {% endif %}
-                
-                        {% for page_num in broadcaster_data.paginator.page_range %}
-                            {% if page_num == broadcaster_data.number %}
-                                <li class="page-item active">
-                                    <span class="page-link fs-3 rounded-2">{{ page_num }}</span>
-                                </li>
-                            {% else %}
+
+                            
+                            {% if broadcaster_data.has_previous %}
                                 <li class="page-item">
-                                    <a class="page-link fs-3 rounded-2" style="color:#1db9a7" href="?page={{ page_num }}">{{ page_num }}</a>
+                                    <a class="page-link fs-3 rounded-2" style="color:#1db9a7" href="?page={{ broadcaster_data.previous_page_number }}">Previous</a>
                                 </li>
                             {% endif %}
-                        {% endfor %}
-                
-                
-                        {% if broadcaster_data.has_next %}
-                        <li class="page-item" style="width:min-content;">
-                            <a class="page-link fs-3 rounded-2" style="color:#1db9a7" href="?page={{ broadcaster_data.next_page_number }}">Next</a>
-                        </li>
-                        {% endif %}
-                        </ul>
+
+                            
+                            {% if broadcaster_data.prev_chunk_start %}
+                                <li class="page-item">
+                                    <a class="page-link fs-3 rounded-2" style="color:#1db9a7" href="?page={{ broadcaster_data.prev_chunk_start }}">...</a>
+                                </li>
+                            {% endif %}
+                            
+                            {% for page_num in broadcaster_data.page_chunks %}
+                                {% if page_num == broadcaster_data.number %}
+                                    <li class="page-item active">
+                                        <span class="page-link fs-3 rounded-2">{{ page_num }}</span>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link fs-3 rounded-2" style="color:#1db9a7" href="?page={{ page_num }}">{{ page_num }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {# If the next chunk exists, show ellipsis to jump to the next chunk #}
+                            {% if broadcaster_data.page_chunks|last < broadcaster_data.paginator.num_pages %}
+                                <li class="page-item">
+                                    <a class="page-link fs-3 rounded-2" style="color:#1db9a7" href="?page={{ broadcaster_data.page_chunks|last|add:"1" }}">...</a>
+                                </li>
+                            {% endif %}
+                            
+                            {% if broadcaster_data.has_next %}
+                                <li class="page-item" style="width:min-content;">
+                                    <a class="page-link fs-3 rounded-2" style="color:#1db9a7" href="?page={{ broadcaster_data.next_page_number }}">Next</a>
+                                </li>
+                            {% endif %}
+                            
+                            </ul>
+                            
                     </div>
                     </div>
                 </div>

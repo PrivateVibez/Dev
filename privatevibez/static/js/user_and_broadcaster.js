@@ -82,3 +82,25 @@ function errorToast(message){
           newToast.show();
       
 }
+
+
+function generate_lovense_qrcode(){
+    $.ajax({
+        method:'POST',
+        url: "lovense/generate_broadcaster_qrcode/",
+        data: {
+            'csrfmiddlewaretoken':"{{csrf_token}}",
+        },
+        success:function(data)
+        {
+            console.log(data.data.qr)
+            const qrCodeImg = document.getElementById('lovense_qr_code_img');
+            qrCodeImg.src = data.data.qr;
+            qrCodeImg.style.display = 'block'; //
+        },
+        errors:function(errors){
+            console.log(errors.responseText)
+        }
+    })
+}
+

@@ -1,0 +1,352 @@
+
+<!--FAV BUTTON SLIDERS-->
+
+<h3 class="fs-1 font-weight-bold">Lovense Toy</h3>
+
+<div class="container align-content-center gap-2">
+<img class="" id="lovense_qr_code_img"> 
+<button class="btn btn-dark d-flex m-auto p-3" onclick="generate_lovense_qrcode()" style="font-size:1.5rem;" id="lovense_qrcode_btn"><span class="fs-2 font-weight-bold">Generate Qr Code</span></button>
+</div>
+
+
+<div class="col-4 mt-5">
+
+  <div class="d-flex flex-row gap-4">
+    <div class="col-sm-4 col-md-10 col-lg-10">
+        <div class="card" style="background-color:lightcoral;">
+          
+            <div class="card-body">
+                <h5 class="card-title fs-2">MMM Button</h5>
+                <h6 class="card-subtitle mb-4 fs-2">Soft Vibez</h6>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Price</label>
+                    <input type="number" class="fs-3" id="Price_MMM_button" aria-describedby="emailHelp" value="{{room_data.Price_MMM_button}}">
+                    <small id="emailHelp" class="">By Vibez.</small>
+                </div>                    
+                <div class="form-group">
+                  
+                    <label for="">Feature</label>
+
+                    <select value="{{room_data.Price_MMM_button}}" multiple="multiple" class="fs-3 w-100" id="Feature_MMM_button">
+
+                        <option {% if room_data.Feature_MMM_button and "v" in room_data.Feature_OHYes_button %}
+                        selected{% endif %} value="v"
+                        >Vibrate</option>
+
+                        <option
+                        {% if room_data.Feature_MMM_button and "r" in room_data.Feature_OHYes_button %}
+                          selected{% endif %} value="r"
+                          >Rotate</option>
+
+                        <option 
+                        {% if room_data.Feature_MMM_button and "p" in room_data.Feature_OHYes_button %}
+                        selected{% endif %}
+                          value="p">Pump</option>
+
+                        <option
+                        {% if room_data.Feature_MMM_button and "t" in room_data.Feature_OHYes_button %}
+                          selected{% endif %}
+                          value="t">Thrusting</option>
+
+                        <option
+                        {% if room_data.Feature_MMM_button and "f" in room_data.Feature_OHYes_button %} 
+                        selected
+                        {% endif %} 
+                        value="f">Fingering</option>
+
+                        <option 
+                        {% if room_data.Feature_MMM_button and "s" in room_data.Feature_OHYes_button %}
+                        selected{% endif %}
+                          value="s">
+                          Suction</option>
+
+                    </select>
+                </div>  
+                
+
+                <div class="form-group h-100">
+
+                    <div class="w-100 h-100 bg-white">
+                                                
+                        <div class="d-flex justify-content-end">
+                        <button type="button" class="btn-close" aria-label="Close" onclick="clear_strength('MMM')"></button>
+                        </div>
+
+                        <span class="fs-4" id="MMM-Strengths">{{room_data.Strength_MMM_button}}</span>
+
+
+                    </div>
+
+                </div> 
+                
+                <div class="form-group">
+                    <label for="exampleInputEmail1" class="fs-3">Strength</label>
+
+                  <div class="single-slider m-auto">
+                    <input id="Strength_MMM_button" type="range" min="5" max="20" step="5" value="0" class="slider">
+                    <span class="slider-value"></span>
+                    <button class="btn btn-dark d-block fs-2" onclick="addStrength('MMM')">Add Strength</button>
+                  </div>
+
+                </div>  
+
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1" class="fs-3">Duration</label>
+                    <input type="number" class="fs-3" id="Duration_MMM_button" aria-describedby="emailHelp" value="{{room_data.Duration_MMM_button}}">
+                    <small id="emailHelp" class=" fs-5">in Min.</small>
+                </div>                    
+                
+
+            </div>
+        </div>   
+    </div>  
+    
+    
+
+    <div class="col-sm-4 col-md-10 col-lg-10">
+        <div class="card" style="background-color:lightsalmon;">
+            <div class="card-body">
+                <h5 class="card-title fs-2">OH Button</h5>
+                <h6 class="card-subtitle mb-4 fs-2">Mid Vibez button</h6>
+                <div class="form-group">
+                    <label for="exampleInputEmail1" class="fs-3">Price</label>
+                    <input type="number" class="fs-3" id="Price_OH_button" aria-describedby="emailHelp" value="{{room_data.Price_OH_button}}">
+                    <small id="emailHelp" class="">By Vibez.</small>
+                </div>  
+                
+                <div class="form-group">
+                    <label for="">Feature</label>
+
+                    <select class="fs-3 w-100" id="Feature_OH_button" multiple="multiple">
+
+                        <option {% if room_data.Feature_OH_button and "v" in room_data.Feature_OHYes_button %} selected{% endif %}  value="v">Vibrate</option>
+
+                        <option
+                        {% if room_data.Feature_OH_button and "r" in room_data.Feature_OHYes_button %} selected{% endif %}  
+                        value="r">
+                        Rotate</option>
+
+                        <option
+                        {% if room_data.Feature_OH_button and "p" in room_data.Feature_OHYes_button %} selected{% endif %}  
+                        value="p">Pump</option>
+
+                        <option
+                        {% if room_data.Feature_OH_button and "t" in room_data.Feature_OHYes_button %} selected{% endif %}  
+
+                        value="t">Thrusting</option>
+
+                        <option
+                        {% if room_data.Feature_OH_button and "f" in room_data.Feature_OHYes_button %} selected{% endif %} 
+
+                        value="f">Fingering</option>
+
+                        <option
+                        {% if room_data.Feature_OH_button and "s" in room_data.Feature_OHYes_button %} selected{% endif %}  
+                        value="s">Suction</option>
+
+                    </select>
+                </div> 
+                
+                <div class="form-group h-100">
+
+                    <div class="w-100 h-100 bg-white">
+                        
+                        <div class="d-flex justify-content-end">
+                        <button type="button" class="btn-close" aria-label="Close" onclick="clear_strength('OH')"></button>
+                        </div>
+
+                        <span class="fs-4" id="OH-Strengths">{{room_data.Strength_OH_button}}</span>
+
+                    </div>
+
+                </div> 
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1" class="fs-3">Strength</label>
+
+                    <div class="single-slider m-auto">
+                      <input id="Strength_OH_button" type="range" min="5" max="20" step="5" value="0" class="slider">
+                      <span class="slider-value"></span>
+                      <button class="btn btn-dark d-block fs-2" onclick="addStrength('OH')">Add Strength</button>
+                    </div>
+                </div>  
+    
+                
+                <div class="form-group">
+                    <label for="exampleInputEmail1" class="fs-3">Duration</label>
+                    <input type="number" class="fs-3" id="Duration_OH_button" aria-describedby="emailHelp" value="{{room_data.Duration_OH_button}}">
+                    <small id="emailHelp" class=" fs-5">in Min.</small>
+                </div>                    
+                
+ 
+            </div>
+        </div>                  
+    </div> 
+
+
+
+
+    <div class="col-sm-4 col-md-10 col-lg-10">
+        <div class="card" style="background-color:lightgreen;">
+            <div class="card-body">
+                <h5 class="card-title fs-2">OHYes Button</h5>
+                <h6 class="card-subtitle mb-2 fs-2 mb-4">High Vibez button</h6>
+                <div class="form-group">
+                    <label for="exampleInputEmail1" class="fs-3">Price</label>
+                    <input type="number" class="fs-3" id="Price_OHYes_button" aria-describedby="emailHelp" value="{{room_data.Price_OHYes_button}}">
+                    <small id="emailHelp" class=" ">By Vibez.</small>
+                </div> 
+
+                <div class="form-group">
+                    <label for="Feature_OHYes_button" class="fs-3">Feature</label>
+
+                    <select class="fs-3 w-100" id="Feature_OHYes_button" multiple="multiple">
+                        <option
+                        {% if room_data.Feature_OHYes_button and "v" in room_data.Feature_OHYes_button %}
+                        selected{% endif %}  
+                        
+                        value="v">Vibrate</option>  
+
+                        <option
+                        {% if room_data.Feature_OHYes_button and "r" in room_data.Feature_OHYes_button %}
+                        selected
+                        {% endif %}
+                        value="r">Rotate</option>
+
+                        <option
+                        {% if room_data.Feature_OHYes_button and "p" in room_data.Feature_OHYes_button %}
+                        selected
+                        {% endif %}
+                        value="p">Pump</option>
+
+                        <option
+                        {% if room_data.Feature_OHYes_button and "t" in room_data.Feature_OHYes_button %}
+                        selected
+                        {% endif %}
+                        value="t">Thrusting</option>
+
+                        <option
+                        {% if room_data.Feature_OHYes_button and "f" in room_data.Feature_OHYes_button %}
+                        selected
+                        {% endif %}
+                        value="f">Fingering</option>
+
+                        <option
+                        {% if room_data.Feature_OHYes_button and "s" in room_data.Feature_OHYes_button %}
+                        selected
+                        {% endif %}
+                        value="s">Suction</option>
+                    </select>
+                </div> 
+                
+
+                <div class="form-group h-100">
+
+                    <div class="w-100 h-100 bg-white">
+
+                        <div class="d-flex justify-content-end">
+                        <button type="button" class="btn-close" aria-label="Close" onclick="clear_strength('OHYes')"></button>
+                        </div>
+
+                        <span class="fs-4" id="OHYes-Strengths">{{ room_data.Strength_OHYes_button }}</span>
+
+                    </div>
+
+                </div> 
+                                
+                <div class="form-group">
+                    <label for="exampleInputEmail1" class="fs-3">Strength</label>  
+
+                    <div class="single-slider">
+                      <input id="Strength_OHYes_button" type="range" min="5" max="20" step="5" value="0" class="slider">
+                      <span class="slider-value"></span>
+                      <button class="btn btn-dark d-block fs-2" onclick="addStrength('OHYes')">Add Strength</button>
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1" class="fs-3">Duration</label>
+                    <input type="number" class="fs-3" id="Duration_OHYes_button" aria-describedby="emailHelp" value="{{room_data.Duration_OHYes_button}}">
+                    <small id="emailHelp" class=" ">in Min.</small>
+                </div>                    
+
+            </div>
+        </div>
+    </div> 
+
+</div> 
+
+<div class="col">
+  <button type="button" id="" onclick="Save_RoomPatterns()" class="btn btn-dark fs-1">Save</button>
+</div>
+
+</div>
+
+<!--FAV BUTTON SLIDERS-->
+
+<script>
+
+
+
+const sliders = document.querySelectorAll(".slider");
+const sliderValues = document.querySelectorAll(".slider-value");
+
+sliders.forEach((slider, index) => {
+    slider.addEventListener("input", function() {
+        sliderValues[index].textContent = slider.value;
+    });
+});
+
+
+
+let ohyes_choices, mmm_choices, oh_choices;
+
+function initializeChoices() {
+    const Feature_OHYes_button = document.getElementById('Feature_OHYes_button');
+    ohyes_choices = new Choices(Feature_OHYes_button, {
+        removeItemButton: true, 
+    });
+
+    const Feature_MMM_button = document.getElementById('Feature_MMM_button');
+    mmm_choices = new Choices(Feature_MMM_button, {
+        removeItemButton: true, 
+    });
+
+    const Feature_OH_button = document.getElementById('Feature_OH_button');
+    oh_choices = new Choices(Feature_OH_button, {
+        removeItemButton: true, 
+    });
+}
+
+initializeChoices();
+
+function addStrength(button_type) {
+
+        let slider = document.getElementById(`Strength_${button_type}_button`);
+        let button_strengths_container = document.getElementById(`${button_type}-Strengths`);
+
+        if (slider && button_strengths_container) {
+            // Count the number of appended values so far
+            let currentValueCount = (button_strengths_container.innerHTML.match(/;/g) || []).length;
+
+            // If the count is less than 50, append the new value
+            if (currentValueCount < 50) {
+                button_strengths_container.innerHTML += slider.value + ';';
+            }
+        }
+
+}
+
+
+function clear_strength(button_type) {
+
+    let button_strengths_container = document.getElementById(`${button_type}-Strengths`);
+
+    if (button_strengths_container) {
+        button_strengths_container.innerHTML = '';
+    }
+
+}
+</script>

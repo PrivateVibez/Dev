@@ -70,9 +70,9 @@ class Room_Data(models.Model):
     Strength_MMM_button   = models.CharField(null=True,blank=True, max_length=100)
     Strength_OH_button    = models.CharField(null=True,blank=True, max_length=100)
     Strength_OHYes_button = models.CharField(null=True,blank=True, max_length=100)
-    Feature_OHYes_button  = models.CharField(max_length=1,null=True,blank=True)
-    Feature_OH_button     = models.CharField(max_length=1,null=True,blank=True)
-    Feature_MMM_button    = models.CharField(max_length=1,null=True,blank=True)
+    Feature_OHYes_button  = models.CharField(max_length=50,null=True,blank=True)
+    Feature_OH_button     = models.CharField(max_length=50,null=True,blank=True)
+    Feature_MMM_button    = models.CharField(max_length=50,null=True,blank=True)
     Visitors              = models.ManyToManyField(Room_Visitors, null=True, blank=True)
     Is_Active             = models.BooleanField(default=False)
     Blocked_Countries     = models.ManyToManyField(Blocked_Countries, related_name='block_countries', blank=True)
@@ -175,7 +175,12 @@ class Games_Data(models.Model):
             return str(self.Slot_Machine_Spin_Cost)
         
 
+class Test_Broadcaster_Lovense_Toy(models.Model):
+    Button_Type = models.CharField(max_length=200,null=True,blank=True)
+    Vibez_Cost = models.IntegerField(null=True,blank=True,default=0)
     
+    def __str__(self):
+        return str(self.Button_Type)
     
     
     
@@ -183,7 +188,7 @@ class Games_Data(models.Model):
 class Follows(models.Model):
     User         = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     Broadcaster  = models.ForeignKey(settings.AUTH_USER_MODEL,null=True,blank=True, on_delete=models.CASCADE, related_name = 'Broadcaster')
-    Timestamp    = models.DateTimeField(auto_now_add=True)     
+    Timestamp    = models.DateTimeField(auto_now_add=True)  
     def __str__(self):
         return str(self.User) + ' follows ' + str(self.Broadcaster)
 

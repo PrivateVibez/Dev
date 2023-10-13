@@ -1,0 +1,148 @@
+
+<h3 class="fs-1 font-weight-bold">Lovense Toy</h3>
+
+
+<div class="container-fluid mt-5">
+
+  <div class="container align-content-center gap-2">
+
+    <div class="d-flex justify-content-center align-items-center flex-column gap-3 mb-5">
+    <img class="" id="lovense_qr_code_img"> 
+    </div>
+    
+    <button class="btn btn-dark d-flex m-auto p-3 mb-5" onclick="generate_lovense_qrcode()" style="font-size:1.5rem;" id="lovense_qrcode_btn"><span class="fs-2 font-weight-bold">Generate Qr Code</span></button>
+    </div>
+
+   
+
+  <div id="update-fav-button-visibility-container" class="d-flex flex-column  {% if is_fav_button_existing %} {% else %} d-none {% endif %}">
+    
+    <div class="col text-center">
+      <h3 class="fs-3">Try {{room_data.User}}'s Lovense Toy </h3>
+    </div>
+
+    
+    <div class="col text-center">
+      <div class="d-flex flex-row justify-content-center gap-3">
+
+        <div class="tip_btn border-2" style="background-color:lightcoral;
+        {% if user_data == None and user_data.Vibez < 10 %}
+        cursor:not-allowed 
+        {% endif %}"
+        {% if user_datas != None or user_datas.Vibez > test_broadcaster_button_MMM.Vibez_Cost %}
+         onclick="try_broadcaster_button('MMM')"
+         {% endif %}>
+
+            <div>MMM</div>
+
+        <lottie-player src="https://lottie.host/441e1aa5-2ddf-40d1-b0ed-b7eacd9c2ded/tG0pVeXDFC.json"  background="transparent"  speed="0.5"  style="height: 20px;"  loop autoplay></lottie-player>
+
+            <p style="font-size:10px;">{{test_broadcaster_button_MMM.Vibez_Cost}} Vibez</p>
+            <p style="font-size:10px;">Button Duration {{room_data.Duration_MMM_button}} Min.</p>
+
+        </div>
+
+        <div class="tip_btn" style="background-color:lightsalmon; 
+        {% if user_datas == None or user_datas.Vibez < test_broadcaster_button_OH.Vibez_Cost %}
+        cursor:not-allowed 
+        {% endif %}" 
+        {% if user_datas != None or user_datas.Vibez > test_broadcaster_button_OH.Vibez_Cost %} 
+        onclick="try_broadcaster_button('OH')" {% endif %}>
+
+            <div>OH</div>
+
+            <lottie-player src="https://lottie.host/441e1aa5-2ddf-40d1-b0ed-b7eacd9c2ded/tG0pVeXDFC.json"  background="transparent"  speed="1.5"  style="height: 20px;"  loop autoplay></lottie-player>
+
+            <p style="font-size:10px;">{{test_broadcaster_button_OH.Vibez_Cost}} Vibez per min</p>
+            <p style="font-size:10px;">Button Duration {{room_data.Duration_OH_button}} Min.</p>
+
+        </div>
+
+        <div class="tip_btn" style="background-color: lightgreen;
+        {% if user_datas == None or user_datas.Vibez < test_broadcaster_button_OHYes.Vibez_Cost %}
+        cursor:not-allowed {% endif %}"  
+        {% if user_datas != None or user_datas.Vibez > test_broadcaster_button_OHYes.Vibez_Cost %} 
+        onclick="try_broadcaster_button('OHYes')" {% endif %}>
+
+            <div>OH YES</div>
+
+            <lottie-player src="https://lottie.host/441e1aa5-2ddf-40d1-b0ed-b7eacd9c2ded/tG0pVeXDFC.json"  background="transparent"  speed="2.5"  style="height: 20px;"  loop autoplay></lottie-player>
+
+            <p style="font-size:10px;">{{test_broadcaster_button_OHYes.Vibez_Cost}} Vibez</p>
+            <p style="font-size:10px;">Button Duration {{room_data.Duration_OHYes_button}} Min.</p>
+
+
+        </div>
+    </div>
+    </div>
+
+  </div>
+
+  
+
+</div>
+
+
+
+<script>
+  
+function try_broadcaster_button(button_type) {
+
+  $.ajax({
+    method:'POST',
+    url: "try_broadcaster_button/",
+    mimeType:"multipart/form-data",
+    data:{  
+           
+            'button_type'  : button_type,
+            'room_data' : '{{room_data.User}}',
+            'csrfmiddlewaretoken':"{{csrf_token}}",
+        },
+        'dataType': 'json',
+        success:function(data){
+          var user_vibez = data.user_vibez;
+          var message = data.data;
+
+          console.log(data);
+          document.getElementById("user_vibez").innerHTML = user_vibez;
+          successToast(message);
+     
+          
+        },
+        error:function(errors){
+        
+            var msg = JSON.parse(errors.responseText)
+            var message = "Something went wrong";
+            errorToast(msg.data)
+        }
+
+        });
+
+}
+
+
+const update_fav_button_visibilitySocket = new WebSocket(
+  protocol + '://' + window.location.host + `/ws/update_fav_button_visibility/`
+);
+
+update_fav_button_visibilitySocket.onopen = function(e) {
+  console.log('update_fav_button_visibilitySocket open');
+}
+
+update_fav_button_visibilitySocket.onmessage = function(e) {
+  console.log('reloaded');
+
+  let fav_button_visibility = document.getElementById('update-fav-button-visibility-container');
+
+  if (fav_button_visibility && fav_button_visibility.classList.contains('d-none')) {
+    fav_button_visibility.classList.remove('d-none');
+  }
+  
+    $("#update-fav-button-visibility-container").load(" #update-fav-button-visibility-container > *");
+}
+
+
+windows.onbeforeunload = function(e) {
+  update_fav_button_visibilitySocket.close();
+};
+</script>

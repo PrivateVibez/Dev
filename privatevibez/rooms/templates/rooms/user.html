@@ -464,7 +464,7 @@
 
 {% endif %}
 
-<div ts="x_" class="BaseTabsContainer" id="BottomBoxContainer" style="height: 446.312px; width: 98.5%; -webkit-tap-highlight-color: transparent; display: inline-block; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; border-radius: 4px 4px 2px 2px; margin: 10px 0px 0px 10px; box-sizing: border-box;">
+<div ts="x_" class="BaseTabsContainer" id="BottomBoxContainer" style=" width: 98.5%; -webkit-tap-highlight-color: transparent; display: inline-block; font-family: UbuntuRegular, Helvetica, Arial, sans-serif; border-radius: 4px 4px 2px 2px; margin: 10px 0px 0px 10px; box-sizing: border-box;">
 
     <div ts="DD" data-paction="Chat" style="position: relative; overflow: hidden; -webkit-tap-highlight-color: transparent; width: 100%; box-sizing: border-box;">
 
@@ -474,8 +474,13 @@
 
             <button class="tab nav-link" id="nav-room-rules-tab" data-bs-toggle="tab" data-bs-target="#nav-room-rules" type="button" role="tab" aria-controls="nav-room-rules" aria-selected="false">Room Rules</button>
 
+
+
             {% if request.user.is_authenticated %}
             <button class="tab nav-link" id="nav-following-tab" data-bs-toggle="tab" data-bs-target="#nav-following" type="button" role="tab" aria-controls="nav-following" aria-selected="false">Following</button>
+
+            <button class="tab nav-link" id="nav-userside-lovense-tab" data-bs-toggle="tab" data-bs-target="#nav-userside-lovense" type="button" role="tab" aria-controls="nav-userside-lovense" aria-selected="false">Lovense Toy</button>
+
             <div class="pull-right">
 
                 <div id="Thumb_button" class="followButton score-like" >
@@ -541,9 +546,9 @@
         </div>
     </div>
 
-    <div class="window" style="height: 399px;">
+    <div class="container-fluid" style="">
 
-        <div ts="wZ" style="height: 100%; width: 100%; position: relative; -webkit-tap-highlight-color: transparent; display: block;">
+        <div ts="wZ" style=" position: relative; -webkit-tap-highlight-color: transparent; display: block;">
 
             <div class="tab-content" id="nav-tabContent2">
                 <div class="tab-pane fade show active" id="nav-bio" role="tabpanel" aria-labelledby="nav-bio-tab">
@@ -591,6 +596,11 @@
                         <h2>{{room_data.User}}'s Room Rules</h2>
                         <p>{{ room_data.Room_Rules|linebreaks }}</p>
                     </div>
+                </div>
+
+
+                <div class="tab-pane fade" id="nav-userside-lovense" role="tabpanel" aria-labelledby="nav-room-rules-tab">
+                    {% include "rooms/include/user_side_lovensetoy.html" %}
                 </div>
 
                 <div class="tab-pane fade" id="nav-following" role="tabpanel" aria-labelledby="nav-following-tab">
@@ -1584,13 +1594,13 @@ subscriptionButtons.forEach(function(button) {
               
             },
             error:function(errors){
-                console.log(errors.responseText)
+            
                 var msg = JSON.parse(errors.responseText)
                 var message = "Something went wrong";
                 errorToast(msg.data)
             }
 
-            })
+            });
 
   });
 });

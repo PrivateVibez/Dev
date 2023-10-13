@@ -888,18 +888,22 @@ function Save_RoomPatterns(){
         url: " {% url 'rooms:Save_RoomPatterns' %}",
         data:{
                 'Price_MMM':document.getElementById('Price_MMM_button').value,
-                'Duration_MMM':document.getElementById('Duration_MMM_button').value,
-                'Strength_MMM':document.getElementById('Strength_MMM_button').value,
-                'Price_OH':document.getElementById('Price_OH_button').value,
-                'Duration_OH':document.getElementById('Duration_OH_button').value,
-                'Strength_OH':document.getElementById('Strength_OH_button').value,
                 'Price_OHYes':document.getElementById('Price_OHYes_button').value,
-                'Duration_OHYes':document.getElementById('Duration_OHYes_button').value,
-                'Strength_OHYes':document.getElementById('Strength_OHYes_button').value,
+                'Price_OH':document.getElementById('Price_OH_button').value,
 
-                'Feature_OHYes':document.getElementById('Feature_OHYes_button').value,
-                'Feature_OH':document.getElementById('Feature_OH_button').value,
-                'Feature_MMM':document.getElementById('Feature_MMM_button').value,
+                'Duration_MMM':document.getElementById('Duration_MMM_button').value,
+                'Duration_OHYes':document.getElementById('Duration_OHYes_button').value,
+                'Duration_OH':document.getElementById('Duration_OH_button').value,
+
+
+                'Strength_MMM':document.getElementById('MMM-Strengths').innerHTML,
+                'Strength_OH':document.getElementById('OH-Strengths').innerHTML,
+                'Strength_OHYes':document.getElementById('OHYes-Strengths').innerHTML,
+
+                'Feature_OHYes': getSelectedValues('Feature_OHYes_button'),
+                'Feature_OH': getSelectedValues('Feature_OH_button'),
+                'Feature_MMM': getSelectedValues('Feature_MMM_button'),
+
                 'csrfmiddlewaretoken':"{{csrf_token}}",
             },
             success:function(){
@@ -909,6 +913,31 @@ function Save_RoomPatterns(){
             }
     })
 }
+
+function getSelectedValues(selectElementId) {
+  let valuesArray;
+  
+  switch (selectElementId) {
+      case 'Feature_OHYes_button':
+          valuesArray = ohyes_choices.getValue(true);
+          break;
+      case 'Feature_MMM_button':
+          valuesArray = mmm_choices.getValue(true);
+          break;
+      case 'Feature_OH_button':
+          valuesArray = oh_choices.getValue(true);
+          break;
+      default:
+          const selectedOptions = document.querySelectorAll(`#${selectElementId} option:checked`);
+          valuesArray = Array.from(selectedOptions).map(option => option.value);
+  }
+
+  // Convert array to string
+  return valuesArray.join(';');
+}
+
+
+
 
 
 function removeAlerts() {

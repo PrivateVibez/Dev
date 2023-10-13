@@ -2,14 +2,56 @@
 
   <div class="row gap-5">
     <div class="row mt-5">
+
       <div class="col-2">
         <h3 class="">Games</h3>
             <button class="btn btn-primary fs-5" data-bs-toggle="modal" data-bs-target="#modal-for-slot-machine-cost-per-spin"> Update games cost per spin</button>
 
       </div>
+
+      <div class="col-3">
+        <h3 class="">Lovense Fav Buttons</h3>
+            <button class="btn btn-primary fs-5" data-bs-toggle="modal" data-bs-target="#modal-for-setting-broadcaster-lovense"> Update games cost per spin</button>
+
+      </div>
+
     </div>
 
 
+    <!--TEST BROADCASTER'S FAV BUTTONS MODAL-->
+    <div class="modal fade" id="modal-for-setting-broadcaster-lovense" tabindex="-1" aria-labelledby="setting-broadcaster-lovense" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Update Broadcaster Fav Button Cost</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+    
+          <div class="modal-body text-center">
+            <label for="mmm-button-cost" class="d-block">MMM Button</label>
+            
+            <input class="" name="mmm-button-cost" value="" id="mmm-button-cost" placeholder="">
+          </div>
+    
+          <div class="modal-body text-center">
+            <label for="oh-button-cost" class="d-block">OH button</label>
+            <input class="" name="oh-button-cost" value="" id="oh-button-cost" placeholder="">
+          </div>
+    
+          <div class="modal-body text-center">
+            <label for="ohyes-button-cost" class="d-block">OH Yes</label>
+            <input class="" name="ohyes-button-cost" value="" id="ohyes-button-cost" placeholder="">
+          </div>
+    
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" onclick="update_fav_button_cost()" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--TEST BROADCASTER'S FAV BUTTONS MODAL-->
+ 
     
       <!-- Modal for updating slot machine cost per spin -->
 <div class="modal fade" id="modal-for-slot-machine-cost-per-spin" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -190,6 +232,33 @@
         successToast(data.data);
       },
       error: function(data) {
+        console.log(data);
+        alert("Something went wrong");
+      }
+    });
+  }
+
+  function update_fav_button_cost() {
+    let mmm_button_cost = document.getElementById('mmm-button-cost').value;
+    let oh_button_cost = document.getElementById('oh-button-cost').value;
+    let ohyes_button_cost = document.getElementById('ohyes-button-cost').value;
+    let data = {
+      "mmm_button_cost": mmm_button_cost,
+      "oh_button_cost": oh_button_cost,
+      "ohyes_button_cost": ohyes_button_cost,
+      'csrfmiddlewaretoken':"{{csrf_token}}",
+    }
+    $.ajax({
+      type: "POST",
+      url: "update_fav_button_cost/",
+      data: data,
+      success: function(data) {
+        console.log(data);
+        successToast(data.data);
+      },
+      error: function(data) {
+        var data = JSON.parse(data.responseText);
+
         console.log(data);
         alert("Something went wrong");
       }

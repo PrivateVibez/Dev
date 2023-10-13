@@ -161,6 +161,30 @@ def room_data_func(request,user_country,user_region):
         return broadcaster_data if broadcaster_data else None
 
 
+def get_page_chunks(current_page, num_pages, chunk_size=3):
+    start_page = (current_page - 1) // chunk_size * chunk_size + 1
+    end_page = start_page + chunk_size
+    prev_chunk_start = start_page - chunk_size if start_page > 1 else None
+    return range(start_page, end_page), prev_chunk_start
+
+def paginate_list(page_number, user_data_list, items_per_page):
+    paginator = Paginator(user_data_list, items_per_page)
+    
+    try:
+        page = paginator.page(page_number)
+    except PageNotAnInteger:
+        page = paginator.page(1)
+    except EmptyPage:
+        page = paginator.page(paginator.num_pages)
+
+    current_page = page.number
+    page_chunks, prev_chunk_start = get_page_chunks(current_page, paginator.num_pages)
+    
+    # Extend the page object to include the new attributes
+    page.page_chunks = page_chunks
+    page.prev_chunk_start = prev_chunk_start
+    
+    return page
 
 def home(request):
         
@@ -232,7 +256,7 @@ def home(request):
                                 if broadcaster_data is not None:
                                         broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
                         
-                        
+                                print(broadcaster_data.page_chunks,flush=True)
                                 
                                 
 
@@ -240,21 +264,6 @@ def home(request):
         return render(request, "base/home.html", locals())
 
 
-
-def paginate_list(page_number, user_data_list, items_per_page):
-    
-    paginator = Paginator(user_data_list, items_per_page)
-    
-    print(user_data_list,flush=True)
-    try:
-
-        page = paginator.page(page_number)
-    except PageNotAnInteger:
-        page = paginator.page(1)
-    except EmptyPage:
-        page = paginator.page(paginator.num_pages)
-    
-    return page
 
 
 
