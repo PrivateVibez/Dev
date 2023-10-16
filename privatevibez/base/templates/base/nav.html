@@ -1,627 +1,98 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
+<div class="headerphoto-container">
+  <img class="logo" src="{% static 'images/Active.png' %}" width="100%" alt="Error">
+</div>
+
+<nav>
+  
+  <div class="nav-container">
+      <h5 class="home"><a class="home-btn" href="{% url "Main_home" %}">Home</a></h5>
+  </div>
+
+  {% if not request.user.is_authenticated %}
+  <div class="nav-container">
+
+      <div class="username">
+          <a href=""><img class="usernameicon" src="{%static 'images/icons8-username-30.png'%}" width="30px" alt="Error"></a>
+          <a class="signup-link" href="{% url "Registration" %}">Sign Up</a>
+      </div>
+
+  </div>
 
 
+  <div class="nav-container">
+      <div class="username">
+          <a href=""><img class="usernameicon" src="{%static 'images/icons8-username-30.png'%}" width="30px" alt="Error"></a>
+          <a class="signup-link" href="{% url "registration_broadcaster" %}">Sign in</a>
+      </div>
 
+  </div>
+  {% endif %}
 
-<div class="container-fluid" style="padding:0px; min-width:540px">
+  <div class="nav-container">
+      <h1 class="title"><a class="title-link" href="{% url 'registration_broadcaster' %}">Become a Broadcaster</a></h1>
+  </div>
 
+  <div class="nav-container">
+      
+  </div>
 
+  {% if request.user.is_authenticated %}
+  <div class="nav-container">
 
-<nav class="navbar navbar-expand-lg" id="navbar" style="background-color:black;color:#6cc6ba;">
+      <li class="stat">Status:
+        {{user_datas.User.Status}}
+      </li>
 
-    <div class="container-fluid">
+      
+     
 
-        <a class="navbar-brand" href="/">
-            <img src="{% static 'images/logo/private-vibez-logo.png' %}" alt="Private Vibez Logo" width="190" class="d-inline-block align-text-top">
-        </a>
+      <li class="stat">Vibes:
 
-            {% if not request.user.is_authenticated %}
-                <li class="item dropdown" style="list-style-type:none ;">
-                    <li class="item dropdown" style="list-style-type:none ;">
-                        <a class="link dropdown" href="#" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false"><i class="icofont-user-alt-2 text-md fs-1" style="color:#6cc6ba;"> Anonymous User</i></a>
-                        <ul class="dropdown-menu" style="background-color:#6cc6ba; border:none; color:black; margin-left:50px; padding:8px;" id="dropDown">
-                            <li><a type="button" data-toggle="modal" class="fs-2" data-target="#login_modal"><i class="icofont-login fs-2"></i> Login</a></li>
-                            <li><a type="button" data-toggle="modal" class="fs-2" data-target="#registration_modal"><i class="icofont-fountain-pen fs-2"></i> Sign Up</a></li>
-                        </ul>
-                    </li>
-                </li>
-            {% endif %}
+        <span id="user_vibez">
+      {% if user_datas == None %}
+          0
+      {% else %}
+          {{user_datas.Vibez}}
+      {% endif %}
+        </span>
 
-            {% if request.user.is_authenticated %}
-                <ul class=" navbar-collapse justify-content-end" style="margin-right: 50px;" id="navbarsid" >
-                    <li class="nav-item dropdown" style="list-style-type:none;">
-                        <li id="user-details" class="nav-item dropdown" style="list-style-type:none; ">
-                            <button class="nav-link dropdown bg-transparent border-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="icofont-user-alt-2 fs-2 text-lg" style="color:#6cc6ba;"> <span class="fs-3" id="user-username">{{request.user.username}}</span>
-                                <span class="bg-transparent"><img class="img-thumbnail bg-transparent border-0" id="user-badge" width="30px" src="{{user_datas.Subscription_Type.Badge.url}}"></span>
-                            </i> 
-                                <br><i id="user_vibez" class="icofont-sound-wave fs-2 text-lg" style="color:#6cc6ba;">
-                                    {% if user_datas == None %}
-                                        0
-                                    {% else %}
-                                        {{user_datas.Vibez}}
-                                    {% endif %}
-                                </i>
-                                <br>
-                                    <span style="color:#6cc6ba;"> free spin <span id="free_spins">{{user_datas.Free_spins}}</span> </span>
-                                        
-                                </br>
-                            </button>
+      </li>
 
-                            <ul class="dropdown-menu" style="background-color:#6cc6ba; border:none; color:black; padding:5px; width:150px; z-index:2000;" id="dropdown">
-                                <li><button class="border-0 bg-transparent fs-2 my-2" data-toggle="modal" data-target="#Profile" ><i class="icofont-page fs-2"></i> Profile</button></li>
-
-                                <li><button class="border-0 bg-transparent fs-2 my-2"  data-toggle="modal" data-target="#Messages" ><i class="icofont-ui-message fs-2"></i>
-                                    Messages</button></li>
-
-                                {% if user_datas.Subscription_Type %}
-                                <li><button class="border-0 bg-transparent fs-2 my-2"  data-toggle="modal" data-target="#Subscription" >Subscription</button></li>
-                                {% endif %}
-
-                                <li><button class="border-0 bg-transparent fs-2 my-2"  data-toggle="modal" data-target="#Expenses" >Spending</button></li>
-
-
-                                {% if user_status == "Broadcaster" or user_status == "Decline_Broadcaster" %} 
-                                <li><button class="border-0 bg-transparent fs-2 my-2"  data-toggle="modal"  data-target="#Settings" ><i class="icofont-gear fs-2"></i> Settings</button></li>
-
-                                <li><button class="border-0 bg-transparent fs-2 my-2" onclick="window.location.href='/room/{{request.user}}'"><i class="icofont-ui-video-chat fs-2"></i> My Room</button></li>
-
-                                {% endif %}
-
-                                <li><button class="border-0 bg-transparent fs-2" 
-                                    onclick="window.location.href='/accounts/logout'"
-                                    href="/accounts/logout"><i class="icofont-sign-out fs-2 my-2"></i> Sign Out</button></li>
-                            </ul>
-
-                        </li>
-                    </li>
-                </ul>
-            {% endif %}
+     
 
     </div>
+
+    <div class="nav-container">
+      <h1 class="title"><a class="title-link" href="{% url 'logout' %}">Logout</a></h1>
+  </div>
+      {% endif %}
+
+
 </nav>
 
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var toastContainer = document.getElementById('toast-container');
+    var logo = document.getElementById('privatevibezlogo');
 
-<div class="start container-fluid" style="color:black; padding:0px;">
+    const toastElements = document.querySelectorAll('.toast');
 
+    toastElements.forEach(function(toastElement) {
+      setTimeout(function() {
+        var toast = new bootstrap.Toast(toastElement);
+        toast.hide();
+      }, 2000);
+    });
+  });
 
-    {% if not request.user.is_authenticated %} 
-        <a href="#" data-toggle="modal" data-target="#registration_modal" style="color:black;text-decoration:none;">
-            <p class="fs-2 font-weight-bold" style="color:#6cc6ba;">
-                Sign Up to  enjoy Vibrations
-                <span><i class="icofont-sign-in"></i></span>
-            </p> 
-        </a>  
-          
-    {% endif %}
 
-    {% if request.user.is_authenticated %} 
-        {% if user_status == "User" %}
 
-            <button class="border-0 bg-transparent w-100" onclick="window.location.href='{% url 'registration_broadcaster' %}'"  class="mt-0" style="color:black;text-decoration:none; text-shadow:black !important;">
-                <p class="fs-2 font-weight-bold" style="color:#6cc6ba;">
-                    BROADCAST YOURSELF - GO NOW 
-                    <span><i class="icofont-camera fs-1" style="color:#6cc6ba;"></i></span>
-                </p> 
-            </button>
-        {% endif %}
-
-        {% if user_status == "Pending_Broadcaster" and user_datas.User == room_data.User %}
-                <p class="fs-2 font-weight-bold" style="color:#6cc6ba;">
-                    We are still looking through your Information 
-                    <span><i class="icofont-look" style="color:#6cc6ba;"></i></span>
-                </p> 
-        {% endif %}
-
-        {% if user_status == "Broadcaster" %}
-            <p>
-                <button style="color:black;text-decoration:none;" id="btn-pending-invites" class=" btn-transparent bg-transparent  border-0 rounded-3" style="box-shadow:0px; outline:0px;" data-toggle="modal" data-target="#private_chat_invites_modal">
-
-                    <span class="fs-2 font-weight-bold" style="color:#6cc6ba;">
-                        Number of Invitees : {{all_private_chat_invitees.count}} | Pending request : {{pending_private_chat_invitees}}
-                    </span>
-
-                <span>  
-                    <i class="icofont-ui-message h3" style="color:#6cc6ba;"></i>
-                </span>
-                </button>
-            </p> 
-        {% endif %}
-
-        {% if user_status == "STAFF" %}
-            <a href="/staff/" style="color:black;text-decoration:none;">
-                <p>
-                    Get Back To Work 
-                    <span><i class="icofont-ui-computer" style="color:#6cc6ba;"></i></span>
-                </p> 
-            </a>
-        {% endif %}
-
-    {% endif %}
-</div>
-
-
-
-{% comment %} MODAL FOR PRIVATE INVITES {% endcomment %}
-
-<div class="modal fade" id="private_chat_invites_modal" tabindex="-1" role="dialog" aria-labelledby="private_chat_invites_modal" aria-hidden="true">
-    <div class="modal-dialog"  role="document">
-      <div class="modal-content" >
-        <div class="modal-header">
-          <h5 class="modal-title font-weight-bold fs-2" id="exampleModalLabel">Private Chat invites</h5>
-          <button type="button" class="close fs-1" data-dismiss="modal" aria-label="Close">
-            <span class="fs-1" aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-      
-            <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th scope="col" class="fs-2">Name</th>
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody class="fs-2">
-                  
-                  {% for invitee in all_pending_private_chat_invitees %}
-                  <tr>
-                  
-                    <th scope="row"><p class="fs-2">{{invitee.Invitee}}</p></th>
-                    <td class="text-center">
-                        <button class="btn btn-success fs-3" data-dismiss="modal" onclick="Accept_Invitee('{{invitee.Invitee.id}}')">Accept</button>
-                        <button class="btn btn-danger fs-3" onclick="decline_invite('{{invitee.Invitee.id}}')" data-dismiss="modal">Decline</button>
-                    </td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-
-
-        </div>
-        <div class="modal-footer">
-
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-<!-- Login Modal-->
-
-<div class="modal fade" id="login_modal" tabindex="-1" role="dialog" aria-labelledby="login_modal_label" aria-hidden="true">
-    <div class="modal-dialog  modal-dialog-centered" style="max-width:1000px;" role="document">
-      <div class="modal-content" style="background-color: #6cc6ba;">
-        <div class="">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span class="display-1 text-dark" aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <section class="vh-75" style="background-color: #6cc6ba;">
-
-            <div class="container py-5 h-75">
-              
-              <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col col-xl-10">
-                  <div class="card" style="border-radius: 1rem;">
-                    <div class="row g-0">
-        
-                      <div class="col-md-6 col-lg-5 d-none d-md-block">
-                        <img src="{% static 'images/pexels-alexander-krivitskiy-1271374.jpg' %}"
-                          alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
-                      </div>
-        
-        
-                      <div class="col-md-6 col-lg-7 d-flex align-items-center">
-                        <div class="card-body p-4 p-lg-5 text-black">
-          
-                            <div class="d-flex align-items-center mb-3 pb-1">
-        
-                            
-                                    <img src="{% static 'images/logo/small_logo.png' %}" alt="Private Vibez Logo" width="50" class="d-inline-block align-text-top mr-3">
-                              </i>
-        
-                              <span class="h1 fw-bold display-4 mb-0">Interactive Pleasures</span>
-        
-                            </div>
-          
-                            <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px; font-size:2rem;">Sign In</h5>
-        
-                            <div id="info_box" style='display:block;'>
-                              <div class="form-outline mb-4">
-                                
-                                <form action="/accounts/login/" method="POST">
-                                  {% csrf_token %}
-        
-                                    <div class="form-outline mb-4"> 
-        
-                                            <input type="type" name="username" id="username" style="font-size:2rem;" class="form-control" />
-                                            <label class="form-label my-2" style="font-size:2rem;" name="username" id="username" for="form3Example3">
-                                              Email address or Username</label>
-        
-                                    </div>
-        
-                                    <div class="form-outline mb-4">                               
-                  
-                                      <input type="password" id="password" style="font-size:2rem;" name="password"class="form-control" />
-                                      <label class="form-label my-2" style="font-size:2rem;" for="password">Password</label>
-                                            
-                                    </div>
-            
-                                    <div class="pt-1 mb-4">
-                                        <button type="submit" style="font-size:2rem;" class="btn btn-dark btn-lg btn-block">Sign in</button>
-        
-                                        <p class="my-2" style="font-size:2rem;">New to PriveVibez? 
-                                          <a href="/accounts/signup/" style="font-size:2rem;" type="button" class="btn btn-link"> Sign up now.
-                                          </a>
-                                        </p>
-                                        
-                                    </div>
-                                </form>
-          
-                            </div>
-                        </div>
-        
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-      </div>
-    </div>
-</div>
-
-  <!-- Registration Modal-->
-  {% block registration_modal %}
-<div class="modal fade" id="registration_modal" tabindex="-1" role="dialog" aria-labelledby="registration_modal_label" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" style="max-width:1300px;"  role="document">
-      <div class="modal-content" style="background-color: #6cc6ba;">
-        <div class="">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span class="display-1 text-dark" aria-hidden="true">&times;</span>
-          </button>
-        </div>
-
-        <section class="" style="background-color: #6cc6ba;">
-            <div class="container h-100">
-              <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col col-xl-10">
-                  <div class="card" style="border-radius: 1rem;">
-                    <div class="row g-0">
-                      <div class="col-md-6 col-lg-5 d-none d-md-block">
-                        <img src="{% static 'images/pexels-alexander-krivitskiy-1271374.jpg' %}"
-                          alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
-                      </div>
-                      <div class="col-md-6 col-lg-7 d-flex align-items-center">
-                        <div class="card-body p-4 p-lg-5 text-black">
-          
-                            <div class="d-flex align-items-center mb-3 pb-1">
-                            
-                                    <img src="{% static 'images/logo/small_logo.png' %}" alt="Private Vibez Logo" width="50" class="d-inline-block align-text-top">
-                              </i>
-                              <span class="h1 fw-bold display-4 text-center mb-0">Interactive Pleasures</span>
-                            </div>
-          
-                            <h5 class="fw-normal display-4 my-5 text-center pb-3" style="letter-spacing: 1px;">Sign Up</h5>
-                            <div id="info_box" style='display:block;'>
-                              <div class="form-outline mb-4">
-                                <form action="/accounts/signup/" method="POST">
-                                    <div class="form-outline row gap-3 mb-4">                               
-                                            {% csrf_token %}
-                                       <label style="font-size:2rem;">username</label>
-                                       <input type="text" style="font-size:2rem;" class="border-1" name="username"></input>
-        
-                                       
-                                       <label style="font-size:2rem;">email</label>
-                                       <input type="text" style="font-size:2rem;" class="border-1" name="email"></input>
-        
-                                       
-                                       <label style="font-size:2rem;">password</label>
-                                       <input type="password" style="font-size:2rem;" class="border-1" name="password1"></input>
-        
-                                       
-                                       <label style="font-size:2rem;">confirm password</label>
-                                       <input type="password" style="font-size:2rem;" class="border-1" name="password2"></input>
-        
-                                       
-        
-                                          
-                                    </div>
-                                    <div class="pt-1 mb-4">
-                                        <button type="submit" style="font-size:2rem" class="btn btn-dark btn-lg btn-block my-5">Sign Up</button>
-                                        <p class="mt-5" style="font-size:2rem">Not new to PriveVibez? <a href="/accounts/login/" style="font-size:2rem" type="button" class="btn btn-link"> Sign in now.</a></p>
-                                    </div>
-                                </form>
-          
-                            </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-      </div>
-    </div>
-  </div>
-  {% endblock registration_modal %}
-<!-- Modal -->
-
-<!--
-<div class="modal fade" id="Profile" tabindex="-1" role="dialog" aria-labelledby="Profile_Label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="Profile_Label">Profile</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item">
-                  <a class="nav-link active" id="Profile_Image-tab" data-toggle="tab" href="#Profile_Image" role="tab" aria-controls="Profile_Image" aria-selected="true">Profile Image</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" id="Bio-tab" data-toggle="tab" href="#Bio" role="tab" aria-controls="Bio" aria-selected="false">Bio</a>
-                </li>
-            </ul>  
-            <div class="tab-content" id="myTabContent">
-
-                <div class="tab-pane fade show active" id="Profile_Image" role="tabpanel" aria-labelledby="Profile_Image-tab">
-                    
-                    <form method="POST" enctype="multipart/form-data" action="{% url 'Profile_Pic' %}"
-                    {% csrf_token %}
-                    <div class="row">
-                        <div class="">
-                            {% if user_datas.Image %}
-                            <img src="{{user_datas.Image}}" alt="profile_picture" class="img-responsive">
-                            {% endif %}
-                        </div>
-                        <div class="">
-                            <span class="">{{user_datas.User.username}}</span>
-                        </div>
-                    </div>
-                </div>
-            </form>
-
-
-                {% block broadcast_info %}
-
-                <div class="tab-pane fade" id="Bio" role="tabpanel" aria-labelledby="Bio-tab">
-                    <div class="form-outline mb-4">
-                        <input type="text" value="{{user_data.Real_Name}}" class="form-control" id="update_Real_Name" aria-label="update_Real_Name">  
-                        <label class="form-label" for="update_Real_Name">Real Name</label>
-                      </div>
-                      <div class="form-outline mb-4">
-                        <input type="number" value="{{user_data.Age}}" class="form-control" id="update_Age" aria-label="update_Age" >  
-                        <label class="form-label" for="Age">Age</label>
-                      </div>
-                      <div class="form-outline mb-4">
-                        <input type="text" value="{{user_data.I_Am}}" class="form-control" id="update_I_Am" aria-label="update_I_Am">  
-                        <label class="form-label" for="Interested_In">You are</label>
-                      </div>
-                      <div class="form-outline mb-4">
-                        <input type="text" value="{{user_data.Interested_In}}" class="form-control" id="update_Interested_In" aria-label="Interested_In">  
-                        <label class="form-label" for="Interested_In">Interested In</label>
-                      </div>
-                      <div class="form-outline mb-4">
-                        <input type="text" value="{{user_data.Location}}" class="form-control" id="update_Location" aria-label="update_Location" >  
-                        <label class="form-label" for="update_Location">Location</label>
-                      </div>
-                      <div class="form-outline mb-4">
-                        <input type="text" value="{{user_data.Language}}" class="form-control" id="update_Language" aria-label="update_Language" >  
-                        <label class="form-label" for="update_Language">Language</label>
-                      </div>
-                      <div class="form-outline mb-4">
-                        <input type="text" value="{{user_data.Body_Type}}" class="form-control" id="update_Body_Type" aria-label="update_Body_Type" >  
-                        <label class="form-label" for="update_Body_Type">Body Type</label>
-                    </div>
-                      <div class="modal-footer">
-                        <button type="button" id="bio_closeButton" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" onclick="Save_Bio_nav()">Save changes</button>
-                      </div>
-
-                </div>
-                {% endblock broadcast_info %}
-
-            </div>     
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Modal --> 
-
-
-
-  <!-- Modal for Messages -->
-<div class="modal fade" id="Messages" tabindex="-1" role="dialog" aria-labelledby="Profile_Label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="Profile_Label">Messages</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-         
-
-        <div class="d-flex flex-row">
-
-            
-            <div class="col-3">
-                Mikey
-            </div>
-
-            <div class="col-8">
-                yo
-            </div>
-        
-        </div>
-
-
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-
-    <!-- Modal for Subscription -->
-<div class="modal fade" id="Subscription" tabindex="-1" role="dialog" aria-labelledby="Profile_Label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title fs-1" id="Profile_Label">My Subscription</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span class="fs-1" aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-         
-
-        <div class="d-flex flex-row justify-content-center">
-
-            <div class="col fs-1">
-                {{user_datas.Subscription_Type.Name}}
-            </div>
-
-
-            <div class="col justify-content-center">
-                <span class="bg-transparent"><img id="subscription-badge" class="img-thumbnail bg-transparent border-0" width="100px" src="{{user_datas.Subscription_Type.Badge.url}}"></span>
-            </div>
- 
-        
-        </div>
-
-        <div class="">
-            <button class="btn btn-primary fs-2" onclick="unsubscribe()" data-dismiss="modal">Unsubscribe</button>
-        </div>
-
-
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!--MODAL FOR EXPENSES-->
-  <div class="modal fade" id="Expenses" tabindex="-1" role="dialog" aria-labelledby="Profile_Label" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable" style="margin:auto; max-width:900px;" role="document">
-      <div class="modal-content" style="width:900px; margin:0; background-color: #6cc6ba;">
-        <button type="button" class="close d-flex justify-content-end" data-dismiss="modal" aria-label="Close">
-          <span class="fs-1" aria-hidden="true">&times;</span>
-        </button>
-        <div class="modal-header text-center">
-          <h5 class="modal-title w-100 fs-1" id="Profile_Label">My Spendings <span id="total-user-spendings" class="fs-2 text-center font-weight-bold d-block">Total Spending: {{total_user_spendings}} Vibez</span></h5>
-          <input type="date" class="form-control fs-2" id="user-spending-date" style="position: sticky; top: 0; z-index: 1; ">
-
-        </div>
-        <div class="modal-body">
-         
-          <div class="d-flex flex-row justify-content-center">
-
-
-            <div class="col fs-1" id="user-spending-container">
-
-
-          <table class="table fs-2 position-relative">
-            <thead style="position: sticky; top: 0px; z-index: 1; background-color: #6cc6ba;">
-              <tr>
-                <th scope="col">Item</th>
-                <th scope="col">Cost</th>
-                <th scope="col">Note</th>
-                <th scope="col">Broadcaster</th>
-                <th scope="col">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-
-                    {% for item in user_spendings %}
-                    <tr>
-                      <th class="w-25">{{item.Item}}</th>
-                      <td>{{item.Cost}}</td>
-                      <td>{{item.Note|default:""}}</td>
-                      <td><a href="{% url 'rooms:room' item.Room.User %}">{{item.Room.User}}</a> </td>
-                      <td class="w-100"><span >{{item.Timestamp}}<span></td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-
-          
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div>
-  <!--MODAL FOR EXPENSES-->
-  
-  {% comment %} modal for settings {% endcomment %}
-
-
-<div class="modal fade" id="Settings" tabindex="-1" role="dialog" aria-labelledby="Settings_Label" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-
-        <div class="modal-header">
-          <h5 class="modal-title fs-1" id="Settings_Label">Settings</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-
-        <div class="modal-body">
-
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item">
-                  <a class="nav-link active fs-3" id="Vibez_tab-tab" data-toggle="tab" href="#Vibez_tab" role="tab" aria-controls="Profile_Image" aria-selected="true">Vibez</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link fs-3" id="Chat-tab" data-toggle="tab" href="#Chat" role="tab" aria-controls="Chat" aria-selected="false">Chat</a>
-                </li>
-            </ul> 
-
-            <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="Vibez_tab" role="tabpanel" aria-labelledby="Vibez_tab-tab">
-                    
-
-
-
-                    <div class="modal-footer">
-
-                        <button type="button" id="Settings_close" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" id="" onclick="Save_RoomPatterns()" class="btn btn-primary" >Save</button>
-                    </div>
-
-                
-                </div>
-
-            </div>     
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-
-  <script type="text/javascript" >
-
+  /*
     const userSpendingDateInput = document.getElementById('user-spending-date');
-
-    if(window.location.protocol == "http:"){
-      protocol = "ws";
-  }else if(window.location.protocol == "https:"){
-      protocol = "wss";
-  }
 
 
     userSpendingDateInput.addEventListener('change', function(event) {
@@ -717,6 +188,13 @@
       
       
     });
+  */
+
+    if(window.location.protocol == "http:"){
+      protocol = "ws";
+  }else if(window.location.protocol == "https:"){
+      protocol = "wss";
+  }
 
 
     document.addEventListener('DOMContentLoaded', function() {

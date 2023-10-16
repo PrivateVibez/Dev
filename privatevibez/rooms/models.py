@@ -67,9 +67,10 @@ class Room_Data(models.Model):
     Duration_OH_button    = models.IntegerField(null=True,blank=True, default=2)
     Duration_OHYes_button = models.IntegerField(null=True,blank=True, default=3)
     
-    Strength_MMM_button   = models.CharField(null=True,blank=True, max_length=100)
-    Strength_OH_button    = models.CharField(null=True,blank=True, max_length=100)
-    Strength_OHYes_button = models.CharField(null=True,blank=True, max_length=100)
+    Strength_MMM_button   = models.CharField(null=True,blank=True, max_length=100, default='')
+    Strength_OH_button    = models.CharField(null=True,blank=True, max_length=100,default='')
+    Strength_OHYes_button = models.CharField(null=True,blank=True, max_length=100,default='')
+    
     Feature_OHYes_button  = models.CharField(max_length=50,null=True,blank=True)
     Feature_OH_button     = models.CharField(max_length=50,null=True,blank=True)
     Feature_MMM_button    = models.CharField(max_length=50,null=True,blank=True)

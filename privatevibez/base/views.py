@@ -256,7 +256,6 @@ def home(request):
                                 if broadcaster_data is not None:
                                         broadcaster_data = paginate_list(page_number, broadcaster_data, items_per_page)
                         
-                                print(broadcaster_data.page_chunks,flush=True)
                                 
                                 
 

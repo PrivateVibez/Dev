@@ -2,16 +2,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>ActiveVibes</title>
-  <link rel="shortcut icon" href="{% static 'images/icon.png' %}" type="image/x-icon">
-  <link rel="stylesheet" href="{% static 'css/stylesheets.css' %}">    <meta charset="utf-8">
-  
-  <script type="text/javascript" src="{% static 'js/jquery-3.5.1.js' %}"></script>
+    <title>Private Vibez</title>
+    <meta charset="utf-8">
+    <meta name="6a97888e-site-verification" content="1cc677cf232a94e8c5149638d24b014a">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    <script type="text/javascript" src="{% static 'js/jquery-3.5.1.js' %}"></script>
     
      <!-- cropper-->
      <link rel="stylesheet" href="{% static 'css/cropper.min.css' %}">
      <script src={% static 'js/cropper.min.js' %}></script>
      <!--Custom Css-->
+    <link rel="stylesheet" href="{% static 'css/abc.css' %}">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/logo/small_green_logo.png' %}" />
 
     <!-- Icofont Css -->
     <link rel="stylesheet" href="{% static 'plugins/icofont/icofont.min.css' %}">
@@ -78,16 +83,15 @@
           </div>
         </div>
 
- 
-        {% include 'base/nav.html'%}
+    {% include 'base/nav.html'%}
+
 
 
 
 
     {% block content %}
-    
     {% endblock content %}
-
+    {% include 'base/footer.html'%}
 
 </body>
     <!-- Main jQuery -->
@@ -95,11 +99,14 @@
 <!-- Bootstrap 4.3.1 -->
 <script src="{% static 'plugins/bootstrap/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.js' %}"></script>
-
+<!-- Slick Slider -->
+<script src="{% static 'plugins/slick-carousel/slick/slick.min.js' %}"></script>
 <!-- Form Validator -->
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.32/jquery.form.js'></script>
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.11.1/jquery.validate.min.js'></script>
 <!-- Google Map -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBu5nZKbeK-WHQ70oqOWo-_4VmwOwKP9YQ"></script>
+<script src="{% static 'plugins/google-map/gmap.js' %}"></script>
 <script src="https://vjs.zencdn.net/8.5.2/video.min.js"></script>
 
 <script>

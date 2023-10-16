@@ -1,0 +1,307 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"  />
+    <link rel="stylesheet" href="{% static 'css/multi.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style2.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom-room.css' %}">
+    <link href="https://unpkg.com/video.js@6.7.1/dist/video-js.css" rel="stylesheet">
+    <script src="https://unpkg.com/video.js@6.7.1/dist/video.js"></script>
+    <script src="https://unpkg.com/@videojs/http-streaming@0.9.0/dist/videojs-http-streaming.js"></script>
+</head>
+<style>
+    #navbarsid .nav-link {
+        display: block;
+        padding: 0.5rem 1rem;
+        color: #0d6efd;
+        text-decoration: none;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+        background-color: #000 !important;
+        color: #fff !important;
+    }
+
+    .list_tip_btn {
+        border-color: #fff;
+        border-radius: 5px;
+        padding: 1px;
+        background-color: #ffffff;
+        margin-top: 0px;
+    }
+    .tip_btn {
+        padding: 1px;
+        width: 30%;
+    }
+    .main-nav-link {
+        background-color: black !important;
+        color: #6cc6ba !important;
+        position: static;
+        padding: 5px 10px !important;
+        border: none;
+        min-width: 20px;
+        width: auto;
+        height: 90%;
+        font-size: 14px;
+        cursor: default;
+        float: left;
+        text-size-adjust: none;
+        user-select: none;
+        display: inline-block;
+    }
+    .main-nav-link.active {
+        border-radius: 6px 6px 0px 0px;
+        background-color: #6cc6ba !important;
+        color:  black !important;
+        }
+    .main-nav-link:hover {
+        background-color: transparent !important;
+        color: white !important;
+        border: none; 
+    }
+    .tab-content{
+        margin: 10px;
+    }
+    .tab-pane.active {
+        
+        background-color: transparent;
+        color: black;
+    }
+</style>
+
+<section class="purple container-fluid">
+
+    {% if not request.user.is_authenticated %}
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <script type="text/javascript" data-cfasync="false" async src="https://poweredby.jads.co/js/jads.js"></script>
+            <ins id="1031043" data-width="908" data-height="270"></ins>
+            <script type="text/javascript" data-cfasync="false" async>(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1031043});</script>
+        </div>
+    </div>
+    {% endif %}
+
+    <!--Search Bar-->
+
+    <div class="d-flex justify-content-center gap-2 p-2">
+        <div class="col-8 col-lg-4 col-sm-5  col-md-7">
+            <form method="GET" action="{% url 'searchbroadcaster' %}" class="form-inline my-2 my-lg-0 d-flex flex-col justify-content-center">
+                <input class="form-control w-100 mr-sm-2 fs-2" style="height:45px" name="search" value="{% if search %}{{search}}{% endif %}" type="search" placeholder="Search" aria-label="Search">
+
+        </div>
+        <div class="col-3 col-lg-1 align-content-center pt-2">
+            <button class="btn my-auto my-sm-0 w-100 btn-outline-dark font-weight-bold align-self-center" style="height:45px; color:#6cc6ba" type="submit"><p class="h4 font-weight-bold">Search</p></button>
+        </form>
+        </div>
+    </div>
+
+
+        <div class="body mx-5 row justify-content-center" style="">
+
+            {% if not request.user.is_authenticated %}
+
+           
+       
+
+            <div class="ads" style="width:max-content;">
+     
+               <script type="text/javascript" data-cfasync="false" async src="https://poweredby.jads.co/js/jads.js"></script>
+               <ins id="1031047" data-width="160" data-height="612"></ins>
+               <script type="text/javascript" data-cfasync="false" async>(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1031047});</script>
+          
+            </div>
+            
+            {% endif %}
+            
+
+            <div class="col-11" style="border:2px solid black;border-radius: 6px; padding:0px">
+                <ul class="nav nav-tabs" id="myTab" role="tablist" style="width:100%;background-color:black;border-radius: 6px 6px 0px 0px;">
+                    
+                    <li class="nav-item" role="presentation">
+
+                        <form method="GET" action="{% url 'tabbroadcaster' %}" class="form-inline my-2 my-lg-0 d-flex justify-content-center">
+                            <input type="hidden" value="FEATURED" name="Tab">
+                            <button class="main-nav-link broadcaster-nav" data-tab="FEATURED" id="FEATURED" data-bs-toggle="tab" data-bs-target="#streamer-tab-pane" type="submit" role="tab" aria-controls="streamer-tab-pane" aria-selected="true"><p class="fs-4 font-weight-bold" >FEATURED</span></button>
+                        </form>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                    <form method="GET" action="{% url 'tabbroadcaster' %}" class="form-inline my-2 my-lg-0 d-flex justify-content-center">
+                        <input type="hidden" value="WOMEN" name="Tab">
+                        <button class="main-nav-link broadcaster-nav" data-tab="FEMALE" id="WOMEN" data-bs-toggle="tab" data-bs-target="#streamer-tab-pane" type="submit" role="tab" aria-controls="streamer-tab-pane" aria-selected="true"><p class="fs-4 font-weight-bold" >FEMALE</span></button>
+                    </form>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                    <form method="GET" action="{% url 'tabbroadcaster' %}" class="form-inline my-2 my-lg-0 d-flex justify-content-center">
+                        <input type="hidden" value="MEN" name="Tab">
+                        <button class="main-nav-link broadcaster-nav" id="MEN" data-tab="FEMALE" data-bs-toggle="tab" data-bs-target="#streamer-tab-pane" type="submit" role="tab" aria-controls="streamer-tab-pane" aria-selected="true"><p class="fs-4 font-weight-bold" >MALE</span></button>
+                    </form>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <form method="GET" action="{% url 'tabbroadcaster' %}" class="form-inline my-2 my-lg-0 d-flex justify-content-center">
+                            <input type="hidden" value="COUPLES" name="Tab">
+                            <button class="main-nav-link broadcaster-nav" data-tab="COUPLES" id="COUPLES" data-bs-toggle="tab" data-bs-target="#streamer-tab-pane" type="submit" role="tab" aria-controls="streamer-tab-pane" aria-selected="true"><p class="fs-4 font-weight-bold" >COUPLES</span></button>
+                        </form>
+                    </li>
+                    
+                    <li class="nav-item" role="presentation">
+                        <form method="GET" action="{% url 'tabbroadcaster' %}" class="form-inline my-2 my-lg-0 d-flex justify-content-center">
+                            <input type="hidden" value="TRANS" name="Tab">
+                            <button class="main-nav-link broadcaster-nav" data-tab="TRANS" id="TRANS" data-bs-toggle="tab" data-bs-target="#streamer-tab-pane" type="submit" role="tab" aria-controls="streamer-tab-pane" aria-selected="true"><p class="fs-4 font-weight-bold" >TRANS</span></button>
+                        </form>
+                    </li> 
+                </ul>
+                </br>
+                </br>
+                <div class="tab-container mb-5" id="myTabContent">
+                    <div class="tab-pane fade show active row justify-content-center" id="tab-pane" role="tabpanel" aria-labelledby="streamer-tab" tabindex="0">
+                        {% for room in broadcaster_data %}
+                       
+                        {% include "base/include/broadcaster_cards.html" %}
+                        {% endfor %}
+
+                        {% if no_broadcaster_found or not broadcaster_data %}
+                        <div class="container-fluid">
+                            <div class="d-flex justify-content-center">
+                            <span class="display-2 font-weight-bold">
+                                No broadcaster found
+                            </span>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+                <div class="container-fluid mt-5 mb-5" style="bottom:0px">
+                   <!----> 
+                   <div class="col">
+                    <div aria-label="" class="my-5" style=" position:relative; bottom:0px">
+                        <ul class="pagination col-2" style="width:min-content;">
+
+                            
+                            {% if broadcaster_data.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link fs-3 rounded-2" style="color:#1db9a7" href="?page={{ broadcaster_data.previous_page_number }}">Previous</a>
+                                </li>
+                            {% endif %}
+
+                            
+                            {% if broadcaster_data.prev_chunk_start %}
+                                <li class="page-item">
+                                    <a class="page-link fs-3 rounded-2" style="color:#1db9a7" href="?page={{ broadcaster_data.prev_chunk_start }}">...</a>
+                                </li>
+                            {% endif %}
+                            
+                            {% for page_num in broadcaster_data.page_chunks %}
+                                {% if page_num == broadcaster_data.number %}
+                                    <li class="page-item active">
+                                        <span class="page-link fs-3 rounded-2">{{ page_num }}</span>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link fs-3 rounded-2" style="color:#1db9a7" href="?page={{ page_num }}">{{ page_num }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {# If the next chunk exists, show ellipsis to jump to the next chunk #}
+                            {% if broadcaster_data.page_chunks|last < broadcaster_data.paginator.num_pages %}
+                                <li class="page-item">
+                                    <a class="page-link fs-3 rounded-2" style="color:#1db9a7" href="?page={{ broadcaster_data.page_chunks|last|add:"1" }}">...</a>
+                                </li>
+                            {% endif %}
+                            
+                            {% if broadcaster_data.has_next %}
+                                <li class="page-item" style="width:min-content;">
+                                    <a class="page-link fs-3 rounded-2" style="color:#1db9a7" href="?page={{ broadcaster_data.next_page_number }}">Next</a>
+                                </li>
+                            {% endif %}
+                            
+                            </ul>
+                            
+                    </div>
+                    </div>
+                </div>
+                
+                  
+            </div>
+            {% if not request.user.is_authenticated %}
+
+        
+            <div class="ads" style="width:max-content;">
+                   
+                        <script type="text/javascript" data-cfasync="false" async src="https://poweredby.jads.co/js/jads.js"></script>
+                        <ins id="1031047" data-width="160" data-height="612"></ins>
+                        <script type="text/javascript" data-cfasync="false" async>(adsbyjuicy = window.adsbyjuicy || []).push({'adzone':1031047});</script>
+             
+            </div>
+            {% endif %}
+      
+
+        </div>
+        
+
+    
+</section>
+
+
+
+
+<script>
+    var logo = document.getElementById('privatevibezlogo');
+
+    
+/*
+    function get_IP_Address(ip){
+        $.ajax({
+            method:'POST',
+            url: "accounts/get_ip_address/",
+            data: {
+                'ip_address': ip,
+                'csrfmiddlewaretoken':"{{csrf_token}}",
+            },
+            success:function(data)
+            {
+
+            },
+            errors:function(errors){
+                console.log(errors.responseText)
+            }
+        })
+    }
+
+
+    //Get IP address of user
+    fetch("https://api.ipify.org?format=text")
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return response.text();
+    })
+    .then(ip => {
+        console.log("IP Address:", ip);
+        get_IP_Address(ip);
+    })
+    .catch(error => {
+        console.error("Error fetching data:", error);
+    });
+
+    */
+    
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // Get the value of the 'Tab' parameter
+    const tabValue = urlParams.get('Tab'); 
+    
+    if(tabValue)
+    {
+        tab = document.getElementById(tabValue);
+        tab.classList.add('active');
+    }
+</script>
+{% endblock %}
+

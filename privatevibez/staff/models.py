@@ -111,6 +111,7 @@ class PrivatevibezRevenue(models.Model):
     Total_Vibez                = models.IntegerField(null=True,blank=True,default=0)
     Total_Cash                 = models.FloatField(null=True,blank=True,default=0)
     Chargeback                 = models.IntegerField(null=True,blank=True,default=0)
+    Vibez_To_Dollar            = models.FloatField(null=True,blank=True,default=0)
     Vibe_Cost                  = models.FloatField(null=True,blank=True,default=0)
     timestamp                  = models.DateTimeField(auto_now_add=True,null=True,blank=True)
     

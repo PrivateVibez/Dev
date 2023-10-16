@@ -164,8 +164,9 @@
        {% if perms.staff.can_view_interactives %}
         <!--SLOT MACHINE-->
         <div class="tab-pane fade w-100 m-lg-5" id="v-pills-slot-machine" role="tabpanel" aria-labelledby="v-pills-slot-machine-tab">
-            {% include 'staff/include/slot_machine.html'%} 
+            {% include 'staff/include/interactives.html'%} 
        </div>
+
        {% endif %}
 
        {% if perms.staff.can_view_subscriptions %}
@@ -182,7 +183,7 @@
         </div>
         {% endif %}
 
-        
+
         {% if perms.staff.can_view_id_check %}
         <div class="tab-pane fade" id="v-pills-idcheck" role="tabpanel" aria-labelledby="v-pills-profile-tab">
             {% include 'staff/include/id_check.html'%}

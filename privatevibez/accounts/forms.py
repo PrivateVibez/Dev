@@ -16,14 +16,18 @@ class Profile_Image(forms.ModelForm):
 class UserRegisterForm(UserCreationForm):
     email = forms.EmailField()
     username = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
+    birthday = forms.DateField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
+    agreement1 = forms.BooleanField(widget=forms.CheckboxInput(attrs={'style': 'font-size:2rem;'}))
+    agreement2 = forms.BooleanField(widget=forms.CheckboxInput(attrs={'style': 'font-size:2rem;'}))
     password1 = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
     password2 = forms.CharField(widget=forms.TextInput(attrs={'style': 'font-size:2rem;'}))
+    
 
 
     class Meta:
 
         model = User
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['username', 'email', 'birthday', 'password1', 'password2']
         
         
 class BioInfoForm(forms.Form):

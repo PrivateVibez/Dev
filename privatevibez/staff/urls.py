@@ -15,7 +15,7 @@ urlpatterns = [
     #url for creating staff
     path('createStaff/', views.Create_Staff, name="Create_Staff"),
     
-    #url for editing staff permissions
+    #url for editing staff permissionss
     path('editStaffPermission/', views.editStaffPermission, name="editStaffPermission"),
     
     #url for sending of invitations for staff
@@ -78,5 +78,8 @@ urlpatterns = [
     path('send_Promotion/', views.send_Promotion, name="send_Promotion"),
     
     #update lovense button testing cost
-    path('update_fav_button_cost/', views.update_fav_button_cost, name="update_fav_button_cost")
+    path('update_fav_button_cost/', views.update_fav_button_cost, name="update_fav_button_cost"),
+    
+    #update lovense button testing cost
+    path('setvibezconversion/', views.setvibezconversion, name="setvibezconversion")
 ]

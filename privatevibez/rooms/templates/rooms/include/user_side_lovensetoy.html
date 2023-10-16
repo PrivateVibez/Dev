@@ -142,7 +142,7 @@ update_fav_button_visibilitySocket.onmessage = function(e) {
 }
 
 
-windows.onbeforeunload = function(e) {
+window.onbeforeunload = function(e) {
   update_fav_button_visibilitySocket.close();
 };
 </script>

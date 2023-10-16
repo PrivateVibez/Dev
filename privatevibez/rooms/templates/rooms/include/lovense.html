@@ -326,7 +326,7 @@ function addStrength(button_type) {
 
         let slider = document.getElementById(`Strength_${button_type}_button`);
         let button_strengths_container = document.getElementById(`${button_type}-Strengths`);
-
+        
         if (slider && button_strengths_container) {
             // Count the number of appended values so far
             let currentValueCount = (button_strengths_container.innerHTML.match(/;/g) || []).length;

@@ -112,12 +112,20 @@ def home(request):
         
       
         if request.user.is_authenticated and StaffManager.objects.filter(staff_id=request.user).exists():
-                total_slot_vibez = PrivatevibezRevenue.objects.aggregate(Sum('Slot_Machine_Revenue'))
-                total_lottery_vibez = PrivatevibezRevenue.objects.aggregate(Sum('Lottery_Revenue'))
-                total_dice_vibez = PrivatevibezRevenue.objects.aggregate(Sum('Dice_Revenue'))
-                total_user_vibez = User_Data.objects.aggregate(Sum('Vibez'))
-                total_broadcaster_vibez = Room_Data.objects.aggregate(Sum('Revenue'))
-                slot_machine  = Games_Data.objects.order_by('-timestamp').first()
+                private_vibez = PrivatevibezRevenue.objects.order_by('timestamp').first()
+
+                total_slot_vibez = PrivatevibezRevenue.objects.aggregate(Sum('Slot_Machine_Revenue'))['Slot_Machine_Revenue__sum']
+                total_lottery_vibez = PrivatevibezRevenue.objects.aggregate(Sum('Lottery_Revenue'))['Lottery_Revenue__sum']
+                total_dice_vibez = PrivatevibezRevenue.objects.aggregate(Sum('Dice_Revenue'))['Dice_Revenue__sum']
+                total_user_vibez = User_Data.objects.aggregate(Sum('Vibez'))['Vibez__sum']
+                total_broadcaster_vibez = Room_Data.objects.aggregate(Sum('Revenue'))['Revenue__sum']
+                slot_machine = Games_Data.objects.order_by('-timestamp').first()
+
+                total_test_fav_buttons = PrivatevibezRevenue.objects.aggregate(Sum('Test_Fav_Buttons_Revenue'))['Test_Fav_Buttons_Revenue__sum']
+
+                total_cash = (total_slot_vibez + total_lottery_vibez + total_dice_vibez + total_test_fav_buttons + total_test_fav_buttons) * private_vibez.Vibez_To_Dollar
+
+                                
                 
                 promotions    = Promotion.objects.filter(
                 Q(timestamp__gte=current_datetime) | Q(Promotion_Registration_Limit__gt=0)
@@ -125,8 +133,7 @@ def home(request):
                                 
                 broadcaster_promotions = Room_Data.objects.filter(Room_promotion__isnull=False)
                 
-                total_cash = PrivatevibezRevenue.objects.aggregate(Sum('Total_Cash'))
-                total_test_fav_buttons = PrivatevibezRevenue.objects.aggregate(Sum('Test_Fav_Buttons_Revenue'))
+                #total_cash = PrivatevibezRevenue.objects.aggregate(Sum('Total_Cash'))
                 
                 subscriptions = Subscription.objects.all()
                 fav_buttons = get_all_availed_fav_buttons()
@@ -162,12 +169,12 @@ def home(request):
                 
                 for bad_acter in bad_acters:
                         bad_acters_list.append({
-                                                
                                                 'reporty': None if bad_acter.Reporty is None else bad_acter.Reporty,
                                                 'reported': None if bad_acter.Reported is None else bad_acter.Reported,
                                                 'message': None if bad_acter.Message is None else bad_acter.Message,
                                                 'status': None if User_Status.objects.get(User=bad_acter.Reporty) is None else User_Status.objects.get(User=bad_acter.Reporty).Status,
-                                                'total_reports': Bad_Acters.objects.filter(Reporty = bad_acter.Reporty).count(),})
+                                                'total_reports': Bad_Acters.objects.filter(Reporty = bad_acter.Reporty).count(),
+                                                })
                 
                 to_do_projects_dev = ToDoProject_Dev.objects.all()
                 to_do_lists_Dev = ToDolist_Dev.objects.all()
@@ -214,7 +221,7 @@ def home(request):
                                 'is_session_active': False if current_staff else 'Pending',
                                 
                                 })
-                        
+        
                         for session in staff_sessions:
         
                                 session_data = session.get_decoded()
@@ -235,10 +242,10 @@ def home(request):
                                                                 session_info['is_session_active'] = True
                                                                 break
 
-                                                
                 return render(request, "staff/home.html", locals())
         
         else:
+                
                 messages.info(request,"Please login")
                 return redirect("login")
         
@@ -735,7 +742,7 @@ def update_Promotion(request):
                         return JsonResponse({"data":f'Invalid input!'},status=500, safe=False)
                 
                           
-                
+            
 def delete_Promotion(request,id):
         
 
@@ -835,7 +842,6 @@ def deleteSubscriptions(request):
 
                 
                 
-
 def update_fav_button_cost(request):
         
         if request.method == "POST":
@@ -876,3 +882,25 @@ def update_fav_button_cost(request):
                 )
 
         return JsonResponse({"data":f'Successfully updated fav buttons'},status=200, safe=False)
+
+
+def setvibezconversion(request):
+        
+        if request.method == "POST":
+                
+                vibez_to_dollar = float(request.POST.get('vibez_to_dollar',0))
+                
+                try:
+                        private_vibez = PrivatevibezRevenue.objects.order_by('timestamp').first()
+                        
+                        private_vibez.Vibez_To_Dollar = vibez_to_dollar
+                        
+                        private_vibez.save()
+                        
+                        return JsonResponse({"data":f'Successfully updated vibez conversion'},status=200, safe=False)
+                
+                except PrivatevibezRevenue.DoesNotExist as e:
+                        print(e,flush=True)
+        
+                        return JsonResponse({"data":f'No private vibez data found'},status=500, safe=False)
+

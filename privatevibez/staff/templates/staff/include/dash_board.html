@@ -12,7 +12,7 @@
             <div class="card h-100" style="width: 18rem;">
               <div class="card-body text-center">
                 <span class="fs-4">Slot Machine Vibez Earning</span>
-                <span class="fs-3 d-block" id="total_slot_vibez">{{total_slot_vibez.Slot_Machine_Revenue__sum}}</span>
+                <span class="fs-3 d-block" id="total_slot_vibez">{{total_slot_vibez}}</span>
                   
               </div>
             </div>
@@ -22,7 +22,7 @@
             <div class="card h-100" style="width: 18rem;">
               <div class="card-body text-center">
                 <span class="fs-4">Lottery Vibez Earning</span>
-                <span class="fs-3 d-block" id="total_lottery_vibez">{{total_lottery_vibez.Lottery_Revenue__sum}}</span>
+                <span class="fs-3 d-block" id="total_lottery_vibez">{{total_lottery_vibez}}</span>
                   
               </div>
             </div>
@@ -32,7 +32,7 @@
             <div class="card h-100" style="width: 18rem;">
               <div class="card-body text-center">
                 <span class="fs-4">Dice Vibez Earning</span>
-                <span class="fs-3 d-block" id="total_dice_vibez">{{total_dice_vibez.Dice_Revenue__sum}}</span>
+                <span class="fs-3 d-block" id="total_dice_vibez">{{total_dice_vibez}}</span>
                   
               </div>
             </div>
@@ -43,7 +43,7 @@
             <div class="card h-100" style="width: 18rem;">
               <div class="card-body text-center">
                 <span class="fs-4">Total Broadcaster Revenue Vibez</span>
-                <span class="fs-3 d-block" id="total_broadcaster_vibez">{{total_broadcaster_vibez.Revenue__sum}}</span>
+                <span class="fs-3 d-block" id="total_broadcaster_vibez">{{total_broadcaster_vibez}}</span>
                   
               </div>
             </div>
@@ -54,7 +54,7 @@
             <div class="card h-100" style="width: 18rem;">
               <div class="card-body text-center">
                 <span class="fs-4">Total User Vibez</span>
-                <span class="fs-3 d-block" id="total_user_vibez">{{total_user_vibez.Vibez__sum}}</span>
+                <span class="fs-3 d-block" id="total_user_vibez">{{total_user_vibez}}</span>
                   
               </div>
             </div>
@@ -75,7 +75,7 @@
             <div class="card h-100" style="width: 18rem;">
               <div class="card-body text-center">
                 <span class="fs-4">Total Cash</span>
-                <span class="fs-3 d-block" id="total_cash">{{total_cash.Total_Cash__sum}}</span>
+                <span class="fs-3 d-block" id="total_cash">${{total_cash}}</span>
                   
               </div>
             </div>
@@ -85,13 +85,21 @@
             <div class="card h-100" style="width: 18rem;">
               <div class="card-body text-center">
                 <span class="fs-4">Total Test Fav Buttons</span>
-                <span class="fs-3 d-block" id="total_test_fav_buttons">{{total_test_fav_buttons.Test_Fav_Buttons_Revenue__sum}}</span>
+                <span class="fs-3 d-block" id="total_test_fav_buttons">{{total_test_fav_buttons}}</span>
                   
               </div>
             </div>
           </div>
 
+          <div class="col my-4">
+            <div class="card h-100" style="width: 18rem;">
+              <div class="card-body text-center">
 
+              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#setvibezconversionModal">set vibez to dollar conversion</button>
+                  
+              </div>
+            </div>
+          </div>
 
 
         </div>
@@ -101,9 +109,31 @@
       </div>
 
 
-      <div id="map" style="height: 100%;"></div>
+<!--MODAL FOR SETTING VIBEZ TO DOLLAR COST-->
+<div class="modal fade" id="setvibezconversionModal" tabindex="-1" aria-labelledby="setvibezconversionModal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="setvibezconversionModal">Vibez to Dollar</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        
+      <div class="">
+        <label for="vibez_to_dollar">vibe value</label>
+        <input class="" name="vibez_to_dollar" id="vibez_to_dollar" type="number" value="{{vibez_to_dollar.Vibez_To_Dollar}}" placeholder="Vibez to Dollar">
+      </div>
+      
 
-
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="setvibezconversion()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--MODAL FOR SETTING VIBEZ TO DOLLAR COST-->
 
 
 <script>
@@ -158,5 +188,25 @@ privatevibezrevenue_socket.onopen = function(e) {
   console.log("revenue socket open");
 }
 
+
+function setvibezconversion() {
+  $.ajax({
+    type: 'POST',
+    url: 'setvibezconversion/',
+    data: {
+      'vibez_to_dollar': document.getElementById('vibez_to_dollar').value,
+      'csrfmiddlewaretoken': '{{ csrf_token }}',
+    },
+    success: function(response) {
+      console.log(response);
+      if (response == "success") {
+        alert("Vibez to dollar conversion set successfully");
+        location.reload();
+      } else {
+        alert("Error setting vibez to dollar conversion");
+      }
+    }
+  });
+}
 
 </script>

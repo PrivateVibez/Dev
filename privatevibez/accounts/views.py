@@ -136,27 +136,30 @@ def Registration(request):
         
         form =UserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            
+            User_Data.objects.create(User=user, Birth_Date=form.cleaned_data.get('birthday'))
             
             username = form.cleaned_data.get('username')
             user     = authenticate(request, username=username, password=form.cleaned_data.get('password1'))
             
             login(request, user)
             
-            if not User_Data.objects.filter(User = user).exists():
-                User_Data.objects.create(User = user,Vibez = "0")
-                
             messages.success(request, f'You have created an account {username}! enjoy vibing!')
             
             return redirect("Main_home")
         
         else:
             for error in form.errors:
-                if error != "password2" and error != "password1":
-                    messages.error(request, f'{error} {form.errors[error]}')
-                else:
-                    
+                
+                if error == "password2" or error == "password1":
                     messages.error(request, f'password {form.errors[error]}')
+                    #messages.error(request, f'{error} {form.errors[error]}')
+                else:
+                    if error == "agreement1" or error == "agreement2":
+                        messages.error(request, f'please check the boxes')
+                    else:
+                        messages.error(request, f'{error} {form.errors[error]}')
                 print(error,flush=True)
             
     else:    
@@ -701,7 +704,8 @@ def get_broadcaster(request):
             broadcaster_gender = request.GET.get('Tab')
             
             if request.user.is_authenticated:
-                            
+                user_datas        = User_Data.objects.get(User =  request.user)
+
                 user = request.user
                 user_country = user.Country
                 user_region = user.Region

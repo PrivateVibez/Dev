@@ -1406,7 +1406,9 @@ def display_user_availed_item_in_broadcaster_room(user_data,item,room,random_but
     
     try:
         slot_machine = Slot_Machine.objects.filter(User=room.User).first()
-        pot = slot_machine.pot
+        
+        if slot_machine:
+            pot = slot_machine.pot
     
     except Slot_Machine.DoesNotExist:
         
