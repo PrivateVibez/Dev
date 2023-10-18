@@ -1083,7 +1083,7 @@ def get_prize(request):
                 except IntegrityError as e:
                     print(e,flush=True)
                     
-                    
+                     
             except User_Data.DoesNotExist as e:
                 return JsonResponse({'data':f'Broadcaster does not exist'},status=500, safe=False)
            
@@ -1097,7 +1097,7 @@ def get_prize(request):
                         note = f'{winner.User.username} Won Two of a kind! enjoy button {random_button}'
                         
                         deduct_spin_or_vibez(winner,room_data,price,game_type=None,game_data=None)
-
+ 
 
                         
                         pot = availed_item(winner.User.id,room_data,"2OAK",price,"Slot_Machine",random_button,button_cost,note)
@@ -1275,7 +1275,7 @@ def invite_private_chat(request):
                             channel_name = "fetch_private_chat_invitation_" + str(broadcaster.Broadcaster.username)
                        
                                 
-                                # Prepare data to send
+                            # Prepare data to send
                             data = {
                                 "invitation_sent": True,
                             }
@@ -1289,11 +1289,6 @@ def invite_private_chat(request):
                         else:
                             return JsonResponse(f'not enough vibez!',status=500,safe=False)
                         
-                        
-                    
-
-                
-
                             
                 else:
                     broadcaster = Private_Chat_Invitee.objects.create(Broadcaster=broadcaster)
@@ -1320,11 +1315,7 @@ def invite_private_chat(request):
             
             print(e,flush=True)
 
-                
-                
-                
             
-        
 
 
 def trigger_toy(broadcaster_id,feature,strength,timesec,room_data=None,is_Jackpot=False):
@@ -1399,7 +1390,7 @@ def trigger_toy(broadcaster_id,feature,strength,timesec,room_data=None,is_Jackpo
             return JsonResponse({"error": str(e)}, status=500) 
         
   
-
+  
 # GIVE PROFIT TO BROADCASTER AND SHOW IT TO THE BROADCASTER ROOM
 def display_user_availed_item_in_broadcaster_room(user_data,item,room,random_button=None,button_cost=None,game_type=None):
     # Get the channel layer
@@ -1432,11 +1423,9 @@ def display_user_availed_item_in_broadcaster_room(user_data,item,room,random_but
     
                 
             room.save()
-            
-                
-                
-             # Make sure to save the room object
-
+                      
+            # Make sure to save the room object
+             
             # Update the Slot_Machine object's pot_increase
             slot_machine.pot = 100
             slot_machine.save()
@@ -1474,7 +1463,6 @@ def display_user_availed_item_in_broadcaster_room(user_data,item,room,random_but
         
             slot_machine_instance = None
             
-    
     else:
         
         if game_type == "Lottery" or game_type == "Dice":
@@ -1501,8 +1489,6 @@ def display_user_availed_item_in_broadcaster_room(user_data,item,room,random_but
         
     show_itemAvailedInPublicChat(room,user_data,item)
     
-    
-
     return slot_machine_instance
 
 def show_updated_broadcaster_revenue_and_total_user_vibez():
@@ -1523,7 +1509,6 @@ def show_updated_broadcaster_revenue_and_total_user_vibez():
 
 
 def availed_lottery(user,room,lottery_prize,cost,game_type,note):
-    
     
     show_item_in_roomstats(room,user_data,item)
     show_itemAvailedInPublicChat(room,user_data,item)
@@ -1556,7 +1541,7 @@ def show_itemAvailedInPublicChat(room,user_data,item):
     item = {
         "user": user_data.User.username,
         "item": item.Item,
-        "price": item.Cost,  # Changed "Cost" to "Price"
+        "price": item.Cost, 
         "note": item.Note
     }
     
@@ -1593,17 +1578,7 @@ def availed_item(user,room,item,price,game_type=None,random_button=None,button_c
                     
                     slot_instance = display_user_availed_item_in_broadcaster_room(user_data,item,room,random_button=random_button,button_cost=remaining_price,game_type=game_type)
                     
-                    
-                
-                
-                
-               
-                
-                # if room.Revenue != 0:
-                #     room.Revenue += remaining_price
-                # else:
-                #     room.Revenue = remaining_price
-                # room.save()
+
                 updateBroadcasterFollowersTab(room.User.id)
                 
                 return slot_instance
@@ -1611,10 +1586,6 @@ def availed_item(user,room,item,price,game_type=None,random_button=None,button_c
             
             elif user_data.Vibez >= price:
                                 
-                
-
-                
-                print(random_button,flush=True)
                 if random_button != None:
                     remaining_price = privatevibez_chargeback(button_cost,game_type)
                                     
@@ -1635,14 +1606,6 @@ def availed_item(user,room,item,price,game_type=None,random_button=None,button_c
                     slot_instance = display_user_availed_item_in_broadcaster_room(user_data,item,room,random_button=random_button,button_cost=remaining_price,game_type=game_type)
 
                 # add revenues
-                
-           
-                # if room.Revenue != 0:
-                #     room.Revenue += remaining_price
-                # else:
-                #     room.Revenue = remaining_price
-                # room.save()
-                
           
                 updateBroadcasterFollowersTab(room.User.id)
                 return slot_instance
@@ -1845,15 +1808,6 @@ def Visitor(request):
             }
         )
         
-        # try:
-            
-        #     Room_Visitors.objects.get(User=user_instance)
-            
-        # except Room_Visitors.DoesNotExist:
-        #     room_visitor = Room_Visitors.objects.create(User=user_instance)
-        #     # Add the visitor instance to the room's visitors
-        #     room_instance.Visitors.add(room_visitor)
-        #     room_instance.save()
             
         return JsonResponse({'data':"created"}, safe=False)
             
@@ -1992,9 +1946,6 @@ def submit_bio(request):
 
 
             
-            
-    
-
 def save_hashtags(request):
     
     if request.method == "POST":
@@ -2012,8 +1963,6 @@ def save_hashtags(request):
             
             except Room_Data.DoesNotExist:
                 return JsonResponse({'data':"Broadcaster does not exist"},status=500, safe=False)
-            
-            
             
         else:
             return JsonResponse({'data':"Hashtags is empty."}, safe=False)

@@ -44,9 +44,9 @@
             <td>{{promotion.Promotion_Code}}</td>
             <td>{{ promotion.Duration|date:"Y-m-d H:i:s" }}</td>
             <td>{{promotion.Promotion_Registration_Limit}}</td>
-            <td>
-              {{promotion.Total_Viewers}}
-            </td>
+    
+              <td>{{ promotion.promotion_viewers.all.count }}</td>
+        
 
             <td>
               {{ promotion.room_promotion.all.count }}        

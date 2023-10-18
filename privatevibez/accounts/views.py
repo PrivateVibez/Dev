@@ -15,7 +15,7 @@ from chat.models import Private, Public
 from rooms.models import *
 from django.contrib.sessions.models import Session
 from django.contrib.auth.decorators import login_required
-from staff.models import StaffManager, PrivatevibezRevenue
+from staff.models import StaffManager, PrivatevibezRevenue, Promotion_Viewer
 from django.utils import timezone
 from cryptography.fernet import Fernet
 from channels.layers import get_channel_layer
@@ -23,6 +23,8 @@ from asgiref.sync import async_to_sync
 import secrets
 import datetime
 import json
+import requests
+import random
 from django.shortcuts import get_object_or_404
 from django.db.models import Q, Sum
 from rest_framework.renderers import JSONRenderer
@@ -428,6 +430,7 @@ def bio_info(request):
         if form.is_valid():
             
             promotion_code          = form.cleaned_data.get('promotion_code')
+            promotion_invitation_code = form.cleaned_data.get('promotion_invitation_code')
             user_data.Real_Name     = form.cleaned_data.get('Real_Name')
             user_data.Age           = form.cleaned_data.get('Age')
             user_data.I_Am          = form.cleaned_data.get('I_Am')
@@ -456,7 +459,13 @@ def bio_info(request):
                         promotion.Promotion_Registration_Limit -= 1
                         promotion.save()
                         room_data.Room_promotion = promotion
-                        
+                        room_data.Promotion_Invitation_Code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+
+                        if promotion_invitation_code != "" and promotion_invitation_code != None:
+                            print(promotion_invitation_code,flush=True)
+                            give_promotion_earning_base_on_invitation(promotion_invitation_code)
+                     
+                 
                     else:
                         return JsonResponse('Promotion Code Limit Reached', safe=False)
                 else:
@@ -489,6 +498,16 @@ def bio_info(request):
             for error in form.errors:
                 messages.error(request, form.errors[error])
                 print(form.errors,flush=True)
+
+
+def give_promotion_earning_base_on_invitation(invitation_code):
+    try:
+        
+        room_data = Room_Data.objects.get(Promotion_Invitation_Code=invitation_code)
+        
+    except Room_Data.DoesNotExist as e:
+        print(e, flush = True)
+
 
 def getTotalReports(request):
     
@@ -870,18 +889,33 @@ def BroadcasterRegistration(request, code):
         if code is not None:
                 
                 try:
-                    code = get_object_or_404(Promotion, Promotion_Code=code)
+                    promotion = get_object_or_404(Promotion, Promotion_Code=code)
+                    promotion_viewers = promotion.promotion_viewers.all()
                     
-                    if code.Duration < timezone.now() or code.Promotion_Registration_Limit == 0:
+                    if promotion.Duration < timezone.now() or promotion.Promotion_Registration_Limit == 0:
                         promotion_expired = True
                         messages.error(request, f'This promotion code has expired!')
                         return render(request, "accounts/registration_broadcaster.html", locals())
                     
-                    if code.Total_Viewers is None:
-                        code.Total_Viewers = 1
+                    
+                    if request.user.is_authenticated:
+                        user = request.user
+                        user_ip = user.Ip_Address
+                        
                     else:
-                        code.Total_Viewers += 1
-                    code.save()
+                        url = "https://api.ipify.org?format=text"
+                        response = requests.get(url)
+                        
+                        if response.status_code == 200:
+                                request.session['ip_address'] = response.text
+                                user_ip = request.session.get('ip_address')
+                
+                    viewer_ips = [viewer.Viewer for viewer in promotion_viewers]
+                    
+                    if user_ip not in viewer_ips:
+                        new_viewer = Promotion_Viewer(Promotion=promotion, Viewer=user_ip)
+                        new_viewer.save()
+
                 
                     update_promotion_table()
                     
@@ -891,7 +925,7 @@ def BroadcasterRegistration(request, code):
                     # Handle the case where the Promotion object is not found
                     # You can raise a 404 error or perform some other action here
    
-                data = countdown_timer(code)
+                data = countdown_timer(promotion)
                 
                 
                 if request.method == "POST":

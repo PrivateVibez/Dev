@@ -12,5 +12,6 @@ admin.site.register(Decline_Message)
 admin.site.register(PrivatevibezRevenue)
 admin.site.register(Promotion)
 admin.site.register(Test_Broadcaster_Lovense_Toy)
+admin.site.register(Promotion_Viewer)
 
 

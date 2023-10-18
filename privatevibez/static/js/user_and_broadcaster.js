@@ -1,7 +1,6 @@
 
 
 var logo = document.getElementById('privatevibezlogo');
-console.log(logo.src);
 var toastContainer = document.getElementById('toast-container');
 
 function successToast(message,fav_btn_element = null){

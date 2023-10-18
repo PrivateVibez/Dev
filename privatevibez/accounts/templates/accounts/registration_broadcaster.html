@@ -18,7 +18,7 @@ display:none;">
 
   <div class="container py-2 h-100">
 
-  {% if code %}
+  {% if promotion %}
     <div class="row mb-2 gap-3">
 
       <div class="card d-flex m-auto col-lg-8">
@@ -40,9 +40,9 @@ display:none;">
             
             <div id="" class="col justify-content-center display-5">
    
-              <span class="d-block text-center"></p> <p class="d-inline"><strong>Register now! </strong><strong>{{code.Promotion_Registration_Limit}}</strong></p> slots left!</span>
+              <span class="d-block text-center"></p> <p class="d-inline"><strong>Register now! </strong><strong>{{promotion.Promotion_Registration_Limit}}</strong></p> slots left!</span>
 
-              <span class="d-block text-center"><p class="font-weight-bold">Earn {{code.Promotion_Earning}} dollar per vibe!</p></span>
+              <span class="d-block text-center"><p class="font-weight-bold">Earn {{promotion.Promotion_Earning}} dollar per vibe!</p></span>
            
             </div>
 
@@ -197,9 +197,18 @@ display:none;">
                     </div>
 
                     <div class="form-outline mb-4">
-                      <input type="text" value="{{code.Promotion_Code}}" class="form-control fs-2 d-none" id="promotion_code" aria-label="promotion_code" >  
+                      <input type="text" value="{{promotion.Promotion_Code}}" class="form-control fs-2 d-none" id="promotion_code" aria-label="promotion_code" >  
                       <label class="form-label my-2 fs-2 d-none" for="promotion_code">Promotion Code</label>
                     </div>
+
+                    {% if promotion.Promotion_Code %}
+               
+                    <div class="form-outline mb-4">
+                      <input type="text" value="" class="form-control fs-2" id="promotion_invitation_code" aria-label="promotion_invitation_codeLabel" >  
+                      <label class="form-label my-2 fs-2" for="promotion_invitation_code">Invitation Code</label>
+                    </div>
+
+                    {% endif %}
 
                     <div class="form-outline mb-4">
                       <input type="text" value="" class="form-control fs-2" id="I_Am" aria-label="I_Am">  
@@ -269,7 +278,7 @@ display:none;">
         </div>
 
         {% else %}
-
+<!--
         <div class="card" style="border-radius: 1rem; z-index:1000;">
           <div class="row g-0">
             <div class="col-md-6 col-lg-5 d-none d-md-block">
@@ -323,6 +332,71 @@ display:none;">
           </div>
         </div>
       </div>
+    -->
+    <div class="signupcontainer">
+      <div class="signup-header">
+          <h4 class="signup-title">Create Your Free Account</h4>
+          <p class="agelimit">You must be over 18 years old to register. No credit card needed.</p>
+      </div>
+    
+      <form action="/accounts/signupwithpromotion/" method="POST">
+      
+        <div class="forms">
+    
+            {% csrf_token %}
+    
+          <p class="text-form">Username:*</p>
+          <input class="box-form" type="text" name="username" id="username" placeholder="username">
+      </div>
+    
+      <div class="forms">
+          <p class="text-form">Password:*</p>
+          <input class="box-form" type="password" name="password1" id="password1" placeholder="password">
+      </div>
+    
+      <div class="forms">
+          <p class="text-form">Confirm-Password:*</p>
+          <input class="box-form" type="password" name="password2" id="password2" placeholder="retype password">
+      </div>
+    
+      <div class="forms">
+          <p class="text-form">Email Address:</p>
+          <input class="box-form" type="email" name="email" id="email" placeholder="email address">
+      </div>
+    
+      <div class="forms">
+          <p class="text-form">Birthday:*</p>
+          <input class="box-form" type="date" name="birthday" id="birthday">
+      </div>
+      <br>
+    
+      <div class="check-forms">
+          <input class="check-box" type="checkbox" name="agreement1" id="agreement">
+          <p class="checkboxtext-form"> I have read and agree to the <a class="policy-link" href="#">terms and conditions.</a></p>
+      </div>
+    
+      <div class="check-forms">
+          <input class="check-box" type="checkbox" name="agreement2" id="agreement">
+          <p class="checkboxtext-form">  I have read and agree to the <a class="policy-link" href="#">privacy policy.</a></p>
+      </div>
+      
+      <button class="create-btn" type="submit">CREATE FREE ACCOUNT</button>
+    
+    </form>
+    
+      <div class="footer">
+          Email addresses, when provided, are only used for friend notifications, broadcast and payout reminders, newsletter, and account verification. Your email address is never sold or shared.
+      </div>
+      
+      <div class="or" style="display: flex; align-items: center; gap: 8px;">
+          <hr style="width: 75%;">
+          <span>or</span>
+          <hr style="width: 75%;">
+      </div>
+      <button class="creategmail-btn"><img class="google-icon" src="{%static 'images/icons8-google-30.png'%}" width="20px" alt="Error">Sign Up with Google</button>
+    
+    </div>
+    
         {% endif %}
       </div>
     </div>  
@@ -363,12 +437,13 @@ display:none;">
   <img src="{% static 'images/logo/small_green_logo.png' %}" id="privatevibezlogo" width="30px" height="30px" class="rounded me-2 d-none" alt="...">
   <script type="text/javascript" src="{% static 'js/user_and_broadcaster.js' %}">
   </script>
-  <script type="text/javascript" src="{% static 'js/registration_broadcaster.js' %}">
+  <script type="text/javascript" src="{% static 'js/broadcaster/registration_broadcaster.js' %}">
   </script>
 
 
-  {% comment %} <link rel="stylesheet" href="{% static 'css/cropper.min.css' %}">
-  <script type="text/javascript" src="{% static 'js/cropper.min.js' %}"></script> {% endcomment %}
+
+  <!--JS FOR DISPLAYING PROMOTION COUNTDOWN TO EXPIRATION-->
+                  <!--DO NOT REMOVE!!-->
 {% if data %}
  
   <script>

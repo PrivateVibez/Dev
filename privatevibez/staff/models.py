@@ -117,7 +117,8 @@ class PrivatevibezRevenue(models.Model):
     
     def __str__(self):
         return str(self.timestamp)
-    
+   
+ 
     
 class Promotion(models.Model):
     
@@ -125,7 +126,19 @@ class Promotion(models.Model):
     Promotion_Earning                     = models.FloatField(null=True,blank=True)
     Promotion_Registration_Limit          = models.IntegerField(null=True,blank=True)
     Duration                              = models.DateTimeField(null=True,blank=True)
-    Total_Viewers                         = models.IntegerField(null=True,blank=True)
     timestamp                             = models.DateTimeField(auto_now_add=True,null=True,blank=True)
     def __str__(self):
         return str(self.Promotion_Code)
+    
+    
+
+class Promotion_Viewer(models.Model):
+    Promotion = models.ForeignKey(Promotion, on_delete=models.CASCADE, null=True, blank=True, related_name="promotion_viewers")
+    Viewer =  models.CharField(max_length=250, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.Viewer)
+    
+    
+    
+    

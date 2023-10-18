@@ -130,6 +130,8 @@ def home(request):
                 promotions    = Promotion.objects.filter(
                 Q(timestamp__gte=current_datetime) | Q(Promotion_Registration_Limit__gt=0)
                 )
+                
+                
                                 
                 broadcaster_promotions = Room_Data.objects.filter(Room_promotion__isnull=False)
                 
