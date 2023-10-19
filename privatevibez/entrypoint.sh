@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Path to a sentinel file which indicates that the initial setup was done
 SENTINEL_FILE="/privatevibez/.initial_setup_done"
