@@ -81,5 +81,8 @@ urlpatterns = [
     path('update_fav_button_cost/', views.update_fav_button_cost, name="update_fav_button_cost"),
     
     #update lovense button testing cost
-    path('setvibezconversion/', views.setvibezconversion, name="setvibezconversion")
+    path('setvibezconversion/', views.setvibezconversion, name="setvibezconversion"),
+    
+    #update lovense button testing cost
+    path('setvibezearningperinvite/', views.setvibezearningperinvite, name="setvibezearningperinvite")
 ]

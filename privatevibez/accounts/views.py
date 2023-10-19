@@ -415,8 +415,6 @@ def Profile_Pic(request):
             return JsonResponse('OK', safe=False) 
 
     
-    
-
 @csrf_exempt
 def bio_info(request):
     
@@ -447,12 +445,7 @@ def bio_info(request):
             U_token              = fernet.encrypt(random_token.encode())
             
             user_data.U_token      = U_token
-            slot_machine = Slot_Machine.objects.create(User = user_data.User)
-    
-    
-            print(promotion_code,flush=True)
-            print(promotion_invitation_code,flush=True)
-            
+            slot_machine = Slot_Machine.objects.create(User = user_data.User)     
             
             if promotion_code is not None and promotion_code != "":
                 
@@ -464,7 +457,8 @@ def bio_info(request):
                         promotion.save()
                         room_data.Room_promotion = promotion
                            
-                            
+                           
+                                   
                         while not code_is_unique:
                             room_data.Promotion_Invitation_Code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
                             try:
@@ -474,12 +468,9 @@ def bio_info(request):
                                 print(e, flush=True)
                                                     
                         
-
                         if promotion_invitation_code != "" and promotion_invitation_code != None:
-                            print(promotion_invitation_code,flush=True)
                             give_promotion_earning_base_on_invitation(promotion_invitation_code)
                      
-                 
                     else:
                         return JsonResponse('Promotion Code Limit Reached', safe=False)
                 else:
@@ -487,11 +478,10 @@ def bio_info(request):
             else:
                 room_data.save()
         
-            
             user_data.save()
 
     
-                    # Get the channel layer
+            # Get the channel layer
             channel_layer = get_channel_layer()
             channel_name = "staff"
             
@@ -520,15 +510,17 @@ def give_promotion_earning_base_on_invitation(invitation_code):
         if Room_Data.objects.filter(Promotion_Invitation_Code=invitation_code).exists():
             room_data = Room_Data.objects.get(Promotion_Invitation_Code=invitation_code)
             
+            private_vibez = PrivatevibezRevenue.objects.order_by('timestamp').first()
+
             if room_data.Revenue != 0:
-                room_data.Revenue += 5
+                room_data.Revenue += private_vibez.Broadcaster_Earning_Per_Invite
             else:
-                room_data.Revenue = 5
+                room_data.Revenue = private_vibez.Broadcaster_Earning_Per_Invite
             
             room_data.save()
         pass
         
-                    
+                        
     except Room_Data.DoesNotExist as e:
         print(e, flush = True)
 
@@ -553,7 +545,6 @@ def get_IP_Address(request):
     return JsonResponse({'data':get_client_ip(request)}, safe=False)
         
         
-
 def change_password(request):
 
     if request.method == 'POST':
@@ -568,7 +559,6 @@ def change_password(request):
     else:
         form = CustomPasswordChangeForm(request.user)
     return render(request, 'change_password.html', {'form': form})
-
 
 
 def room_data_func(request,broadcaster_gender,user_country,user_region):
@@ -736,7 +726,6 @@ def filter_broadcasters(user,user_country,user_region,broadcaster_gender):
     
  
     return combined_fields_list
-
 
 
 def get_broadcaster(request):
