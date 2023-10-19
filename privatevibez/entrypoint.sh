@@ -1,8 +1,6 @@
 #!/bin/bash
-
 # Path to a sentinel file which indicates that the initial setup was done
 SENTINEL_FILE="/privatevibez/.initial_setup_done"
-
 # Check if the sentinel file exists
 if [ ! -f "$SENTINEL_FILE" ]; then
     # Run initialization commands
@@ -14,9 +12,4 @@ if [ ! -f "$SENTINEL_FILE" ]; then
     touch $SENTINEL_FILE
 fi
 
-# If you need to switch back to a different user for subsequent commands, 
-# handle that user switching in the Dockerfile itself 
-# (like using the USER directive in Dockerfile) or use gosu or similar tools.
-
-# Continue with the rest of your script
 exec "$@"
