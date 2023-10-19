@@ -420,6 +420,8 @@ def Profile_Pic(request):
 @csrf_exempt
 def bio_info(request):
     
+    code_is_unique = False
+    
     user_data               = User_Data.objects.get(User = request.user)
     room_data               = Room_Data.objects.get(User = request.user)
     
@@ -445,21 +447,33 @@ def bio_info(request):
             U_token              = fernet.encrypt(random_token.encode())
             
             user_data.U_token      = U_token
-            
             slot_machine = Slot_Machine.objects.create(User = user_data.User)
     
     
             print(promotion_code,flush=True)
+            print(promotion_invitation_code,flush=True)
+            
+            
             if promotion_code is not None and promotion_code != "":
+                
                 if Promotion.objects.filter(Promotion_Code = promotion_code).exists():
                     promotion = Promotion.objects.get(Promotion_Code = promotion_code)
                     
                     if promotion.Promotion_Registration_Limit > 0:
-                        
                         promotion.Promotion_Registration_Limit -= 1
                         promotion.save()
                         room_data.Room_promotion = promotion
-                        room_data.Promotion_Invitation_Code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+                           
+                            
+                        while not code_is_unique:
+                            room_data.Promotion_Invitation_Code = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+                            try:
+                                room_data.save()
+                                code_is_unique = True
+                            except UniqueConstraintViolation as e:
+                                print(e, flush=True)
+                                                    
+                        
 
                         if promotion_invitation_code != "" and promotion_invitation_code != None:
                             print(promotion_invitation_code,flush=True)
@@ -471,9 +485,9 @@ def bio_info(request):
                 else:
                     return JsonResponse('Invalid Promotion Code', safe=False)
             else:
-                pass
+                room_data.save()
         
-            room_data.save()
+            
             user_data.save()
 
     
@@ -503,8 +517,18 @@ def bio_info(request):
 def give_promotion_earning_base_on_invitation(invitation_code):
     try:
         
-        room_data = Room_Data.objects.get(Promotion_Invitation_Code=invitation_code)
+        if Room_Data.objects.filter(Promotion_Invitation_Code=invitation_code).exists():
+            room_data = Room_Data.objects.get(Promotion_Invitation_Code=invitation_code)
+            
+            if room_data.Revenue != 0:
+                room_data.Revenue += 5
+            else:
+                room_data.Revenue = 5
+            
+            room_data.save()
+        pass
         
+                    
     except Room_Data.DoesNotExist as e:
         print(e, flush = True)
 
@@ -884,12 +908,12 @@ def update_promotion_table():
     )
     
     
-def BroadcasterRegistration(request, code):
+def BroadcasterRegistration(request, promotion_code=None, invitation_code=None):
         
-        if code is not None:
+        if promotion_code is not None:
                 
                 try:
-                    promotion = get_object_or_404(Promotion, Promotion_Code=code)
+                    promotion = get_object_or_404(Promotion, Promotion_Code=promotion_code)
                     promotion_viewers = promotion.promotion_viewers.all()
                     
                     if promotion.Duration < timezone.now() or promotion.Promotion_Registration_Limit == 0:
@@ -916,7 +940,7 @@ def BroadcasterRegistration(request, code):
                         new_viewer = Promotion_Viewer(Promotion=promotion, Viewer=user_ip)
                         new_viewer.save()
 
-                
+
                     update_promotion_table()
                     
                     

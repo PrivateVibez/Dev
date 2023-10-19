@@ -22,7 +22,12 @@ services:
 
   db:
     image: postgis/postgis
+    volumes:
+    - pgdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=privatevibez
       - POSTGRES_USER=privatevibez
       - POSTGRES_PASSWORD=privatevibez
+
+volumes:
+  pgdata:

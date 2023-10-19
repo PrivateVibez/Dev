@@ -47,6 +47,9 @@ urlpatterns = [
      
      
          # registration with promotion code
-    path('BroadcasterRegistration/<str:code>/', views.BroadcasterRegistration, name="BroadcasterRegistration"),
+    path('BroadcasterRegistration/<str:promotion_code>/', views.BroadcasterRegistration, name="BroadcasterRegistration"),
+     
+         # registration with promotion and invitation code code
+    path('BroadcasterRegistration/<str:promotion_code>/<str:invitation_code>', views.BroadcasterRegistration, name="BroadcasterRegistrationWithInvitationCode"),
 
 ]

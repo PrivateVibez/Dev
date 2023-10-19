@@ -204,7 +204,7 @@ display:none;">
                     {% if promotion.Promotion_Code %}
                
                     <div class="form-outline mb-4">
-                      <input type="text" value="" class="form-control fs-2" id="promotion_invitation_code" aria-label="promotion_invitation_codeLabel" >  
+                      <input type="text" value="{{invitation_code}}" class="form-control fs-2" id="promotion_invitation_code" aria-label="promotion_invitation_codeLabel" >  
                       <label class="form-label my-2 fs-2" for="promotion_invitation_code">Invitation Code</label>
                     </div>
 
@@ -249,12 +249,10 @@ display:none;">
                     </div>
                   </div>
 
-{% comment %} insert next btn {% endcomment %}
                     <div class="pt-1 mb-4">
                       <button  type="button" onclick ="done()" class="btn btn-dark btn-lg btn-block" type="button"><span class="fs-2">Done</span></button>
                     </div>
                 </div>
-
 
                 <div id="Done_box" style='display:none;'>
                   <div class="form-outline mb-4">
@@ -410,9 +408,6 @@ display:none;">
 
 {% endif %}
 
-
-
-
   <!-- Modal -->
 <div class="modal fade" id="learn_more" tabindex="-1" role="dialog" aria-labelledby="learn_more_label" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -439,7 +434,6 @@ display:none;">
   </script>
   <script type="text/javascript" src="{% static 'js/broadcaster/registration_broadcaster.js' %}">
   </script>
-
 
 
   <!--JS FOR DISPLAYING PROMOTION COUNTDOWN TO EXPIRATION-->
@@ -500,4 +494,5 @@ display:none;">
 
 {% endif %}
 
-  {% endblock content %}
+
+{% endblock content %}
