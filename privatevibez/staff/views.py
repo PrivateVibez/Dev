@@ -906,3 +906,24 @@ def setvibezconversion(request):
         
                         return JsonResponse({"data":f'No private vibez data found'},status=500, safe=False)
 
+
+
+def setvibezearningperinvite(request):
+        
+        if request.method == 'POST':
+                
+                vibez_earning_per_invite = float(request.POST.get('vibez_earning_per_invite',0))
+
+                try:
+                        private_vibez = PrivatevibezRevenue.objects.order_by('timestamp').first()
+                        
+                        private_vibez.Broadcaster_Earning_Per_Invite = vibez_earning_per_invite
+                        
+                        private_vibez.save()
+                        
+                        return JsonResponse({"data":f'Successfully updated vibez conversion'},status=200, safe=False)
+                
+                except PrivatevibezRevenue.DoesNotExist as e:
+                        print(e,flush=True)
+        
+                        return JsonResponse({"data":f'No private vibez data found'},status=500, safe=False)
