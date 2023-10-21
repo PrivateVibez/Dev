@@ -1,4 +1,4 @@
-﻿#!/bin/sh
+#!/bin/sh
 SENTINEL_FILE="/privatevibez/.initial_setup_done"
 if [ ! -f "$SENTINEL_FILE" ]; then
     python manage.py migrate || exit 1
