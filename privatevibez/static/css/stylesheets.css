@@ -46,7 +46,7 @@ nav {
     margin-left: 15px;
 }
 .home-btn:hover {
-    text-decoration: underline;
+    color: white;
 }
 .stat {
     margin: 0;

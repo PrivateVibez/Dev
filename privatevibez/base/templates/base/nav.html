@@ -15,7 +15,6 @@
   <div class="nav-container">
 
       <div class="username">
-          <a href=""><img class="usernameicon" src="{%static 'images/icons8-username-30.png'%}" width="30px" alt="Error"></a>
           <a class="signup-link" href="{% url "Registration" %}">Sign Up</a>
       </div>
 
@@ -63,10 +62,12 @@
 
     <div class="nav-container">
       <h1 class="title"><a class="title-link" href="{% url 'logout' %}">Logout</a></h1>
-  </div>
+    </div>
       {% endif %}
 
+    <div class="nav-container">
 
+    </div>
 </nav>
 
 <script type="text/javascript">

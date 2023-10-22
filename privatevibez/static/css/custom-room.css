@@ -3,7 +3,7 @@
 }
 /* main */
 #main {
-    min-height: 500px;
+    height: auto;
     width: 100%;
 }
 #main div, #main p, #main a, #main li, #main td, #main span {

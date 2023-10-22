@@ -148,7 +148,6 @@ hr.light {
 
 
 .button_send {
-    display: inline-block;
     overflow: hidden;
     height: 21px;
     width: auto;
@@ -306,25 +305,7 @@ hr.light {
     text-shadow: 1px 1px 0 #4f4f4f
 }
 
-.button_rate .button_rate_lctnr {
-}
 
-.button_rate_dim .button_rate_lctnr {
-}
-
-#thumb_up_off,
-#thumb_up_off_dim {
-}
-
-#thumb_down_off,
-#thumb_down_off_dim {
-}
-
-#thumb_up_on {
-}
-
-#thumb_down_on {
-}
 
 .button_rate .thumb_img,
 .button_rate_dim .thumb_img {
@@ -335,7 +316,6 @@ hr.light {
 }
 
 .button_rate_text {
-    display: inline-block;
     padding-top: 3px;
     padding-right: 2px;
     float: left;
@@ -380,8 +360,6 @@ hr.light {
     left: -3px;
 }
 
-#broadcaster_rating>.btn_middle {
-}
 
 #broadcaster_rating .thumbs_up_text {
     position: relative;
@@ -474,17 +452,10 @@ hr.light {
     text-shadow: 1px 1px 0 #f18112
 }
 
-.socials .button_follow a,
-.button_tip a,
-.button_share a {
-}
-
 .socials .button_unfollow {
     text-shadow: 1px 1px 0 #383838
 }
 
-.socials .button_unfollow a {
-}
 
 .socials .button_follow_dim,
 .button_unfollow_dim {
@@ -846,12 +817,6 @@ hr.light {
     text-decoration: underline
 }
 
-.jscontextContainer p.pm {
-}
-
-.jscontextContainer p.ignore {
-}
-
 .jscontextContainer hr {
     border: none;
     border-bottom: 1px solid #8b8b8b;
@@ -864,7 +829,6 @@ hr.light {
 
 .button_abuse_report,
 .button_abuse_cancel {
-    display: inline-block;
     height: 21px;
     width: auto;
     padding-left: 5px;
@@ -887,15 +851,10 @@ hr.light {
     text-shadow: 1px 1px 0 #bc2b1d
 }
 
-.button_abuse_report a {
-}
 
 .button_abuse_cancel {
     text-shadow: 1px 1px 0 #383838;
     margin-right: 5px
-}
-
-.button_abuse_cancel a {
 }
 
 #af_content {
@@ -1101,10 +1060,6 @@ hr.light {
 .set_goal_button,
 .broadcast_set_goal_button {
     text-shadow: 1px 1px 0 #588d3d
-}
-
-.set_goal_button a,
-.broadcast_set_goal_button a {
 }
 
 .broadcaster_panel_goal_configuration {
@@ -1404,9 +1359,6 @@ div.warning {
     padding: 5px
 }
 
-#broadcaster_rating_history .thumbs_up_image {
-}
-
 #rating_history {
     width: 100%
 }
@@ -1443,7 +1395,6 @@ div.warning {
     margin-right: 10px;
     float: right;
     color: #aaa;
-    display: inline-block;
     white-space: nowrap
 }
 
@@ -1507,7 +1458,6 @@ ul.photo-list {
 
 div.photo-item {
     width: 200px;
-    display: inline-block;
     float: left
 }
 
@@ -1533,7 +1483,6 @@ div.photo-item h4 {
 
 div.cambouncer_imgs .image {
     float: left;
-    display: inline-block;
     margin: 5px
 }
 
@@ -1656,7 +1605,6 @@ div.premium_box p.empty {
 #invalid_tip_message {
     color: red;
     float: left;
-    display: inline-block;
     width: 130px;
     text-align: right;
     padding-top: 15px
@@ -1821,8 +1769,6 @@ div#obs_exit_away a {
 #obs_exit_away p {
     margin: 3px
 }
-
-div#obs_status_display {}
 
 #obs_room_status_block {
     height: 145px;
@@ -2188,9 +2134,6 @@ div#obs_jpeg_warning {
     user-select: none
 }
 
-.icon_following:not(.no_hover):hover,
-.icon_not_following:not(.no_hover):hover {
-}
 
 @media(hover:none) {
     .icon_following:not(.no_hover):hover {
@@ -2557,9 +2500,6 @@ form .errorlist {
     font-size: 11px
 }
 
-.token_options {}
-
-.broadcaster_token_options {}
 
 .token_options a,
 .broadcaster_token_options a {
@@ -2656,9 +2596,6 @@ div.broadcaster_panel_default {
     top: 0;
     padding-top: -100px;
     height: 100%;
-}
-
-.ui-resizable-e:hover {
 }
 
 .ui-resizable-w {
@@ -2815,8 +2752,6 @@ div.broadcaster_panel_default {
     visibility: hidden !important
 }
 
-.entrance-terms--shown.lg-tv-black-overlay #entrance_terms_overlay {
-}
 
 @supports(filter:blur(5px)) or (-webkit-filter:blur(5px)) {
     .entrance-terms--shown {
@@ -2959,12 +2894,6 @@ div.broadcaster_panel_default {
     color: #b3b3b3
 }
 
-.appCollection .clearSearchButton {
-}
-
-.darkmode .appCollection .clearSearchButton {
-}
-
 .appCollection .searchInput::-webkit-search-cancel-button {
     -webkit-appearance: none
 }
@@ -3089,11 +3018,6 @@ div.broadcaster_panel_default {
     border: none
 }
 
-.appPage .back {
-}
-
-.darkmode .appPage .back {
-}
 
 .appPage .subText,
 .appPage .description {
@@ -3123,17 +3047,6 @@ div.broadcaster_panel_default {
     border: none
 }
 
-.appPage .appForm .chevronDown {
-}
-
-.darkmode .appPage .appForm .chevronDown {
-}
-
-.appPage .appForm .chevronUp {
-}
-
-.darkmode .appPage .appForm .chevronUp {
-}
 
 .appPage .formError {
     color: red
@@ -3628,7 +3541,6 @@ div.broadcaster_panel_default {
 .roomCard .genderx {
     width: 14px;
     height: 14px;
-    display: inline-block;
     float: left
 }
 
@@ -4206,12 +4118,12 @@ form input[type=submit] {
 
 .darkmode .transparentCheckbox {
     background-color: #17202a;
-    border-color: #2d3e50
+    border-color: #2d3e50;
 }
 
 .transparentCheckbox.disabled {
     background-color: #f8f9fa;
-    border-color: #efefef
+    border-color: #efefef;
 }
 
 .darkmode .transparentCheckbox.disabled {
@@ -4239,12 +4151,6 @@ form input[type=submit] {
 
 .darkmode .draggableCanvasWindow .transparentCheckbox {
     border-color: #b3b3b3
-}
-
-.draggableCanvasWindow .transparentCheckbox.checked {
-}
-
-#checkable-gender-tabs .transparentCheckbox.checked {
 }
 
 .fieldTextArea,
@@ -4713,7 +4619,7 @@ form .button:disabled:hover,
 button.ajax_button:disabled:hover,
 form .disabled.button:hover,
 button.disabled.ajax_button:hover {
-    text-decoraton: none
+text-decoration: none;
 }
 
 #id_subgender {
