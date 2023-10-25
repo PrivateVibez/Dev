@@ -42,7 +42,8 @@ ALLOWED_HOSTS = [
     'localhost',
     'privatevibez.com',
     'wss://privatevibez.com',
-    '192.168.1.206'
+    '192.168.1.206',
+    '100.120.52.2'
     ]
 
 # Application definition
