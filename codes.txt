@@ -1180,3 +1180,8 @@ function check_modal()
                 channel_name,
                 {"type": "show.updatedRevenue", "data": data}
             )
+
+
+
+
+    python manage.py cities --import=country,region,city || exit 1
