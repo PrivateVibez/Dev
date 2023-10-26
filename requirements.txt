@@ -53,4 +53,6 @@ zope.interface==5.5.1
 patool
 djangorestframework
 psycopg2-binary
+factory_boy
+faker
 

@@ -209,6 +209,7 @@ def RegistrationWithPromotionCode(request):
 def Registration_Broadcaster(request):
     menu_items = Menu_Data.objects.filter(User=request.user)
     dice_data = Dice_Data.objects.filter(User=request.user)
+    slot_machine = Slot_Machine.objects.create(User = request.user)     
     if User_Data.objects.filter(User = request.user).exists():
         user_data   = User_Data.objects.get(User = request.user)
         context = {'user_datas':user_data}
@@ -445,7 +446,7 @@ def bio_info(request):
             U_token              = fernet.encrypt(random_token.encode())
             
             user_data.U_token      = U_token
-            slot_machine = Slot_Machine.objects.create(User = user_data.User)     
+            
             
             if promotion_code is not None and promotion_code != "":
                 
