@@ -201,14 +201,14 @@ display:none;">
                       <label class="form-label my-2 fs-2 d-none" for="promotion_code">Promotion Code</label>
                     </div>
 
-                    {% if promotion.Promotion_Code %}
+                    
                
                     <div class="form-outline mb-4">
-                      <input type="text" value="{{invitation_code}}" class="form-control fs-2" id="promotion_invitation_code" aria-label="promotion_invitation_codeLabel" >  
+                      <input type="text" value="{% if promotion.Promotion_Code %}{{invitation_code}}{% endif %}" class="form-control fs-2" id="promotion_invitation_code" aria-label="promotion_invitation_codeLabel" >  
                       <label class="form-label my-2 fs-2" for="promotion_invitation_code">Invitation Code</label>
                     </div>
 
-                    {% endif %}
+                   
 
                     <div class="form-outline mb-4">
                       <input type="text" value="" class="form-control fs-2" id="I_Am" aria-label="I_Am">  

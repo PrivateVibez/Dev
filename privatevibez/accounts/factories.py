@@ -2,6 +2,7 @@
 from cryptography.fernet import Fernet
 import secrets
 import random
+from django.utils import timezone
 from django.conf import settings
 from PIL import Image
 from io import BytesIO
@@ -10,6 +11,7 @@ import factory
 from faker import Faker
 from .models import *
 from rooms.models import Room_Data, Slot_Machine
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth import get_user_model
 User = get_user_model()
 
@@ -30,9 +32,10 @@ class UserFactory(factory.django.DjangoModelFactory):
     email = factory.LazyAttribute(lambda _: faker.email())
     first_name = factory.LazyAttribute(lambda _: faker.first_name())
     last_name = factory.LazyAttribute(lambda _: faker.last_name())
-    password = factory.LazyAttribute(lambda _: faker.password(length=12, special_chars=True, digits=True, upper_case=True, lower_case=True))
+    password = make_password('password1234')
     Status = "Broadcaster"
     Ip_Address = "110.54.207.192"
+    Ip_Address_Expires = timezone.now() + timezone.timedelta(days=30)
     Country = "PH"
     Region = "National Capital Region"
     latitude = "14.524300"
