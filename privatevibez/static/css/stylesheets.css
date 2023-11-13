@@ -10,6 +10,53 @@ body {
     margin: 0;
 }
 
+/* Nav mobile responsive*/
+#hamburger-icon{
+    display: none;
+    margin: auto 0;
+    cursor: pointer;
+    float: right;
+    margin-top: -35px;
+}
+
+#hamburger-icon div {
+    width: 35px;
+    height: 3px;
+    background-color: black;
+    margin: 6px 0;
+    transition: 0.4s;
+}
+
+.open .bar1{
+    -webkit-transform: rotate(-45deg) translate(-6px, 6px);
+    transform: rotate(-45deg) translate(-6px, 6px);
+}
+
+.open .bar2 {
+    opacity: 0;
+}
+
+.open .bar3 {
+    -webkit-transform: rotate(45deg) translate(-6px, -8px);
+    transform: rotate(45deg) translate(-6px, -8px);
+}
+
+.open .mobile-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.mobile-menu {
+    display: none;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    height: calc(100vh - 50px);
+    width: 100%;
+}
+
 /*Header*/
 .headerphoto-container{
     background: black;
@@ -26,7 +73,7 @@ nav {
     height: 35px;
     margin: 0;
     padding-top: 0;
-    display: flex !important;
+    display: flex;
 }
 
 .nav-container {
@@ -46,7 +93,7 @@ nav {
     margin-left: 15px;
 }
 .home-btn:hover {
-    color: white;
+    text-decoration: underline;
 }
 .stat {
     margin: 0;
@@ -66,11 +113,17 @@ nav {
 .signup-link {
     text-decoration: none;
     color: white;
-    margin-top: 3px;
     font-size: 20px;
+    border: 1px solid white;
+    padding: 2px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-left: 90px;
 }
 .signup-link:hover {
-    text-decoration: underline;
+    color: #990000;
+    border: 1px solid #990000;
+    background: white;
 }
 
 .title {
@@ -88,42 +141,13 @@ nav {
 .title-link:hover {
     text-decoration: underline;
 }
-/* Style the dropdown button */
-#myDropdown{
-    background-color: transparent;
-    border: none;
-    color: white;
+
+.gear-icon{
+    float: right;
+    margin-top: 2px;
+    margin-right: 20px;
 }
-.dropbtn {
-    border: none;
-    cursor: pointer;
-  }
-  
-  /* Style the dropdown content (hidden by default) */
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #990000;
-    min-width: 160px;
-    z-index: 1;
-  }
-  
-  /* Style the dropdown links */
-  .dropdown-content a {
-    padding: 12px 16px;
-    display: block;
-    text-decoration: none;
-  }
-  
-  /* Change color of dropdown links on hover */
-  .dropdown-content a:hover {
-    background-color: #990000;
-  }
-  
-  /* Show the dropdown menu on hover */
-  .dropdown:hover .dropdown-content {
-    display: block;
-  }
+
   
   /*Tabs*/
 .tab {
@@ -144,7 +168,6 @@ nav {
     color: black;
     font-family: Josefin Sans;
 }
-
 #nav-men-tab {
     color: black;
     font-family: Josefin Sans;
@@ -191,6 +214,140 @@ nav {
     border-radius: 20px;
 }
 
+/*Sign in Page*/
+.signincontainer {
+    width: 50%;
+    height: 650px;
+    border: 1px solid rgba(0, 0, 0, 0.283);
+    margin-top: 50px;
+    margin-left: 25%;
+    margin-right: 25%;
+    border-radius: 10px;
+    background: url(/static/images/pexels-alexander-krivitskiy-1271374.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.sign-in{
+    background: rgba(255, 255, 255, 0.329);
+    width: 100%;
+    height: 100%;
+    margin-top: 0;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 10px;
+    box-shadow: -1px 3px 13px -2px black;
+}
+.si-logo {
+    margin-top: -20px;
+    margin-left: 40%;
+}
+
+.text-logo {
+    margin-left: 20%;
+}
+.sign_in-title {
+    font-family: sans-serif;
+    font-weight: bold;
+    margin-left: 10%;
+    color: #990000;
+}
+
+.sign_in-text {
+    font-family: sans-serif;
+    margin-left: 10%;
+}
+
+.clickhere-link{
+    text-decoration: none;
+    color: #990000;
+}
+
+.clickhere-link:hover {
+    text-decoration: underline;
+}
+
+#sign_in-username{
+    margin-left: 10%;
+    width: 70%;
+    border: none;
+    border-bottom: 1px solid #990000;
+    background: none;
+    padding: 5px;
+}
+
+.underline-input:focus{
+    outline: none;
+    border-color: transparent;
+}
+
+
+#sign_in-username::placeholder {
+    color: #990000;
+}
+
+#sign_in-password {
+    margin-left: 10%;
+    width: 70%;
+    border: none;
+    border-bottom: 1px solid #990000;
+    background: none;
+    padding: 5px;
+}
+
+#sign_in-password::placeholder {
+    color: #990000;
+}
+
+#sign_in-checkbox {
+    margin-left: 10%;
+    width: 20px;
+    height: 20px;
+}
+
+.sign-incheck-box {
+    display: flex;
+}
+
+.remember-me {
+    font-family: sans-serif;
+    margin-left: 5px;
+    font-size: 18px;
+    margin-top: -3px;
+}
+
+.log_in-btn{
+    margin-left: 10%;
+    width: 80%;
+    margin-top: 25px;
+    background-color: #990000;
+    border: none;
+    height: 50px;
+    color: white;
+    font-size: 25px;
+    border-radius: 10px;
+    font-family: sans-serif;
+    font-weight: bold;
+}
+
+.log_in-btn:hover {
+    background-color: white;
+    color: #990000;
+}
+
+.ntpv{
+    margin-left: 10%;
+}
+.signupnow-link {
+    text-decoration: none;
+    margin-left: 10%;
+    color: #990000;
+    font-size: 25px;
+}
+
+.signupnow-link:hover {
+    text-decoration: underline;
+}
 /*Broadcast Page*/
 .signupcontainer {
     width: 50%;
@@ -201,6 +358,7 @@ nav {
     margin-right: 25%;
     border-radius: 10px;
 }
+
 
 .signup-header{
     width: 100%;
@@ -326,4 +484,74 @@ nav {
 .google-icon{
     margin-right: 10px;
     margin-bottom: 5px;
+}
+
+/*Settings*/
+.settings-btn {
+    text-decoration: none;
+    color: white;
+    font-family: Verdana;
+    font-size: 23px;
+    
+}
+
+.settings-container {
+    width: 98%;
+    height: 400px;
+    margin-top: 20px;
+    margin-left: 1%;
+    margin-right: 1%;
+    display: flex;
+}
+
+.settings-content {
+    width: 20%;
+    height: 100%;
+}
+
+.setting {
+    margin-top: 35px;
+    font-family: sans-serif;
+}
+
+.options {
+    margin-top: 10px;
+    color: #990000;
+}
+
+.regions {
+    font-family: sans-serif;
+}
+
+.checkbox-options {
+    width: 17px;
+    height: 17px;
+}
+
+.locations {
+    font-size: 18px;
+    font-family: sans-serif;
+}
+
+.chatsettings-btn {
+    text-decoration: none;
+}
+
+.chatsettings-link{
+    margin-top: 35px;
+    color: #990000;
+}
+.chatsettings-link:hover {
+    text-decoration: underline;
+}
+.close-button {
+    background-color: white;
+    color: #990000;
+    border:none;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: bolder;
+    font-size: 25px;
+    float: right;
 }

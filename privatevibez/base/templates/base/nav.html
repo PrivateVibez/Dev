@@ -5,6 +5,7 @@
   <img class="logo" src="{% static 'images/Active.png' %}" width="100%" alt="Error">
 </div>
 
+<!--
 <nav>
   
   <div class="nav-container">
@@ -69,6 +70,36 @@
 
     </div>
 </nav>
+-->
+
+
+
+<nav>
+  <div class="nav-container">
+      <h5 class="home"><a class="home-btn" href="{% url "Main_home" %}">Home</a></h5>
+  </div>
+  <div class="nav-container">
+      
+  </div>
+  <div class="nav-container">
+      <h1 class="title"><a class="title-link" href="{% url 'registration_broadcaster' %}">Become a Broadcaster</a></h1>
+  </div>
+  <div class="nav-container">
+      
+  </div>
+  <div class="nav-container">
+
+      {% if request.user.is_authenticated %}
+      <a href=""><img class="gear-icon" src="{% static 'images/icons8-gear-30 (2)-modified.png' %}" alt=""></a>
+      {% endif %}
+
+
+      <div class="username">
+          <a class="signup-link" href="{% url "login" %}">Log in</a>
+      </div>
+  </div>
+</nav>
+
 
 <script type="text/javascript">
   var csrfToken = "{{ csrf_token }}";

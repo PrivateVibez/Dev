@@ -5,7 +5,6 @@
   <title>ActiveVibes</title>
   <link rel="shortcut icon" href="{% static 'images/icon.png' %}" type="image/x-icon">
   <link rel="stylesheet" href="{% static 'css/stylesheets.css' %}">    <meta charset="utf-8">
-  
   <script type="text/javascript" src="{% static 'js/jquery-3.5.1.js' %}"></script>
     
      <!-- cropper-->
@@ -17,7 +16,6 @@
     <link rel="stylesheet" href="{% static 'plugins/icofont/icofont.min.css' %}">
 
     <!-- bootstrap.min css -->
-    <link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.css' %}">
     <link href="https://vjs.zencdn.net/8.5.2/video-js.css" rel="stylesheet" />
 
@@ -76,7 +74,7 @@
   
   
           </div>
-        </div>
+      </div>
 
  
         {% include 'base/nav.html'%}
@@ -103,7 +101,11 @@
 <script src="https://vjs.zencdn.net/8.5.2/video.min.js"></script>
 
 <script>
-
-  </script>
+  if(window.location.protocol == "http:"){
+    protocol = "ws";
+}else if(window.location.protocol == "https:"){
+    protocol = "wss";
+}
+</script>
 
  </html>

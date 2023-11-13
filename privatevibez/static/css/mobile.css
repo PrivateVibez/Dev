@@ -1,0 +1,135 @@
+@media screen and (max-width:767px) {
+    html {
+        width: 100%;
+        margin: 0;
+    }
+    body {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.683);
+        margin: 0;
+    }
+    .headerphoto-container {
+        background: white;
+    }
+    .nav-container {
+        display: none;
+    }
+    #hamburger-icon {
+        display: block;
+    }
+    .mobile-menu {
+        margin-top: 11%;
+        background: #990000;
+        width: 70%;
+        margin-left: 30%;
+        list-style: none;
+    }
+    .navresponsive-link {
+        text-decoration: none;
+        color: white;
+        font-size: 30px;
+        font-weight: bold;
+        font-family: sans-serif;
+    }
+    #navresponsive-broadcaster {
+        font-size: 21px;
+    }
+    .responsivelink {
+        margin-top: 25px;
+    }
+        /*Tabs*/
+    .tab {
+        width: 100%;
+        height: auto;
+    }
+    #myTab {
+        width: 100%;
+    }
+    #nav-featured-tab {
+        width: 100%;
+        color: #990000 ;
+        font-family: Josefin Sans;
+        font-weight: bold;
+        font-size: 30px;
+    }
+    #nav-women-tab {
+        font-size: 25px;
+        width: 100%;
+        color: black;
+        font-family: Josefin Sans;
+    }
+    #nav-men-tab {
+        font-size: 25px;
+        width: 100%;
+        color: black;
+        font-family: Josefin Sans;
+    }
+    #nav-couples-tab {
+        font-size: 25px;
+        width: 100%;
+        color: black;
+        font-family: Josefin Sans;
+    }
+    #nav-trans-tab {
+        font-size: 25px;
+        width: 100%;
+        color: black;
+        font-family: Josefin Sans;
+    }
+    .tab-content {
+        width: 92%;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        margin: 0;
+    }
+    .contentcontainer {
+        border: 0.5px solid black;
+        border-radius: 5px;
+    }
+    .card-img-top {
+        margin-top: 5px;
+        gap: 5px;
+    }
+    
+    .contentimagecontainer {
+        width: 100%;
+        height: auto;
+        display: grid;
+        grid-template-columns: repeat(1, 15fr);
+        grid-gap: 10px;
+        margin-top: 40px;
+        margin-left: 5%;
+        margin-right: 5%;
+    }
+    
+    .imgcont{
+        margin-left: 0;
+        height: 200px;
+        display: grid;
+        border: 0.8px solid rgba(0, 0, 0, 0.368);
+        border-radius: 20px;
+    }
+    /*Sign in Page*/
+    .signincontainer {
+        width: 100%;
+        height: auto;
+        border: 1px solid rgba(0, 0, 0, 0.283);
+        margin-top: 20px;
+        margin-left: 0;
+        margin-right: 0;
+        border-radius: 10px;
+        background: url(/images2/pexels-alexander-krivitskiy-1271374.jpg);
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+    .sign-in{
+        background: rgba(255, 255, 255, 0.329);
+        width: 100%;
+        height: 100%;
+        margin-top: 0;
+        margin-left: 0;
+        margin-right: 0;
+        border-radius: 10px;
+        box-shadow: -1px 3px 13px -2px black;
+    }
+}

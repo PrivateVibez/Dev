@@ -4,7 +4,7 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-
+<!--
 <section class="vh-100" style="background-color: #6cc6ba;">
 
     <div class="container py-5 h-100">
@@ -51,7 +51,8 @@
 
                             <div class="form-outline mb-4">                               
           
-                              <input type="password" id="password" style="font-size:2rem;" name="password"class="form-control" />
+                              <input type="password" id="password" style="font-size:2rem;" name="password" class="form-control" />
+
                               <label class="form-label my-2" style="font-size:2rem;" for="password">Password</label>
                                     
                             </div>
@@ -76,4 +77,36 @@
         </div>
       </div>
     </section>
+-->
+
+
+    <div class="signincontainer">
+      <div class="sign-in">
+         <div class="signinforms"> <br><br>
+          
+              <img class="si-logo" src="{% static 'images/logo/small_logo.png' %}" width="100px" alt="Error">
+
+              <h1 class="text-logo">Interactive Pleasures</h1><br>
+              <h2 class="sign_in-title">Sign In</h2>
+              <p class="sign_in-text">Please enter your login information or <a class="clickhere-link" href="/accounts/signup/">click here</a> for registration</p>
+
+                <form action="/accounts/login/" method="POST">
+                  {% csrf_token %}
+
+                  <input id="sign_in-username" type="text" placeholder="Username" name="username" class="underline-input"><br><br>
+
+                  <input id="sign_in-password" type="password" placeholder="Password" name="password" class="underline-input"><br><br>
+
+                  <div class="sign-incheck-box">
+                  <input id="sign_in-checkbox" type="checkbox"><p class="remember-me">Remember Me</p>
+                  </div>
+
+                  <button class="log_in-btn">Log in</button>
+
+              </form>
+                  <h4 class="ntpv">New to PriveVibez?</h4>
+                  <a class="signupnow-link" href="{% url "Registration" %}">Sign up now</a>
+         </div>
+      </div>
+   </div>
     {% endblock content %}
